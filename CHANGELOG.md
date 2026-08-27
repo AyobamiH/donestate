@@ -2,6 +2,12 @@
 
 All notable changes follow Keep a Changelog. This project uses Semantic Versioning.
 
+## [0.1.1] - 2026-08-27
+
+### Fixed
+
+- Publish the `donestate` executable with npm 11-compatible CLI metadata.
+
 ## [0.1.0] - 2026-08-27
 
 ### Added
