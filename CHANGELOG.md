@@ -2,6 +2,12 @@
 
 All notable changes follow Keep a Changelog. This project uses Semantic Versioning.
 
+## [0.1.2] - 2026-08-27
+
+### Fixed
+
+- Derive the CLI help version from package metadata so installed releases cannot report a stale version.
+
 ## [0.1.1] - 2026-08-27
 
 ### Fixed

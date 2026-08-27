@@ -7,4 +7,5 @@ export { attestationSigningInput, validateAttestation, verifierFingerprint } fro
 export { canonicalJson, digest } from "./hash.js";
 export { DoneStateError } from "./errors.js";
 export { inspectWorkspace } from "./workspace.js";
+export { PACKAGE_VERSION, readPackageVersion } from "./version.js";
 export * from "./types.js";
