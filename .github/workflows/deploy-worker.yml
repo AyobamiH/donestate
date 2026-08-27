@@ -1,0 +1,51 @@
+name: Deploy hosted Worker
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - feat/chatgpt-plugin-0.2.0
+    paths:
+      - apps/mcp-worker/**
+      - .github/workflows/deploy-worker.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: donestate-mcp-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: apps/mcp-worker/package-lock.json
+      - run: npm ci
+        working-directory: apps/mcp-worker
+      - run: npm run check
+        working-directory: apps/mcp-worker
+      - id: deploy
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/mcp-worker
+          wranglerVersion: 4.127.0
+          packageManager: npm
+          command: deploy
+          secrets: |
+            COOKIE_ENCRYPTION_KEY
+            TOKEN_ENCRYPTION_KEY
+        env:
+          COOKIE_ENCRYPTION_KEY: ${{ secrets.COOKIE_ENCRYPTION_KEY }}
+          TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
+      - name: Record deployment URL
+        run: echo "### ${{ steps.deploy.outputs.deployment-url }}" >> "$GITHUB_STEP_SUMMARY"
