@@ -44,16 +44,13 @@ function escapeHtml(value: string): string {
     .replace(/'/g, "&#039;");
 }
 
-function constantTimeEqual(left: string | null, right: string): boolean {
-  if (left === null) return false;
-  const leftBytes = new TextEncoder().encode(left);
-  const rightBytes = new TextEncoder().encode(right);
-  let difference = leftBytes.length ^ rightBytes.length;
-  const length = Math.max(leftBytes.length, rightBytes.length);
-  for (let index = 0; index < length; index += 1) {
-    difference |= (leftBytes[index] ?? 0) ^ (rightBytes[index] ?? 0);
-  }
-  return difference === 0;
+async function constantTimeEqual(left: string | null, right: string): Promise<boolean> {
+  const encoder = new TextEncoder();
+  const [leftHash, rightHash] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(left ?? "")),
+    crypto.subtle.digest("SHA-256", encoder.encode(right)),
+  ]);
+  return left !== null && crypto.subtle.timingSafeEqual(leftHash, rightHash);
 }
 
 function html(body: string, status = 200, cookies: string[] = []): Response {
@@ -112,7 +109,11 @@ async function approve(request: Request, env: AuthEnv): Promise<Response> {
   const pending = JSON.parse(pendingJson) as PendingAuthorization;
   const cookieCsrf = cookie(request, CSRF_COOKIE);
   const submittedDigest = await digest(csrf);
-  if (!constantTimeEqual(cookieCsrf, submittedDigest) || !constantTimeEqual(pending.csrfDigest, submittedDigest)) {
+  const [cookieCsrfValid, pendingCsrfValid] = await Promise.all([
+    constantTimeEqual(cookieCsrf, submittedDigest),
+    constantTimeEqual(pending.csrfDigest, submittedDigest),
+  ]);
+  if (!cookieCsrfValid || !pendingCsrfValid) {
     return new Response("CSRF validation failed", { status: 400 });
   }
   pending.approved = true;

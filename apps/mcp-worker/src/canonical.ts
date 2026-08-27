@@ -8,9 +8,11 @@ export function canonicalJson(value: unknown): string {
 }
 
 export async function digest(value: unknown): Promise<string> {
-  const bytes: Uint8Array<ArrayBuffer> = value instanceof Uint8Array
-    ? new Uint8Array(value)
+  const source = value instanceof Uint8Array
+    ? value
     : new TextEncoder().encode(typeof value === "string" ? value : canonicalJson(value));
+  const bytes = new Uint8Array(new ArrayBuffer(source.byteLength));
+  bytes.set(source);
   const hash = await crypto.subtle.digest("SHA-256", bytes);
   return Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
