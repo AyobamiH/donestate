@@ -10,14 +10,15 @@ import { policyFor, simpleObjective, temporaryRoot } from "./helpers.js";
 
 test("leases reject concurrent owners and advance fencing tokens after expiry", async () => {
   const root = await temporaryRoot();
-  const store = new DoneStateStore(path.join(root, "state.sqlite"));
+  let now = new Date("2026-08-27T12:00:00.000Z");
+  const store = new DoneStateStore(path.join(root, "state.sqlite"), () => now);
   const objective = simpleObjective(root);
   const run = await store.createRun(createRunId(), admitObjective(objective, policyFor(root)));
   const first = await store.acquireLease(run.id, "worker-a", 100);
   const blocked = await store.acquireLease(run.id, "worker-b", 5_000);
   assert.equal(first.acquired, true);
   assert.equal(blocked.acquired, false);
-  await delay(120);
+  now = new Date(now.getTime() + 101);
   const second = await store.acquireLease(run.id, "worker-b", 5_000);
   assert.equal(second.acquired, true);
   assert.equal(second.fencingToken, first.fencingToken + 1);
