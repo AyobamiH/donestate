@@ -12,8 +12,9 @@ import { defaultPolicy } from "./policy.js";
 import { DoneStateStore } from "./store.js";
 import type { ExecutionPolicy, ObjectiveSpec, VerificationAttestation } from "./types.js";
 import { recordIndependentAttestation } from "./verification.js";
+import { PACKAGE_VERSION } from "./version.js";
 
-const HELP = `DoneState 0.1.0
+const HELP = `DoneState ${PACKAGE_VERSION}
 
 Usage:
   donestate init [--repo PATH] [--force]
