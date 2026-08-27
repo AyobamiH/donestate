@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AyobamiH/donestate/schemas/verification-handoff.schema.json",
+  "title": "DoneState verification handoff",
+  "type": "object",
+  "required": ["schema", "runId", "generatedAt", "objectiveDigest", "executionSnapshotDigest", "repositoryRoot", "acceptanceCriteria", "actions", "eventChainHead"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "donestate.verification-handoff.v1" },
+    "runId": { "type": "string", "minLength": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "objectiveDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "executionSnapshotDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "repositoryRoot": { "type": "string", "minLength": 1 },
+    "acceptanceCriteria": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "state", "authority", "idempotencyKey", "resultDigest"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "state": { "enum": ["PENDING", "RUNNING", "SUCCEEDED", "FAILED", "AMBIGUOUS"] },
+          "authority": { "type": "string" },
+          "idempotencyKey": { "type": "string" },
+          "resultDigest": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "eventChainHead": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

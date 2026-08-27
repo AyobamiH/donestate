@@ -1,0 +1,48 @@
+{
+  "schema": "donestate.objective.v1",
+  "goal": "Fix the reported regression without changing the public API.",
+  "repositoryRoot": ".",
+  "requestedBy": "repository-owner",
+  "acceptanceCriteria": [
+    "The regression is covered by a test.",
+    "The complete test suite passes.",
+    "No public export is removed or renamed."
+  ],
+  "actions": [
+    {
+      "id": "implement",
+      "name": "Implement the objective with Codex",
+      "kind": "harness",
+      "authority": "local_write",
+      "command": {
+        "executable": "codex",
+        "args": ["exec", "--json", "--sandbox", "workspace-write", "--ask-for-approval", "never", "{{goal}}"],
+        "timeoutMs": 1800000,
+        "maxOutputBytes": 1048576
+      }
+    },
+    {
+      "id": "test",
+      "name": "Run repository tests",
+      "kind": "validation",
+      "authority": "test",
+      "dependsOn": ["implement"],
+      "command": {
+        "executable": "npm",
+        "args": ["test"],
+        "timeoutMs": 900000
+      }
+    },
+    {
+      "id": "diff-check",
+      "name": "Check patch whitespace",
+      "kind": "validation",
+      "authority": "test",
+      "dependsOn": ["test"],
+      "command": {
+        "executable": "git",
+        "args": ["diff", "--check"]
+      }
+    }
+  ]
+}
