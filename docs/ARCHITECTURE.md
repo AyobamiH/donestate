@@ -23,6 +23,7 @@ The harness may make implementation decisions. It cannot change the objective, w
 |---|---|
 | `RECEIVED` | Objective and policy have been durably stored. |
 | `ADMITTED` | Static policy checks passed. |
+| `QUEUED` | Hosted execution has been durably scheduled. |
 | `EXECUTING` | A harness or local command phase is active. |
 | `VALIDATING` | Deterministic validation is active. |
 | `PUBLISHING` | A separately authorised publication action is active. |
@@ -60,3 +61,20 @@ SQLite runs in WAL mode with `synchronous=FULL`, foreign keys and a busy timeout
 - **DoneState** reconciles the objective and accepts only a pinned signed attestation for terminal verification.
 
 Provider-native GitHub, secret-broker and hosted worker adapters belong outside the core state machine and must obey the same effect and authority contracts.
+
+## Hosted execution plane
+
+The 0.2 development slice places the conversational control surface in the plugin and deterministic ownership in the Worker:
+
+```mermaid
+flowchart TD
+    C["ChatGPT plugin"] --> M["OAuth MCP Worker"]
+    M --> D["Run Durable Object"]
+    D --> S["Isolated Sandbox"]
+    D --> G["GitHub publication"]
+    D --> V["Independent verifier"]
+```
+
+The OAuth token is sealed before it is stored with a run. One Durable Object serialises run ownership and persists action intent before remote mutation. The sandbox receives only the GitHub and model credentials needed for that run. Public output omits the token and bounds and redacts command results.
+
+The plugin is not the execution authority. Its skills translate user intent into explicit tool inputs; the Worker independently validates repositories, refs, consequence grants, budgets and verifier fingerprints.

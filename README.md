@@ -72,6 +72,12 @@ npx donestate demo
 
 The demo intentionally ends at `AWAITING_VERIFICATION`. Self-verification would defeat the product boundary.
 
+## ChatGPT plugin preview
+
+Version 0.2 development now includes a ChatGPT and Codex plugin package plus a hosted MCP Worker under `plugins/donestate` and `apps/mcp-worker`. The plugin is the conversational control surface: a user states an outcome, approves one consequence envelope, and monitors durable execution without supervising every command.
+
+The Worker provides GitHub OAuth for public repositories, one Durable Object per run, isolated Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable effect reconciliation, deletion, and signed independent-verifier handoff. It is not deployed or submitted from this branch. See [Hosted plugin preview](docs/HOSTED-PLUGIN.md) for the deployment gates and current capability boundary.
+
 ## Authority model
 
 DoneState requests authority for consequences, not permission for every tool call.
@@ -109,9 +115,9 @@ See [Architecture](docs/ARCHITECTURE.md), [Trust model](docs/TRUST-MODEL.md) and
 
 ## Product boundaries
 
-Version 0.1.0 provides the durable local controller, process-harness adapter, policy enforcement, Git changed-file budget, tamper-evident event chain, recovery semantics, signed verification handoff and CLI.
+Version 0.1 provides the durable local controller, process-harness adapter, policy enforcement, Git changed-file budget, tamper-evident event chain, recovery semantics, signed verification handoff and CLI. Version 0.2 development adds the hosted public-repository execution slice described above.
 
-It does not yet provide a hosted multi-tenant control plane, an operating-system sandbox, provider-native GitHub merge queue, managed verifier key service or secret broker. A `publication` action can call a separately configured tool, but remote publication remains denied until its authority class is explicitly granted.
+The local CLI does not provide a hosted multi-tenant control plane or operating-system sandbox. The hosted preview does not yet provide private-repository GitHub App credentials, merge queues, managed verifier keys, a secret broker or production fleet controls. Remote publication remains denied until its authority class is explicitly granted.
 
 AgentProof remains the transaction and signed-receipt layer for consequential actions. OpsTruth remains the independent read-only verifier. DoneState neither duplicates their roles nor treats its own observations as proof.
 
