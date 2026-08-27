@@ -76,7 +76,7 @@ The demo intentionally ends at `AWAITING_VERIFICATION`. Self-verification would 
 
 Version 0.2 development now includes a ChatGPT and Codex plugin package plus a hosted MCP Worker under `plugins/donestate` and `apps/mcp-worker`. The plugin is the conversational control surface: a user states an outcome, approves one consequence envelope, and monitors durable execution without supervising every command.
 
-The Worker provides GitHub OAuth for public repositories, one Durable Object per run, isolated Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable effect reconciliation, deletion, and signed independent-verifier handoff. It is not deployed or submitted from this branch. See [Hosted plugin preview](docs/HOSTED-PLUGIN.md) for the deployment gates and current capability boundary.
+The Worker provides GitHub OAuth for public repositories, an encrypted per-user OpenAI credential vault, one Durable Object per run, isolated Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable effect reconciliation, deletion, and signed independent-verifier handoff. Model usage is billed to each user's own OpenAI API account, never a shared DoneState key. It is not deployed or submitted from this branch. See [Hosted plugin preview](docs/HOSTED-PLUGIN.md) for the deployment gates and current capability boundary.
 
 ## Authority model
 
@@ -117,7 +117,7 @@ See [Architecture](docs/ARCHITECTURE.md), [Trust model](docs/TRUST-MODEL.md) and
 
 Version 0.1 provides the durable local controller, process-harness adapter, policy enforcement, Git changed-file budget, tamper-evident event chain, recovery semantics, signed verification handoff and CLI. Version 0.2 development adds the hosted public-repository execution slice described above.
 
-The local CLI does not provide a hosted multi-tenant control plane or operating-system sandbox. The hosted preview does not yet provide private-repository GitHub App credentials, merge queues, managed verifier keys, a secret broker or production fleet controls. Remote publication remains denied until its authority class is explicitly granted.
+The local CLI does not provide a hosted multi-tenant control plane or operating-system sandbox. The hosted preview does not yet provide private-repository GitHub App credentials, merge queues, managed verifier keys, a general secret broker or production fleet controls. Its credential vault is limited to each authenticated user's OpenAI execution key. Remote publication remains denied until its authority class is explicitly granted.
 
 AgentProof remains the transaction and signed-receipt layer for consequential actions. OpsTruth remains the independent read-only verifier. DoneState neither duplicates their roles nor treats its own observations as proof.
 

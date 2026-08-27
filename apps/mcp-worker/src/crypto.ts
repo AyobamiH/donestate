@@ -18,7 +18,7 @@ function base64ToBytes(value: string): Uint8Array<ArrayBuffer> {
 
 async function encryptionKey(encodedKey: string): Promise<CryptoKey> {
   const raw = base64ToBytes(encodedKey);
-  if (raw.byteLength !== 32) throw new Error("TOKEN_ENCRYPTION_KEY must be a base64-encoded 32-byte key");
+  if (raw.byteLength !== 32) throw new Error("encryption key must be a base64-encoded 32-byte value");
   return crypto.subtle.importKey("raw", raw, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
 }
 

@@ -6,13 +6,18 @@
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "durable_objects": {
     "bindings": [
-      { "name": "RUN_COORDINATOR", "class_name": "RunCoordinator" }
+      { "name": "RUN_COORDINATOR", "class_name": "RunCoordinator" },
+      { "name": "CREDENTIAL_VAULT", "class_name": "CredentialVault" }
     ]
   },
   "migrations": [
-    { "tag": "v1", "new_sqlite_classes": ["RunCoordinator"] }
+    { "tag": "v1", "new_sqlite_classes": ["RunCoordinator"] },
+    { "tag": "v2", "new_sqlite_classes": ["CredentialVault"] }
   ],
   "kv_namespaces": [
     { "binding": "OAUTH_KV", "id": "00000000000000000000000000000000" }
-  ]
+  ],
+  "vars": {
+    "USER_DAILY_RUN_LIMIT": "10"
+  }
 }

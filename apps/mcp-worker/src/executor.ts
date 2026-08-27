@@ -191,6 +191,7 @@ export async function executeObjective(
   env: DoneStateEnv,
   objective: HostedObjective,
   githubToken: string,
+  openaiApiKey: string,
   journal: ExecutionJournal,
 ): Promise<ExecutionResult> {
   const sandbox = getSandbox(env.Sandbox, `run-${objective.runId}`, { sleepAfter: "15m" });
@@ -235,11 +236,11 @@ export async function executeObjective(
       "codex exec --json --sandbox workspace-write --ask-for-approval never -",
       {
         cwd: repositoryPath,
-        env: { HOME: "/workspace/home", OPENAI_API_KEY: env.OPENAI_API_KEY },
+        env: { HOME: "/workspace/home", OPENAI_API_KEY: openaiApiKey },
         stdin: prompt,
         timeout: objective.maxDurationMs,
       },
-      [env.OPENAI_API_KEY, githubToken],
+      [openaiApiKey, githubToken],
     );
     await journal.transition("VALIDATING", "validation_started");
     await runAction(sandbox, journal, objective, "diff-check", "test", "git diff --check", { cwd: repositoryPath });

@@ -7,13 +7,14 @@ DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin packa
 1. ChatGPT turns a prose outcome into one objective and grouped authority envelope.
 2. GitHub OAuth identifies the operator and grants access to public repositories.
 3. A Durable Object owns one run, its state transitions, encrypted run credential, action intents, settlements and hash-chained events.
-4. A Cloudflare Sandbox clones the pinned public base commit without a GitHub credential and runs a pinned Codex CLI without interactive approval.
-5. Deterministic code installs locked Node dependencies when applicable, validates the diff, enforces the changed-file budget and creates a commit.
-6. Only then does the sandbox receive the GitHub credential for the exact branch push. The credential is removed immediately and the per-run container is destroyed.
-7. DoneState seals a verification handoff and stops at `AWAITING_VERIFICATION`.
-8. Only a pinned Ed25519 attestation from an independent verifier can produce `VERIFIED`.
+4. The user connects their own OpenAI API key through a single-use HTTPS setup page. The key is encrypted in a per-user Durable Object and never enters ChatGPT tool arguments.
+5. A Cloudflare Sandbox clones the pinned public base commit without a GitHub credential and runs a pinned Codex CLI without interactive approval using that user's key.
+6. Deterministic code installs locked Node dependencies when applicable, validates the diff, enforces the changed-file budget and creates a commit.
+7. Only then does the sandbox receive the GitHub credential for the exact branch push. Credentials are removed immediately and the per-run container is destroyed.
+8. DoneState seals a verification handoff and stops at `AWAITING_VERIFICATION`.
+9. Only a pinned Ed25519 attestation from an independent verifier can produce `VERIFIED`.
 
-The MCP surface contains `create_objective`, `start_objective`, `get_objective`, `cancel_objective`, `delete_objective`, `create_verification_handoff` and `submit_verifier_attestation`.
+The MCP surface also contains `get_openai_credential_status`, `create_openai_credential_setup` and `delete_openai_credential`. The setup link expires after ten minutes and is single-use. The execution surface contains `create_objective`, `start_objective`, `get_objective`, `cancel_objective`, `delete_objective`, `create_verification_handoff` and `submit_verifier_attestation`.
 
 ## Authority boundary
 
@@ -30,7 +31,7 @@ Remote mutations use durable intent records and provider probes. If a branch pus
 
 - a Cloudflare account capable of Workers, Durable Objects, Containers and the Sandbox SDK
 - a GitHub OAuth App
-- an OpenAI API key for the isolated coding harness
+- an OpenAI API account and key for each user who runs the isolated coding harness
 - a stable HTTPS Worker hostname
 
 From `apps/mcp-worker`:
@@ -53,10 +54,12 @@ npx wrangler secret put COOKIE_ENCRYPTION_KEY
 npx wrangler secret put TOKEN_ENCRYPTION_KEY
 npx wrangler secret put GITHUB_CLIENT_ID
 npx wrangler secret put GITHUB_CLIENT_SECRET
-npx wrangler secret put OPENAI_API_KEY
+npx wrangler secret put USER_CREDENTIAL_ENCRYPTION_KEY
 ```
 
-`TOKEN_ENCRYPTION_KEY` must be a base64-encoded 32-byte value. A suitable value can be generated with `openssl rand -base64 32`. Use a separate high-entropy value for `COOKIE_ENCRYPTION_KEY`.
+`TOKEN_ENCRYPTION_KEY` and `USER_CREDENTIAL_ENCRYPTION_KEY` must each be a different base64-encoded 32-byte value. Suitable values can be generated with `openssl rand -base64 32`. Use another separate high-entropy value for `COOKIE_ENCRYPTION_KEY`.
+
+The default hosted limits allow one active objective and ten started objectives per UTC day for each authenticated GitHub user. Cloudflare also caps this deployment at five simultaneous Sandbox containers. Change `USER_DAILY_RUN_LIMIT` deliberately and retain a hard global container cap.
 
 Then run:
 
@@ -87,6 +90,7 @@ Before submitting the plugin to the universal ChatGPT and Codex directory:
 
 - deploy the Worker to its stable hostname
 - verify OAuth login, consent, execution, cancellation and deletion through the hosted client
+- verify OpenAI credential connection, replacement, quota enforcement and deletion without placing a key in ChatGPT
 - run an end-to-end public-repository branch and pull-request canary
 - test crash recovery at every remote mutation boundary
 - connect a genuinely independent attestation signer and pin its public-key fingerprint

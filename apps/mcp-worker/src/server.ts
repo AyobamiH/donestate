@@ -5,16 +5,19 @@ import { createMcpHandler, getMcpAuthContext } from "agents/mcp/server";
 import { z } from "zod";
 import { authHandler, EXECUTION_SCOPE, type AuthEnv } from "./auth";
 import { RunCoordinator } from "./coordinator";
+import { CredentialVault } from "./credential-vault";
+import { createCredentialSetup } from "./credential-settings";
 import type { DoneStateEnv } from "./environment";
 import { getBranchHead, getRepositoryAccess } from "./github";
 import { AUTHORITY_CLASSES, type GitHubAuthProps, type HostedObjective, type VerificationAttestation } from "./types";
 import { assertRef, assertRepository } from "./validation";
 
 export { RunCoordinator } from "./coordinator";
+export { CredentialVault } from "./credential-vault";
 export { Sandbox } from "@cloudflare/sandbox";
 
 function doneStateEnv(): DoneStateEnv {
-  const required = ["COOKIE_ENCRYPTION_KEY", "GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET", "OPENAI_API_KEY", "TOKEN_ENCRYPTION_KEY"] as const;
+  const required = ["COOKIE_ENCRYPTION_KEY", "GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET", "TOKEN_ENCRYPTION_KEY", "USER_CREDENTIAL_ENCRYPTION_KEY"] as const;
   for (const key of required) {
     if (typeof Reflect.get(env, key) !== "string" || !Reflect.get(env, key)) throw new Error(`missing Worker secret: ${key}`);
   }
@@ -31,18 +34,25 @@ function authProps(): GitHubAuthProps {
   }
   const name = Reflect.get(props, "name");
   const email = Reflect.get(props, "email");
+  const origin = Reflect.get(props, "origin");
+  if (typeof origin !== "string" || !origin) throw new Error("Reconnect DoneState to enable secure credential setup");
   return {
     userId: login,
     login,
     accessToken,
     name: typeof name === "string" ? name : null,
     email: typeof email === "string" ? email : null,
+    origin,
   };
 }
 
 function coordinator(runId: string) {
   if (!/^[0-9a-f-]{36}$/.test(runId)) throw new Error("runId must be a UUID");
   return doneStateEnv().RUN_COORDINATOR.getByName(runId);
+}
+
+function credentialVault(login: string) {
+  return doneStateEnv().CREDENTIAL_VAULT.getByName(login);
 }
 
 function textResult(value: unknown) {
@@ -77,6 +87,48 @@ function createServer(): McpServer {
   const server = new McpServer({ name: "DoneState", version: "0.2.0" });
 
   server.registerTool(
+    "get_openai_credential_status",
+    {
+      description: "Check whether the authenticated user has connected their own OpenAI API key for DoneState execution. Never returns the key.",
+      inputSchema: {},
+    },
+    async (_input, context) => {
+      requireExecutionScope(context);
+      const identity = authProps();
+      return textResult({
+        ...await credentialVault(identity.login).status(identity.login),
+        billingOwner: "authenticated_user",
+      });
+    },
+  );
+
+  server.registerTool(
+    "create_openai_credential_setup",
+    {
+      description: "Create a single-use HTTPS setup link where the authenticated user can connect or replace their own OpenAI API key without placing it in ChatGPT.",
+      inputSchema: {},
+    },
+    async (_input, context) => {
+      requireExecutionScope(context);
+      const identity = authProps();
+      return textResult(await createCredentialSetup(doneStateEnv(), identity.login, identity.origin));
+    },
+  );
+
+  server.registerTool(
+    "delete_openai_credential",
+    {
+      description: "Delete the authenticated user's encrypted OpenAI execution credential. An active objective must be cancelled first.",
+      inputSchema: { confirm: z.literal(true).describe("Confirm permanent deletion of the stored execution credential") },
+    },
+    async (_input, context) => {
+      requireExecutionScope(context);
+      const identity = authProps();
+      return textResult(await credentialVault(identity.login).disconnect(identity.login));
+    },
+  );
+
+  server.registerTool(
     "create_objective",
     {
       description: "Create a bounded repository objective, pin its exact base commit and optionally queue isolated execution. Requires explicit consequence authorities.",
@@ -97,6 +149,10 @@ function createServer(): McpServer {
     async (input, context) => {
       requireExecutionScope(context);
       const identity = authProps();
+      const credential = await credentialVault(identity.login).status(identity.login);
+      if (!credential.connected) {
+        throw new Error("BLOCKED_CAPABILITY: connect your own OpenAI API key with create_openai_credential_setup before creating an objective");
+      }
       assertRepository(input.repository);
       assertRef(input.baseRef);
       const access = await getRepositoryAccess(identity.accessToken, input.repository);

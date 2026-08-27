@@ -7,6 +7,12 @@ description: Use when a user wants DoneState to implement, repair, maintain or o
 
 Turn prose into one bounded, reviewable execution contract. DoneState performs authorised work. It does not verify its own completion.
 
+## User-funded execution
+
+Call `get_openai_credential_status` before creating an objective. If no credential is connected, call `create_openai_credential_setup`, give the user its single-use HTTPS link and wait for them to complete it. Then check status again.
+
+Never ask the user to paste an API key into chat or place a key in tool arguments. DoneState encrypts the credential supplied on its settings page, and OpenAI charges model usage to that user's API account.
+
 ## Admission
 
 Collect only information that materially changes the run:
@@ -24,7 +30,7 @@ Private repositories are not supported by the current hosted adapter. Report `BL
 
 Explain the consequence classes as one grouped approval. Never infer remote mutation authority from a request to inspect, plan or advise.
 
-For a branch, request `local_read`, `local_write`, `test`, `commit`, `push` and `secret_access`. For a pull request, also request `open_pr`. `secret_access` means the isolated worker may receive the configured GitHub and model credentials. It does not permit unrelated secret access.
+For a branch, request `local_read`, `local_write`, `test`, `commit`, `push` and `secret_access`. For a pull request, also request `open_pr`. `secret_access` means the isolated worker may receive the run's GitHub credential and the authenticated user's model credential. It does not permit unrelated secret access.
 
 Call `create_objective` once only after the user approves the complete envelope. If the result is uncertain, retrieve the returned run ID. Never create a replacement objective merely because a response was delayed.
 

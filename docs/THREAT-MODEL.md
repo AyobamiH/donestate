@@ -4,7 +4,7 @@
 |---|---|---|
 | Harness widens its own permissions | Immutable deterministic authority checks per action | A granted executable still has the OS rights of the worker |
 | Shell injection through arguments | `spawn` with `shell: false` and array arguments | The target executable may interpret its own arguments dangerously |
-| Secret leakage through ambient environment | Minimal inherited environment plus explicit allowlist, AES-GCM token envelope and output redaction | Authorised repository code receives the model credential during execution |
+| User model credential leakage | Key entry occurs only on a single-use HTTPS setup page; separate AES-GCM envelope, per-user vault, minimal sandbox environment and output redaction | Authorised repository code and the Codex process receive the user's model credential during execution; the deployment operator controls the wrapping key |
 | Repository bypasses GitHub mutation policy | GitHub credentials are injected only after harness execution and validation, immediately before the exact push, then removed | The Worker-side GitHub API client and credential-injection action remain trusted |
 | Duplicate effect after crash | Intent-before-effect record, idempotency key and ambiguity stop | Generic external commands cannot provide exactly-once semantics |
 | Stale concurrent worker writes | Expiring leases and monotonically increasing fencing tokens | External systems must also honour idempotency or preconditions |
@@ -16,6 +16,7 @@
 | Malicious repository hooks or tests | No-shell local core plus isolated Cloudflare Sandbox for the hosted adapter | The Sandbox platform and pinned container image remain trusted computing dependencies |
 | OAuth request forgery | Short-lived state and CSRF records, secure host cookies and explicit consent | A compromised browser session or deployment origin remains in scope |
 | Cross-user run access | Run ownership is bound to the authenticated GitHub login and checked on every tool call | Shared or compromised GitHub identities share that authority |
+| Cost abuse | User-owned OpenAI billing, one active run per user, a daily per-user run budget, bounded duration and a five-container global cap | Cloudflare compute remains operator-funded and attackers may distribute abuse across identities |
 | Unsafe publication | Separate `push` and `open_pr` grants, exact base and head checks, intent records and provider probes | OAuth currently uses user tokens; GitHub App tokens and merge queues are future work |
 | False public evidence | Hosted objectives require a public branch or pull request before handoff | Repository deletion or later force updates can make evidence unavailable |
 

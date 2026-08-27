@@ -15,6 +15,7 @@
   "durable_objects": {
     "bindings": [
       { "name": "RUN_COORDINATOR", "class_name": "RunCoordinator" },
+      { "name": "CREDENTIAL_VAULT", "class_name": "CredentialVault" },
       { "name": "Sandbox", "class_name": "Sandbox" }
     ]
   },
@@ -22,11 +23,18 @@
     {
       "tag": "v1",
       "new_sqlite_classes": ["RunCoordinator", "Sandbox"]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["CredentialVault"]
     }
   ],
   "kv_namespaces": [
     { "binding": "OAUTH_KV" }
   ],
+  "vars": {
+    "USER_DAILY_RUN_LIMIT": "10"
+  },
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1

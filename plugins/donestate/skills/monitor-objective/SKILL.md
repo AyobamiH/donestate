@@ -15,3 +15,5 @@ Treat states precisely:
 - `BLOCKED_AUTHORITY`, `BLOCKED_CAPABILITY` and `BLOCKED_SAFETY` require a new operator decision or changed capability, not optimistic continuation.
 
 Use `cancel_objective` only when the user asks to stop a queued or active run. Use `delete_objective` only after an objective is terminal or cancelled and the user explicitly asks to erase its run record. Deletion removes the encrypted run credential and audit history, so state that consequence before calling it.
+
+Use `delete_openai_credential` only when the user explicitly asks to disconnect model execution. An active objective must be cancelled first. Deleting an objective does not delete the account-level OpenAI credential.

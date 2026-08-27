@@ -92,6 +92,7 @@ export interface GitHubAuthProps {
   name: string | null;
   email: string | null;
   accessToken: string;
+  origin: string;
 }
 
 export interface VerificationHandoff {

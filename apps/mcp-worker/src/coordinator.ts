@@ -228,8 +228,24 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
       return;
     }
     const objective = JSON.parse(run.objective_json) as HostedObjective;
+    const credentialVault = this.env.CREDENTIAL_VAULT.getByName(run.owner_login);
+    let credentialAcquired = false;
     try {
       await this.transition("EXECUTING", "execution_started");
+      let openaiApiKey: string;
+      try {
+        openaiApiKey = await credentialVault.acquire(
+          run.owner_login,
+          run.id,
+          Math.min(objective.maxDurationMs + 1_800_000, 10_800_000),
+        );
+        credentialAcquired = true;
+      } catch (error) {
+        throw new RunFailure(
+          "BLOCKED_CAPABILITY",
+          error instanceof Error ? error.message : "user-funded OpenAI execution credential is unavailable",
+        );
+      }
       const githubToken = await unsealSecret(run.sealed_github_token, this.env.TOKEN_ENCRYPTION_KEY);
       const journal: ExecutionJournal = {
         transition: async (state, eventType, detail) => this.transition(state, eventType, detail),
@@ -238,7 +254,7 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
         cancelled: () => this.runRow()?.state === "CANCELLED",
         recordPublication: (values) => this.recordPublication(values),
       };
-      await executeObjective(this.env, objective, githubToken, journal);
+      await executeObjective(this.env, objective, githubToken, openaiApiKey, journal);
       await this.transition("RECONCILING", "execution_reconciled");
       const actions = this.actions();
       if (actions.some((action) => action.state !== "SUCCEEDED")) {
@@ -268,6 +284,18 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
         state: failure.state,
         error: failure.message,
       }));
+    } finally {
+      if (credentialAcquired) {
+        try {
+          await credentialVault.release(run.owner_login, run.id);
+        } catch (error) {
+          console.error(JSON.stringify({
+            message: "execution credential lease cleanup failed",
+            runId: objective.runId,
+            error: error instanceof Error ? error.message : "unknown credential cleanup error",
+          }));
+        }
+      }
     }
   }
 

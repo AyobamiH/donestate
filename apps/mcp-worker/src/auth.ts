@@ -1,5 +1,6 @@
 import type { AuthRequest, OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 import { digest } from "./canonical";
+import { credentialSettingsHandler } from "./credential-settings";
 import type { DoneStateEnv } from "./environment";
 import { exchangeGitHubCode, getAuthenticatedUser } from "./github";
 import type { GitHubAuthProps } from "./types";
@@ -91,7 +92,7 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
 <body><main class="card"><h1>Authorise DoneState</h1><p><strong>${clientName}</strong> is requesting access to your DoneState execution plane.</p>
 <p class="scope"><strong>Client scopes:</strong> ${scopes}</p>
 <p>GitHub will ask for repository access. DoneState will still require an explicit authority envelope for every objective. It cannot silently push or open a pull request.</p>
-<ul><li>Run a coding agent in an isolated sandbox</li><li>Validate and commit bounded repository changes</li><li>Push or open a pull request only when granted</li><li>Stop before claiming completion until an independent verifier signs the exact snapshot</li></ul>
+<ul><li>Use your separately connected OpenAI API key for your runs</li><li>Run a coding agent in an isolated sandbox</li><li>Validate and commit bounded repository changes</li><li>Push or open a pull request only when granted</li><li>Stop before claiming completion until an independent verifier signs the exact snapshot</li></ul>
 <form method="post" action="/authorize"><input type="hidden" name="state_id" value="${stateId}"><input type="hidden" name="csrf" value="${csrf}"><div class="actions"><a class="cancel" href="/">Cancel</a><button class="approve" type="submit">Continue with GitHub</button></div></form></main></body></html>`, 200, [
     secureCookie(STATE_COOKIE, await digest(stateId)),
     secureCookie(CSRF_COOKIE, await digest(csrf)),
@@ -145,6 +146,7 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
     name: user.name,
     email: user.email,
     accessToken,
+    origin: new URL(request.url).origin,
   };
   const grantedScopes = pending.oauthRequest.scope.length === 0
     ? [EXECUTION_SCOPE]
@@ -175,6 +177,7 @@ export const authHandler = {
       if (url.pathname === "/authorize" && request.method === "GET") return consent(request, env);
       if (url.pathname === "/authorize" && request.method === "POST") return approve(request, env);
       if (url.pathname === "/callback" && request.method === "GET") return callback(request, env);
+      if (url.pathname === "/settings/openai") return credentialSettingsHandler.fetch(request, env);
       if (url.pathname === "/" && request.method === "GET") return home();
       return new Response("Not found", { status: 404 });
     } catch (error) {

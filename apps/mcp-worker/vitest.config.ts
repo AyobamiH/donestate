@@ -5,6 +5,7 @@ const workers = {
   miniflare: {
     bindings: {
       TOKEN_ENCRYPTION_KEY: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      USER_CREDENTIAL_ENCRYPTION_KEY: "AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE=",
     },
   },
   wrangler: { configPath: "./wrangler.test.jsonc" },
