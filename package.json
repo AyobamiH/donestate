@@ -1,0 +1,67 @@
+{
+  "name": "donestate",
+  "version": "0.1.0",
+  "description": "A durable autonomous coding controller that completes authorised work and hands exact outcomes to independent verification.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "donestate": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "schemas",
+    "examples",
+    "docs",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "README.md",
+    "SECURITY.md"
+  ],
+  "scripts": {
+    "build": "node scripts/clean.mjs dist && tsc",
+    "postbuild": "chmod 755 dist/cli.js",
+    "prepare": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node scripts/clean.mjs test-dist && tsc -p tsconfig.test.json && node --test test-dist/test/*.test.js",
+    "check": "npm run typecheck && npm test && npm run pack:audit",
+    "demo": "npm run build && node dist/cli.js demo",
+    "pack:audit": "npm pack --dry-run"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AyobamiH/donestate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AyobamiH/donestate/issues"
+  },
+  "homepage": "https://github.com/AyobamiH/donestate#readme",
+  "keywords": [
+    "autonomous-coding",
+    "coding-agent",
+    "control-plane",
+    "desired-state",
+    "verification"
+  ],
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  }
+}

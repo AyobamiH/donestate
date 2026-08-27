@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AyobamiH/donestate/schemas/verification-attestation.schema.json",
+  "title": "DoneState independent verification attestation",
+  "type": "object",
+  "required": ["schema", "runId", "executionSnapshotDigest", "decision", "issuedBy", "issuedAt", "evidenceRefs", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "donestate.verification-attestation.v1" },
+    "runId": { "type": "string", "minLength": 1 },
+    "executionSnapshotDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "decision": { "enum": ["verified", "failed", "uncertain"] },
+    "issuedBy": { "type": "string", "minLength": 1 },
+    "issuedAt": { "type": "string", "format": "date-time" },
+    "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+    "receiptDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "signature": {
+      "type": "object",
+      "required": ["algorithm", "publicKeyPem", "signerFingerprint", "signatureBase64"],
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": { "const": "ed25519" },
+        "publicKeyPem": { "type": "string", "minLength": 1 },
+        "signerFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "signatureBase64": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

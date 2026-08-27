@@ -1,0 +1,33 @@
+{
+  "schema": "donestate.execution-policy.v1",
+  "allowedRepositoryRoots": ["."],
+  "allowedExecutables": ["codex", "npm", "git"],
+  "deniedArgumentPatterns": ["(^|/)\\.\\.(?:/|$)", "^--force$", "^--force-with-lease$"],
+  "allowedEnvironmentKeys": [],
+  "trustedVerifierFingerprints": [],
+  "budgets": {
+    "maxActions": 20,
+    "maxAttemptsPerAction": 2,
+    "maxDurationMs": 3600000,
+    "maxChangedFiles": 100,
+    "maxOutputBytes": 1048576
+  },
+  "authority": {
+    "schema": "donestate.authority-envelope.v1",
+    "grants": [
+      { "class": "local_read", "granted": true },
+      { "class": "local_write", "granted": true },
+      { "class": "test", "granted": true },
+      { "class": "commit", "granted": true },
+      { "class": "push", "granted": false },
+      { "class": "open_pr", "granted": false },
+      { "class": "merge", "granted": false },
+      { "class": "deploy", "granted": false },
+      { "class": "publish", "granted": false },
+      { "class": "secret_access", "granted": false },
+      { "class": "destructive", "granted": false }
+    ],
+    "issuedBy": "repository-owner",
+    "issuedAt": "2026-08-27T00:00:00.000Z"
+  }
+}
