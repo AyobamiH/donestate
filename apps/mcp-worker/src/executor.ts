@@ -1,4 +1,4 @@
-import { getSandbox, type Sandbox } from "@cloudflare/sandbox";
+import { getSandbox, type ExecOptions, type Sandbox } from "@cloudflare/sandbox";
 import { boundedOutput, digest, redact } from "./canonical";
 import type { DoneStateEnv } from "./environment";
 import { createPullRequest, findOpenPullRequest, getBranchHead, GitHubError } from "./github";
@@ -30,7 +30,7 @@ export interface ExecutionResult {
   pullRequestUrl: string | null;
 }
 
-export const CODEX_IMPLEMENT_COMMAND = "codex --ask-for-approval never exec --json --sandbox workspace-write --ephemeral --ignore-user-config -";
+export const CODEX_IMPLEMENT_COMMAND = "codex --ask-for-approval never --config 'shell_environment_policy.inherit=\"core\"' exec --json --sandbox workspace-write --ephemeral --ignore-user-config \"$DONESTATE_OBJECTIVE\"";
 
 function actionIdempotency(runId: string, actionId: string): string {
   return `${runId}:${actionId}:v1`;
@@ -55,7 +55,7 @@ async function runAction(
   id: string,
   authority: AuthorityClass,
   command: string,
-  options: { cwd?: string; env?: Record<string, string>; stdin?: string; timeout?: number } = {},
+  options: ExecOptions = {},
   secrets: string[] = [],
 ): Promise<Record<string, unknown>> {
   if (!objective.authorities.includes(authority)) throw new RunFailure("BLOCKED_AUTHORITY", `${authority} authority is required for ${id}`);
@@ -238,8 +238,7 @@ export async function executeObjective(
       CODEX_IMPLEMENT_COMMAND,
       {
         cwd: repositoryPath,
-        env: { HOME: "/workspace/home", CODEX_API_KEY: openaiApiKey },
-        stdin: prompt,
+        env: { HOME: "/workspace/home", CODEX_API_KEY: openaiApiKey, DONESTATE_OBJECTIVE: prompt },
         timeout: objective.maxDurationMs,
       },
       [openaiApiKey, githubToken],
