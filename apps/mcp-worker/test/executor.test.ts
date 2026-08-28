@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, decodeChangedFiles } from "../src/executor";
+import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, decodeChangedFiles, protectedMaintenancePath } from "../src/executor";
 
 describe("hosted Codex executor contract", () => {
   it("places global flags before exec and transports the objective as one argument", () => {
@@ -25,5 +25,15 @@ describe("hosted Codex executor contract", () => {
     expect(CHANGED_FILES_COMMAND).toContain("git diff --name-only -z HEAD");
     expect(CHANGED_FILES_COMMAND).toContain("git ls-files --others --exclude-standard -z");
     expect(CHANGED_FILES_COMMAND).toContain("base64 -w0");
+  });
+
+  it("blocks autonomous maintenance from protected authority surfaces", () => {
+    expect(protectedMaintenancePath("AGENTS.md")).toBe(true);
+    expect(protectedMaintenancePath(".github/workflows/ci.yml")).toBe(true);
+    expect(protectedMaintenancePath("docs/architecture/BOUNDARIES.md")).toBe(true);
+    expect(protectedMaintenancePath("contracts/action.schema.json")).toBe(true);
+    expect(protectedMaintenancePath("CODEOWNERS")).toBe(true);
+    expect(protectedMaintenancePath("wrangler.toml")).toBe(true);
+    expect(protectedMaintenancePath("src/bugfix.ts")).toBe(false);
   });
 });

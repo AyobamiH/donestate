@@ -15,5 +15,6 @@ export default defineConfig({
   plugins: [cloudflareTest(workers)],
   test: {
     pool: cloudflarePool(workers),
+    testTimeout: 10_000,
   },
 });

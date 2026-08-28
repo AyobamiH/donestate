@@ -30,6 +30,7 @@ export const RUN_STATES = [
 export type RunState = (typeof RUN_STATES)[number];
 export type PublicationMode = "branch" | "pull_request";
 export type ValidationProfile = "auto" | "node" | "python" | "rust" | "go" | "none";
+export type ObjectiveClass = "operator" | "maintenance_pr";
 
 export type VerificationRequirement =
   | { id: string; criterionIndex: number; kind: "path_exists"; path: string }
@@ -51,10 +52,42 @@ export interface HostedObjective {
   authorities: AuthorityClass[];
   validationProfile: ValidationProfile;
   publication: PublicationMode;
+  objectiveClass?: ObjectiveClass;
   trustedVerifierFingerprints: string[];
   verificationRequirements: VerificationRequirement[];
   maxChangedFiles: number;
   maxDurationMs: number;
+}
+
+export interface SelectedRepository {
+  schema: "donestate.selected-repository.v1";
+  ownerLogin: string;
+  repository: string;
+  defaultBranch: string;
+  installationId: number | null;
+  mode: "observe" | "pr_only";
+  scheduleEnabled: boolean;
+  autoRepair: boolean;
+  requiredCheckNames: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MaintenanceFinding {
+  schema: "donestate.maintenance-finding.v1";
+  id: string;
+  ownerLogin: string;
+  repository: string;
+  source: "github_issue" | "workflow_run";
+  sourceId: string;
+  title: string;
+  detail: string;
+  url: string;
+  repairEligible: boolean;
+  state: "OPEN" | "REPAIR_QUEUED" | "CLOSED";
+  runId: string | null;
+  discoveredAt: string;
+  updatedAt: string;
 }
 
 export interface ActionRecord {

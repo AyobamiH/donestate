@@ -4,4 +4,7 @@ export type DoneStateEnv = Env & Readonly<{
   GITHUB_CLIENT_SECRET: string;
   TOKEN_ENCRYPTION_KEY: string;
   USER_CREDENTIAL_ENCRYPTION_KEY: string;
+  OPSTRUTH_MCP_URL?: string;
+  OPSTRUTH_VERIFIER_FINGERPRINT?: string;
+  PLATFORM_OWNER_LOGIN?: string;
 }>;

@@ -32,7 +32,8 @@
     "prepare": "npm run build",
     "typecheck": "tsc --noEmit",
     "test": "npm run build && node scripts/clean.mjs test-dist && tsc -p tsconfig.test.json && node --test test-dist/test/*.test.js",
-    "check": "npm run typecheck && npm test && npm run pack:audit",
+    "check": "npm run typecheck && npm test && npm run docs:check && npm run pack:audit",
+    "docs:check": "node scripts/check-documentation-closure.mjs",
     "demo": "npm run build && node dist/cli.js demo",
     "pack:audit": "npm pack --dry-run"
   },

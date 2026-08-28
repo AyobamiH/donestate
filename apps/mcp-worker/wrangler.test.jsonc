@@ -7,17 +7,22 @@
   "durable_objects": {
     "bindings": [
       { "name": "RUN_COORDINATOR", "class_name": "RunCoordinator" },
-      { "name": "CREDENTIAL_VAULT", "class_name": "CredentialVault" }
+      { "name": "CREDENTIAL_VAULT", "class_name": "CredentialVault" },
+      { "name": "MAINTENANCE_REGISTRY", "class_name": "MaintenanceRegistry" }
     ]
   },
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["RunCoordinator"] },
-    { "tag": "v2", "new_sqlite_classes": ["CredentialVault"] }
+    { "tag": "v2", "new_sqlite_classes": ["CredentialVault"] },
+    { "tag": "v3", "new_sqlite_classes": ["MaintenanceRegistry"] }
   ],
   "kv_namespaces": [
     { "binding": "OAUTH_KV", "id": "00000000000000000000000000000000" }
   ],
   "vars": {
-    "USER_DAILY_RUN_LIMIT": "10"
+    "USER_DAILY_RUN_LIMIT": "10",
+    "PLATFORM_OWNER_LOGIN": "AyobamiH",
+    "OPSTRUTH_MCP_URL": "https://opstruth.example.test/mcp",
+    "OPSTRUTH_VERIFIER_FINGERPRINT": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
   }
 }

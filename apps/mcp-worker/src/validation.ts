@@ -104,6 +104,12 @@ export function validateHostedObjective(objective: HostedObjective): void {
   for (const authority of requiredAuthorities(objective.publication)) {
     if (!objective.authorities.includes(authority)) throw new Error(`${authority} authority is required`);
   }
+  if (objective.objectiveClass === "maintenance_pr") {
+    if (objective.publication !== "pull_request") throw new Error("maintenance objectives must publish a pull request");
+    if (objective.authorities.some((authority) => !["local_read", "local_write", "test", "commit", "push", "open_pr", "secret_access"].includes(authority))) {
+      throw new Error("maintenance objectives contain an unsupported authority");
+    }
+  }
   objective.trustedVerifierFingerprints.forEach(assertFingerprint);
   if (!Number.isInteger(objective.maxChangedFiles) || objective.maxChangedFiles < 1 || objective.maxChangedFiles > 500) {
     throw new Error("maxChangedFiles must be an integer from 1 to 500");

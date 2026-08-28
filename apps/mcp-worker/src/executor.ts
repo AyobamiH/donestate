@@ -32,6 +32,25 @@ export interface ExecutionResult {
 
 export const CODEX_IMPLEMENT_COMMAND = "codex --ask-for-approval never --config 'shell_environment_policy.inherit=\"core\"' exec --json --sandbox workspace-write --ephemeral --ignore-user-config \"$DONESTATE_OBJECTIVE\"";
 export const CHANGED_FILES_COMMAND = "{ git diff --name-only -z HEAD; git ls-files --others --exclude-standard -z; } | base64 -w0";
+export const MAINTENANCE_PROTECTED_PATHS = [
+  "AGENTS.md",
+  "SECURITY.md",
+  ".github/",
+  ".codex-plugin/",
+  "contracts/",
+  "docs/adr/",
+  "docs/architecture/",
+  "docs/maintainers/BOT.md",
+  "plugins/",
+  "CODEOWNERS",
+  "wrangler.json",
+  "wrangler.jsonc",
+  "wrangler.toml",
+] as const;
+
+export function protectedMaintenancePath(path: string): boolean {
+  return MAINTENANCE_PROTECTED_PATHS.some((protectedPath) => path === protectedPath || protectedPath.endsWith("/") && path.startsWith(protectedPath));
+}
 
 export function decodeChangedFiles(encoded: string): string[] {
   const value = encoded.trim();
@@ -284,6 +303,12 @@ export async function executeObjective(
     if (changedFiles.length === 0) throw new RunFailure("FAILED_SAFE", "coding harness produced no repository changes");
     if (changedFiles.length > objective.maxChangedFiles) {
       throw new RunFailure("BLOCKED_SAFETY", "changed-file budget exceeded", { changedFiles: changedFiles.length, limit: objective.maxChangedFiles });
+    }
+    if (objective.objectiveClass === "maintenance_pr") {
+      const protectedChanges = changedFiles.filter(protectedMaintenancePath);
+      if (protectedChanges.length > 0) {
+        throw new RunFailure("BLOCKED_SAFETY", "autonomous maintenance cannot change protected authority files", { protectedChanges });
+      }
     }
     await runAction(sandbox, journal, objective, "create-commit", "commit", `git config user.name DoneState && git config user.email bot@donestate.dev && git checkout -b ${branchName} && git add -A && git commit -m 'DoneState objective ${objective.runId}'`, { cwd: repositoryPath });
     const commit = await sandbox.exec("git rev-parse HEAD", { cwd: repositoryPath });

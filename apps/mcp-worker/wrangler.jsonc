@@ -2,7 +2,7 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "donestate-mcp",
   "main": "src/server.ts",
-  "compatibility_date": "2026-08-27",
+  "compatibility_date": "2026-08-28",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "containers": [
     {
@@ -16,6 +16,7 @@
     "bindings": [
       { "name": "RUN_COORDINATOR", "class_name": "RunCoordinator" },
       { "name": "CREDENTIAL_VAULT", "class_name": "CredentialVault" },
+      { "name": "MAINTENANCE_REGISTRY", "class_name": "MaintenanceRegistry" },
       { "name": "Sandbox", "class_name": "Sandbox" }
     ]
   },
@@ -27,13 +28,23 @@
     {
       "tag": "v2",
       "new_sqlite_classes": ["CredentialVault"]
+    },
+    {
+      "tag": "v3",
+      "new_sqlite_classes": ["MaintenanceRegistry"]
     }
   ],
   "kv_namespaces": [
     { "binding": "OAUTH_KV" }
   ],
   "vars": {
-    "USER_DAILY_RUN_LIMIT": "10"
+    "USER_DAILY_RUN_LIMIT": "10",
+    "PLATFORM_OWNER_LOGIN": "AyobamiH",
+    "OPSTRUTH_MCP_URL": "https://opstruth-chatgpt.woeinvests.workers.dev/mcp",
+    "OPSTRUTH_VERIFIER_FINGERPRINT": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+  },
+  "triggers": {
+    "crons": ["0 */6 * * *"]
   },
   "observability": {
     "enabled": true,
