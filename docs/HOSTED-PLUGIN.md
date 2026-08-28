@@ -61,6 +61,8 @@ npx wrangler secret put GITHUB_CLIENT_SECRET
 npx wrangler secret put USER_CREDENTIAL_ENCRYPTION_KEY
 ```
 
+The hosted GitHub Actions deployment reads `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` from repository Actions secrets and fails before deployment when either is absent. This keeps every later deployment attached to the same upstream OAuth application.
+
 `TOKEN_ENCRYPTION_KEY` and `USER_CREDENTIAL_ENCRYPTION_KEY` must each be a different base64-encoded 32-byte value. Suitable values can be generated with `openssl rand -base64 32`. Use another separate high-entropy value for `COOKIE_ENCRYPTION_KEY`.
 
 The default hosted limits allow one active objective and ten started objectives per UTC day for each authenticated GitHub user. Cloudflare also caps this deployment at five simultaneous Sandbox containers. Change `USER_DAILY_RUN_LIMIT` deliberately and retain a hard global container cap.

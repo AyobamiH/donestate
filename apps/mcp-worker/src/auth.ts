@@ -37,6 +37,12 @@ function clearCookie(name: string): string {
   return secureCookie(name, "", 0);
 }
 
+function requiredSecret(env: AuthEnv, name: "GITHUB_CLIENT_ID" | "GITHUB_CLIENT_SECRET"): string {
+  const value = env[name];
+  if (typeof value !== "string" || !value.trim()) throw new Error(`missing Worker secret: ${name}`);
+  return value;
+}
+
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -122,7 +128,7 @@ async function approve(request: Request, env: AuthEnv): Promise<Response> {
   await env.OAUTH_KV.put(`oauth:pending:${stateId}`, JSON.stringify(pending), { expirationTtl: TEN_MINUTES });
   const callback = new URL("/callback", request.url).href;
   const upstream = new URL("https://github.com/login/oauth/authorize");
-  upstream.searchParams.set("client_id", env.GITHUB_CLIENT_ID);
+  upstream.searchParams.set("client_id", requiredSecret(env, "GITHUB_CLIENT_ID"));
   upstream.searchParams.set("redirect_uri", callback);
   upstream.searchParams.set("scope", "public_repo read:user");
   upstream.searchParams.set("state", stateId);
@@ -139,7 +145,12 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
   const pending = JSON.parse(pendingJson) as PendingAuthorization;
   if (!pending.approved) return new Response("Consent was not recorded", { status: 400 });
   const callbackUrl = new URL("/callback", request.url).href;
-  const accessToken = await exchangeGitHubCode(env.GITHUB_CLIENT_ID, env.GITHUB_CLIENT_SECRET, code, callbackUrl);
+  const accessToken = await exchangeGitHubCode(
+    requiredSecret(env, "GITHUB_CLIENT_ID"),
+    requiredSecret(env, "GITHUB_CLIENT_SECRET"),
+    code,
+    callbackUrl,
+  );
   const user = await getAuthenticatedUser(accessToken);
   const props: GitHubAuthProps = {
     userId: user.login,
@@ -175,10 +186,10 @@ export const authHandler = {
   async fetch(request: Request, env: AuthEnv, _ctx?: ExecutionContext): Promise<Response> {
     try {
       const url = new URL(request.url);
-      if (url.pathname === "/authorize" && request.method === "GET") return consent(request, env);
-      if (url.pathname === "/authorize" && request.method === "POST") return approve(request, env);
-      if (url.pathname === "/callback" && request.method === "GET") return callback(request, env);
-      if (url.pathname === "/settings/openai") return credentialSettingsHandler.fetch(request, env);
+      if (url.pathname === "/authorize" && request.method === "GET") return await consent(request, env);
+      if (url.pathname === "/authorize" && request.method === "POST") return await approve(request, env);
+      if (url.pathname === "/callback" && request.method === "GET") return await callback(request, env);
+      if (url.pathname === "/settings/openai") return await credentialSettingsHandler.fetch(request, env);
       if (url.pathname === "/" && request.method === "GET") return home();
       return new Response("Not found", { status: 404 });
     } catch (error) {

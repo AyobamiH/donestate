@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { authHandler, OAUTH_FORM_ACTION, type AuthEnv } from "../src/auth";
 
-function authorizationEnv(): AuthEnv {
+function authorizationEnv(githubClientId = "test-github-client-id"): AuthEnv {
   const values = new Map<string, string>();
   return {
     OAUTH_PROVIDER: {
@@ -22,7 +22,30 @@ function authorizationEnv(): AuthEnv {
         values.set(key, value);
       },
     },
+    GITHUB_CLIENT_ID: githubClientId,
+    GITHUB_CLIENT_SECRET: "test-github-client-secret",
   } as unknown as AuthEnv;
+}
+
+async function approveRequest(env: AuthEnv): Promise<Response> {
+  const consent = await authHandler.fetch(
+    new Request("https://done.example/authorize?response_type=code"),
+    env,
+  );
+  const page = await consent.text();
+  const stateId = page.match(/name="state_id" value="([^"]+)"/)?.[1];
+  const csrf = page.match(/name="csrf" value="([^"]+)"/)?.[1];
+  const cookies = consent.headers.getSetCookie().map((value) => value.split(";", 1)[0]).join("; ");
+  expect(stateId).toBeTruthy();
+  expect(csrf).toBeTruthy();
+  return authHandler.fetch(new Request("https://done.example/authorize", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Cookie: cookies,
+    },
+    body: new URLSearchParams({ state_id: stateId!, csrf: csrf! }),
+  }), env);
 }
 
 describe("OAuth authorisation security policy", () => {
@@ -45,5 +68,22 @@ describe("OAuth authorisation security policy", () => {
 
     expect(response.headers.get("Content-Security-Policy")).toContain("form-action 'self';");
     expect(response.headers.get("Content-Security-Policy")).not.toContain("https://github.com");
+  });
+
+  it("redirects with the configured GitHub OAuth client ID", async () => {
+    const response = await approveRequest(authorizationEnv());
+
+    expect(response.status).toBe(302);
+    const location = new URL(response.headers.get("Location")!);
+    expect(location.origin).toBe("https://github.com");
+    expect(location.searchParams.get("client_id")).toBe("test-github-client-id");
+    expect(location.searchParams.get("client_id")).not.toBe("undefined");
+  });
+
+  it("fails closed when the GitHub OAuth client ID is absent", async () => {
+    const response = await approveRequest(authorizationEnv(""));
+
+    expect(response.status).toBe(500);
+    expect(await response.text()).toBe("Authorization failed");
   });
 });
