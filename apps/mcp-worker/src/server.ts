@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
 import { OAuthProvider } from "@cloudflare/workers-oauth-provider";
 import { McpServer, type ServerContext } from "@modelcontextprotocol/server";
-import { createMcpHandler, getMcpAuthContext } from "agents/mcp/server";
+import { createMcpHandler } from "agents/mcp/server";
 import { z } from "zod";
 import { authHandler, EXECUTION_SCOPE, type AuthEnv } from "./auth";
 import { RunCoordinator } from "./coordinator";
@@ -9,6 +9,7 @@ import { CredentialVault } from "./credential-vault";
 import { createCredentialSetup } from "./credential-settings";
 import type { DoneStateEnv } from "./environment";
 import { getBranchHead, getRepositoryAccess } from "./github";
+import { mcpAuthInfo, type TokenInspector } from "./mcp-auth";
 import { AUTHORITY_CLASSES, type GitHubAuthProps, type HostedObjective, type VerificationAttestation } from "./types";
 import { assertRef, assertRepository } from "./validation";
 
@@ -24,8 +25,8 @@ function doneStateEnv(): DoneStateEnv {
   return env as DoneStateEnv;
 }
 
-function authProps(): GitHubAuthProps {
-  const props = getMcpAuthContext()?.props;
+function authProps(context: ServerContext): GitHubAuthProps {
+  const props = context.http?.authInfo?.extra?.props;
   if (!props || typeof props !== "object") throw new Error("GitHub authentication is required");
   const login = Reflect.get(props, "login");
   const accessToken = Reflect.get(props, "accessToken");
@@ -95,7 +96,7 @@ function createServer(): McpServer {
     },
     async (_input, context) => {
       requireExecutionScope(context);
-      const identity = authProps();
+      const identity = authProps(context);
       return textResult({
         ...await credentialVault(identity.login).status(identity.login),
         billingOwner: "authenticated_user",
@@ -112,7 +113,7 @@ function createServer(): McpServer {
     },
     async (_input, context) => {
       requireExecutionScope(context);
-      const identity = authProps();
+      const identity = authProps(context);
       return textResult(await createCredentialSetup(doneStateEnv(), identity.login, identity.origin));
     },
   );
@@ -126,7 +127,7 @@ function createServer(): McpServer {
     },
     async (_input, context) => {
       requireExecutionScope(context);
-      const identity = authProps();
+      const identity = authProps(context);
       return textResult(await credentialVault(identity.login).disconnect(identity.login));
     },
   );
@@ -152,7 +153,7 @@ function createServer(): McpServer {
     },
     async (input, context) => {
       requireExecutionScope(context);
-      const identity = authProps();
+      const identity = authProps(context);
       const credential = await credentialVault(identity.login).status(identity.login);
       if (!credential.connected) {
         throw new Error("BLOCKED_CAPABILITY: connect your own OpenAI API key with create_openai_credential_setup before creating an objective");
@@ -199,7 +200,7 @@ function createServer(): McpServer {
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
-      return textResult(await coordinator(runId).start(authProps().login));
+      return textResult(await coordinator(runId).start(authProps(context).login));
     },
   );
 
@@ -212,7 +213,7 @@ function createServer(): McpServer {
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
-      return textResult(await coordinator(runId).get(authProps().login));
+      return textResult(await coordinator(runId).get(authProps(context).login));
     },
   );
 
@@ -225,7 +226,7 @@ function createServer(): McpServer {
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
-      return textResult(await coordinator(runId).cancel(authProps().login));
+      return textResult(await coordinator(runId).cancel(authProps(context).login));
     },
   );
 
@@ -238,7 +239,7 @@ function createServer(): McpServer {
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
-      return textResult(await coordinator(runId).purge(authProps().login));
+      return textResult(await coordinator(runId).purge(authProps(context).login));
     },
   );
 
@@ -251,7 +252,7 @@ function createServer(): McpServer {
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
-      return textResult(await coordinator(runId).handoff(authProps().login));
+      return textResult(await coordinator(runId).handoff(authProps(context).login));
     },
   );
 
@@ -265,7 +266,7 @@ function createServer(): McpServer {
     async ({ attestation }, context) => {
       requireExecutionScope(context);
       return textResult(await coordinator(attestation.runId).submitAttestation(
-        authProps().login,
+        authProps(context).login,
         attestation as VerificationAttestation,
       ));
     },
@@ -276,8 +277,15 @@ function createServer(): McpServer {
 
 const apiHandler = createMcpHandler(createServer);
 const protectedHandler = {
-  fetch(request: Request, workerEnv: unknown, ctx: ExecutionContext) {
-    return apiHandler(request, workerEnv, ctx);
+  async fetch(request: Request, workerEnv: unknown, _ctx: ExecutionContext): Promise<Response> {
+    if (!workerEnv || typeof workerEnv !== "object") return new Response("OAuth provider binding is missing", { status: 500 });
+    const oauth = Reflect.get(workerEnv, "OAUTH_PROVIDER");
+    if (!oauth || typeof oauth !== "object" || typeof Reflect.get(oauth, "unwrapToken") !== "function") {
+      return new Response("OAuth provider binding is missing", { status: 500 });
+    }
+    const authInfo = await mcpAuthInfo(request, oauth as TokenInspector);
+    if (!authInfo) return new Response("Invalid access token", { status: 401 });
+    return apiHandler.fetch(request, { authInfo });
   },
 };
 
