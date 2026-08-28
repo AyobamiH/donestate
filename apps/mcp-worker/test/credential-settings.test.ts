@@ -49,7 +49,11 @@ describe("execution credential setup", () => {
 
     const openAiFetch = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       expect(String(input)).toBe("https://api.openai.com/v1/models");
-      expect(init?.headers).toEqual({ Authorization: `Bearer ${userKey}` });
+      expect(init?.headers).toEqual({
+        Accept: "application/json",
+        Authorization: `Bearer ${userKey}`,
+        "Cache-Control": "no-store",
+      });
       return new Response(null, { status: 200 });
     });
     vi.stubGlobal("fetch", openAiFetch);

@@ -1,7 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { validateOpenAIApiKeyFormat, verifyOpenAIApiKey } from "../src/openai";
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
 
 describe("OpenAI API key admission", () => {
   it("accepts an opaque printable key without depending on one prefix", () => {
@@ -19,7 +22,11 @@ describe("OpenAI API key admission", () => {
   it("verifies the credential directly with OpenAI without returning response content", async () => {
     const key = "test-user-funded-credential-not-a-secret-1111111111";
     const request = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
-      expect(init?.headers).toEqual({ Authorization: `Bearer ${key}` });
+      expect(init?.headers).toEqual({
+        Accept: "application/json",
+        Authorization: `Bearer ${key}`,
+        "Cache-Control": "no-store",
+      });
       expect(init?.redirect).toBe("error");
       return new Response('{"sensitive":"ignored"}', { status: 200 });
     });
@@ -30,7 +37,8 @@ describe("OpenAI API key admission", () => {
 
   it("reports rejected credentials without echoing them", async () => {
     const key = "test-rejected-credential-not-a-secret-222222222222";
-    vi.stubGlobal("fetch", vi.fn(async () => new Response(null, { status: 401 })));
+    const request = vi.fn(async () => new Response(null, { status: 401 }));
+    vi.stubGlobal("fetch", request);
     try {
       await verifyOpenAIApiKey(key);
       expect.unreachable("verification should reject the key");
@@ -39,5 +47,42 @@ describe("OpenAI API key admission", () => {
       expect(message).toContain("rejected");
       expect(message).not.toContain(key);
     }
+    expect(request).toHaveBeenCalledOnce();
+  });
+
+  it("retries one transient transport failure without logging the key", async () => {
+    const key = "test-retry-credential-not-a-secret-333333333333";
+    const request = vi.fn()
+      .mockRejectedValueOnce(new TypeError("network connection lost"))
+      .mockResolvedValueOnce(new Response(null, { status: 200 }));
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.stubGlobal("fetch", request);
+
+    await expect(verifyOpenAIApiKey(key)).resolves.toBe(key);
+
+    expect(request).toHaveBeenCalledTimes(2);
+    expect(consoleError).toHaveBeenCalledOnce();
+    expect(JSON.stringify(consoleError.mock.calls)).not.toContain(key);
+  });
+
+  it("retries a transient OpenAI response and remains bounded", async () => {
+    const key = "test-retryable-status-not-a-secret-444444444444";
+    const request = vi.fn(async () => new Response(null, { status: 503 }));
+    vi.stubGlobal("fetch", request);
+
+    await expect(verifyOpenAIApiKey(key)).rejects.toThrow("could not verify");
+    expect(request).toHaveBeenCalledTimes(2);
+  });
+
+  it("fails closed after two transport attempts without exposing the key", async () => {
+    const key = "test-unreachable-credential-not-a-secret-555555555555";
+    const request = vi.fn(async () => { throw new TypeError("network connection lost"); });
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.stubGlobal("fetch", request);
+
+    await expect(verifyOpenAIApiKey(key)).rejects.toThrow("after two attempts");
+
+    expect(request).toHaveBeenCalledTimes(2);
+    expect(JSON.stringify(consoleError.mock.calls)).not.toContain(key);
   });
 });
