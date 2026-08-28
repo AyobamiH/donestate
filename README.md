@@ -76,7 +76,7 @@ The demo intentionally ends at `AWAITING_VERIFICATION`. Self-verification would 
 
 Version 0.2 development now includes a ChatGPT and Codex plugin package plus a hosted MCP Worker under `plugins/donestate` and `apps/mcp-worker`. The plugin is the conversational control surface: a user states an outcome, approves one consequence envelope, and monitors durable execution without supervising every command.
 
-The Worker provides GitHub OAuth for public repositories, an encrypted per-user OpenAI credential vault, one Durable Object per run, isolated Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable effect reconciliation, deletion, and signed independent-verifier handoff. Model usage is billed to each user's own OpenAI API account, never a shared DoneState key. It is not deployed or submitted from this branch. See [Hosted plugin preview](docs/HOSTED-PLUGIN.md) for the deployment gates and current capability boundary.
+The Worker provides GitHub OAuth for public repositories, an encrypted per-user OpenAI credential vault, one Durable Object per run, isolated Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable effect reconciliation, deletion, and signed independent-verifier handoff. Model usage is billed to each user's own OpenAI API account, never a shared DoneState key. The hosted preview is deployed at [donestate-mcp.woeinvests.workers.dev](https://donestate-mcp.woeinvests.workers.dev); plugin-directory submission and the full hosted canary remain release gates. See [Hosted plugin preview](docs/HOSTED-PLUGIN.md) for the current capability boundary.
 
 ## Authority model
 

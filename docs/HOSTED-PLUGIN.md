@@ -1,6 +1,10 @@
 # Hosted ChatGPT plugin preview
 
-DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. It is a deployment-ready preview, not a published or production-certified service.
+DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. It is a deployed preview, not a published or production-certified service.
+
+Hosted endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
+
+The Worker and Container application are deployed. Public reachability and OAuth protection have been verified; authenticated GitHub OAuth, user-funded OpenAI credential setup and an end-to-end repository objective remain required canaries before directory submission.
 
 ## What the hosted slice does
 
