@@ -91,6 +91,7 @@ function createServer(): McpServer {
     {
       description: "Check whether the authenticated user has connected their own OpenAI API key for DoneState execution. Never returns the key.",
       inputSchema: {},
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     },
     async (_input, context) => {
       requireExecutionScope(context);
@@ -107,6 +108,7 @@ function createServer(): McpServer {
     {
       description: "Create a single-use HTTPS setup link where the authenticated user can connect or replace their own OpenAI API key without placing it in ChatGPT.",
       inputSchema: {},
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     },
     async (_input, context) => {
       requireExecutionScope(context);
@@ -120,6 +122,7 @@ function createServer(): McpServer {
     {
       description: "Delete the authenticated user's encrypted OpenAI execution credential. An active objective must be cancelled first.",
       inputSchema: { confirm: z.literal(true).describe("Confirm permanent deletion of the stored execution credential") },
+      annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: false },
     },
     async (_input, context) => {
       requireExecutionScope(context);
@@ -132,6 +135,7 @@ function createServer(): McpServer {
     "create_objective",
     {
       description: "Create a bounded repository objective, pin its exact base commit and optionally queue isolated execution. Requires explicit consequence authorities.",
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
       inputSchema: {
         repository: z.string().describe("GitHub repository in owner/name form"),
         baseRef: z.string().default("main").describe("Exact branch or ref to pin before execution"),
@@ -191,6 +195,7 @@ function createServer(): McpServer {
     {
       description: "Queue a previously created DoneState objective for durable isolated execution.",
       inputSchema: { runId: z.string().uuid() },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
@@ -203,6 +208,7 @@ function createServer(): McpServer {
     {
       description: "Get durable state, bounded action results, publication references and the hash-chained event history for an objective.",
       inputSchema: { runId: z.string().uuid() },
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
@@ -215,6 +221,7 @@ function createServer(): McpServer {
     {
       description: "Cancel a queued or active objective. Completed, blocked and verification states are not rewritten.",
       inputSchema: { runId: z.string().uuid() },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
@@ -227,6 +234,7 @@ function createServer(): McpServer {
     {
       description: "Delete a terminal or cancelled objective, including its encrypted run credential, actions and event history.",
       inputSchema: { runId: z.string().uuid() },
+      annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: false },
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
@@ -239,6 +247,7 @@ function createServer(): McpServer {
     {
       description: "Create the exact sealed handoff that an independent verifier such as OpsTruth must inspect and sign.",
       inputSchema: { runId: z.string().uuid() },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
@@ -251,6 +260,7 @@ function createServer(): McpServer {
     {
       description: "Submit a pinned Ed25519 attestation from an independent verifier. DoneState cannot sign or self-verify this input.",
       inputSchema: { attestation: attestationSchema },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     },
     async ({ attestation }, context) => {
       requireExecutionScope(context);

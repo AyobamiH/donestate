@@ -18,6 +18,7 @@ interface PendingAuthorization {
 const STATE_COOKIE = "__Host-DONESTATE_STATE";
 const CSRF_COOKIE = "__Host-DONESTATE_CSRF";
 const TEN_MINUTES = 600;
+export const OAUTH_FORM_ACTION = "'self' https://github.com https://chatgpt.com";
 
 function cookie(request: Request, name: string): string | null {
   const header = request.headers.get("Cookie") ?? "";
@@ -54,9 +55,9 @@ async function constantTimeEqual(left: string | null, right: string): Promise<bo
   return left !== null && crypto.subtle.timingSafeEqual(leftHash, rightHash);
 }
 
-function html(body: string, status = 200, cookies: string[] = []): Response {
+function html(body: string, status = 200, cookies: string[] = [], formAction = "'self'"): Response {
   const headers = new Headers({
-    "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
+    "Content-Security-Policy": `default-src 'none'; style-src 'unsafe-inline'; form-action ${formAction}; frame-ancestors 'none'; base-uri 'none'`,
     "Content-Type": "text/html; charset=utf-8",
     "Referrer-Policy": "no-referrer",
     "X-Content-Type-Options": "nosniff",
@@ -96,7 +97,7 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
 <form method="post" action="/authorize"><input type="hidden" name="state_id" value="${stateId}"><input type="hidden" name="csrf" value="${csrf}"><div class="actions"><a class="cancel" href="/">Cancel</a><button class="approve" type="submit">Continue with GitHub</button></div></form></main></body></html>`, 200, [
     secureCookie(STATE_COOKIE, await digest(stateId)),
     secureCookie(CSRF_COOKIE, await digest(csrf)),
-  ]);
+  ], OAUTH_FORM_ACTION);
 }
 
 async function approve(request: Request, env: AuthEnv): Promise<Response> {
