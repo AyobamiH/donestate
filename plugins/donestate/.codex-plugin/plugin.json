@@ -11,6 +11,7 @@
   "license": "Apache-2.0",
   "keywords": ["autonomous-coding", "developer-tools", "github", "mcp", "verification"],
   "skills": "./skills/",
+  "apps": "./.app.json",
   "interface": {
     "displayName": "DoneState",
     "shortDescription": "Governed autonomous coding with proof handoff.",
