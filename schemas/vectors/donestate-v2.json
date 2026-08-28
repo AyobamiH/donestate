@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1.0.0",
+  "warning": "Public deterministic compatibility vector only. The fixed test key carries no authority and must never be trusted in production.",
+  "handoff": {
+    "schema": "donestate.verification-handoff.v2",
+    "runId": "11111111-1111-4111-8111-111111111111",
+    "generatedAt": "2026-08-28T12:00:00.000Z",
+    "objectiveDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "executionSnapshotDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "verificationNonce": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "repositoryRoot": "https://github.com/Example/project/tree/2222222222222222222222222222222222222222",
+    "subject": {
+      "repository": "Example/project",
+      "baseRef": "main",
+      "baseHeadSha": "1111111111111111111111111111111111111111",
+      "branchName": "donestate/run",
+      "headSha": "2222222222222222222222222222222222222222",
+      "publication": "branch",
+      "pullRequestNumber": null,
+      "pullRequestUrl": null
+    },
+    "acceptanceCriteria": ["README carries the product boundary."],
+    "verificationRequirements": [{
+      "id": "readme_boundary",
+      "criterionIndex": 0,
+      "kind": "file_contains",
+      "path": "README.md",
+      "values": ["DoneState", "Proof & State", "OpsTruth"]
+    }],
+    "actions": [{
+      "id": "push-branch",
+      "state": "SUCCEEDED",
+      "authority": "push",
+      "idempotencyKey": "run:push:v1",
+      "intentDigest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "resultDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    }],
+    "eventChainHead": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "handoffDigest": "1c0f50d4e7c297c11e84cb4bff09a9a859869d66e35afd302826db90d2ec4104"
+  },
+  "verificationReport": {
+    "schema": "opstruth.donestate-verification-report.v1",
+    "runId": "11111111-1111-4111-8111-111111111111",
+    "handoffDigest": "1c0f50d4e7c297c11e84cb4bff09a9a859869d66e35afd302826db90d2ec4104",
+    "verificationNonce": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "observedAt": "2026-08-28T12:01:00.000Z",
+    "decision": "verified"
+  },
+  "attestation": {
+    "schema": "donestate.verification-attestation.v2",
+    "runId": "11111111-1111-4111-8111-111111111111",
+    "executionSnapshotDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "verificationNonce": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "handoffDigest": "1c0f50d4e7c297c11e84cb4bff09a9a859869d66e35afd302826db90d2ec4104",
+    "verificationReportDigest": "5bffffa83bed6e70c4e02d898adbdfee9c1d2cf657ccf44662457c35fbc89277",
+    "decision": "verified",
+    "issuedBy": "urn:opstruth:service:public-verifier",
+    "issuedAt": "2026-08-28T12:01:00.000Z",
+    "evidenceRefs": ["https://github.com/Example/project/commit/2222222222222222222222222222222222222222"],
+    "signature": {
+      "algorithm": "ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA11l5O7wTooGagnx2rbb7qKSa7gB/SfLQmS2ZuCWtLEg=\n-----END PUBLIC KEY-----",
+      "signerFingerprint": "f98d04c078515fd84c171fd3bb49a676cf3731d990aca999176b4f8796bac3a4",
+      "signatureBase64": "aeATkQtEHJJr1jQYnq8w2EIVsl5Vsw+J4DnCq/mygfzEtFQ/7hExrhtE4+5VtJY+MS3Dlos4QMdJTsRvl8baAw=="
+    }
+  }
+}

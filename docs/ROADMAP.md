@@ -11,11 +11,14 @@
 
 ## 0.2: provider transactions
 
+- ChatGPT and Codex plugin control surface with prose-first objective skills. Implemented in development.
+- OAuth 2.1 MCP transport, durable hosted run coordination and isolated Codex execution. Implemented in development.
+- Exact-head branch push and pull-request actions with durable effect probes. Implemented in development.
 - First-class AgentProof repository-patch adapter.
-- GitHub App credentials with short-lived tokens.
-- Exact-head branch push, pull-request and merge-queue actions.
-- Durable effect probes that resolve more ambiguous publication outcomes.
-- Native Codex, Pi and OpenClaw session metadata adapters.
+- GitHub App credentials with short-lived installation tokens.
+- Merge-queue action with exact-head preconditions.
+- Native Pi and OpenClaw session metadata adapters.
+- Independent OpsTruth attestation signer integration.
 
 ## 0.3: autonomous maintenance
 
@@ -32,4 +35,4 @@
 - Managed verifier key registry and external event anchoring.
 - Production SLOs, fleet observability and controlled rollout policies.
 
-The version numbers are product milestones, not promises of dates. Security and independent-verification invariants remain release gates.
+The version numbers are product milestones, not promises of dates. "Implemented in development" means present on the feature branch, not deployed, published or production-certified. Security and independent-verification invariants remain release gates.

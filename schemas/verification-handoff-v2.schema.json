@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AyobamiH/donestate/schemas/verification-handoff-v2.schema.json",
+  "title": "DoneState verification handoff v2",
+  "type": "object",
+  "required": ["schema", "runId", "generatedAt", "objectiveDigest", "executionSnapshotDigest", "verificationNonce", "handoffDigest", "repositoryRoot", "subject", "acceptanceCriteria", "verificationRequirements", "actions", "eventChainHead"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "donestate.verification-handoff.v2" },
+    "runId": { "type": "string", "format": "uuid" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "objectiveDigest": { "$ref": "#/$defs/digest" },
+    "executionSnapshotDigest": { "$ref": "#/$defs/digest" },
+    "verificationNonce": { "$ref": "#/$defs/digest" },
+    "handoffDigest": { "$ref": "#/$defs/digest" },
+    "repositoryRoot": { "type": "string", "format": "uri", "pattern": "^https://github\\.com/" },
+    "subject": { "$ref": "#/$defs/subject" },
+    "acceptanceCriteria": { "type": "array", "minItems": 1, "maxItems": 20, "items": { "type": "string", "minLength": 1, "maxLength": 2000 } },
+    "verificationRequirements": { "type": "array", "maxItems": 100, "items": { "$ref": "#/$defs/requirement" } },
+    "actions": { "type": "array", "items": { "$ref": "#/$defs/action" } },
+    "eventChainHead": { "$ref": "#/$defs/digest" }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "path": { "type": "string", "minLength": 1, "maxLength": 500, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[^\\u0000]+$" },
+    "subject": {
+      "type": "object",
+      "required": ["repository", "baseRef", "baseHeadSha", "branchName", "headSha", "publication", "pullRequestNumber", "pullRequestUrl"],
+      "additionalProperties": false,
+      "properties": {
+        "repository": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$" },
+        "baseRef": { "type": "string", "minLength": 1, "maxLength": 255 },
+        "baseHeadSha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "branchName": { "type": "string", "minLength": 1, "maxLength": 255 },
+        "headSha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "publication": { "enum": ["branch", "pull_request"] },
+        "pullRequestNumber": { "type": ["integer", "null"], "minimum": 1 },
+        "pullRequestUrl": { "type": ["string", "null"], "format": "uri", "pattern": "^https://github\\.com/" }
+      }
+    },
+    "requirement": {
+      "oneOf": [
+        { "$ref": "#/$defs/pathExists" },
+        { "$ref": "#/$defs/pathAbsent" },
+        { "$ref": "#/$defs/fileContains" },
+        { "$ref": "#/$defs/jsonEquals" },
+        { "$ref": "#/$defs/changedFiles" },
+        { "$ref": "#/$defs/githubChecksPass" }
+      ]
+    },
+    "requirementBase": {
+      "type": "object",
+      "required": ["id", "criterionIndex", "kind"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$" },
+        "criterionIndex": { "type": "integer", "minimum": 0, "maximum": 19 },
+        "kind": { "type": "string" }
+      }
+    },
+    "pathExists": {
+      "allOf": [
+        { "$ref": "#/$defs/requirementBase" },
+        { "type": "object", "required": ["path"], "additionalProperties": false, "properties": { "id": true, "criterionIndex": true, "kind": { "const": "path_exists" }, "path": { "$ref": "#/$defs/path" } } }
+      ]
+    },
+    "pathAbsent": {
+      "allOf": [
+        { "$ref": "#/$defs/requirementBase" },
+        { "type": "object", "required": ["path"], "additionalProperties": false, "properties": { "id": true, "criterionIndex": true, "kind": { "const": "path_absent" }, "path": { "$ref": "#/$defs/path" } } }
+      ]
+    },
+    "fileContains": {
+      "allOf": [
+        { "$ref": "#/$defs/requirementBase" },
+        { "type": "object", "required": ["path", "values"], "additionalProperties": false, "properties": { "id": true, "criterionIndex": true, "kind": { "const": "file_contains" }, "path": { "$ref": "#/$defs/path" }, "values": { "type": "array", "minItems": 1, "maxItems": 20, "items": { "type": "string", "minLength": 1, "maxLength": 2000 } } } }
+      ]
+    },
+    "jsonEquals": {
+      "allOf": [
+        { "$ref": "#/$defs/requirementBase" },
+        { "type": "object", "required": ["path", "pointer", "expected"], "additionalProperties": false, "properties": { "id": true, "criterionIndex": true, "kind": { "const": "json_equals" }, "path": { "$ref": "#/$defs/path" }, "pointer": { "type": "string", "maxLength": 1000, "pattern": "^(?:|/(?:[^~/]|~[01])*)$" }, "expected": true } }
+      ]
+    },
+    "changedFiles": {
+      "allOf": [
+        { "$ref": "#/$defs/requirementBase" },
+        { "type": "object", "required": ["max", "allowedPaths"], "additionalProperties": false, "properties": { "id": true, "criterionIndex": true, "kind": { "const": "changed_files" }, "max": { "type": "integer", "minimum": 0, "maximum": 300 }, "allowedPaths": { "type": "array", "minItems": 1, "maxItems": 300, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } } } }
+      ]
+    },
+    "githubChecksPass": {
+      "allOf": [
+        { "$ref": "#/$defs/requirementBase" },
+        { "type": "object", "required": ["requiredNames"], "additionalProperties": false, "properties": { "id": true, "criterionIndex": true, "kind": { "const": "github_checks_pass" }, "requiredNames": { "type": "array", "maxItems": 50, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200 } } } }
+      ]
+    },
+    "action": {
+      "type": "object",
+      "required": ["id", "state", "authority", "idempotencyKey", "intentDigest", "resultDigest"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "state": { "enum": ["PENDING", "RUNNING", "SUCCEEDED", "FAILED", "AMBIGUOUS"] },
+        "authority": { "type": "string" },
+        "idempotencyKey": { "type": "string", "minLength": 1 },
+        "intentDigest": { "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }] },
+        "resultDigest": { "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }] }
+      }
+    }
+  }
+}

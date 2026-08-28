@@ -128,7 +128,10 @@ function actionFromRow(row: ActionRow): PersistedAction {
 }
 
 export class DoneStateStore {
-  constructor(readonly databasePath: string) {}
+  constructor(
+    readonly databasePath: string,
+    private readonly clock: () => Date = () => new Date(),
+  ) {}
 
   async initialize(): Promise<void> {
     await mkdir(path.dirname(this.databasePath), { recursive: true, mode: 0o700 });
@@ -299,7 +302,7 @@ export class DoneStateStore {
   async acquireLease(runId: string, owner: string, ttlMs: number): Promise<Lease> {
     await this.initialize();
     const database = this.open();
-    const now = new Date();
+    const now = this.clock();
     const expiresAt = new Date(now.getTime() + ttlMs).toISOString();
     try {
       database.exec("BEGIN IMMEDIATE");
@@ -562,7 +565,7 @@ export class DoneStateStore {
     if (!lease || lease.owner !== owner || lease.fencing_token !== fencingToken) {
       throw new DoneStateError("STALE_FENCING_TOKEN", "The worker does not hold the current lease.");
     }
-    if (new Date(lease.expires_at).getTime() <= Date.now()) {
+    if (new Date(lease.expires_at).getTime() <= this.clock().getTime()) {
       throw new DoneStateError("STALE_FENCING_TOKEN", "The worker lease has expired.");
     }
   }

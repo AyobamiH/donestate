@@ -1,0 +1,42 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "donestate-mcp",
+  "main": "src/server.ts",
+  "compatibility_date": "2026-08-27",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "containers": [
+    {
+      "class_name": "Sandbox",
+      "image": "./Dockerfile",
+      "instance_type": "lite",
+      "max_instances": 5
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "RUN_COORDINATOR", "class_name": "RunCoordinator" },
+      { "name": "CREDENTIAL_VAULT", "class_name": "CredentialVault" },
+      { "name": "Sandbox", "class_name": "Sandbox" }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["RunCoordinator", "Sandbox"]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["CredentialVault"]
+    }
+  ],
+  "kv_namespaces": [
+    { "binding": "OAUTH_KV" }
+  ],
+  "vars": {
+    "USER_DAILY_RUN_LIMIT": "10"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}
