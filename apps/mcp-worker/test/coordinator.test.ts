@@ -17,6 +17,7 @@ function objective(runId: string): HostedObjective {
     validationProfile: "none",
     publication: "branch",
     trustedVerifierFingerprints: [],
+    verificationRequirements: [],
     maxChangedFiles: 10,
     maxDurationMs: 60_000,
   };

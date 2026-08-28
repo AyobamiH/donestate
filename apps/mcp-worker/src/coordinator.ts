@@ -167,22 +167,46 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
     if (!head) throw new Error("event chain is missing");
     const snapshot = await this.snapshotDigest(run, actions);
     if (snapshot !== run.verification_snapshot_digest) throw new Error("sealed execution snapshot no longer matches the run");
-    return {
-      schema: "donestate.verification-handoff.v1",
+    if (!run.branch_name || !run.branch_head_sha) throw new Error("published branch subject is missing");
+    const verificationNonce = await digest({
+      schema: "donestate.verification-nonce.v1",
       runId: run.id,
-      generatedAt: new Date().toISOString(),
+      executionSnapshotDigest: snapshot,
+      eventChainHead: head,
+    });
+    const payload = {
+      schema: "donestate.verification-handoff.v2" as const,
+      runId: run.id,
+      generatedAt: run.updated_at,
       objectiveDigest: await digest(objective),
       executionSnapshotDigest: snapshot,
+      verificationNonce,
       repositoryRoot: `https://github.com/${objective.repository}/tree/${run.branch_head_sha ?? objective.baseHeadSha}`,
+      subject: {
+        repository: objective.repository,
+        baseRef: objective.baseRef,
+        baseHeadSha: objective.baseHeadSha,
+        branchName: run.branch_name,
+        headSha: run.branch_head_sha,
+        publication: objective.publication,
+        pullRequestNumber: run.pull_request_number,
+        pullRequestUrl: run.pull_request_url,
+      },
       acceptanceCriteria: objective.acceptanceCriteria,
+      verificationRequirements: objective.verificationRequirements ?? [],
       actions: await Promise.all(actions.map(async (action) => ({
         id: action.id,
         state: action.state,
         authority: action.authority,
         idempotencyKey: action.idempotencyKey,
+        intentDigest: action.intentDigest,
         resultDigest: action.result ? await digest(action.result) : null,
       }))),
       eventChainHead: head,
+    };
+    return {
+      ...payload,
+      handoffDigest: await digest(`donestate.verification-handoff.v2\0${canonicalJson(payload)}`),
     };
   }
 
@@ -192,11 +216,15 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
       throw new Error("run is not awaiting independent verification");
     }
     const objective = JSON.parse(run.objective_json) as HostedObjective;
+    const handoff = attestation.schema === "donestate.verification-attestation.v2"
+      ? await this.handoff(ownerLogin)
+      : undefined;
     await verifyAttestation(
       attestation,
       run.id,
       run.verification_snapshot_digest,
       objective.trustedVerifierFingerprints,
+      handoff,
     );
     const nextState: RunState = attestation.decision === "verified"
       ? "VERIFIED"

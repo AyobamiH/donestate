@@ -17,6 +17,7 @@ function objective(overrides: Partial<HostedObjective> = {}): HostedObjective {
     validationProfile: "auto",
     publication: "branch",
     trustedVerifierFingerprints: [],
+    verificationRequirements: [],
     maxChangedFiles: 100,
     maxDurationMs: 1_800_000,
     ...overrides,
@@ -39,6 +40,37 @@ describe("hosted objective admission", () => {
     expect(() => assertRepository("owner/repo;curl" )).toThrow();
     expect(() => assertRef("main && echo unsafe")).toThrow();
     expect(() => assertRef("feature/safe-name")).not.toThrow();
+  });
+
+  it("requires complete machine-checkable coverage for trusted verification", () => {
+    const fingerprint = "b".repeat(64);
+    expect(() => validateHostedObjective(objective({ trustedVerifierFingerprints: [fingerprint] })))
+      .toThrow("trusted verification requires machine-checkable verificationRequirements");
+    expect(() => validateHostedObjective(objective({
+      trustedVerifierFingerprints: [fingerprint],
+      verificationRequirements: [{
+        id: "tests_pass",
+        criterionIndex: 0,
+        kind: "github_checks_pass",
+        requiredNames: ["CI"],
+      }],
+    }))).not.toThrow();
+  });
+
+  it("rejects verification requirements that escape the repository or widen budgets", () => {
+    expect(() => validateHostedObjective(objective({
+      verificationRequirements: [{ id: "unsafe", criterionIndex: 0, kind: "path_exists", path: "../secret" }],
+    }))).toThrow("safe repository-relative paths");
+    expect(() => validateHostedObjective(objective({
+      maxChangedFiles: 5,
+      verificationRequirements: [{
+        id: "too_broad",
+        criterionIndex: 0,
+        kind: "changed_files",
+        max: 6,
+        allowedPaths: ["README.md"],
+      }],
+    }))).toThrow("invalid changed-file boundary");
   });
 });
 

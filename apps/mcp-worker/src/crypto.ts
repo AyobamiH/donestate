@@ -1,7 +1,10 @@
 import { canonicalJson, digest } from "./canonical";
-import type { VerificationAttestation } from "./types";
+import type { VerificationAttestation, VerificationHandoff } from "./types";
 
-const ATTESTATION_DOMAIN = "donestate.verification-attestation.v1\0";
+const ATTESTATION_DOMAINS = {
+  "donestate.verification-attestation.v1": "donestate.verification-attestation.v1\0",
+  "donestate.verification-attestation.v2": "donestate.verification-attestation.v2\0",
+} as const;
 
 function bytesToBase64(bytes: Uint8Array): string {
   let binary = "";
@@ -61,8 +64,10 @@ export async function verifyAttestation(
   runId: string,
   snapshotDigest: string,
   trustedFingerprints: string[],
+  handoff?: VerificationHandoff,
 ): Promise<void> {
-  if (attestation.schema !== "donestate.verification-attestation.v1") throw new Error("unsupported attestation schema");
+  const domain = ATTESTATION_DOMAINS[attestation.schema];
+  if (!domain) throw new Error("unsupported attestation schema");
   if (attestation.runId !== runId) throw new Error("attestation targets another run");
   if (attestation.executionSnapshotDigest !== snapshotDigest) throw new Error("attestation does not match the sealed snapshot");
   if (!attestation.issuedBy.trim() || /^donestate(?:$|[/:_-])/i.test(attestation.issuedBy)) {
@@ -72,6 +77,20 @@ export async function verifyAttestation(
   if (attestation.evidenceRefs.length === 0 || attestation.evidenceRefs.some((item) => !item.trim())) {
     throw new Error("independent evidence references are required");
   }
+  if (attestation.schema === "donestate.verification-attestation.v2") {
+    if (attestation.evidenceRefs.some((item) => {
+      try { return new URL(item).protocol !== "https:"; } catch { return true; }
+    })) throw new Error("independent evidence references must be public HTTPS URLs");
+    if (!handoff) throw new Error("v2 attestation requires the sealed verification handoff");
+    if (attestation.verificationNonce !== handoff.verificationNonce) throw new Error("attestation verification nonce mismatch");
+    if (attestation.handoffDigest !== handoff.handoffDigest) throw new Error("attestation targets another handoff");
+    if (!/^[a-f0-9]{64}$/.test(attestation.verificationReportDigest)) {
+      throw new Error("attestation verification report digest is invalid");
+    }
+    const issuedAt = Date.parse(attestation.issuedAt);
+    if (issuedAt < Date.parse(handoff.generatedAt)) throw new Error("attestation predates the sealed handoff");
+    if (issuedAt > Date.now() + 5 * 60_000) throw new Error("attestation issuance time is in the future");
+  }
   if (attestation.signature.algorithm !== "ed25519") throw new Error("only Ed25519 verifier signatures are accepted");
   const der = publicKeyDer(attestation.signature.publicKeyPem);
   const actualFingerprint = await digest(der);
@@ -79,7 +98,7 @@ export async function verifyAttestation(
   if (!trustedFingerprints.includes(actualFingerprint)) throw new Error("verifier key is not pinned by this objective");
   const key = await crypto.subtle.importKey("spki", der, { name: "Ed25519" }, false, ["verify"]);
   const { signature, ...unsigned } = attestation;
-  const input = new TextEncoder().encode(`${ATTESTATION_DOMAIN}${canonicalJson(unsigned)}`);
+  const input = new TextEncoder().encode(`${domain}${canonicalJson(unsigned)}`);
   const valid = await crypto.subtle.verify(
     { name: "Ed25519" },
     key,

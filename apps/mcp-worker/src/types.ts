@@ -31,6 +31,14 @@ export type RunState = (typeof RUN_STATES)[number];
 export type PublicationMode = "branch" | "pull_request";
 export type ValidationProfile = "auto" | "node" | "python" | "rust" | "go" | "none";
 
+export type VerificationRequirement =
+  | { id: string; criterionIndex: number; kind: "path_exists"; path: string }
+  | { id: string; criterionIndex: number; kind: "path_absent"; path: string }
+  | { id: string; criterionIndex: number; kind: "file_contains"; path: string; values: string[] }
+  | { id: string; criterionIndex: number; kind: "json_equals"; path: string; pointer: string; expected: unknown }
+  | { id: string; criterionIndex: number; kind: "changed_files"; max: number; allowedPaths: string[] }
+  | { id: string; criterionIndex: number; kind: "github_checks_pass"; requiredNames: string[] };
+
 export interface HostedObjective {
   schema: "donestate.hosted-objective.v1";
   runId: string;
@@ -44,6 +52,7 @@ export interface HostedObjective {
   validationProfile: ValidationProfile;
   publication: PublicationMode;
   trustedVerifierFingerprints: string[];
+  verificationRequirements: VerificationRequirement[];
   maxChangedFiles: number;
   maxDurationMs: number;
 }
@@ -95,25 +104,39 @@ export interface GitHubAuthProps {
   origin: string;
 }
 
-export interface VerificationHandoff {
-  schema: "donestate.verification-handoff.v1";
+export interface VerificationHandoffV2 {
+  schema: "donestate.verification-handoff.v2";
   runId: string;
   generatedAt: string;
   objectiveDigest: string;
   executionSnapshotDigest: string;
+  verificationNonce: string;
+  handoffDigest: string;
   repositoryRoot: string;
+  subject: {
+    repository: string;
+    baseRef: string;
+    baseHeadSha: string;
+    branchName: string;
+    headSha: string;
+    publication: PublicationMode;
+    pullRequestNumber: number | null;
+    pullRequestUrl: string | null;
+  };
   acceptanceCriteria: string[];
+  verificationRequirements: VerificationRequirement[];
   actions: Array<{
     id: string;
     state: ActionRecord["state"];
     authority: AuthorityClass;
     idempotencyKey: string;
+    intentDigest: string | null;
     resultDigest: string | null;
   }>;
   eventChainHead: string;
 }
 
-export interface VerificationAttestation {
+export interface VerificationAttestationV1 {
   schema: "donestate.verification-attestation.v1";
   runId: string;
   executionSnapshotDigest: string;
@@ -129,6 +152,28 @@ export interface VerificationAttestation {
     signatureBase64: string;
   };
 }
+
+export interface VerificationAttestationV2 {
+  schema: "donestate.verification-attestation.v2";
+  runId: string;
+  executionSnapshotDigest: string;
+  verificationNonce: string;
+  handoffDigest: string;
+  verificationReportDigest: string;
+  decision: "verified" | "failed" | "uncertain";
+  issuedBy: string;
+  issuedAt: string;
+  evidenceRefs: string[];
+  signature: {
+    algorithm: "ed25519";
+    publicKeyPem: string;
+    signerFingerprint: string;
+    signatureBase64: string;
+  };
+}
+
+export type VerificationHandoff = VerificationHandoffV2;
+export type VerificationAttestation = VerificationAttestationV1 | VerificationAttestationV2;
 
 export class RunFailure extends Error {
   constructor(

@@ -13,7 +13,7 @@
 
 ## Verification trust
 
-Verifier public-key fingerprints are pinned in the immutable policy stored with the run. Attestations use Ed25519 and a domain-separated canonical payload. The payload binds the run id, execution snapshot digest, decision, issuer, issuance time and evidence references.
+Verifier public-key fingerprints are pinned in the immutable policy stored with the run. V2 attestations use Ed25519 and a domain-separated canonical payload. The payload binds the run ID, execution snapshot digest, stable verification nonce, complete handoff digest, verification report digest, decision, issuer, issuance time and public HTTPS evidence references.
 
 DoneState rejects:
 
@@ -22,6 +22,8 @@ DoneState rejects:
 - key and fingerprint mismatches;
 - invalid signatures;
 - another run id or snapshot digest;
+- another verification nonce or handoff digest;
+- an attestation that predates the sealed handoff or is issued beyond the allowed clock skew;
 - empty evidence references.
 
 Key custody and issuer governance remain deployment responsibilities. Production deployments should use hardware-backed or managed signing keys and should rotate trust through a separately reviewed policy change.

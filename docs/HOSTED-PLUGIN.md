@@ -15,8 +15,9 @@ The Worker and Container application are deployed. Public reachability and OAuth
 5. A Cloudflare Sandbox clones the pinned public base commit without a GitHub credential and runs a pinned Codex CLI without interactive approval using that user's key.
 6. Deterministic code installs locked Node dependencies when applicable, validates the diff, enforces the changed-file budget and creates a commit.
 7. Only then does the sandbox receive the GitHub credential for the exact branch push. Credentials are removed immediately and the per-run container is destroyed.
-8. DoneState seals a verification handoff and stops at `AWAITING_VERIFICATION`.
-9. Only a pinned Ed25519 attestation from an independent verifier can produce `VERIFIED`.
+8. DoneState seals a v2 verification handoff containing the exact base/head subject, verification nonce, acceptance-criterion coverage, action idempotency/result bindings and event-chain head, then stops at `AWAITING_VERIFICATION`.
+9. OpsTruth independently re-observes the exact public commit and evaluates only the sealed machine-checkable requirements.
+10. Only a fresh v2 Ed25519 attestation from the pinned independent verifier can produce `VERIFIED`.
 
 The MCP surface also contains `get_openai_credential_status`, `create_openai_credential_setup` and `delete_openai_credential`. The setup link expires after ten minutes and is single-use. The execution surface contains `create_objective`, `start_objective`, `get_objective`, `cancel_objective`, `delete_objective`, `create_verification_handoff` and `submit_verifier_attestation`.
 
@@ -99,11 +100,11 @@ Before submitting the plugin to the universal ChatGPT and Codex directory:
 - verify OpenAI credential connection, replacement, quota enforcement and deletion without placing a key in ChatGPT
 - run an end-to-end public-repository branch and pull-request canary
 - test crash recovery at every remote mutation boundary
-- connect a genuinely independent attestation signer and pin its public-key fingerprint
+- retrieve the independent OpsTruth verifier identity, pin its DoneState-compatible fingerprint and prove one synthetic plus one live v2 round trip
 - publish and review the privacy policy and terms at the manifest URLs
 - replace the local MCP URL and validate the plugin archive
 - complete threat modelling, incident response, rate limits, abuse controls and retention controls
 
 ## Explicitly incomplete capabilities
 
-The preview does not yet implement private repositories, GitHub App installation tokens, merge queues, deployment or package publication, scheduled maintenance, a global queue, repository leases, multi-repository objectives, managed verifier keys, external event anchoring or fleet SLOs. These remain roadmap work and must not be implied by the plugin listing.
+The preview does not yet implement private repositories, GitHub App installation tokens, merge queues, deployment or package publication, scheduled maintenance, a global queue, repository leases, multi-repository objectives, hardware-backed verifier-key custody, external event anchoring or fleet SLOs. These remain roadmap work and must not be implied by the plugin listing.

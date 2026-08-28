@@ -67,7 +67,40 @@ function requireExecutionScope(context: ServerContext): void {
 }
 
 const authoritySchema = z.enum(AUTHORITY_CLASSES);
-const attestationSchema = z.object({
+const verificationRequirementBase = {
+  id: z.string().regex(/^[a-z][a-z0-9_-]{0,63}$/),
+  criterionIndex: z.number().int().min(0).max(19),
+};
+const repositoryPathSchema = z.string().min(1).max(500).regex(/^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))(?!.*\\)[^\0]+$/);
+const verificationRequirementSchema = z.discriminatedUnion("kind", [
+  z.object({ ...verificationRequirementBase, kind: z.literal("path_exists"), path: repositoryPathSchema }),
+  z.object({ ...verificationRequirementBase, kind: z.literal("path_absent"), path: repositoryPathSchema }),
+  z.object({
+    ...verificationRequirementBase,
+    kind: z.literal("file_contains"),
+    path: repositoryPathSchema,
+    values: z.array(z.string().min(1).max(2_000)).min(1).max(20),
+  }),
+  z.object({
+    ...verificationRequirementBase,
+    kind: z.literal("json_equals"),
+    path: repositoryPathSchema,
+    pointer: z.string().max(1_000).regex(/^(?:|\/(?:[^~/]|~[01])*)$/),
+    expected: z.json(),
+  }),
+  z.object({
+    ...verificationRequirementBase,
+    kind: z.literal("changed_files"),
+    max: z.number().int().min(0).max(300),
+    allowedPaths: z.array(repositoryPathSchema).min(1).max(300),
+  }),
+  z.object({
+    ...verificationRequirementBase,
+    kind: z.literal("github_checks_pass"),
+    requiredNames: z.array(z.string().min(1).max(200)).max(50),
+  }),
+]);
+const attestationV1Schema = z.object({
   schema: z.literal("donestate.verification-attestation.v1"),
   runId: z.string().uuid(),
   executionSnapshotDigest: z.string().regex(/^[a-f0-9]{64}$/),
@@ -83,6 +116,25 @@ const attestationSchema = z.object({
     signatureBase64: z.string().min(1).max(10_000),
   }),
 });
+const attestationV2Schema = z.object({
+  schema: z.literal("donestate.verification-attestation.v2"),
+  runId: z.string().uuid(),
+  executionSnapshotDigest: z.string().regex(/^[a-f0-9]{64}$/),
+  verificationNonce: z.string().regex(/^[a-f0-9]{64}$/),
+  handoffDigest: z.string().regex(/^[a-f0-9]{64}$/),
+  verificationReportDigest: z.string().regex(/^[a-f0-9]{64}$/),
+  decision: z.enum(["verified", "failed", "uncertain"]),
+  issuedBy: z.string().min(1).max(200),
+  issuedAt: z.string().datetime(),
+  evidenceRefs: z.array(z.string().url().max(2_000)).min(1).max(100),
+  signature: z.object({
+    algorithm: z.literal("ed25519"),
+    publicKeyPem: z.string().min(1).max(10_000),
+    signerFingerprint: z.string().regex(/^[a-f0-9]{64}$/),
+    signatureBase64: z.string().min(1).max(10_000),
+  }),
+});
+const attestationSchema = z.discriminatedUnion("schema", [attestationV1Schema, attestationV2Schema]);
 
 function createServer(): McpServer {
   const server = new McpServer({ name: "DoneState", version: "0.2.0" });
@@ -146,6 +198,8 @@ function createServer(): McpServer {
         publication: z.enum(["branch", "pull_request"]).default("pull_request"),
         validationProfile: z.enum(["auto", "node", "python", "rust", "go", "none"]).default("auto"),
         trustedVerifierFingerprints: z.array(z.string().regex(/^[a-f0-9]{64}$/)).max(20).default([]),
+        verificationRequirements: z.array(verificationRequirementSchema).max(100).default([])
+          .describe("Machine-checkable requirements sealed for independent verification; every acceptance criterion must be covered when a trusted verifier is pinned"),
         maxChangedFiles: z.number().int().min(1).max(500).default(100),
         maxDurationMs: z.number().int().min(60_000).max(7_200_000).default(1_800_000),
         autoStart: z.boolean().default(true),
@@ -181,6 +235,7 @@ function createServer(): McpServer {
         validationProfile: input.validationProfile,
         publication: input.publication,
         trustedVerifierFingerprints: input.trustedVerifierFingerprints,
+        verificationRequirements: input.verificationRequirements,
         maxChangedFiles: input.maxChangedFiles,
         maxDurationMs: input.maxDurationMs,
       };

@@ -23,6 +23,11 @@ Collect only information that materially changes the run:
 - publication as a branch or pull request
 - validation profile and budgets when the defaults are unsuitable
 - trusted verifier fingerprints when terminal `VERIFIED` is required
+- one machine-checkable verification requirement for every acceptance criterion when a verifier is pinned
+
+For OpsTruth, call `opstruth_get_verifier_identity` first and use its `doneStateSignerFingerprint` exactly. Never infer, truncate or transform a key supplied through prose.
+
+Supported hosted verification requirements are `path_exists`, `path_absent`, `file_contains`, `json_equals`, `changed_files` and `github_checks_pass`. Bind every requirement to its acceptance criterion by zero-based `criterionIndex`. If the outcome cannot be represented honestly by these checks, omit terminal verification and report the capability gap instead of weakening the criterion.
 
 Private repositories are not supported by the current hosted adapter. Report `BLOCKED_CAPABILITY` instead of requesting broader OAuth access.
 
