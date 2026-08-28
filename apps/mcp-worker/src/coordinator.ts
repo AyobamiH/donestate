@@ -3,6 +3,7 @@ import { canonicalJson, digest } from "./canonical";
 import { sealSecret, unsealSecret, verifyAttestation } from "./crypto";
 import type { DoneStateEnv } from "./environment";
 import { executeObjective, type ActionSettlement, type ExecutionJournal } from "./executor";
+import { requestOpsTruthAttestation } from "./opstruth";
 import { RunFailure, type ActionRecord, type AuthorityClass, type EventRecord, type HostedObjective, type PublicRunRecord, type RunState, type VerificationAttestation, type VerificationHandoff } from "./types";
 import { validateHostedObjective } from "./validation";
 
@@ -241,6 +242,15 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
     return this.get(ownerLogin);
   }
 
+  async requestIndependentVerification(ownerLogin: string): Promise<PublicRunRecord> {
+    const run = this.assertOwner(ownerLogin);
+    if (run.state !== "AWAITING_VERIFICATION") throw new Error("run is not awaiting independent verification");
+    if (!this.env.OPSTRUTH_MCP_URL) throw new Error("OpsTruth MCP endpoint is not configured");
+    const handoff = await this.handoff(ownerLogin);
+    const attestation = await requestOpsTruthAttestation(this.env.OPSTRUTH_MCP_URL, handoff);
+    return this.submitAttestation(ownerLogin, attestation);
+  }
+
   override async alarm(): Promise<void> {
     const run = this.runRow();
     if (!run) return;
@@ -298,6 +308,17 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
         current.id,
       );
       await this.transition("AWAITING_VERIFICATION", "independent_verification_required", snapshot);
+      if (this.env.OPSTRUTH_MCP_URL && objective.trustedVerifierFingerprints.length > 0) {
+        try {
+          await this.requestIndependentVerification(run.owner_login);
+        } catch (error) {
+          console.error(JSON.stringify({
+            message: "automatic independent verification did not complete",
+            runId: objective.runId,
+            error: error instanceof Error ? error.message : "unknown verification error",
+          }));
+        }
+      }
     } catch (error) {
       const failure = error instanceof RunFailure
         ? error

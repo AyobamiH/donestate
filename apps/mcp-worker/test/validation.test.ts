@@ -72,6 +72,16 @@ describe("hosted objective admission", () => {
       }],
     }))).toThrow("invalid changed-file boundary");
   });
+
+  it("forces autonomous maintenance into the PR-only authority lane", () => {
+    expect(() => validateHostedObjective(objective({ objectiveClass: "maintenance_pr", publication: "branch" })))
+      .toThrow("maintenance objectives must publish a pull request");
+    expect(() => validateHostedObjective(objective({
+      objectiveClass: "maintenance_pr",
+      publication: "pull_request",
+      authorities: ["local_read", "local_write", "test", "commit", "push", "open_pr", "secret_access"],
+    }))).not.toThrow();
+  });
 });
 
 describe("canonical evidence", () => {

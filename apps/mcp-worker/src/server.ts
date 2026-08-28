@@ -7,14 +7,17 @@ import { authHandler, EXECUTION_SCOPE, type AuthEnv } from "./auth";
 import { RunCoordinator } from "./coordinator";
 import { CredentialVault } from "./credential-vault";
 import { createCredentialSetup } from "./credential-settings";
+import { createGitHubAppSetup } from "./github-app-settings";
 import type { DoneStateEnv } from "./environment";
 import { getBranchHead, getRepositoryAccess } from "./github";
 import { mcpAuthInfo, type TokenInspector } from "./mcp-auth";
+import { MaintenanceRegistry } from "./maintenance-registry";
 import { AUTHORITY_CLASSES, type GitHubAuthProps, type HostedObjective, type VerificationAttestation } from "./types";
 import { assertRef, assertRepository } from "./validation";
 
 export { RunCoordinator } from "./coordinator";
 export { CredentialVault } from "./credential-vault";
+export { MaintenanceRegistry } from "./maintenance-registry";
 export { Sandbox } from "@cloudflare/sandbox";
 
 function doneStateEnv(): DoneStateEnv {
@@ -54,6 +57,10 @@ function coordinator(runId: string) {
 
 function credentialVault(login: string) {
   return doneStateEnv().CREDENTIAL_VAULT.getByName(login);
+}
+
+function maintenanceRegistry() {
+  return doneStateEnv().MAINTENANCE_REGISTRY.getByName("global");
 }
 
 function textResult(value: unknown) {
@@ -185,6 +192,129 @@ function createServer(): McpServer {
   );
 
   server.registerTool(
+    "get_github_app_status",
+    {
+      description: "Check whether the least-privilege DoneState GitHub App is configured. Never returns private keys, webhook secrets, or installation tokens.",
+      inputSchema: {},
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+    },
+    async (_input, context) => {
+      requireExecutionScope(context);
+      authProps(context);
+      return textResult(await maintenanceRegistry().githubAppStatus());
+    },
+  );
+
+  server.registerTool(
+    "create_github_app_setup",
+    {
+      description: "Create a single-use setup link for the Proof & State owner to create and encrypt the private DoneState GitHub App, then install it on selected repositories.",
+      inputSchema: {},
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+    },
+    async (_input, context) => {
+      requireExecutionScope(context);
+      const identity = authProps(context);
+      return textResult(await createGitHubAppSetup(doneStateEnv(), identity.login, identity.origin));
+    },
+  );
+
+  server.registerTool(
+    "select_maintenance_repository",
+    {
+      description: "Register one explicit repository for DoneState maintenance. Scheduled or automatic work requires the GitHub App to be installed on that repository; automatic repair is always PR-only.",
+      inputSchema: {
+        repository: z.string().describe("Exact GitHub owner/name"),
+        defaultBranch: z.string().default("main"),
+        mode: z.enum(["observe", "pr_only"]).default("observe"),
+        scheduleEnabled: z.boolean().default(false),
+        autoRepair: z.boolean().default(false),
+        requiredCheckNames: z.array(z.string().min(1).max(200)).max(20).default([]),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+    },
+    async (input, context) => {
+      requireExecutionScope(context);
+      const identity = authProps(context);
+      assertRepository(input.repository);
+      assertRef(input.defaultBranch);
+      return textResult(await maintenanceRegistry().selectRepository(identity.login, input));
+    },
+  );
+
+  server.registerTool(
+    "list_maintenance_repositories",
+    {
+      description: "List only the authenticated user's selected maintenance repositories and their PR-only, scheduling, and check policies.",
+      inputSchema: {},
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+    },
+    async (_input, context) => {
+      requireExecutionScope(context);
+      const identity = authProps(context);
+      return textResult(await maintenanceRegistry().listRepositories(identity.login));
+    },
+  );
+
+  server.registerTool(
+    "remove_maintenance_repository",
+    {
+      description: "Remove one repository and its maintenance findings from the authenticated user's DoneState registry. This does not uninstall the GitHub App.",
+      inputSchema: { repository: z.string(), confirm: z.literal(true) },
+      annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: false },
+    },
+    async ({ repository }, context) => {
+      requireExecutionScope(context);
+      const identity = authProps(context);
+      return textResult(await maintenanceRegistry().removeRepository(identity.login, repository));
+    },
+  );
+
+  server.registerTool(
+    "discover_maintenance_work",
+    {
+      description: "Read selected-repository issues labeled donestate:repair and recent failing GitHub Actions runs. It records bounded findings but changes no repository state.",
+      inputSchema: { repository: z.string() },
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: true },
+    },
+    async ({ repository }, context) => {
+      requireExecutionScope(context);
+      const identity = authProps(context);
+      return textResult(await maintenanceRegistry().discover(identity.login, repository, identity.accessToken));
+    },
+  );
+
+  server.registerTool(
+    "list_maintenance_findings",
+    {
+      description: "List the authenticated user's bounded maintenance findings. A failing workflow is evidence only; only explicitly labeled issues are repair-eligible.",
+      inputSchema: { repository: z.string().optional() },
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+    },
+    async ({ repository }, context) => {
+      requireExecutionScope(context);
+      const identity = authProps(context);
+      return textResult(await maintenanceRegistry().listFindings(identity.login, repository));
+    },
+  );
+
+  server.registerTool(
+    "start_maintenance_repair",
+    {
+      description: "Start a bounded PR-only Codex repair for one eligible selected-repository finding. Protected authority files are blocked and OpsTruth verification is mandatory.",
+      inputSchema: { findingId: z.string().regex(/^[a-f0-9]{64}$/) },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+    },
+    async ({ findingId }, context) => {
+      requireExecutionScope(context);
+      const identity = authProps(context);
+      const credential = await credentialVault(identity.login).status(identity.login);
+      if (!credential.connected) throw new Error("BLOCKED_CAPABILITY: connect your OpenAI execution credential first");
+      return textResult(await maintenanceRegistry().startRepair(identity.login, findingId));
+    },
+  );
+
+  server.registerTool(
     "create_objective",
     {
       description: "Create a bounded repository objective, pin its exact base commit and optionally queue isolated execution. Requires explicit consequence authorities.",
@@ -214,12 +344,21 @@ function createServer(): McpServer {
       }
       assertRepository(input.repository);
       assertRef(input.baseRef);
-      const access = await getRepositoryAccess(identity.accessToken, input.repository);
-      if (access.private) {
-        throw new Error("BLOCKED_CAPABILITY: private repositories require the planned GitHub App token adapter");
+      const selected = (await maintenanceRegistry().listRepositories(identity.login)).find((item) => item.repository === input.repository);
+      let githubToken = identity.accessToken;
+      let credentialSource = "github_oauth";
+      if (selected) {
+        if (selected.mode !== "pr_only") throw new Error("BLOCKED_AUTHORITY: selected repository is observe-only");
+        const installation = await maintenanceRegistry().installationToken(identity.login, input.repository, "pr_only");
+        githubToken = installation.token;
+        credentialSource = "github_app_installation";
+      }
+      const access = await getRepositoryAccess(githubToken, input.repository);
+      if (access.private && credentialSource !== "github_app_installation") {
+        throw new Error("BLOCKED_CAPABILITY: private repositories require a selected GitHub App installation");
       }
       if (!access.canPush) throw new Error("authenticated GitHub user cannot push to this repository");
-      const baseHeadSha = await getBranchHead(identity.accessToken, input.repository, input.baseRef);
+      const baseHeadSha = await getBranchHead(githubToken, input.repository, input.baseRef);
       if (!baseHeadSha) throw new Error("baseRef does not exist");
       const runId = crypto.randomUUID();
       const objective: HostedObjective = {
@@ -240,9 +379,9 @@ function createServer(): McpServer {
         maxDurationMs: input.maxDurationMs,
       };
       const stub = coordinator(runId);
-      await stub.create(objective, identity.accessToken);
+      await stub.create(objective, githubToken);
       const run = input.autoStart ? await stub.start(identity.login) : await stub.get(identity.login);
-      return textResult({ run, repositoryPrivate: access.private });
+      return textResult({ run, repositoryPrivate: access.private, credentialSource });
     },
   );
 
@@ -327,6 +466,19 @@ function createServer(): McpServer {
     },
   );
 
+  server.registerTool(
+    "request_opstruth_verification",
+    {
+      description: "Ask the configured independent OpsTruth service to re-observe and attest one sealed run, then submit its signed decision. DoneState never signs the result.",
+      inputSchema: { runId: z.string().uuid() },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+    },
+    async ({ runId }, context) => {
+      requireExecutionScope(context);
+      return textResult(await coordinator(runId).requestIndependentVerification(authProps(context).login));
+    },
+  );
+
   return server;
 }
 
@@ -344,7 +496,7 @@ const protectedHandler = {
   },
 };
 
-export default new OAuthProvider({
+const oauthProvider = new OAuthProvider({
   authorizeEndpoint: "/authorize",
   tokenEndpoint: "/oauth/token",
   clientRegistrationEndpoint: "/oauth/register",
@@ -361,3 +513,16 @@ export default new OAuthProvider({
     },
   },
 });
+
+export default {
+  fetch(request: Request, workerEnv: DoneStateEnv, ctx: ExecutionContext) {
+    return oauthProvider.fetch(request, workerEnv, ctx);
+  },
+  scheduled(_controller: ScheduledController, workerEnv: DoneStateEnv, ctx: ExecutionContext) {
+    ctx.waitUntil(workerEnv.MAINTENANCE_REGISTRY.getByName("global").scheduledSweep().then((result) => {
+      console.log(JSON.stringify({ message: "maintenance sweep completed", ...result }));
+    }).catch((error) => {
+      console.error(JSON.stringify({ message: "maintenance sweep failed", error: error instanceof Error ? error.message : "unknown error" }));
+    }));
+  },
+} satisfies ExportedHandler<DoneStateEnv>;

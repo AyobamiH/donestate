@@ -27,6 +27,7 @@ const skillDirectories = (await readdir(skillsRoot, { withFileTypes: true }))
   .sort();
 
 assert.deepEqual(skillDirectories, [
+  "maintain-repository",
   "monitor-objective",
   "run-objective",
   "verify-objective",

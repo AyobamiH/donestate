@@ -5,7 +5,9 @@ description: Use when a DoneState run awaits independent verification or a user 
 
 # Verify a DoneState objective
 
-Call `create_verification_handoff` for the exact run ID. Preserve its handoff digest, verification nonce, execution snapshot digest, exact base and head commits, acceptance criteria, verification requirements, action intent/result digests and event-chain head without alteration.
+First call `get_objective`. If the configured automatic OpsTruth request already produced a terminal state, report it without resubmitting. If the run remains `AWAITING_VERIFICATION`, call `request_opstruth_verification` for the exact run ID. Use the manual handoff sequence below only when the configured bridge is unavailable.
+
+For a manual sequence, call `create_verification_handoff` for the exact run ID. Preserve its handoff digest, verification nonce, execution snapshot digest, exact base and head commits, acceptance criteria, verification requirements, action intent/result digests and event-chain head without alteration.
 
 For a `donestate.verification-handoff.v2`, call `opstruth_attest_donestate_handoff` with the complete handoff. OpsTruth must return the report and signed attestation without submitting it. DoneState, the coding harness and the plugin must never sign their own claims.
 

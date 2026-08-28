@@ -12,12 +12,18 @@ All notable changes follow Keep a Changelog. This project uses Semantic Versioni
 - Exact-head branch and pull-request publication with durable intent and provider effect probes.
 - Encrypted run credentials, bounded redacted action records and deletable terminal run data.
 - Signed independent-verifier handoff for the hosted execution snapshot.
+- Selected-repository maintenance registry, signed GitHub webhooks and a bounded six-hour scheduler.
+- Private GitHub App manifest setup with encrypted credentials and short-lived installation tokens.
+- Read-only maintenance discovery and opt-in `donestate:repair` PR-only repair objectives.
+- Automatic OpsTruth attestation requests for pinned verification runs.
 
 ### Security
 
 - Reject private repositories until short-lived GitHub App installation tokens are available.
 - Require an externally visible branch or pull request before independent verification handoff.
 - Stop uncertain remote effects at `AMBIGUOUS_EFFECT` instead of retrying them.
+- Deny autonomous changes to authority, security, workflow, contract, plugin and deployment configuration paths.
+- Keep failing workflows as evidence only; they cannot trigger repair without an explicitly labeled issue.
 
 ## [0.1.2] - 2026-08-27
 

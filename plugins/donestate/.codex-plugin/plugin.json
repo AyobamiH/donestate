@@ -25,6 +25,7 @@
     "defaultPrompt": [
       "Implement this issue and open a verified PR.",
       "Run this repository objective autonomously.",
+      "Maintain this selected repository with verified PR-only repairs.",
       "Show me the state of my DoneState run."
     ],
     "brandColor": "#2563EB"

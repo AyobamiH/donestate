@@ -13,7 +13,7 @@ export class GitHubError extends Error {
   }
 }
 
-async function githubRequest<T>(token: string, path: string, init: RequestInit = {}): Promise<T> {
+export async function githubRequest<T>(token: string, path: string, init: RequestInit = {}): Promise<T> {
   const response = await fetch(`${GITHUB_API}${path}`, {
     ...init,
     headers: {
@@ -30,6 +30,49 @@ async function githubRequest<T>(token: string, path: string, init: RequestInit =
   }
   if (response.status === 204) return undefined as T;
   return await response.json() as T;
+}
+
+export interface MaintenanceCandidate {
+  source: "github_issue" | "workflow_run";
+  sourceId: string;
+  title: string;
+  detail: string;
+  url: string;
+  repairEligible: boolean;
+}
+
+export async function discoverMaintenanceCandidates(token: string, repository: string): Promise<MaintenanceCandidate[]> {
+  const [issues, workflowRuns] = await Promise.all([
+    githubRequest<Array<{
+      number: number;
+      title: string;
+      body: string | null;
+      html_url: string;
+      pull_request?: unknown;
+    }>>(token, `/repos/${repository}/issues?state=open&labels=donestate%3Arepair&per_page=20`),
+    githubRequest<{ workflow_runs: Array<{ id: number; name: string; display_title: string; html_url: string; head_sha: string }> }>(
+      token,
+      `/repos/${repository}/actions/runs?status=failure&per_page=10`,
+    ),
+  ]);
+  return [
+    ...issues.filter((issue) => !issue.pull_request).map((issue) => ({
+      source: "github_issue" as const,
+      sourceId: String(issue.number),
+      title: issue.title.slice(0, 500),
+      detail: (issue.body ?? "").slice(0, 4_000),
+      url: issue.html_url,
+      repairEligible: true,
+    })),
+    ...workflowRuns.workflow_runs.map((run) => ({
+      source: "workflow_run" as const,
+      sourceId: String(run.id),
+      title: `${run.name}: ${run.display_title}`.slice(0, 500),
+      detail: `Failing workflow run at commit ${run.head_sha}`,
+      url: run.html_url,
+      repairEligible: false,
+    })),
+  ];
 }
 
 export interface RepositoryAccess {

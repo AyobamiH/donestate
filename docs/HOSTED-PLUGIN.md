@@ -4,7 +4,7 @@ DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin packa
 
 Hosted endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
 
-The Worker and Container application are deployed. Public reachability and OAuth protection have been verified; authenticated GitHub OAuth, user-funded OpenAI credential setup and an end-to-end repository objective remain required canaries before directory submission.
+The Worker and Container application are deployed. Public reachability, OAuth protection, authenticated GitHub OAuth, user-funded OpenAI credential setup, an end-to-end pull-request objective, and the independent OpsTruth v2 round trip have been verified. GitHub App maintenance must now pass its own deployed canary before directory submission.
 
 ## What the hosted slice does
 
@@ -98,7 +98,7 @@ Before submitting the plugin to the universal ChatGPT and Codex directory:
 - deploy the Worker to its stable hostname
 - verify OAuth login, consent, execution, cancellation and deletion through the hosted client
 - verify OpenAI credential connection, replacement, quota enforcement and deletion without placing a key in ChatGPT
-- run an end-to-end public-repository branch and pull-request canary
+- retain the completed public-repository branch and pull-request canary evidence
 - test crash recovery at every remote mutation boundary
 - retrieve the independent OpsTruth verifier identity, pin its DoneState-compatible fingerprint and prove one synthetic plus one live v2 round trip
 - publish and review the privacy policy and terms at the manifest URLs
@@ -107,4 +107,4 @@ Before submitting the plugin to the universal ChatGPT and Codex directory:
 
 ## Explicitly incomplete capabilities
 
-The preview does not yet implement private repositories, GitHub App installation tokens, merge queues, deployment or package publication, scheduled maintenance, a global queue, repository leases, multi-repository objectives, hardware-backed verifier-key custody, external event anchoring or fleet SLOs. These remain roadmap work and must not be implied by the plugin listing.
+The production preview does not yet enable the in-development GitHub App installation-token path, selected-repository scheduler, or PR-only maintenance loop. It also does not implement merge queues, deployment or package publication, multi-repository objectives, hardware-backed verifier-key custody, external event anchoring or fleet SLOs. These remain gated work and must not be implied by the plugin listing.

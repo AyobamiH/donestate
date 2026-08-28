@@ -1,6 +1,7 @@
 import type { AuthRequest, OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 import { digest } from "./canonical";
 import { credentialSettingsHandler } from "./credential-settings";
+import { githubAppSettingsHandler, githubWebhookHandler } from "./github-app-settings";
 import type { DoneStateEnv } from "./environment";
 import { exchangeGitHubCode, getAuthenticatedUser } from "./github";
 import type { GitHubAuthProps } from "./types";
@@ -190,6 +191,10 @@ export const authHandler = {
       if (url.pathname === "/authorize" && request.method === "POST") return await approve(request, env);
       if (url.pathname === "/callback" && request.method === "GET") return await callback(request, env);
       if (url.pathname === "/settings/openai") return await credentialSettingsHandler.fetch(request, env);
+      if (url.pathname === "/settings/github-app" || url.pathname === "/settings/github-app/callback") {
+        return await githubAppSettingsHandler.fetch(request, env);
+      }
+      if (url.pathname === "/webhooks/github") return await githubWebhookHandler.fetch(request, env);
       if (url.pathname === "/" && request.method === "GET") return home();
       return new Response("Not found", { status: 404 });
     } catch (error) {
