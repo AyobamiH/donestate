@@ -30,6 +30,8 @@ export interface ExecutionResult {
   pullRequestUrl: string | null;
 }
 
+export const CODEX_IMPLEMENT_COMMAND = "codex --ask-for-approval never exec --json --sandbox workspace-write --ephemeral --ignore-user-config -";
+
 function actionIdempotency(runId: string, actionId: string): string {
   return `${runId}:${actionId}:v1`;
 }
@@ -233,10 +235,10 @@ export async function executeObjective(
       objective,
       "implement",
       "local_write",
-      "codex exec --json --sandbox workspace-write --ask-for-approval never -",
+      CODEX_IMPLEMENT_COMMAND,
       {
         cwd: repositoryPath,
-        env: { HOME: "/workspace/home", OPENAI_API_KEY: openaiApiKey },
+        env: { HOME: "/workspace/home", CODEX_API_KEY: openaiApiKey },
         stdin: prompt,
         timeout: objective.maxDurationMs,
       },
