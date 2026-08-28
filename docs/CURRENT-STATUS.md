@@ -11,7 +11,7 @@ As of 2026-08-28, DoneState has a public local release and a deployed hosted pre
 ## Hosted preview
 
 - Worker version: `0.2.0`
-- production main commit: `179e02c1a99dab780cabe09c4f5882e7e492ad18`
+- deployed Worker source commit: `179e02c1a99dab780cabe09c4f5882e7e492ad18`
 - endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
 - deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33210941821` (`success`)
 - verified baseline: GitHub OAuth, encrypted user-funded OpenAI key, Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable reconciliation, and OpsTruth v2 attestation
@@ -30,7 +30,7 @@ The public canary run `631d8a08-d337-4bae-bd18-b55c31f48a8b` reached `VERIFIED`.
 
 These items are not production capability until the branch is reviewed, merged, deployed, the GitHub App is created and installed on selected repositories, and a new exact-head canary passes.
 
-The branch was reviewed in pull request `#6`, passed remote CI, merged, and deployed from the exact main commit above. The GitHub App still must be created through the owner-only setup flow, installed on an explicitly selected repository, and exercised through read-only discovery plus one PR-only OpsTruth-verified repair canary. Until those activation steps pass, the code is deployed but autonomous maintenance and private-repository support are not production-verified capabilities.
+The branch was reviewed in pull request `#6`, passed remote CI, merged, and deployed from the exact Worker source commit above. The GitHub App still must be created through the owner-only setup flow, installed on an explicitly selected repository, and exercised through read-only discovery plus one PR-only OpsTruth-verified repair canary. Until those activation steps pass, the code is deployed but autonomous maintenance and private-repository support are not production-verified capabilities.
 
 ## Not implemented
 
