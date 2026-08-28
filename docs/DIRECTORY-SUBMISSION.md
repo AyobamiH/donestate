@@ -58,4 +58,4 @@ It does not merge pull requests, deploy services, publish packages, or claim tha
 
 ## Publication state
 
-`NOT SUBMITTED` — maintenance code is under review and the deployed canary, publisher verification, and production legal-policy gates remain open.
+`NOT SUBMITTED` — maintenance code is deployed, but GitHub App activation, the maintenance canary, publisher verification, and production legal-policy gates remain open.
