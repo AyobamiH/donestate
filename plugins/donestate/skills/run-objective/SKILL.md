@@ -5,7 +5,7 @@ description: Use when a user wants DoneState to implement, repair, maintain or o
 
 # Run a DoneState objective
 
-Turn prose into one bounded, reviewable execution contract. DoneState performs authorised work. It does not verify its own completion.
+Turn prose into one bounded, reviewable execution contract. DoneState, [Proof & State](https://proofandstate.com)'s authorised execution plane for [AI Work Accountability](https://aiworkaccountability.com), acts only within explicitly granted authority. It does not verify its own completion; [OpsTruth](https://opstruth.io) is the independent read-only verification plane.
 
 ## User-funded execution
 

@@ -1,5 +1,7 @@
 # Trust model
 
+Within [Proof & State](https://proofandstate.com)'s [AI Work Accountability](https://aiworkaccountability.com) architecture, [DoneState](https://proofandstate.com/donestate) is the authorised execution plane and [OpsTruth](https://opstruth.io) is the independent read-only verification plane. DoneState cannot use its own execution record as independent proof.
+
 ## Roles
 
 | Role | Trusted for | Not trusted for |
@@ -9,7 +11,7 @@
 | DoneState controller | Deterministic admission, ordering and durable records | Independent completion proof |
 | Coding harness | Candidate implementation | Authority, policy or terminal truth |
 | Action executor | Performing a bounded effect | Verifying its own outcome |
-| Independent verifier | Observing evidence and signing a decision | Changing the execution snapshot |
+| OpsTruth or another independent verifier | Read-only evidence observation and signing a decision | Executing work or changing the execution snapshot |
 
 ## Verification trust
 

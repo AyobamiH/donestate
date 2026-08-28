@@ -5,13 +5,13 @@
 
 ## Context
 
-OpsTruth is a read-only evidence and verification product. Turning it into a write-capable autonomous agent would collapse the independence that gives its conclusions value. AgentProof separately defines authorisation, execution and signed-receipt transactions for consequential actions.
+[Proof & State](https://proofandstate.com) is the parent company defining the [AI Work Accountability](https://aiworkaccountability.com) category. Its product architecture requires execution and verification to remain separate: [OpsTruth](https://opstruth.io) is a read-only evidence and verification product, and turning it into a write-capable autonomous agent would collapse the independence that gives its conclusions value.
 
 ## Decision
 
-DoneState is a separate product and repository. It owns desired-state orchestration, standing authority, durable scheduling, harness execution, reconciliation and verification handoff.
+[DoneState](https://proofandstate.com/donestate) is the authorised execution plane and a separate product and repository. It owns desired-state orchestration, explicitly granted authority, durable scheduling, harness execution, reconciliation and verification handoff.
 
-OpsTruth remains independent and read-only. AgentProof remains the transaction and receipt layer. DoneState cannot issue its own terminal verification attestation.
+OpsTruth remains the independent read-only verification plane. DoneState cannot issue its own terminal verification attestation or claim that its execution proves completion.
 
 ## Consequences
 

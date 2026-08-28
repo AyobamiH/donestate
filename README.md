@@ -1,8 +1,8 @@
 # DoneState
 
-**DoneState completes the work. OpsTruth proves it.**
+**DoneState executes authorised work. OpsTruth independently verifies the evidence.**
 
-DoneState is a durable control plane for autonomous coding work in existing repositories. Give it a prose outcome and a standing authority envelope. It runs a coding harness, executes deterministic validation, survives ordinary restarts, and seals the exact result for an independent verifier.
+[DoneState](https://proofandstate.com/donestate) is the authorised execution plane from [Proof & State](https://proofandstate.com), the company defining the [AI Work Accountability](https://aiworkaccountability.com) category. Give DoneState a prose outcome and an explicit authority envelope: it runs a coding harness within that boundary, executes deterministic validation, survives ordinary restarts, and seals the exact result for independent verification by [OpsTruth](https://opstruth.io), the read-only verification plane.
 
 It is deliberately not another coding model. Codex, Pi, OpenClaw or another process can be the harness. DoneState owns the parts that should not depend on model judgement: admission, authority, budgets, leases, idempotency, state transitions, audit evidence and completion semantics.
 
@@ -113,13 +113,18 @@ A run reaches `VERIFIED` only when all of these are true:
 
 See [Architecture](docs/ARCHITECTURE.md), [Trust model](docs/TRUST-MODEL.md) and [Threat model](docs/THREAT-MODEL.md).
 
-## Product boundaries
+## Brand and product boundaries
+
+- **Proof & State** is the parent company: [proofandstate.com](https://proofandstate.com).
+- **AI Work Accountability** is the category: [aiworkaccountability.com](https://aiworkaccountability.com).
+- **DoneState** is the authorised execution plane, initially at [proofandstate.com/donestate](https://proofandstate.com/donestate). It acts only within explicitly granted authority and never proves its own completion.
+- **OpsTruth** is the independent, read-only verification plane: [opstruth.io](https://opstruth.io). It verifies evidence without executing or changing the work.
 
 Version 0.1 provides the durable local controller, process-harness adapter, policy enforcement, Git changed-file budget, tamper-evident event chain, recovery semantics, signed verification handoff and CLI. Version 0.2 development adds the hosted public-repository execution slice described above.
 
 The local CLI does not provide a hosted multi-tenant control plane or operating-system sandbox. The hosted preview does not yet provide private-repository GitHub App credentials, merge queues, managed verifier keys, a general secret broker or production fleet controls. Its credential vault is limited to each authenticated user's OpenAI execution key. Remote publication remains denied until its authority class is explicitly granted.
 
-AgentProof remains the transaction and signed-receipt layer for consequential actions. OpsTruth remains the independent read-only verifier. DoneState neither duplicates their roles nor treats its own observations as proof.
+DoneState and OpsTruth preserve a deliberate trust boundary: DoneState executes authorised work and produces a sealed evidence handoff; OpsTruth independently inspects evidence as a read-only verifier. DoneState never treats its own observations or successful execution as proof.
 
 ## Development
 

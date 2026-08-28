@@ -7,7 +7,7 @@ description: Use when a DoneState run awaits independent verification or a user 
 
 Call `create_verification_handoff` for the exact run ID. Preserve its execution snapshot digest, repository root, acceptance criteria, action digests and event-chain head without alteration.
 
-Use an independent read-only verifier such as OpsTruth against the exact public repository snapshot. DoneState, the coding harness and the plugin must never sign their own claims.
+Use [OpsTruth](https://opstruth.io), the independent read-only verification plane, or another independent verifier against the exact public repository snapshot. DoneState, [Proof & State](https://proofandstate.com)'s authorised execution plane for [AI Work Accountability](https://aiworkaccountability.com), the coding harness and the plugin must never sign their own claims.
 
 Only call `submit_verifier_attestation` when all of these are present:
 

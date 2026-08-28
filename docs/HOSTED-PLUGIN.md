@@ -1,6 +1,8 @@
 # Hosted ChatGPT plugin preview
 
-DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. It is a deployed preview, not a published or production-certified service.
+[DoneState](https://proofandstate.com/donestate), the authorised execution plane from [Proof & State](https://proofandstate.com), introduces a hosted MCP execution plane and a ChatGPT plugin package in 0.2. It belongs to the [AI Work Accountability](https://aiworkaccountability.com) category. This is a deployed preview, not a published or production-certified service.
+
+[OpsTruth](https://opstruth.io) is the separate, independent read-only verification plane. DoneState acts only within explicitly granted authority, seals an evidence handoff, and cannot prove its own completion.
 
 Hosted endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
 
@@ -16,7 +18,7 @@ The Worker and Container application are deployed. Public reachability and OAuth
 6. Deterministic code installs locked Node dependencies when applicable, validates the diff, enforces the changed-file budget and creates a commit.
 7. Only then does the sandbox receive the GitHub credential for the exact branch push. Credentials are removed immediately and the per-run container is destroyed.
 8. DoneState seals a verification handoff and stops at `AWAITING_VERIFICATION`.
-9. Only a pinned Ed25519 attestation from an independent verifier can produce `VERIFIED`.
+9. Only a pinned Ed25519 attestation from an independent read-only verifier such as OpsTruth can produce `VERIFIED`.
 
 The MCP surface also contains `get_openai_credential_status`, `create_openai_credential_setup` and `delete_openai_credential`. The setup link expires after ten minutes and is single-use. The execution surface contains `create_objective`, `start_objective`, `get_objective`, `cancel_objective`, `delete_objective`, `create_verification_handoff` and `submit_verifier_attestation`.
 
