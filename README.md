@@ -117,7 +117,7 @@ See [Architecture](docs/ARCHITECTURE.md), [Trust model](docs/TRUST-MODEL.md) and
 
 Version 0.1 provides the durable local controller, process-harness adapter, policy enforcement, Git changed-file budget, tamper-evident event chain, recovery semantics, signed verification handoff and CLI. Version 0.2 development adds the hosted public-repository execution slice described above.
 
-The local CLI does not provide a hosted multi-tenant control plane or operating-system sandbox. The production Worker does not yet enable the in-development GitHub App maintenance slice, merge queues, merge/deployment/release execution, managed verifier keys, a general secret broker or production fleet controls. Its credential vault is limited to each authenticated user's OpenAI execution key. Remote publication remains denied until its authority class is explicitly granted.
+The local CLI does not provide a hosted multi-tenant control plane or operating-system sandbox. The production Worker contains the GitHub App maintenance slice, but it is not production-verified until owner setup, selected installation, and a PR-only canary pass. DoneState does not enable merge queues, merge/deployment/release execution, managed verifier keys, a general secret broker, or production fleet controls. Its credential vault is limited to each authenticated user's OpenAI execution key. Remote publication remains denied until its authority class is explicitly granted.
 
 AgentProof remains the transaction and signed-receipt layer for consequential actions. OpsTruth remains the independent read-only verifier. DoneState neither duplicates their roles nor treats its own observations as proof.
 

@@ -105,6 +105,8 @@ Before submitting the plugin to the universal ChatGPT and Codex directory:
 - replace the local MCP URL and validate the plugin archive
 - complete threat modelling, incident response, rate limits, abuse controls and retention controls
 
-## Explicitly incomplete capabilities
+## Deployed but not activated
 
-The production preview does not yet enable the in-development GitHub App installation-token path, selected-repository scheduler, or PR-only maintenance loop. It also does not implement merge queues, deployment or package publication, multi-repository objectives, hardware-backed verifier-key custody, external event anchoring or fleet SLOs. These remain gated work and must not be implied by the plugin listing.
+The production Worker now contains the GitHub App installation-token path, selected-repository registry, signed webhooks, bounded scheduler, read-only discovery, PR-only repair loop, and automatic OpsTruth request. The owner-only GitHub App setup, selected installation, and exact-head maintenance canary have not completed, so those paths are deployed code rather than production-verified capability.
+
+DoneState still does not implement merge queues, deployment or package publication, multi-repository objectives, hardware-backed verifier-key custody, external event anchoring, or fleet SLOs. These remain gated work and must not be implied by the plugin listing.

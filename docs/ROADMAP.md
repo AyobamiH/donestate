@@ -11,21 +11,21 @@
 
 ## 0.2: provider transactions
 
-- ChatGPT and Codex plugin control surface with prose-first objective skills. Implemented in development.
-- OAuth 2.1 MCP transport, durable hosted run coordination and isolated Codex execution. Implemented in development.
-- Exact-head branch push and pull-request actions with durable effect probes. Implemented in development.
+- ChatGPT and Codex plugin control surface with prose-first objective skills. Deployed preview; directory submission pending.
+- OAuth 2.1 MCP transport, durable hosted run coordination and isolated Codex execution. Deployed and canary-verified for the public-repository path.
+- Exact-head branch push and pull-request actions with durable effect probes. Deployed and canary-verified for the public-repository path.
 - First-class AgentProof repository-patch adapter.
-- GitHub App manifest setup, encrypted credentials and short-lived selected-repository installation tokens. Implemented on the autonomous-maintenance branch; production canary pending.
+- GitHub App manifest setup, encrypted credentials and short-lived selected-repository installation tokens. Deployed; owner setup, selected installation and production canary pending.
 - Merge-queue action with exact-head preconditions.
 - Native Pi and OpenClaw session metadata adapters.
-- Automatic independent OpsTruth attestation request and pinned signer acceptance. Implemented on the autonomous-maintenance branch; production canary pending.
+- Automatic independent OpsTruth attestation request and pinned signer acceptance. Deployed; maintenance-path production canary pending.
 
 ## 0.3: autonomous maintenance
 
 - Durable objective queue with deduplication and priority lanes.
 - Admission backpressure and repository leases.
 - Semantic findings, patch attempts, targeted repair and separate revalidation.
-- Selected-repository registry, signed webhooks, six-hour discovery schedule and PR-only labeled-issue repair. Implemented on the autonomous-maintenance branch; production canary pending.
+- Selected-repository registry, signed webhooks, six-hour discovery schedule and PR-only labeled-issue repair. Deployed; activation and production canary pending.
 - Broader drift reconciliation and global priority lanes remain pending.
 
 ## 0.4: managed execution plane
@@ -38,4 +38,4 @@
 
 CrabBox and ClawPatch are deferred provider adapters. They may be added only after recorded evidence shows Cloudflare Sandbox and direct Codex execution cannot satisfy a named requirement. Multi-repository and fleet authority remains last.
 
-The version numbers are product milestones, not promises of dates. "Implemented in development" means present on the feature branch, not deployed, published or production-certified. Security and independent-verification invariants remain release gates.
+The version numbers are product milestones, not promises of dates. "Deployed" means code reached the production Worker; it does not imply that an unconfigured provider path or unpassed canary is production-verified. Security and independent-verification invariants remain release gates.

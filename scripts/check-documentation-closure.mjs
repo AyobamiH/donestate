@@ -11,7 +11,7 @@ const [readme, hosted, status] = await Promise.all([
 if (/full hosted canary remain|required canaries before directory submission/.test(`${readme}\n${hosted}`)) {
   throw new Error("documentation still claims the completed hosted canary is pending");
 }
-for (const subject of ["be68e820149f94f8489ab6a04e6e49d00abd90cd", "631d8a08-d337-4bae-bd18-b55c31f48a8b", "AWAITING_VERIFICATION"]) {
+for (const subject of ["179e02c1a99dab780cabe09c4f5882e7e492ad18", "33210941821", "631d8a08-d337-4bae-bd18-b55c31f48a8b", "AWAITING_VERIFICATION"]) {
   if (!`${status}\n${hosted}`.includes(subject)) throw new Error(`current status is missing required subject: ${subject}`);
 }
 console.log("documentation closure: ok");
