@@ -76,13 +76,20 @@ describe("OpenAI API key admission", () => {
 
   it("fails closed after two transport attempts without exposing the key", async () => {
     const key = "test-unreachable-credential-not-a-secret-555555555555";
-    const request = vi.fn(async () => { throw new TypeError("network connection lost"); });
+    const request = vi.fn(async () => {
+      throw new TypeError(`network connection lost for ${key}`, {
+        cause: new Error(`nested failure for ${key}`),
+      });
+    });
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
     vi.stubGlobal("fetch", request);
 
     await expect(verifyOpenAIApiKey(key)).rejects.toThrow("after two attempts");
 
     expect(request).toHaveBeenCalledTimes(2);
-    expect(JSON.stringify(consoleError.mock.calls)).not.toContain(key);
+    const logs = JSON.stringify(consoleError.mock.calls);
+    expect(logs).not.toContain(key);
+    expect(logs).toContain("[REDACTED]");
+    expect(logs).toContain("nested failure");
   });
 });

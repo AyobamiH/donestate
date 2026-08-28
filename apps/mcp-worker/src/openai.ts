@@ -15,12 +15,28 @@ function errorCode(error: unknown): string | number | null {
   return typeof code === "string" || typeof code === "number" ? code : null;
 }
 
-function logTransportFailure(error: unknown, attempt: number): void {
+function redactCredential(value: unknown, key: string): string | null {
+  if (typeof value !== "string") return null;
+  return value
+    .replaceAll(key, "[REDACTED]")
+    .replace(/\bsk-[A-Za-z0-9_-]{8,}\b/g, "[REDACTED]")
+    .slice(0, 500);
+}
+
+function causeField(error: unknown, field: "name" | "message"): unknown {
+  if (!(error instanceof Error) || !error.cause || typeof error.cause !== "object") return null;
+  return Reflect.get(error.cause, field);
+}
+
+function logTransportFailure(error: unknown, attempt: number, key: string): void {
   console.error(JSON.stringify({
     message: "OpenAI credential verification transport failure",
     attempt,
     errorName: error instanceof Error ? error.name : "UnknownError",
+    errorMessage: redactCredential(error instanceof Error ? error.message : null, key),
     errorCode: errorCode(error),
+    causeName: redactCredential(causeField(error, "name"), key),
+    causeMessage: redactCredential(causeField(error, "message"), key),
   }));
 }
 
@@ -57,7 +73,7 @@ export async function verifyOpenAIApiKey(value: string): Promise<string> {
       });
     } catch (error) {
       lastTransportError = error;
-      logTransportFailure(error, attempt);
+      logTransportFailure(error, attempt, key);
       continue;
     }
     await discardResponse(response);
