@@ -27,7 +27,7 @@ describe("OpenAI API key admission", () => {
         Authorization: `Bearer ${key}`,
         "Cache-Control": "no-store",
       });
-      expect(init?.redirect).toBe("error");
+      expect(init?.redirect).toBe("manual");
       return new Response('{"sensitive":"ignored"}', { status: 200 });
     });
     vi.stubGlobal("fetch", request);
@@ -72,6 +72,18 @@ describe("OpenAI API key admission", () => {
 
     await expect(verifyOpenAIApiKey(key)).rejects.toThrow("could not verify");
     expect(request).toHaveBeenCalledTimes(2);
+  });
+
+  it("fails closed without following an unexpected redirect", async () => {
+    const key = "test-redirected-credential-not-a-secret-454545454545";
+    const request = vi.fn(async () => new Response(null, {
+      status: 302,
+      headers: { Location: "https://example.com/untrusted" },
+    }));
+    vi.stubGlobal("fetch", request);
+
+    await expect(verifyOpenAIApiKey(key)).rejects.toThrow("could not verify");
+    expect(request).toHaveBeenCalledOnce();
   });
 
   it("fails closed after two transport attempts without exposing the key", async () => {

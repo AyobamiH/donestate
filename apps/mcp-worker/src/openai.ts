@@ -68,7 +68,7 @@ export async function verifyOpenAIApiKey(value: string): Promise<string> {
           Authorization: `Bearer ${key}`,
           "Cache-Control": "no-store",
         },
-        redirect: "error",
+        redirect: "manual",
         signal: AbortSignal.timeout(OPENAI_VERIFICATION_TIMEOUT_MS),
       });
     } catch (error) {
