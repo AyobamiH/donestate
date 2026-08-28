@@ -2,7 +2,7 @@
 
 Last updated: 27 August 2026
 
-This notice describes the DoneState hosted plugin preview implemented in this repository. The public command-line package runs locally and does not operate a hosted account by itself.
+[DoneState](https://proofandstate.com/donestate) is the authorised execution product from [Proof & State](https://proofandstate.com) in the [AI Work Accountability](https://aiworkaccountability.com) category. [OpsTruth](https://opstruth.io) is the separate, independent read-only verification product. This notice describes the DoneState hosted plugin preview implemented in this repository. The public command-line package runs locally and does not operate a hosted account by itself.
 
 ## Data processed
 
@@ -17,7 +17,7 @@ When connected to the hosted plugin, DoneState may process:
 
 ## Purpose and service providers
 
-The data is used to authenticate the operator, execute the authorised repository objective, preserve durable recovery and audit state, publish the authorised result, and request independent verification. A deployment uses Cloudflare for hosted execution and storage, GitHub for repository access and OAuth, and OpenAI for the coding harness. OpenAI API usage is billed to the account that issued the user's connected key, not to a shared DoneState account.
+The data is used to authenticate the operator, execute a repository objective only within explicitly granted authority, preserve durable recovery and audit state, publish the authorised result, and prepare evidence for independent verification. DoneState does not verify its own work; OpsTruth's read-only verification plane remains independent. A deployment uses Cloudflare for hosted execution and storage, GitHub for repository access and OAuth, and OpenAI for the coding harness. OpenAI API usage is billed to the account that issued the user's connected key, not to a shared DoneState account.
 
 ## Retention and deletion
 

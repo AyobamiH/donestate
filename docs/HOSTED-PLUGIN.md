@@ -1,6 +1,6 @@
 # Hosted ChatGPT plugin preview
 
-DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. It is a deployed preview, not a published or production-certified service.
+[DoneState](https://proofandstate.com/donestate), a [Proof & State](https://proofandstate.com) product in the [AI Work Accountability](https://aiworkaccountability.com) category, is the authorised execution plane. [OpsTruth](https://opstruth.io) is the separate, independent read-only verification plane. DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. It is a deployed preview, not a published or production-certified service.
 
 Hosted endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
 
@@ -15,8 +15,8 @@ The Worker and Container application are deployed. Public reachability and OAuth
 5. A Cloudflare Sandbox clones the pinned public base commit without a GitHub credential and runs a pinned Codex CLI without interactive approval using that user's key.
 6. Deterministic code installs locked Node dependencies when applicable, validates the diff, enforces the changed-file budget and creates a commit.
 7. Only then does the sandbox receive the GitHub credential for the exact branch push. Credentials are removed immediately and the per-run container is destroyed.
-8. DoneState seals a verification handoff and stops at `AWAITING_VERIFICATION`.
-9. Only a pinned Ed25519 attestation from an independent verifier can produce `VERIFIED`.
+8. DoneState seals a verification handoff and stops at `AWAITING_VERIFICATION`; its execution evidence is not self-verification.
+9. OpsTruth, operating as the independent read-only verification plane, can inspect the sealed evidence. Only a pinned Ed25519 attestation from an independent verifier can produce `VERIFIED`.
 
 The MCP surface also contains `get_openai_credential_status`, `create_openai_credential_setup` and `delete_openai_credential`. The setup link expires after ten minutes and is single-use. The execution surface contains `create_objective`, `start_objective`, `get_objective`, `cancel_objective`, `delete_objective`, `create_verification_handoff` and `submit_verifier_attestation`.
 

@@ -5,6 +5,8 @@ description: Use when a user wants the status, history, cancellation or deletion
 
 # Monitor a DoneState objective
 
+DoneState (<https://proofandstate.com/donestate>) is Proof & State's (<https://proofandstate.com>) authorised execution plane in the AI Work Accountability category (<https://aiworkaccountability.com>). OpsTruth (<https://opstruth.io>) is the separate, independent read-only verification plane. DoneState executes only within explicitly granted authority and does not prove its own completion.
+
 Use `get_objective` with the exact run ID. Report the durable state, published branch or pull request, last safe error, and the action that caused a block or ambiguity.
 
 Treat states precisely:

@@ -1,8 +1,10 @@
 # DoneState
 
-**DoneState completes the work. OpsTruth proves it.**
+**Authorised execution by DoneState. Independent verification by OpsTruth.**
 
-DoneState is a durable control plane for autonomous coding work in existing repositories. Give it a prose outcome and a standing authority envelope. It runs a coding harness, executes deterministic validation, survives ordinary restarts, and seals the exact result for an independent verifier.
+[Proof & State](https://proofandstate.com) is the parent company defining the [AI Work Accountability](https://aiworkaccountability.com) category. [DoneState](https://proofandstate.com/donestate) is its authorised execution plane for autonomous coding work in existing repositories, while [OpsTruth](https://opstruth.io) is the independent, read-only verification plane.
+
+Give DoneState a prose outcome and an explicitly granted authority envelope. Within that boundary, it runs a coding harness, executes deterministic validation, survives ordinary restarts, and seals the exact result for independent verification by OpsTruth. DoneState executes work; it never proves its own completion.
 
 It is deliberately not another coding model. Codex, Pi, OpenClaw or another process can be the harness. DoneState owns the parts that should not depend on model judgement: admission, authority, budgets, leases, idempotency, state transitions, audit evidence and completion semantics.
 
@@ -119,7 +121,7 @@ Version 0.1 provides the durable local controller, process-harness adapter, poli
 
 The local CLI does not provide a hosted multi-tenant control plane or operating-system sandbox. The hosted preview does not yet provide private-repository GitHub App credentials, merge queues, managed verifier keys, a general secret broker or production fleet controls. Its credential vault is limited to each authenticated user's OpenAI execution key. Remote publication remains denied until its authority class is explicitly granted.
 
-AgentProof remains the transaction and signed-receipt layer for consequential actions. OpsTruth remains the independent read-only verifier. DoneState neither duplicates their roles nor treats its own observations as proof.
+Within the Proof & State product architecture, DoneState remains the authorised execution plane and OpsTruth remains the independent read-only verification plane. DoneState neither duplicates that verification role nor treats its own observations as proof.
 
 ## Development
 

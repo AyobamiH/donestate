@@ -1,12 +1,12 @@
 {
   "name": "donestate",
   "version": "0.2.0",
-  "description": "Governed autonomous coding with durable execution and independent verification handoff.",
+  "description": "Proof & State's authorised execution plane for AI Work Accountability, with independent OpsTruth verification handoff.",
   "author": {
-    "name": "AyobamiH",
-    "url": "https://github.com/AyobamiH"
+    "name": "Proof & State",
+    "url": "https://proofandstate.com"
   },
-  "homepage": "https://github.com/AyobamiH/donestate",
+  "homepage": "https://proofandstate.com/donestate",
   "repository": "https://github.com/AyobamiH/donestate",
   "license": "Apache-2.0",
   "keywords": ["autonomous-coding", "developer-tools", "github", "mcp", "verification"],
@@ -14,16 +14,16 @@
   "apps": "./.app.json",
   "interface": {
     "displayName": "DoneState",
-    "shortDescription": "Governed autonomous coding with proof handoff.",
-    "longDescription": "Describe a repository outcome in prose, approve one bounded consequence envelope, and let DoneState run, validate and publish the change in an isolated durable workflow. DoneState stops at independent verification and never treats its own completion claim as proof.",
-    "developerName": "AyobamiH",
+    "shortDescription": "Authorised execution with independent verification.",
+    "longDescription": "DoneState is Proof & State's authorised execution plane in the AI Work Accountability category. Describe a repository outcome, explicitly approve one bounded consequence envelope, and let DoneState run, validate and publish within that authority. OpsTruth is the independent read-only verification plane; DoneState never treats its own execution evidence as proof.",
+    "developerName": "Proof & State",
     "category": "Productivity",
     "capabilities": ["Interactive", "Write"],
-    "websiteURL": "https://github.com/AyobamiH/donestate",
+    "websiteURL": "https://proofandstate.com/donestate",
     "privacyPolicyURL": "https://github.com/AyobamiH/donestate/blob/main/docs/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/AyobamiH/donestate/blob/main/docs/TERMS.md",
     "defaultPrompt": [
-      "Implement this issue and open a verified PR.",
+      "Implement this issue within my approved authority and prepare it for independent verification.",
       "Run this repository objective autonomously.",
       "Show me the state of my DoneState run."
     ],
