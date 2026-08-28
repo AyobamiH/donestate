@@ -1,0 +1,102 @@
+name: Diagnose Worker transport
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/chatgpt-plugin-0.2.0
+    paths:
+      - .github/workflows/diagnose-worker.yml
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Query sanitised Worker transport failures
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "Cloudflare deployment credentials are not configured" >&2
+            exit 1
+          fi
+
+          end_ms="$(date +%s%3N)"
+          start_ms="$((end_ms - 2 * 60 * 60 * 1000))"
+          response_file="$RUNNER_TEMP/cloudflare-observability-response.json"
+          request_file="$RUNNER_TEMP/cloudflare-observability-request.json"
+
+          jq -n \
+            --argjson from "$start_ms" \
+            --argjson to "$end_ms" \
+            '{
+              queryId: "donestate-openai-transport-diagnostic",
+              timeframe: {from: $from, to: $to},
+              view: "events",
+              limit: 50,
+              parameters: {
+                datasets: [],
+                filterCombination: "and",
+                filters: [
+                  {
+                    key: "$metadata.service",
+                    operation: "eq",
+                    type: "string",
+                    value: "donestate-mcp"
+                  }
+                ],
+                needle: {
+                  value: "OpenAI credential verification transport failure",
+                  isRegex: false,
+                  matchCase: true
+                }
+              }
+            }' > "$request_file"
+
+          status="$(curl --silent --show-error \
+            --output "$response_file" \
+            --write-out '%{http_code}' \
+            --request POST \
+            --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            --header "Content-Type: application/json" \
+            --data-binary "@$request_file" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query")"
+
+          if [[ ! "$status" =~ ^2 ]] || ! jq -e '.success == true' "$response_file" >/dev/null; then
+            echo "Cloudflare observability query failed with HTTP $status" >&2
+            jq -r '.errors[]?.message // empty' "$response_file" >&2
+            exit 1
+          fi
+
+          diagnostics="$(jq -c '
+            [
+              .result.events.events[]?
+              | . as $event
+              | ($event["$metadata"].message? // empty)
+              | if type == "string" then (fromjson? // empty)
+                elif type == "object" then .
+                else empty
+                end
+              | select(.message == "OpenAI credential verification transport failure")
+              | {
+                  timestamp: $event.timestamp,
+                  attempt: .attempt,
+                  errorName: .errorName,
+                  errorCode: .errorCode
+                }
+            ]
+          ' "$response_file")"
+
+          if [ "$(jq 'length' <<<"$diagnostics")" -eq 0 ]; then
+            echo "No matching sanitised transport failures were found" >&2
+            exit 1
+          fi
+
+          jq . <<<"$diagnostics"
