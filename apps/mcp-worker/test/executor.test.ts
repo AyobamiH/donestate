@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CODEX_IMPLEMENT_COMMAND } from "../src/executor";
+import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, decodeChangedFiles } from "../src/executor";
 
 describe("hosted Codex executor contract", () => {
   it("places global flags before exec and transports the objective as one argument", () => {
@@ -12,5 +12,18 @@ describe("hosted Codex executor contract", () => {
     expect(CODEX_IMPLEMENT_COMMAND).toContain("shell_environment_policy.inherit");
     expect(CODEX_IMPLEMENT_COMMAND).toContain("\"$DONESTATE_OBJECTIVE\"");
     expect(CODEX_IMPLEMENT_COMMAND).not.toMatch(/\s-\s*$/);
+  });
+
+  it("counts a complete NUL-delimited changed-file inventory without duplicates", () => {
+    const encoded = btoa("README.md\0docs/TRUST-MODEL.md\0new-file.md\0README.md\0");
+
+    expect(decodeChangedFiles(encoded)).toEqual([
+      "README.md",
+      "docs/TRUST-MODEL.md",
+      "new-file.md",
+    ]);
+    expect(CHANGED_FILES_COMMAND).toContain("git diff --name-only -z HEAD");
+    expect(CHANGED_FILES_COMMAND).toContain("git ls-files --others --exclude-standard -z");
+    expect(CHANGED_FILES_COMMAND).toContain("base64 -w0");
   });
 });

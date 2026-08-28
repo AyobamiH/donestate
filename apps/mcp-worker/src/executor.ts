@@ -31,6 +31,16 @@ export interface ExecutionResult {
 }
 
 export const CODEX_IMPLEMENT_COMMAND = "codex --ask-for-approval never --config 'shell_environment_policy.inherit=\"core\"' exec --json --sandbox workspace-write --ephemeral --ignore-user-config \"$DONESTATE_OBJECTIVE\"";
+export const CHANGED_FILES_COMMAND = "{ git diff --name-only -z HEAD; git ls-files --others --exclude-standard -z; } | base64 -w0";
+
+export function decodeChangedFiles(encoded: string): string[] {
+  const value = encoded.trim();
+  if (!value) return [];
+  const binary = atob(value);
+  const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+  const decoded = new TextDecoder("utf-8", { fatal: true, ignoreBOM: false }).decode(bytes);
+  return [...new Set(decoded.split("\0").filter(Boolean))];
+}
 
 function actionIdempotency(runId: string, actionId: string): string {
   return `${runId}:${actionId}:v1`;
@@ -227,7 +237,11 @@ export async function executeObjective(
       "Acceptance criteria:",
       ...objective.acceptanceCriteria.map((criterion) => `- ${criterion}`),
       "",
-      "Work only inside the repository. Do not push, open pull requests, deploy, publish, read unrelated secrets, or widen the stated objective.",
+      "Execution limits:",
+      `- Change no more than ${objective.maxChangedFiles} files.`,
+      "- Work only inside the repository.",
+      "- Do not commit or push; the control plane handles permitted commit and publication after validation.",
+      "- Do not open pull requests, deploy, publish, read unrelated secrets, or widen the stated objective.",
     ].join("\n");
     await runAction(
       sandbox,
@@ -243,6 +257,13 @@ export async function executeObjective(
       },
       [openaiApiKey, githubToken],
     );
+    const harnessHead = await sandbox.exec("git rev-parse HEAD", { cwd: repositoryPath });
+    if (!harnessHead.success || harnessHead.stdout.trim() !== objective.baseHeadSha) {
+      throw new RunFailure("BLOCKED_SAFETY", "coding harness changed the repository head directly", {
+        expected: objective.baseHeadSha,
+        actual: harnessHead.stdout.trim() || null,
+      });
+    }
     await journal.transition("VALIDATING", "validation_started");
     await runAction(sandbox, journal, objective, "diff-check", "test", "git diff --check", { cwd: repositoryPath });
     const validation = await selectedValidation(objective, sandbox);
@@ -252,9 +273,14 @@ export async function executeObjective(
         timeout: Math.min(objective.maxDurationMs, 900_000),
       });
     }
-    const changed = await sandbox.exec("git diff --name-only -z", { cwd: repositoryPath });
+    const changed = await sandbox.exec(CHANGED_FILES_COMMAND, { cwd: repositoryPath });
     if (!changed.success) throw new RunFailure("FAILED_SAFE", "could not inspect changed files");
-    const changedFiles = changed.stdout.split("\0").filter(Boolean);
+    let changedFiles: string[];
+    try {
+      changedFiles = decodeChangedFiles(changed.stdout);
+    } catch {
+      throw new RunFailure("FAILED_SAFE", "could not decode the changed-file inventory");
+    }
     if (changedFiles.length === 0) throw new RunFailure("FAILED_SAFE", "coding harness produced no repository changes");
     if (changedFiles.length > objective.maxChangedFiles) {
       throw new RunFailure("BLOCKED_SAFETY", "changed-file budget exceeded", { changedFiles: changedFiles.length, limit: objective.maxChangedFiles });
