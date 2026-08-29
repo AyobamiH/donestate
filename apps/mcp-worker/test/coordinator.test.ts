@@ -1,7 +1,9 @@
 import { env, runInDurableObject } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
+import { canonicalJson } from "../src/canonical";
 import type { RunCoordinator } from "../src/coordinator";
-import type { HostedObjective, PublicRunRecord } from "../src/types";
+import { verifierFingerprint } from "../src/crypto";
+import type { HostedObjective, PublicRunRecord, VerificationAttestationV1 } from "../src/types";
 
 function objective(runId: string): HostedObjective {
   return {
@@ -20,6 +22,50 @@ function objective(runId: string): HostedObjective {
     verificationRequirements: [],
     maxChangedFiles: 10,
     maxDurationMs: 60_000,
+  };
+}
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary);
+}
+
+function publicKeyPem(spki: Uint8Array): string {
+  const body = bytesToBase64(spki).match(/.{1,64}/g)?.join("\n") ?? "";
+  return `-----BEGIN PUBLIC KEY-----\n${body}\n-----END PUBLIC KEY-----`;
+}
+
+async function signedAttestation(input: {
+  runId: string;
+  snapshotDigest: string;
+  decision: VerificationAttestationV1["decision"];
+  privateKey: CryptoKey;
+  publicKeyPem: string;
+  fingerprint: string;
+}): Promise<VerificationAttestationV1> {
+  const unsigned: Omit<VerificationAttestationV1, "signature"> = {
+    schema: "donestate.verification-attestation.v1",
+    runId: input.runId,
+    executionSnapshotDigest: input.snapshotDigest,
+    decision: input.decision,
+    issuedBy: "independent-test-verifier",
+    issuedAt: new Date().toISOString(),
+    evidenceRefs: ["https://github.com/owner/repository/actions"],
+  };
+  const signature = new Uint8Array(await crypto.subtle.sign(
+    { name: "Ed25519" },
+    input.privateKey,
+    new TextEncoder().encode(`donestate.verification-attestation.v1\0${canonicalJson(unsigned)}`),
+  ));
+  return {
+    ...unsigned,
+    signature: {
+      algorithm: "ed25519",
+      publicKeyPem: input.publicKeyPem,
+      signerFingerprint: input.fingerprint,
+      signatureBase64: bytesToBase64(signature),
+    },
   };
 }
 
@@ -58,5 +104,62 @@ describe("RunCoordinator", () => {
     await runInDurableObject(stub, async (_instance: RunCoordinator, state) => {
       expect(state.storage.sql.exec<{ count: number }>("SELECT COUNT(*) AS count FROM run").one().count).toBe(0);
     });
+  });
+
+  it("keeps an uncertain attestation retryable and records it in the event chain", async () => {
+    const runId = "44444444-4444-4444-8444-444444444444";
+    const snapshotDigest = "b".repeat(64);
+    const keys = await crypto.subtle.generateKey({ name: "Ed25519" }, true, ["sign", "verify"]) as CryptoKeyPair;
+    const spki = new Uint8Array(await crypto.subtle.exportKey("spki", keys.publicKey) as ArrayBuffer);
+    const pem = publicKeyPem(spki);
+    const fingerprint = await verifierFingerprint(pem);
+    const configuredObjective = objective(runId);
+    configuredObjective.trustedVerifierFingerprints = [fingerprint];
+    configuredObjective.verificationRequirements = [
+      { id: "repository-root", criterionIndex: 0, kind: "path_exists", path: "README.md" },
+    ];
+
+    const stub = env.RUN_COORDINATOR.getByName(runId);
+    await stub.create(configuredObjective, "github-test-token");
+    await runInDurableObject(stub, async (_instance: RunCoordinator, state) => {
+      state.storage.sql.exec(
+        "UPDATE run SET state = 'AWAITING_VERIFICATION', verification_snapshot_digest = ? WHERE id = ?",
+        snapshotDigest,
+        runId,
+      );
+    });
+
+    const uncertain: PublicRunRecord = await stub.submitAttestation(
+      "operator",
+      await signedAttestation({
+        runId,
+        snapshotDigest,
+        decision: "uncertain",
+        privateKey: keys.privateKey,
+        publicKeyPem: pem,
+        fingerprint,
+      }),
+    );
+    expect(uncertain.state).toBe("AWAITING_VERIFICATION");
+    expect(uncertain.lastError).toBeNull();
+    expect(uncertain.events.at(-1)).toMatchObject({
+      eventType: "independent_attestation_recorded",
+      fromState: "AWAITING_VERIFICATION",
+      toState: "AWAITING_VERIFICATION",
+      detail: "uncertain",
+    });
+
+    const verified: PublicRunRecord = await stub.submitAttestation(
+      "operator",
+      await signedAttestation({
+        runId,
+        snapshotDigest,
+        decision: "verified",
+        privateKey: keys.privateKey,
+        publicKeyPem: pem,
+        fingerprint,
+      }),
+    );
+    expect(verified.state).toBe("VERIFIED");
   });
 });
