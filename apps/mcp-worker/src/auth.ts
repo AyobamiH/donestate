@@ -19,6 +19,7 @@ interface PendingAuthorization {
 const STATE_COOKIE = "__Host-DONESTATE_STATE";
 const CSRF_COOKIE = "__Host-DONESTATE_CSRF";
 const TEN_MINUTES = 600;
+const OPENAI_APPS_CHALLENGE_PATH = "/.well-known/openai-apps-challenge";
 export const OAUTH_FORM_ACTION = "'self' https://github.com https://chatgpt.com";
 
 function cookie(request: Request, name: string): string | null {
@@ -187,6 +188,17 @@ export const authHandler = {
   async fetch(request: Request, env: AuthEnv, _ctx?: ExecutionContext): Promise<Response> {
     try {
       const url = new URL(request.url);
+      if (url.pathname === OPENAI_APPS_CHALLENGE_PATH && request.method === "GET") {
+        const token = env.OPENAI_APPS_CHALLENGE?.trim();
+        if (!token) return new Response("Not found", { status: 404 });
+        return new Response(token, {
+          headers: {
+            "Cache-Control": "no-store",
+            "Content-Type": "text/plain; charset=utf-8",
+            "X-Content-Type-Options": "nosniff",
+          },
+        });
+      }
       if (url.pathname === "/authorize" && request.method === "GET") return await consent(request, env);
       if (url.pathname === "/authorize" && request.method === "POST") return await approve(request, env);
       if (url.pathname === "/callback" && request.method === "GET") return await callback(request, env);
