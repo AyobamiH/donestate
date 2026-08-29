@@ -126,8 +126,8 @@ export async function createInstallationToken(
 ): Promise<GitHubInstallationToken> {
   const jwt = await createGitHubAppJwt(credentials);
   const permissions = mode === "read"
-    ? { actions: "read", contents: "read", issues: "read", metadata: "read", pull_requests: "read" }
-    : { actions: "read", contents: "write", issues: "read", metadata: "read", pull_requests: "write" };
+    ? { actions: "read", contents: "read", issues: "read", metadata: "read", pull_requests: "read" } as const
+    : { actions: "read", contents: "write", issues: "read", metadata: "read", pull_requests: "write" } as const;
   const result = await appRequest<{
     token: string;
     expires_at: string;
