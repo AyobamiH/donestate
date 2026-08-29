@@ -19,16 +19,55 @@ function base64Url(bytes: Uint8Array): string {
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
 
-function pemBytes(pem: string): Uint8Array<ArrayBuffer> {
-  const encoded = pem
-    .replace("-----BEGIN PRIVATE KEY-----", "")
-    .replace("-----END PRIVATE KEY-----", "")
-    .replace(/\s/g, "");
-  if (!encoded) throw new Error("GitHub App private key must be PKCS8 PEM");
-  const binary = atob(encoded);
+function derLength(length: number): number[] {
+  if (!Number.isSafeInteger(length) || length < 0) throw new Error("DER length is invalid");
+  if (length < 0x80) return [length];
+  const bytes: number[] = [];
+  for (let value = length; value > 0; value = Math.floor(value / 256)) bytes.unshift(value & 0xff);
+  return [0x80 | bytes.length, ...bytes];
+}
+
+function derElement(tag: number, value: Uint8Array): Uint8Array<ArrayBuffer> {
+  return new Uint8Array([tag, ...derLength(value.byteLength), ...value]);
+}
+
+function pkcs1ToPkcs8(pkcs1: Uint8Array): Uint8Array<ArrayBuffer> {
+  const version = new Uint8Array([0x02, 0x01, 0x00]);
+  const rsaAlgorithm = new Uint8Array([
+    0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05, 0x00,
+  ]);
+  const privateKey = derElement(0x04, pkcs1);
+  const content = new Uint8Array(version.byteLength + rsaAlgorithm.byteLength + privateKey.byteLength);
+  content.set(version, 0);
+  content.set(rsaAlgorithm, version.byteLength);
+  content.set(privateKey, version.byteLength + rsaAlgorithm.byteLength);
+  return derElement(0x30, content);
+}
+
+function decodePem(pem: string, label: "PRIVATE KEY" | "RSA PRIVATE KEY"): Uint8Array<ArrayBuffer> | null {
+  const begin = `-----BEGIN ${label}-----`;
+  const end = `-----END ${label}-----`;
+  const trimmed = pem.trim();
+  if (!trimmed.startsWith(begin) || !trimmed.endsWith(end)) return null;
+  const encoded = trimmed.slice(begin.length, -end.length).replace(/\s/g, "");
+  if (!encoded) throw new Error("GitHub App private key PEM body is empty");
+  let binary: string;
+  try {
+    binary = atob(encoded);
+  } catch {
+    throw new Error("GitHub App private key PEM body is not valid base64");
+  }
   const bytes = new Uint8Array(binary.length);
   for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
   return bytes;
+}
+
+function pemBytes(pem: string): Uint8Array<ArrayBuffer> {
+  const pkcs8 = decodePem(pem, "PRIVATE KEY");
+  if (pkcs8) return pkcs8;
+  const pkcs1 = decodePem(pem, "RSA PRIVATE KEY");
+  if (pkcs1) return pkcs1ToPkcs8(pkcs1);
+  throw new Error("GitHub App private key must be PKCS8 or PKCS1 PEM");
 }
 
 export async function createGitHubAppJwt(credentials: GitHubAppCredentials, nowSeconds = Math.floor(Date.now() / 1_000)): Promise<string> {
