@@ -1,6 +1,6 @@
 # Current status
 
-As of 2026-08-28, DoneState has a public local release and a deployed hosted preview. These are separate product states.
+As of 2026-08-29, DoneState has a public local release and a deployed hosted preview. These are separate product states.
 
 ## Public local release
 
@@ -18,6 +18,16 @@ As of 2026-08-28, DoneState has a public local release and a deployed hosted pre
 
 The public canary run `631d8a08-d337-4bae-bd18-b55c31f48a8b` reached `VERIFIED`. Its published branch head is `a7ab9d2e080a215bf66f84032c861183a7527d57`; the independent OpsTruth verification report digest is `d65b2913b376e20e2bc487d42ff6db024f581900ace894353ebb85ed3bbb66a0`.
 
+## OpenAI directory draft
+
+- a DoneState `0.2.0` draft exists under the verified individual identity `AYOBAMI JOHN HAASTRUP`;
+- listing metadata, three starter prompts, five positive review cases, and three non-trigger cases are saved;
+- the OpenAI platform verified `donestate-mcp.woeinvests.workers.dev` through the public well-known challenge route added in pull request `#10`;
+- pull request `#10` passed CI run `33243914379` with all Worker checks and 51 tests;
+- the draft has not been submitted for review or published.
+
+The repository main head is `4041db072b55845909a84e2e7017ffd53cc81a2b`. The live challenge response proves that the directory-verification extension reached the Worker, but a main-commit deployment workflow receipt is still required before the exact deployed source head is recorded as a release claim.
+
 ## Deployed autonomous-maintenance foundation
 
 - encrypted private GitHub App manifest setup;
@@ -34,4 +44,4 @@ The branch was reviewed in pull request `#6`, passed remote CI, merged, and depl
 
 ## Not implemented
 
-DoneState does not merge, deploy, publish releases or packages, approve its own pull requests, manage repository fleets, or use CrabBox or ClawPatch at runtime. Its directory listing has not been submitted. Multi-repository and fleet controls remain last.
+DoneState does not merge, deploy, publish releases or packages, approve its own pull requests, manage repository fleets, or use CrabBox or ClawPatch at runtime. Its directory draft has not been submitted. Multi-repository and fleet controls remain last.

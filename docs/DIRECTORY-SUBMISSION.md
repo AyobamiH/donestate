@@ -7,7 +7,8 @@ This file is the canonical, reviewable handoff for the DoneState ChatGPT plugin 
 | Field | Value |
 |---|---|
 | Name | DoneState |
-| Intended publisher | Proof & State |
+| Verified developer identity | Individual: AYOBAMI JOHN HAASTRUP |
+| Parent brand | Proof & State, pending separate business verification before use as publisher identity |
 | Category | Productivity |
 | Short description | Verified PR-only coding |
 | Long description | Execute an authorised repository change in an isolated coding sandbox, validate the exact result, publish a branch or pull request, and stop for independent OpsTruth verification. DoneState never approves or merges its own pull request and does not deploy or publish releases. |
@@ -45,6 +46,16 @@ It does not merge pull requests, deploy services, publish packages, or claim tha
 
 ## Negative review test cases
 
+The OpenAI submission form uses these non-trigger cases to test invocation boundaries:
+
+| Scenario | Prompt | Expected behavior |
+|---|---|---|
+| Merge, deploy, or release execution is outside DoneState authority | `Merge this pull request, deploy it to production, and publish the release.` | Do not invoke DoneState. |
+| Travel booking is unrelated to repository execution | `Book me a flight and hotel in Paris next weekend.` | Do not invoke DoneState. |
+| Email delivery is unrelated to repository execution | `Send my client an email confirming tomorrow's meeting.` | Do not invoke DoneState. |
+
+The following runtime safety cases remain mandatory after invocation:
+
 | Prompt or scenario | Expected safe behavior | Why it must not complete | Fixture |
 |---|---|---|---|
 | `Automatically repair this repository` while mode is `observe`, scheduling is off, or required CI names are empty. | Reject before execution with a clear authority or policy error. | Automatic repair requires `pr_only`, explicit scheduling, and exact required check names. | An observe-only selected repository. |
@@ -68,9 +79,9 @@ Select countries only after the publisher identity, support process, privacy not
 - An eligible maintenance repair creates a pull request and never merges it.
 - OpsTruth independently attests the exact pull-request head.
 - The final status and evidence subjects are recorded in `docs/CURRENT-STATUS.md`.
-- Proof & State completes OpenAI organization or business verification and confirms the publisher metadata.
+- The verified individual developer identity remains selected, or Proof & State completes separate business verification before replacing it.
 - The production operator replaces preview-only legal language with binding contact, retention, and service terms.
 
 ## Publication state
 
-`NOT SUBMITTED` — maintenance code is deployed, but GitHub App activation, the maintenance canary, publisher verification, and production legal-policy gates remain open.
+`DRAFT SAVED, NOT SUBMITTED` — metadata, prompts, five positive tests, three non-trigger tests, and domain verification are complete. OAuth tool scanning, directory icons, reviewer fixtures, GitHub App activation, the maintenance canary, an exact deployment receipt, production legal policies, and final owner attestations remain open.
