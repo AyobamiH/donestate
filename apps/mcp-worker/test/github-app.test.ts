@@ -57,7 +57,8 @@ describe("GitHub App JWT", () => {
       true,
       ["sign", "verify"],
     ) as CryptoKeyPair;
-    const pkcs8 = new Uint8Array(await crypto.subtle.exportKey("pkcs8", keys.privateKey));
+    const exportedKey = await crypto.subtle.exportKey("pkcs8", keys.privateKey) as ArrayBuffer;
+    const pkcs8 = new Uint8Array(exportedKey);
     const nowSeconds = 1_700_000_000;
     const jwt = await createGitHubAppJwt(
       { appId: 4761698, privateKeyPem: pem("RSA PRIVATE KEY", extractPkcs1(pkcs8)) },
