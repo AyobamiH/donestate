@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { authHandler, OAUTH_FORM_ACTION, type AuthEnv } from "../src/auth";
 
-function authorizationEnv(githubClientId = "test-github-client-id"): AuthEnv {
+function authorizationEnv(
+  githubClientId = "test-github-client-id",
+  openaiAppsChallenge?: string,
+): AuthEnv {
   const values = new Map<string, string>();
   return {
     OAUTH_PROVIDER: {
@@ -24,6 +27,7 @@ function authorizationEnv(githubClientId = "test-github-client-id"): AuthEnv {
     },
     GITHUB_CLIENT_ID: githubClientId,
     GITHUB_CLIENT_SECRET: "test-github-client-secret",
+    OPENAI_APPS_CHALLENGE: openaiAppsChallenge,
   } as unknown as AuthEnv;
 }
 
@@ -49,6 +53,27 @@ async function approveRequest(env: AuthEnv): Promise<Response> {
 }
 
 describe("OAuth authorisation security policy", () => {
+  it("serves the configured OpenAI apps domain challenge as plain text", async () => {
+    const response = await authHandler.fetch(
+      new Request("https://done.example/.well-known/openai-apps-challenge"),
+      authorizationEnv("test-github-client-id", "challenge-token"),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Content-Type")).toBe("text/plain; charset=utf-8");
+    expect(await response.text()).toBe("challenge-token");
+  });
+
+  it("does not expose an unconfigured OpenAI apps domain challenge", async () => {
+    const response = await authHandler.fetch(
+      new Request("https://done.example/.well-known/openai-apps-challenge"),
+      authorizationEnv(),
+    );
+
+    expect(response.status).toBe(404);
+  });
+
   it("allows only the origins in the browser OAuth redirect chain", async () => {
     const response = await authHandler.fetch(
       new Request("https://done.example/authorize?response_type=code"),
