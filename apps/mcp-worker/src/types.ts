@@ -124,8 +124,19 @@ export interface PublicRunRecord {
   pullRequestNumber: number | null;
   pullRequestUrl: string | null;
   verificationSnapshotDigest: string | null;
+  verifierDecisionSummary: VerifierDecisionSummary | null;
   actions: ActionRecord[];
   events: EventRecord[];
+}
+
+export interface VerifierDecisionSummary {
+  schema: VerificationAttestation["schema"];
+  decision: VerificationAttestation["decision"];
+  issuedAt: string;
+  issuedBy: string;
+  evidenceRefs: string[];
+  verificationReportDigest?: string;
+  signerFingerprint: string;
 }
 
 export interface GitHubAuthProps {
