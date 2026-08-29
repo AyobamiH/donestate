@@ -15,6 +15,7 @@ As of 2026-08-29, DoneState has a public local release, a deployed hosted previe
 - endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
 - latest deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33261815551` (success)
 - prior verified hosted baseline source: `179e02c1a99dab780cabe09c4f5882e7e492ad18`
+- prior verified hosted baseline deployment: `https://github.com/AyobamiH/donestate/actions/runs/33210941821` (success)
 - verified historical baseline: GitHub OAuth, encrypted user-funded OpenAI key, Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable reconciliation, and OpsTruth v2 attestation
 
 The historical public canary run `631d8a08-d337-4bae-bd18-b55c31f48a8b` previously reached `VERIFIED`. It was not rechecked during the fresh owner-side GitHub App activation.
