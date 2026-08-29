@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { canonicalJson } from "../src/canonical";
 import type { RunCoordinator } from "../src/coordinator";
 import { verifierFingerprint } from "../src/crypto";
-import type { HostedObjective, PublicRunRecord, VerificationAttestationV1 } from "../src/types";
+import type { HostedObjective, PublicRunRecord, VerificationAttestationV1, VerificationAttestationV2 } from "../src/types";
 
 function objective(runId: string): HostedObjective {
   return {
@@ -75,6 +75,7 @@ describe("RunCoordinator", () => {
     const stub = env.RUN_COORDINATOR.getByName(runId);
     const run: PublicRunRecord = await stub.create(objective(runId), "github-test-token");
     expect(run.state).toBe("RECEIVED");
+    expect(run.verifierDecisionSummary).toBeNull();
     expect(JSON.stringify(run)).not.toContain("github-test-token");
     expect(run.events).toHaveLength(1);
 
@@ -142,6 +143,16 @@ describe("RunCoordinator", () => {
     );
     expect(uncertain.state).toBe("AWAITING_VERIFICATION");
     expect(uncertain.lastError).toBeNull();
+    expect(uncertain.verifierDecisionSummary).toEqual({
+      schema: "donestate.verification-attestation.v1",
+      decision: "uncertain",
+      issuedAt: expect.any(String),
+      issuedBy: "independent-test-verifier",
+      evidenceRefs: ["https://github.com/owner/repository/actions"],
+      signerFingerprint: fingerprint,
+    });
+    expect(JSON.stringify(uncertain.verifierDecisionSummary)).not.toContain("PUBLIC KEY");
+    expect(JSON.stringify(uncertain.verifierDecisionSummary)).not.toContain("signatureBase64");
     expect(uncertain.events.at(-1)).toMatchObject({
       eventType: "independent_attestation_recorded",
       fromState: "AWAITING_VERIFICATION",
@@ -161,5 +172,66 @@ describe("RunCoordinator", () => {
       }),
     );
     expect(verified.state).toBe("VERIFIED");
+  });
+
+  it("summarizes v2 attestations without exposing verification secrets", async () => {
+    const runId = "55555555-5555-4555-8555-555555555555";
+    const stub = env.RUN_COORDINATOR.getByName(runId);
+    await stub.create(objective(runId), "github-test-token");
+    const stored: VerificationAttestationV2 = {
+      schema: "donestate.verification-attestation.v2",
+      runId,
+      executionSnapshotDigest: "a".repeat(64),
+      verificationNonce: "private-nonce",
+      handoffDigest: "b".repeat(64),
+      verificationReportDigest: "c".repeat(64),
+      decision: "failed",
+      issuedBy: "independent-test-verifier",
+      issuedAt: "2026-08-29T00:00:00.000Z",
+      evidenceRefs: ["https://example.test/evidence"],
+      signature: {
+        algorithm: "ed25519",
+        publicKeyPem: "SECRET PUBLIC KEY PEM",
+        signerFingerprint: "d".repeat(64),
+        signatureBase64: "secret-signature",
+      },
+    };
+    await runInDurableObject(stub, async (_instance: RunCoordinator, state) => {
+      state.storage.sql.exec("UPDATE run SET attestation_json = ? WHERE id = ?", canonicalJson(stored), runId);
+    });
+
+    const run: PublicRunRecord = await stub.get("operator");
+    expect(run.verifierDecisionSummary).toEqual({
+      schema: stored.schema,
+      decision: stored.decision,
+      issuedAt: stored.issuedAt,
+      issuedBy: stored.issuedBy,
+      evidenceRefs: stored.evidenceRefs,
+      verificationReportDigest: stored.verificationReportDigest,
+      signerFingerprint: stored.signature.signerFingerprint,
+    });
+    const serialized = JSON.stringify(run.verifierDecisionSummary);
+    expect(serialized).not.toContain(stored.signature.publicKeyPem);
+    expect(serialized).not.toContain(stored.signature.signatureBase64);
+    expect(serialized).not.toContain(stored.verificationNonce);
+  });
+
+  it("returns no verifier summary when the persisted attestation is malformed", async () => {
+    const runId = "66666666-6666-4666-8666-666666666666";
+    const stub = env.RUN_COORDINATOR.getByName(runId);
+    await stub.create(objective(runId), "github-test-token");
+    await runInDurableObject(stub, async (_instance: RunCoordinator, state) => {
+      state.storage.sql.exec("UPDATE run SET attestation_json = ? WHERE id = ?", "{not-json", runId);
+    });
+    await expect(stub.get("operator")).resolves.toMatchObject({ verifierDecisionSummary: null });
+
+    await runInDurableObject(stub, async (_instance: RunCoordinator, state) => {
+      state.storage.sql.exec(
+        "UPDATE run SET attestation_json = ? WHERE id = ?",
+        JSON.stringify({ schema: "donestate.verification-attestation.v2", decision: "verified" }),
+        runId,
+      );
+    });
+    await expect(stub.get("operator")).resolves.toMatchObject({ verifierDecisionSummary: null });
   });
 });

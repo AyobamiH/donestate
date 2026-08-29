@@ -4,7 +4,7 @@ import { sealSecret, unsealSecret, verifyAttestation } from "./crypto";
 import type { DoneStateEnv } from "./environment";
 import { executeObjective, type ActionSettlement, type ExecutionJournal } from "./executor";
 import { requestOpsTruthAttestation } from "./opstruth";
-import { RunFailure, type ActionRecord, type AuthorityClass, type EventRecord, type HostedObjective, type PublicRunRecord, type RunState, type VerificationAttestation, type VerificationHandoff } from "./types";
+import { RunFailure, type ActionRecord, type AuthorityClass, type EventRecord, type HostedObjective, type PublicRunRecord, type RunState, type VerificationAttestation, type VerificationHandoff, type VerifierDecisionSummary } from "./types";
 import { validateHostedObjective } from "./validation";
 
 interface RunRow extends Record<string, SqlStorageValue> {
@@ -54,6 +54,44 @@ const TERMINAL_STATES = new Set<RunState>([
   "FAILED_SAFE",
   "CANCELLED",
 ]);
+
+function verifierDecisionSummary(stored: string | null): VerifierDecisionSummary | null {
+  if (!stored) return null;
+  try {
+    const value: unknown = JSON.parse(stored);
+    if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+    const attestation = value as Record<string, unknown>;
+    const schema = attestation.schema;
+    const decision = attestation.decision;
+    const signature = attestation.signature;
+    if (
+      (schema !== "donestate.verification-attestation.v1" && schema !== "donestate.verification-attestation.v2")
+      || (decision !== "verified" && decision !== "failed" && decision !== "uncertain")
+      || typeof attestation.issuedAt !== "string"
+      || typeof attestation.issuedBy !== "string"
+      || !Array.isArray(attestation.evidenceRefs)
+      || !attestation.evidenceRefs.every((reference) => typeof reference === "string")
+      || !signature
+      || typeof signature !== "object"
+      || Array.isArray(signature)
+      || typeof (signature as Record<string, unknown>).signerFingerprint !== "string"
+      || (schema === "donestate.verification-attestation.v2" && typeof attestation.verificationReportDigest !== "string")
+    ) return null;
+    return {
+      schema,
+      decision,
+      issuedAt: attestation.issuedAt,
+      issuedBy: attestation.issuedBy,
+      evidenceRefs: [...attestation.evidenceRefs],
+      ...(schema === "donestate.verification-attestation.v2"
+        ? { verificationReportDigest: attestation.verificationReportDigest as string }
+        : {}),
+      signerFingerprint: (signature as Record<string, unknown>).signerFingerprint as string,
+    };
+  } catch {
+    return null;
+  }
+}
 
 export class RunCoordinator extends DurableObject<DoneStateEnv> {
   constructor(ctx: DurableObjectState, env: DoneStateEnv) {
@@ -402,6 +440,7 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
       pullRequestNumber: run.pull_request_number,
       pullRequestUrl: run.pull_request_url,
       verificationSnapshotDigest: run.verification_snapshot_digest,
+      verifierDecisionSummary: verifierDecisionSummary(run.attestation_json),
       actions: this.actions(),
       events: this.events(),
     };
