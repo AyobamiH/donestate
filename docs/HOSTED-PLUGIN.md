@@ -105,8 +105,12 @@ Before submitting the plugin to the universal ChatGPT and Codex directory:
 - replace the local MCP URL and validate the plugin archive
 - complete threat modelling, incident response, rate limits, abuse controls and retention controls
 
-## Deployed but not activated
+## Owner-activated, independent verification pending
 
-The production Worker now contains the GitHub App installation-token path, selected-repository registry, signed webhooks, bounded scheduler, read-only discovery, PR-only repair loop, and automatic OpsTruth request. The owner-only GitHub App setup, selected installation, and exact-head maintenance canary have not completed, so those paths are deployed code rather than production-verified capability.
+The private GitHub App `donestate-maintenance-ayobamih` is configured and installed with Only select repositories on only `AyobamiH/donestate`. Installation `157513439` supplies short-lived App tokens for the PR-only maintenance path. Automatic repair and scheduling are enabled with required checks `core (22)`, `core (24)`, and `hosted-plugin`.
 
-DoneState still does not implement merge queues, deployment or package publication, multi-repository objectives, hardware-backed verifier-key custody, external event anchoring, or fleet SLOs. These remain gated work and must not be implied by the plugin listing.
+The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a` and pull request #22 at head `ffec48e6c5abd9cef840ab591896613769d3e779`. The App created the branch, commit, and PR; local validation passed; GitHub workflow `33260424569` shows all three required checks successful. The pull request remains intentionally open because the App has no merge authority.
+
+OpsTruth observed the exact head, comparison, and required job URLs but signed `uncertain`. DoneState correctly remains `AWAITING_VERIFICATION`; the verifier decision defect is tracked in `AyobamiH/opstruth#12`. Until a corrected signed decision is accepted, the owner-side canary must not be described as independently verified.
+
+DoneState still does not implement merge queues, autonomous deployment or package publication, multi-repository objectives, hardware-backed verifier-key custody, external event anchoring, or fleet SLOs. These remain gated work and must not be implied by the plugin listing.
