@@ -1,7 +1,10 @@
 import { env } from "cloudflare:test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { digest } from "../src/canonical";
+import type { DoneStateEnv } from "../src/environment";
 import { createGitHubAppSetup, githubAppSettingsHandler } from "../src/github-app-settings";
+
+const testEnv = env as unknown as DoneStateEnv;
 
 function extractState(page: string): string {
   const formAction = page.match(/<form method="post" action="([^"]+)"/)?.[1];
@@ -22,12 +25,12 @@ describe("GitHub App manifest setup", () => {
   });
 
   it("keeps redirect_url queryless and sends state on the GitHub form action", async () => {
-    const setup = await createGitHubAppSetup(env, "AyobamiH", "https://done.example");
+    const setup = await createGitHubAppSetup(testEnv, "AyobamiH", "https://done.example");
     const setupUrl = new URL(setup.setupUrl);
     const ticket = setupUrl.searchParams.get("ticket");
     expect(ticket).toBeTruthy();
 
-    const response = await githubAppSettingsHandler.fetch(new Request(setup.setupUrl), env);
+    const response = await githubAppSettingsHandler.fetch(new Request(setup.setupUrl), testEnv);
     const page = await response.text();
 
     expect(response.status).toBe(200);
@@ -39,13 +42,13 @@ describe("GitHub App manifest setup", () => {
     expect(await env.OAUTH_KV.get("github-app:state:" + await digest(state))).toContain("AyobamiH");
     expect(await env.OAUTH_KV.get("github-app:ticket:" + await digest(ticket!))).toBeNull();
 
-    const replay = await githubAppSettingsHandler.fetch(new Request(setup.setupUrl), env);
+    const replay = await githubAppSettingsHandler.fetch(new Request(setup.setupUrl), testEnv);
     expect(replay.status).toBe(400);
   });
 
   it("rejects an expired callback state before exchanging the manifest code", async () => {
-    const setup = await createGitHubAppSetup(env, "AyobamiH", "https://done.example");
-    const begin = await githubAppSettingsHandler.fetch(new Request(setup.setupUrl), env);
+    const setup = await createGitHubAppSetup(testEnv, "AyobamiH", "https://done.example");
+    const begin = await githubAppSettingsHandler.fetch(new Request(setup.setupUrl), testEnv);
     const state = extractState(await begin.text());
     await env.OAUTH_KV.delete("github-app:state:" + await digest(state));
 
@@ -55,7 +58,7 @@ describe("GitHub App manifest setup", () => {
     const callback = new URL("https://done.example/settings/github-app/callback");
     callback.searchParams.set("state", state);
     callback.searchParams.set("code", "unused-manifest-code");
-    const response = await githubAppSettingsHandler.fetch(new Request(callback), env);
+    const response = await githubAppSettingsHandler.fetch(new Request(callback), testEnv);
 
     expect(response.status).toBe(400);
     expect(await response.text()).toContain("GitHub App setup expired");
