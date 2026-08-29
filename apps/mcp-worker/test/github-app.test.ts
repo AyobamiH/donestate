@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { createGitHubAppJwt } from "../src/github-app";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { createGitHubAppJwt, createInstallationToken } from "../src/github-app";
 
 function readDerElement(bytes: Uint8Array, offset: number, expectedTag: number): { start: number; end: number; next: number } {
   if (bytes[offset] !== expectedTag) throw new Error(`Expected DER tag ${expectedTag.toString(16)}`);
@@ -42,6 +42,25 @@ function pem(label: string, bytes: Uint8Array): string {
   const body = base64(bytes).match(/.{1,64}/g)?.join("\n") ?? "";
   return `-----BEGIN ${label}-----\n${body}\n-----END ${label}-----`;
 }
+
+async function generatedPrivateKeyPem(): Promise<string> {
+  const keys = await crypto.subtle.generateKey(
+    {
+      name: "RSASSA-PKCS1-v1_5",
+      modulusLength: 2048,
+      publicExponent: new Uint8Array([1, 0, 1]),
+      hash: "SHA-256",
+    },
+    true,
+    ["sign", "verify"],
+  ) as CryptoKeyPair;
+  const exportedKey = await crypto.subtle.exportKey("pkcs8", keys.privateKey) as ArrayBuffer;
+  return pem("PRIVATE KEY", new Uint8Array(exportedKey));
+}
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 function base64UrlBytes(value: string): Uint8Array {
   const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
@@ -86,5 +105,40 @@ describe("GitHub App JWT", () => {
       appId: 1,
       privateKeyPem: "-----BEGIN EC PRIVATE KEY-----\nunused\n-----END EC PRIVATE KEY-----",
     })).rejects.toThrow("GitHub App private key must be PKCS8 or PKCS1 PEM");
+  });
+});
+
+describe("GitHub App installation tokens", () => {
+  it("accepts GitHub-reported pr_only write permissions", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({
+      token: "test-installation-token",
+      expires_at: "2030-01-01T00:00:00Z",
+      permissions: { contents: "write", pull_requests: "write" },
+    }), { status: 201, headers: { "Content-Type": "application/json" } })));
+
+    const installation = await createInstallationToken(
+      { appId: 4761698, privateKeyPem: await generatedPrivateKeyPem() },
+      157513439,
+      "pr_only",
+    );
+
+    expect(installation).toMatchObject({
+      installationId: 157513439,
+      permissions: { contents: "write", pullRequests: "write" },
+    });
+  });
+
+  it("rejects an installation token without the requested write permissions", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({
+      token: "test-installation-token",
+      expires_at: "2030-01-01T00:00:00Z",
+      permissions: { contents: "read", pull_requests: "write" },
+    }), { status: 201, headers: { "Content-Type": "application/json" } })));
+
+    await expect(createInstallationToken(
+      { appId: 4761698, privateKeyPem: await generatedPrivateKeyPem() },
+      157513439,
+      "pr_only",
+    )).rejects.toThrow("GitHub did not grant the requested installation token permissions");
   });
 });
