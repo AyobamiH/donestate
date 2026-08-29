@@ -1,0 +1,58 @@
+[Script Info]
+Title: DoneState OpenAI Plugin Demo
+ScriptType: v4.00+
+PlayResX: 1280
+PlayResY: 720
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Eyebrow,DejaVu Sans,22,&H008ED7FF,&H008ED7FF,&H00100B23,&H00100B23,-1,0,0,0,100,100,1,0,1,0,0,7,68,68,176,1
+Style: Title,DejaVu Sans,46,&H00FFFFFF,&H00FFFFFF,&H00100B23,&H00100B23,-1,0,0,0,100,100,0,0,1,0,0,7,68,68,218,1
+Style: Body,DejaVu Sans,27,&H00DCE9FA,&H00DCE9FA,&H00100B23,&H00100B23,0,0,0,0,100,100,0,0,1,0,0,7,68,68,314,1
+Style: Code,DejaVu Sans Mono,21,&H00C8B5FF,&H00C8B5FF,&H00100B23,&H00100B23,0,0,0,0,100,100,0,0,1,0,0,7,68,68,448,1
+Style: Success,DejaVu Sans Mono,21,&H0096F7C6,&H0096F7C6,&H00100B23,&H00100B23,-1,0,0,0,100,100,0,0,1,0,0,7,68,68,493,1
+Style: Warning,DejaVu Sans Mono,20,&H008EC5FF,&H008EC5FF,&H00100B23,&H00100B23,-1,0,0,0,100,100,0,0,1,0,0,7,68,68,493,1
+Style: Footer,DejaVu Sans,18,&H008FAAC6,&H008FAAC6,&H00100B23,&H00100B23,0,0,0,0,100,100,0,0,1,0,0,1,68,68,42,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:05.00,Eyebrow,,0,0,0,,DONESTATE · VERIFIED PR-ONLY CODING
+Dialogue: 0,0:00:00.00,0:00:05.00,Title,,0,0,0,,Authorised work. Bounded change. Independent proof.
+Dialogue: 0,0:00:00.00,0:00:05.00,Body,,0,0,0,,DoneState executes repository maintenance without approving or merging.\NIt never deploys or releases its own work.
+Dialogue: 0,0:00:00.00,0:00:52.00,Footer,,0,0,0,,Live MCP: donestate-mcp.woeinvests.workers.dev/mcp   ·   github.com/AyobamiH/donestate
+
+Dialogue: 0,0:00:05.00,0:00:11.00,Eyebrow,,0,0,0,,1 · OWNER-GRANTED AUTHORITY
+Dialogue: 0,0:00:05.00,0:00:11.00,Title,,0,0,0,,Only the selected repository
+Dialogue: 0,0:00:05.00,0:00:11.00,Body,,0,0,0,,Private GitHub App · installation 157513439 · AyobamiH/donestate only
+Dialogue: 0,0:00:05.00,0:00:11.00,Code,,0,0,0,,mode: pr_only   schedule: enabled   autoRepair: enabled
+
+Dialogue: 0,0:00:11.00,0:00:18.00,Eyebrow,,0,0,0,,2 · ISOLATED IMPLEMENTATION
+Dialogue: 0,0:00:11.00,0:00:18.00,Title,,0,0,0,,One bounded maintenance objective
+Dialogue: 0,0:00:11.00,0:00:18.00,Body,,0,0,0,,Clone the pinned base · change only the approved file · install · test · validate
+Dialogue: 0,0:00:11.00,0:00:18.00,Code,,0,0,0,,run b4242932-0bc1-4876-a202-634d9c12d72a
+
+Dialogue: 0,0:00:18.00,0:00:25.00,Eyebrow,,0,0,0,,3 · APP-AUTHORED PULL REQUEST
+Dialogue: 0,0:00:18.00,0:00:25.00,Title,,0,0,0,,PR #22, never self-merged
+Dialogue: 0,0:00:18.00,0:00:25.00,Body,,0,0,0,,One documentation canary · one preserved source branch · exact head recorded
+Dialogue: 0,0:00:18.00,0:00:25.00,Code,,0,0,0,,head ffec48e6c5abd9cef840ab591896613769d3e779
+
+Dialogue: 0,0:00:25.00,0:00:33.00,Eyebrow,,0,0,0,,4 · EXACT-HEAD CONTINUOUS INTEGRATION
+Dialogue: 0,0:00:25.00,0:00:33.00,Title,,0,0,0,,All required checks completed successfully
+Dialogue: 0,0:00:25.00,0:00:33.00,Body,,0,0,0,,Node 22 and Node 24 validate the core.\Nhosted-plugin validates the production integration surface.
+Dialogue: 0,0:00:25.00,0:00:33.00,Success,,0,0,0,,✓ core (22)    ✓ core (24)    ✓ hosted-plugin
+
+Dialogue: 0,0:00:33.00,0:00:41.00,Eyebrow,,0,0,0,,5 · INDEPENDENT VERIFICATION GATE
+Dialogue: 0,0:00:33.00,0:00:41.00,Title,,0,0,0,,Evidence goes to OpsTruth
+Dialogue: 0,0:00:33.00,0:00:41.00,Body,,0,0,0,,The handoff binds the commit, compare, check jobs and objective\Ninto one signed verification request.
+Dialogue: 0,0:00:33.00,0:00:41.00,Code,,0,0,0,,snapshot ccf2d19d…   report 02b4b3d0…   signer 09544c3e…
+
+Dialogue: 0,0:00:41.00,0:00:47.00,Eyebrow,,0,0,0,,6 · HONEST TERMINAL STATE
+Dialogue: 0,0:00:41.00,0:00:47.00,Title,,0,0,0,,No verifier decision, no completion claim
+Dialogue: 0,0:00:41.00,0:00:47.00,Body,,0,0,0,,OpsTruth currently returns signed “uncertain”.\NDoneState correctly stays retryable and does not merge.
+Dialogue: 0,0:00:41.00,0:00:47.00,Warning,,0,0,0,,AWAITING_VERIFICATION   ·   public verifier defect tracked in OpsTruth #12
+
+Dialogue: 0,0:00:47.00,0:00:52.00,Eyebrow,,0,0,0,,DONE MEANS PROVEN
+Dialogue: 0,0:00:47.00,0:00:52.00,Title,,0,0,0,,PR-only by construction
+Dialogue: 0,0:00:47.00,0:00:52.00,Body,,0,0,0,,Inspect the live canary: github.com/AyobamiH/donestate/pull/22
