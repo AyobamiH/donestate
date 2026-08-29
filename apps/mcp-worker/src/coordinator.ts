@@ -227,10 +227,10 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
       objective.trustedVerifierFingerprints,
       handoff,
     );
-    const nextState: RunState = attestation.decision === "verified"
+    const nextState: RunState | null = attestation.decision === "verified"
       ? "VERIFIED"
       : attestation.decision === "uncertain"
-        ? "AMBIGUOUS_EFFECT"
+        ? null
         : "FAILED_SAFE";
     this.ctx.storage.sql.exec(
       "UPDATE run SET attestation_json = ?, updated_at = ? WHERE id = ?",
@@ -238,7 +238,11 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
       new Date().toISOString(),
       run.id,
     );
-    await this.transition(nextState, "independent_attestation_recorded", attestation.decision);
+    if (nextState) {
+      await this.transition(nextState, "independent_attestation_recorded", attestation.decision);
+    } else {
+      await this.recordStateEvent("independent_attestation_recorded", attestation.decision);
+    }
     return this.get(ownerLogin);
   }
 
@@ -480,6 +484,27 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
         resultDigest: action.result ? await digest(action.result) : null,
       }))),
     });
+  }
+
+  private async recordStateEvent(eventType: string, detail?: string): Promise<void> {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const run = this.runRow();
+      if (!run) throw new Error("run not found");
+      const now = new Date().toISOString();
+      const event = await this.nextEvent(run.state, run.state, eventType, detail ?? null, now);
+      const current = this.runRow();
+      const currentHead = this.events().at(-1)?.digest ?? null;
+      if (!current || current.state !== run.state || currentHead !== event.previousDigest) continue;
+      this.ctx.storage.sql.exec(
+        "UPDATE run SET updated_at = ? WHERE id = ? AND state = ?",
+        now,
+        run.id,
+        run.state,
+      );
+      this.insertEvent(event);
+      return;
+    }
+    throw new Error("event recording conflicted with another coordinator request");
   }
 
   private async transition(toState: RunState, eventType: string, detail?: string): Promise<void> {
