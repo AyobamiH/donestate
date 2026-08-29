@@ -40,6 +40,7 @@
   "vars": {
     "USER_DAILY_RUN_LIMIT": "10",
     "PLATFORM_OWNER_LOGIN": "AyobamiH",
+    // Public proof required by the OpenAI Apps domain-verification flow.
     "OPENAI_APPS_CHALLENGE": "VGfoWKKZx7N8MuzA0jQ0kaKC4A1ofTziFyPLOk0Kn2A",
     "OPSTRUTH_MCP_URL": "https://opstruth-chatgpt.woeinvests.workers.dev/mcp",
     "OPSTRUTH_VERIFIER_FINGERPRINT": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
