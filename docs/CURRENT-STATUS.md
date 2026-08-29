@@ -1,6 +1,6 @@
 # Current status
 
-As of 2026-08-29, DoneState has a public local release and a deployed hosted preview. These are separate product states.
+As of 2026-08-29, DoneState has a public local release, a deployed hosted preview, and an owner-activated PR-only GitHub App installation. These are separate product states.
 
 ## Public local release
 
@@ -11,37 +11,43 @@ As of 2026-08-29, DoneState has a public local release and a deployed hosted pre
 ## Hosted preview
 
 - Worker version: `0.2.0`
-- deployed Worker source commit: `179e02c1a99dab780cabe09c4f5882e7e492ad18`
+- deployed Worker source commit: `cb4509377ed1738ad7eb141f1f1051854b6a37a5`
 - endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
-- deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33210941821` (`success`)
-- verified baseline: GitHub OAuth, encrypted user-funded OpenAI key, Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable reconciliation, and OpsTruth v2 attestation
+- latest deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33261815551` (success)
+- verified historical baseline: GitHub OAuth, encrypted user-funded OpenAI key, Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable reconciliation, and OpsTruth v2 attestation
 
-The public canary run `631d8a08-d337-4bae-bd18-b55c31f48a8b` reached `VERIFIED`. Its published branch head is `a7ab9d2e080a215bf66f84032c861183a7527d57`; the independent OpsTruth verification report digest is `d65b2913b376e20e2bc487d42ff6db024f581900ace894353ebb85ed3bbb66a0`.
+The historical public canary run `631d8a08-d337-4bae-bd18-b55c31f48a8b` previously reached `VERIFIED`. It was not rechecked during the fresh owner-side GitHub App activation.
+
+## Owner-side GitHub App activation
+
+- private App: `donestate-maintenance-ayobamih`
+- App ID: `4761698`
+- installation ID: `157513439`
+- installation choice: Only select repositories
+- selected repository: only `AyobamiH/donestate`
+- policy: `pr_only`, automatic repair enabled, scheduling enabled
+- required checks: `core (22)`, `core (24)`, `hosted-plugin`
+- permissions: read Actions, issues, and metadata; read/write code and pull requests
+- excluded permissions: administration, merge, deployment, release, environment, secret management, and workflow write
+
+Supporting repairs were merged and deployed in PRs #12, #13, #14, #16, #19, and #24.
+
+The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a`, App branch `donestate/b4242932-0bc1-4876-a202-634d9c12d72a`, head `ffec48e6c5abd9cef840ab591896613769d3e779`, and pull request #22. Its one-file documentation diff passed local validation and all three required checks in workflow `33260424569`. The PR remains intentionally open and unmerged.
+
+OpsTruth repeatedly signed `uncertain` after observing the exact head, compare range, and all three successful job URLs. DoneState correctly remains `AWAITING_VERIFICATION`. The verifier defect is tracked in `AyobamiH/opstruth#12`; no terminal owner-side verification claim is made until a corrected independent decision is accepted.
+
+Canonical governance and evidence are indexed in `AyobamiH/proof-and-state`, merge commit `fff0bc449ef06aa9771ac7429b3d5a640e53f66e`.
 
 ## OpenAI directory draft
 
 - a DoneState `0.2.0` draft exists under the verified individual identity `AYOBAMI JOHN HAASTRUP`;
 - listing metadata, three starter prompts, five positive review cases, and three non-trigger cases are saved;
-- the OpenAI platform verified `donestate-mcp.woeinvests.workers.dev` through the public well-known challenge route added in pull request `#10`;
-- pull request `#10` passed CI run `33243914379` with all Worker checks and 51 tests;
+- the OpenAI platform verified `donestate-mcp.woeinvests.workers.dev` through the public well-known challenge route added in pull request #10;
+- pull request #10 passed CI run `33243914379` with all Worker checks and 51 tests;
 - the draft has not been submitted for review or published.
 
-The directory-verification extension is recorded at source head `4041db072b55845909a84e2e7017ffd53cc81a2b`; later documentation-only commits do not change that runtime subject. The live challenge response proves that the extension reached the Worker, but a main-commit deployment workflow receipt is still required before the exact deployed source head is recorded as a release claim.
-
-## Deployed autonomous-maintenance foundation
-
-- encrypted private GitHub App manifest setup;
-- selected-repository registry and short-lived installation tokens;
-- signed GitHub webhook ingestion and a six-hour scheduled sweep;
-- read-only labeled-issue and failing-workflow discovery;
-- opt-in automatic repair for `donestate:repair` issues only;
-- PR-only repair authority with deterministic protected-path denial;
-- automatic remote OpsTruth attestation request after publication.
-
-These items are not production capability until the branch is reviewed, merged, deployed, the GitHub App is created and installed on selected repositories, and a new exact-head canary passes.
-
-The branch was reviewed in pull request `#6`, passed remote CI, merged, and deployed from the exact Worker source commit above. The GitHub App still must be created through the owner-only setup flow, installed on an explicitly selected repository, and exercised through read-only discovery plus one PR-only OpsTruth-verified repair canary. Until those activation steps pass, the code is deployed but autonomous maintenance and private-repository support are not production-verified capabilities.
+Submitting the directory listing remains a separate product and legal review step; the GitHub owner-side activation does not change its state.
 
 ## Not implemented
 
-DoneState does not merge, deploy, publish releases or packages, approve its own pull requests, manage repository fleets, or use CrabBox or ClawPatch at runtime. Its directory draft has not been submitted. Multi-repository and fleet controls remain last.
+DoneState does not merge its automatic maintenance pull requests, deploy or publish releases or packages autonomously, approve its own pull requests, manage repository fleets, or use CrabBox or ClawPatch at runtime. Multi-repository and fleet controls remain last.
