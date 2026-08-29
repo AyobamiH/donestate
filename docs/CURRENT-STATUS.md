@@ -26,7 +26,7 @@ The public canary run `631d8a08-d337-4bae-bd18-b55c31f48a8b` reached `VERIFIED`.
 - pull request `#10` passed CI run `33243914379` with all Worker checks and 51 tests;
 - the draft has not been submitted for review or published.
 
-The repository main head is `4041db072b55845909a84e2e7017ffd53cc81a2b`. The live challenge response proves that the directory-verification extension reached the Worker, but a main-commit deployment workflow receipt is still required before the exact deployed source head is recorded as a release claim.
+The directory-verification extension is recorded at source head `4041db072b55845909a84e2e7017ffd53cc81a2b`; later documentation-only commits do not change that runtime subject. The live challenge response proves that the extension reached the Worker, but a main-commit deployment workflow receipt is still required before the exact deployed source head is recorded as a release claim.
 
 ## Deployed autonomous-maintenance foundation
 
