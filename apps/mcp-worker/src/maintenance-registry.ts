@@ -3,7 +3,7 @@ import { digest } from "./canonical";
 import { sealSecret, unsealSecret } from "./crypto";
 import type { DoneStateEnv } from "./environment";
 import { createInstallationToken, repositoryInstallationId, type GitHubAppCredentials } from "./github-app";
-import { discoverMaintenanceCandidates, getBranchHead, getRepositoryAccess, type MaintenanceCandidate } from "./github";
+import { discoverMaintenanceCandidates, getBranchHead, type MaintenanceCandidate } from "./github";
 import type { HostedObjective, MaintenanceFinding, SelectedRepository } from "./types";
 import { assertFingerprint, assertRepository, assertRef } from "./validation";
 
@@ -317,8 +317,6 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     }
     assertFingerprint(this.env.OPSTRUTH_VERIFIER_FINGERPRINT);
     const installation = await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only");
-    const access = await getRepositoryAccess(installation.token, selected.repository);
-    if (!access.canPush) throw new Error("GitHub App installation cannot create a repair branch");
     const baseHeadSha = await getBranchHead(installation.token, selected.repository, selected.defaultBranch);
     if (!baseHeadSha) throw new Error("selected default branch does not exist");
     const runId = crypto.randomUUID();
