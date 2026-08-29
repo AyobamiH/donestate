@@ -115,6 +115,9 @@ describe("RunCoordinator", () => {
     const fingerprint = await verifierFingerprint(pem);
     const configuredObjective = objective(runId);
     configuredObjective.trustedVerifierFingerprints = [fingerprint];
+    configuredObjective.verificationRequirements = [
+      { id: "repository-root", criterionIndex: 0, kind: "path_exists", path: "README.md" },
+    ];
 
     const stub = env.RUN_COORDINATOR.getByName(runId);
     await stub.create(configuredObjective, "github-test-token");
