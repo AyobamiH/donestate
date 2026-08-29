@@ -11,6 +11,10 @@ export interface GitHubInstallationToken {
   token: string;
   expiresAt: string;
   installationId: number;
+  permissions: {
+    contents: "read" | "write";
+    pullRequests: "read" | "write";
+  };
 }
 
 function base64Url(bytes: Uint8Array): string {
@@ -124,13 +128,29 @@ export async function createInstallationToken(
   const permissions = mode === "read"
     ? { actions: "read", contents: "read", issues: "read", metadata: "read", pull_requests: "read" }
     : { actions: "read", contents: "write", issues: "read", metadata: "read", pull_requests: "write" };
-  const result = await appRequest<{ token: string; expires_at: string }>(
+  const result = await appRequest<{
+    token: string;
+    expires_at: string;
+    permissions?: { contents?: string; pull_requests?: string };
+  }>(
     jwt,
     `/app/installations/${installationId}/access_tokens`,
     { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ permissions }) },
   );
   if (!result.token || !Number.isFinite(Date.parse(result.expires_at))) throw new Error("GitHub returned an invalid installation token");
-  return { token: result.token, expiresAt: result.expires_at, installationId };
+  if (result.permissions?.contents !== permissions.contents
+    || result.permissions?.pull_requests !== permissions.pull_requests) {
+    throw new Error("GitHub did not grant the requested installation token permissions");
+  }
+  return {
+    token: result.token,
+    expiresAt: result.expires_at,
+    installationId,
+    permissions: {
+      contents: permissions.contents,
+      pullRequests: permissions.pull_requests,
+    },
+  };
 }
 
 export async function exchangeManifestCode(code: string): Promise<{
