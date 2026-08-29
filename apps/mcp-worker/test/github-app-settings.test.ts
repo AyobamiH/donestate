@@ -37,6 +37,9 @@ describe("GitHub App manifest setup", () => {
     expect(response.headers.get("Content-Security-Policy")).toContain("form-action https://github.com");
     expect(page).toContain("&quot;redirect_url&quot;:&quot;https://done.example/settings/github-app/callback&quot;");
     expect(page).not.toContain("/settings/github-app/callback?");
+    expect(page).toContain("&quot;default_events&quot;:[&quot;issues&quot;,&quot;pull_request&quot;,&quot;push&quot;,&quot;workflow_run&quot;]");
+    expect(page).not.toContain("&quot;installation&quot;");
+    expect(page).not.toContain("&quot;installation_repositories&quot;");
 
     const state = extractState(page);
     expect(await env.OAUTH_KV.get("github-app:state:" + await digest(state))).toContain("AyobamiH");
