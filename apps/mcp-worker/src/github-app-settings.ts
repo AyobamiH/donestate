@@ -84,7 +84,7 @@ githubCreateUrl.searchParams.set("state", state);
       metadata: "read",
       pull_requests: "write",
     },
-    default_events: ["issues", "pull_request", "push", "workflow_run", "installation", "installation_repositories"],
+    default_events: ["issues", "pull_request", "push", "workflow_run"],
   };
   return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Create DoneState GitHub App</title>
 <style>body{font-family:system-ui,sans-serif;background:#f5f6f8;color:#15171a;margin:0}.card{max-width:680px;margin:8vh auto;background:#fff;padding:32px;border:1px solid #dfe3e8;border-radius:14px}li{margin:.6rem 0}button{font:inherit;border:0;background:#15171a;color:#fff;padding:12px 18px;border-radius:8px}</style></head><body><main class="card"><h1>Create the DoneState GitHub App</h1><p>This creates one private GitHub App for <strong>${escapeHtml(pending.login)}</strong>. Installation remains selected-repository only.</p><ul><li>Read Actions, issues, metadata and pull requests</li><li>Create repair branches and pull requests</li><li>No administration, secrets, deployments, releases, merge or workflow-write permission</li></ul><form method="post" action="${escapeHtml(githubCreateUrl.href)}"><input type="hidden" name="manifest" value="${escapeHtml(JSON.stringify(manifest))}"><button type="submit">Create private GitHub App</button></form></main></body></html>`, 200, "https://github.com");
