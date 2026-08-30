@@ -158,6 +158,15 @@ export async function getAuthenticatedUser(token: string): Promise<{
   return { ...user, email: user.email ?? null };
 }
 
+export interface GitHubMarketplacePurchase {
+  account: { id: number; login: string; type: "User" | "Organization" };
+  plan: { id: number; name: string };
+}
+
+export async function getAuthenticatedMarketplacePurchases(token: string): Promise<GitHubMarketplacePurchase[]> {
+  return githubRequest<GitHubMarketplacePurchase[]>(token, "/user/marketplace_purchases?per_page=100");
+}
+
 export async function exchangeGitHubCode(
   clientId: string,
   clientSecret: string,

@@ -2,6 +2,12 @@ import type { AuthRequest, OAuthHelpers } from "@cloudflare/workers-oauth-provid
 import { digest } from "./canonical";
 import { credentialSettingsHandler } from "./credential-settings";
 import { githubAppSettingsHandler, githubWebhookHandler } from "./github-app-settings";
+import {
+  beginMarketplaceInstall,
+  completeMarketplaceInstall,
+  githubMarketplaceWebhookHandler,
+  isMarketplaceOAuthState,
+} from "./github-marketplace";
 import type { DoneStateEnv } from "./environment";
 import { exchangeGitHubCode, getAuthenticatedUser } from "./github";
 import type { GitHubAuthProps } from "./types";
@@ -257,6 +263,7 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
   const stateId = url.searchParams.get("state");
   const code = url.searchParams.get("code");
   if (!stateId || !code) return new Response("Invalid OAuth callback", { status: 400 });
+  if (isMarketplaceOAuthState(stateId)) return completeMarketplaceInstall(request, env, stateId, code);
   const pending = await readAuthorization(stateId, "approved", env);
   if (!pending) return new Response("Expired OAuth callback", { status: 400 });
   const callbackUrl = githubCallbackUrl(request, env);
@@ -312,11 +319,15 @@ export const authHandler = {
       if (url.pathname === "/authorize" && request.method === "POST") return await approve(request, env);
       if (url.pathname === "/authorize/reviewer" && request.method === "POST") return await reviewerApprove(request, env);
       if (url.pathname === "/callback" && request.method === "GET") return await callback(request, env);
+      if (url.pathname === "/github/marketplace/install" && request.method === "GET") {
+        return await beginMarketplaceInstall(request, env);
+      }
       if (url.pathname === "/settings/openai") return await credentialSettingsHandler.fetch(request, env);
       if (url.pathname === "/settings/github-app" || url.pathname === "/settings/github-app/callback") {
         return await githubAppSettingsHandler.fetch(request, env);
       }
       if (url.pathname === "/webhooks/github") return await githubWebhookHandler.fetch(request, env);
+      if (url.pathname === "/webhooks/github-marketplace") return await githubMarketplaceWebhookHandler.fetch(request, env);
       if (url.pathname === "/" && request.method === "GET") return home();
       return new Response("Not found", { status: 404 });
     } catch (error) {

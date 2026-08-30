@@ -4,7 +4,13 @@ import { sealSecret, unsealSecret } from "./crypto";
 import type { DoneStateEnv } from "./environment";
 import { createInstallationToken, repositoryInstallationId, type GitHubAppCredentials } from "./github-app";
 import { discoverMaintenanceCandidates, getBranchHead, type MaintenanceCandidate } from "./github";
-import type { HostedObjective, MaintenanceFinding, SelectedRepository } from "./types";
+import type {
+  HostedObjective,
+  MaintenanceFinding,
+  MarketplaceEntitlement,
+  MarketplacePurchaseAction,
+  SelectedRepository,
+} from "./types";
 import { assertFingerprint, assertRepository, assertRef } from "./validation";
 
 interface AppRow extends Record<string, SqlStorageValue> {
@@ -47,6 +53,18 @@ interface FindingRow extends Record<string, SqlStorageValue> {
   updated_at: string;
 }
 
+interface MarketplaceEntitlementRow extends Record<string, SqlStorageValue> {
+  account_id: number;
+  account_login: string;
+  account_type: MarketplaceEntitlement["accountType"];
+  authorized_by_login: string | null;
+  plan_id: number;
+  plan_name: string;
+  state: MarketplaceEntitlement["state"];
+  effective_at: string;
+  updated_at: string;
+}
+
 const MAX_SCHEDULED_REPOSITORIES = 20;
 const MAX_AUTOMATIC_REPAIRS_PER_SWEEP = 2;
 
@@ -83,6 +101,27 @@ function findingRecord(row: FindingRow): MaintenanceFinding {
     discoveredAt: row.discovered_at,
     updatedAt: row.updated_at,
   };
+}
+
+function marketplaceEntitlementRecord(row: MarketplaceEntitlementRow): MarketplaceEntitlement {
+  return {
+    schema: "donestate.marketplace-entitlement.v1",
+    accountId: row.account_id,
+    accountLogin: row.account_login,
+    accountType: row.account_type,
+    authorizedByLogin: row.authorized_by_login,
+    planId: row.plan_id,
+    planName: row.plan_name,
+    state: row.state,
+    effectiveAt: row.effective_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function marketplaceState(action: MarketplacePurchaseAction): MarketplaceEntitlement["state"] {
+  if (action === "cancelled") return "CANCELLED";
+  if (action === "pending_change") return "PENDING_CHANGE";
+  return "ACTIVE";
 }
 
 export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
@@ -139,6 +178,17 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
         event_name TEXT NOT NULL,
         repository TEXT,
         received_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS marketplace_entitlements (
+        account_id INTEGER PRIMARY KEY,
+        account_login TEXT NOT NULL,
+        account_type TEXT NOT NULL CHECK (account_type IN ('User', 'Organization')),
+        authorized_by_login TEXT,
+        plan_id INTEGER NOT NULL,
+        plan_name TEXT NOT NULL,
+        state TEXT NOT NULL CHECK (state IN ('ACTIVE', 'PENDING_CHANGE', 'CANCELLED')),
+        effective_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
       );
     `);
   }
@@ -234,6 +284,70 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       "SELECT * FROM selected_repositories WHERE owner_login = ? ORDER BY repository",
       login,
     ).toArray().map(repositoryRecord);
+  }
+
+  async recordMarketplacePurchase(input: {
+    accountId: number;
+    accountLogin: string;
+    accountType: MarketplaceEntitlement["accountType"];
+    authorizedByLogin?: string | null;
+    planId: number;
+    planName: string;
+    action: MarketplacePurchaseAction;
+    effectiveAt: string;
+  }): Promise<MarketplaceEntitlement> {
+    const authorizedByLogin = input.authorizedByLogin ?? null;
+    if (!Number.isSafeInteger(input.accountId) || input.accountId < 1
+      || !Number.isSafeInteger(input.planId) || input.planId < 1
+      || !/^[A-Za-z0-9-]{1,100}$/.test(input.accountLogin)
+      || (authorizedByLogin !== null && !/^[A-Za-z0-9-]{1,100}$/.test(authorizedByLogin))
+      || !["User", "Organization"].includes(input.accountType)
+      || !input.planName.trim() || input.planName.length > 100
+      || !Number.isFinite(Date.parse(input.effectiveAt))) {
+      throw new Error("invalid GitHub Marketplace purchase");
+    }
+    const now = new Date().toISOString();
+    this.ctx.storage.sql.exec(
+      `INSERT INTO marketplace_entitlements (
+        account_id, account_login, account_type, authorized_by_login, plan_id, plan_name, state, effective_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(account_id) DO UPDATE SET account_login=excluded.account_login, account_type=excluded.account_type,
+        authorized_by_login=COALESCE(excluded.authorized_by_login, marketplace_entitlements.authorized_by_login),
+        plan_id=excluded.plan_id, plan_name=excluded.plan_name, state=excluded.state,
+        effective_at=excluded.effective_at, updated_at=excluded.updated_at`,
+      input.accountId, input.accountLogin, input.accountType, authorizedByLogin, input.planId, input.planName.trim(),
+      marketplaceState(input.action), new Date(input.effectiveAt).toISOString(), now,
+    );
+    const entitlement = await this.marketplaceEntitlement(input.accountId);
+    if (!entitlement) throw new Error("GitHub Marketplace entitlement write failed");
+    return entitlement;
+  }
+
+  async marketplaceEntitlement(accountId: number): Promise<MarketplaceEntitlement | null> {
+    if (!Number.isSafeInteger(accountId) || accountId < 1) throw new Error("invalid GitHub Marketplace account id");
+    const row = this.ctx.storage.sql.exec<MarketplaceEntitlementRow>(
+      "SELECT * FROM marketplace_entitlements WHERE account_id = ?",
+      accountId,
+    ).toArray()[0];
+    return row ? marketplaceEntitlementRecord(row) : null;
+  }
+
+  async ingestMarketplaceWebhook(input: {
+    deliveryId: string;
+    purchase: Parameters<MaintenanceRegistry["recordMarketplacePurchase"]>[0];
+  }): Promise<{ accepted: true; duplicate: boolean }> {
+    if (!/^[A-Za-z0-9-]{1,100}$/.test(input.deliveryId)) throw new Error("invalid GitHub Marketplace delivery id");
+    const existing = this.ctx.storage.sql.exec<{ delivery_id: string }>(
+      "SELECT delivery_id FROM webhook_deliveries WHERE delivery_id = ?",
+      input.deliveryId,
+    ).toArray()[0];
+    if (existing) return { accepted: true, duplicate: true };
+    await this.recordMarketplacePurchase(input.purchase);
+    this.ctx.storage.sql.exec(
+      "INSERT INTO webhook_deliveries (delivery_id, event_name, repository, received_at) VALUES (?, 'marketplace_purchase', NULL, ?)",
+      input.deliveryId, new Date().toISOString(),
+    );
+    return { accepted: true, duplicate: false };
   }
 
   async removeRepository(login: string, repository: string): Promise<{ repository: string; removed: boolean }> {

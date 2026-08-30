@@ -60,6 +60,14 @@ Canonical governance and evidence are indexed in `AyobamiH/proof-and-state`, mer
 
 Submission begins OpenAI's external review. It does not mean the plugin is approved, listed, or published.
 
+## GitHub Marketplace preparation
+
+The GitHub Marketplace draft is attached to OAuth App `3822030`, not to the private maintenance GitHub App. This preserves installation `157513439` as **Only select repositories** on only `AyobamiH/donestate` while exposing the existing public-repository OAuth product separately.
+
+The candidate implements one-time `read:user` purchase onboarding, active-plan verification, a dedicated signed and idempotent Marketplace lifecycle webhook, and a minimal entitlement record that grants no repository or execution authority. Listing copy, a 512×512 icon, a 965×482 feature card, three 1280×720 screenshots, and the 52-second demo video are indexed in [GitHub Marketplace listing](GITHUB-MARKETPLACE.md). The refreshed media uses `donestate.proofandstate.com/mcp` rather than the legacy Worker hostname.
+
+Marketplace submission remains blocked until the exact candidate passes hosted CI and deployment, the dedicated webhook secret is configured and tested, the operator replaces preview-only legal language, and the human owner accepts GitHub's Marketplace Developer Agreement and final review declaration.
+
 ## Not implemented
 
 DoneState does not merge its automatic maintenance pull requests, deploy or publish releases or packages autonomously, approve its own pull requests, manage repository fleets, or use CrabBox or ClawPatch at runtime. Multi-repository and fleet controls remain last.

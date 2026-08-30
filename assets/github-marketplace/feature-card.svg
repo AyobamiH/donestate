@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="965" height="482" viewBox="0 0 965 482" role="img" aria-labelledby="title desc">
+  <title id="title">DoneState GitHub Marketplace feature card</title>
+  <desc id="desc">DoneState PR-only autonomous coding with explicit authority and independent verification</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#080620"/>
+      <stop offset="0.58" stop-color="#11103a"/>
+      <stop offset="1" stop-color="#1b0d48"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.16" cy="0.5" r="0.68">
+      <stop offset="0" stop-color="#00d8ff" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#00d8ff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#8b7cff" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <rect width="965" height="482" rx="28" fill="url(#background)"/>
+  <rect width="965" height="482" rx="28" fill="url(#glow)"/>
+  <rect width="965" height="482" rx="28" fill="url(#grid)"/>
+  <rect x="42" y="42" width="881" height="398" rx="22" fill="none" stroke="#6e63d6" stroke-opacity="0.34"/>
+  <g transform="translate(82 118)" filter="url(#shadow)">
+    <rect width="214" height="214" rx="52" fill="#101064" stroke="#7168ff" stroke-opacity="0.7"/>
+    <path d="M78 56 34 107l44 51" fill="none" stroke="#19d9ff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="m137 56 44 51-44 51" fill="none" stroke="#a864ff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="m79 113 25 27 49-58" fill="none" stroke="#42f0aa" stroke-width="23" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M107 27v28M107 159v28" stroke="#327bff" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="107" cy="26" r="10" fill="#42f0aa" stroke="#176d7d" stroke-width="5"/>
+    <circle cx="107" cy="188" r="10" fill="#42f0aa" stroke="#176d7d" stroke-width="5"/>
+  </g>
+  <text x="354" y="121" fill="#9f94ff" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" letter-spacing="3">GITHUB MARKETPLACE</text>
+  <text x="354" y="194" fill="#ffffff" font-family="DejaVu Sans, sans-serif" font-size="64" font-weight="800">DoneState</text>
+  <text x="354" y="248" fill="#e5e7ff" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="600">PR-only autonomous coding</text>
+  <text x="354" y="295" fill="#bfc3e2" font-family="DejaVu Sans, sans-serif" font-size="20">Explicit authority · exact-head CI · independent proof</text>
+  <rect x="354" y="340" width="154" height="42" rx="21" fill="#18173d" stroke="#44f0bc" stroke-opacity="0.58"/>
+  <circle cx="378" cy="361" r="6" fill="#44f0bc"/>
+  <text x="393" y="368" fill="#d9fff2" font-family="DejaVu Sans Mono, monospace" font-size="17">PR ONLY</text>
+  <rect x="524" y="340" width="207" height="42" rx="21" fill="#18173d" stroke="#4ed8ff" stroke-opacity="0.58"/>
+  <circle cx="548" cy="361" r="6" fill="#4ed8ff"/>
+  <text x="563" y="368" fill="#d8f7ff" font-family="DejaVu Sans Mono, monospace" font-size="17">USER-FUNDED AI</text>
+  <rect x="747" y="340" width="142" height="42" rx="21" fill="#18173d" stroke="#b878ff" stroke-opacity="0.58"/>
+  <circle cx="771" cy="361" r="6" fill="#b878ff"/>
+  <text x="786" y="368" fill="#f2e3ff" font-family="DejaVu Sans Mono, monospace" font-size="17">SIGNED</text>
+</svg>
