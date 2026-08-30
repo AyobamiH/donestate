@@ -37,8 +37,8 @@ The new code contains no OAuth client secret, access token, Marketplace webhook 
 
 - No GitHub Marketplace purchase lifecycle event has been sent to production; only GitHub's signed listing `ping` has been accepted.
 - The draft is complete through its five technical sections, but no Marketplace review submission has been made.
-- Preview-only privacy and terms documents are not a substitute for the operator's binding legal terms.
+- The operator's binding privacy notice and hosted-service terms are published; Marketplace publisher contact and final account-level submission prerequisites remain incomplete.
 
 ## Next safe step
 
-Replace preview-only legal language with the operator's binding terms, complete the contact record, and stop for the owner's final review declaration before Marketplace submission.
+Complete the Marketplace publisher contact record, satisfy GitHub's account-level publisher prerequisites, verify that the resulting review button is enabled, and stop for the owner's final review request.
