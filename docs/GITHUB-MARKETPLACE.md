@@ -61,7 +61,8 @@ The refreshed video and derived screenshots use `donestate.proofandstate.com/mcp
 3. The callback consumes the state, exchanges the code, identifies the user, and verifies the selected plan through `GET /user/marketplace_purchases`.
 4. DoneState records only the account identifier, login, account type, authorizing login, plan identifier/name, effective time, and lifecycle state. The onboarding access token is not stored.
 5. The separate Marketplace webhook verifies `X-Hub-Signature-256`, deduplicates delivery IDs, and handles `purchased`, `changed`, `cancelled`, `pending_change`, and `pending_change_cancelled`.
-6. Marketplace entitlement records never select a repository, grant execution authority, enable a schedule, start a run, push, or open a pull request.
+6. A correctly signed GitHub `ping` receives HTTP 200 without creating or changing an entitlement.
+7. Marketplace entitlement records never select a repository, grant execution authority, enable a schedule, start a run, push, or open a pull request.
 
 The Marketplace webhook uses the Worker binding `GITHUB_MARKETPLACE_WEBHOOK_SECRET`. The deployment workflow maps the repository Actions secret `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET` into that binding. The identical value must be configured in the GitHub Marketplace draft before the webhook is activated.
 
