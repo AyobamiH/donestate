@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { authHandler, OAUTH_FORM_ACTION, type AuthEnv } from "../src/auth";
+import type { PendingAuthorization } from "../src/oauth-state";
 
 function authorizationEnv(
   githubClientId = "test-github-client-id",
   openaiAppsChallenge?: string,
 ): AuthEnv {
-  const values = new Map<string, string>();
+  const states = new Map<string, PendingAuthorization>();
   return {
     OAUTH_PROVIDER: {
       parseAuthRequest: async () => ({
@@ -19,11 +20,24 @@ function authorizationEnv(
       }),
       lookupClient: async () => ({ clientName: "ChatGPT" }),
     },
-    OAUTH_KV: {
-      get: async (key: string) => values.get(key) ?? null,
-      put: async (key: string, value: string) => {
-        values.set(key, value);
-      },
+    OAUTH_STATE: {
+      getByName: (name: string) => ({
+        create: async (pending: PendingAuthorization) => {
+          states.set(name, { ...pending });
+        },
+        approve: async (submittedCsrfDigest: string) => {
+          const pending = states.get(name);
+          if (!pending) return { status: "missing" as const };
+          if (pending.csrfDigest !== submittedCsrfDigest) return { status: "invalid_csrf" as const };
+          const approved = { ...pending, approved: true };
+          states.set(name, approved);
+          return { status: "approved" as const, pending: approved };
+        },
+        read: async () => states.get(name) ?? null,
+        consume: async () => {
+          states.delete(name);
+        },
+      }),
     },
     GITHUB_CLIENT_ID: githubClientId,
     GITHUB_CLIENT_SECRET: "test-github-client-secret",
