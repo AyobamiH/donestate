@@ -36,6 +36,7 @@ function browserCookieJar(...responses: Response[]): string {
   for (const response of responses) {
     for (const setCookie of response.headers.getSetCookie()) {
       const pair = setCookie.split(";", 1)[0];
+      if (!pair) continue;
       const separator = pair.indexOf("=");
       if (separator > 0) jar.set(pair.slice(0, separator), pair);
     }
