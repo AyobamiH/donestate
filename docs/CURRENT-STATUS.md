@@ -19,8 +19,9 @@ As of 2026-08-30, DoneState has a public local release, a deployed hosted servic
 - post-cutover CI workflow: `https://github.com/AyobamiH/donestate/actions/runs/33300648343` (success)
 - post-cutover deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33300648341` (success)
 - deployed Cloudflare version: `11018054-685f-4e7e-ab6b-f30817b2d89f`
-- current Marketplace webhook source: `2d6cb6c`
-- current Marketplace webhook deployment: `https://github.com/AyobamiH/donestate/actions/runs/33324975105` (success; 78 Worker tests)
+- current Marketplace webhook source: `ac54dcaa2df2b4211814a076036cc2b3f3ace8a6`
+- current Marketplace webhook CI: `https://github.com/AyobamiH/donestate/actions/runs/33330067769` (success; all three required jobs)
+- current Marketplace webhook deployment: `https://github.com/AyobamiH/donestate/actions/runs/33330067776` (success; 80 Worker tests; Cloudflare version `c3c3dd14-512d-4ee5-a25a-f44914c00654`)
 - prior verified hosted baseline source: `179e02c1a99dab780cabe09c4f5882e7e492ad18`
 - prior verified hosted baseline deployment: `https://github.com/AyobamiH/donestate/actions/runs/33210941821` (success)
 - verified historical baseline: GitHub OAuth, encrypted user-funded OpenAI key, Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable reconciliation, and OpsTruth v2 attestation
@@ -71,6 +72,10 @@ The GitHub Marketplace listing under review is attached to OAuth App `3822030`, 
 The candidate implements one-time `read:user` purchase onboarding, active-plan verification, a dedicated signed and idempotent Marketplace lifecycle webhook, and a minimal entitlement record that grants no repository or execution authority. Listing copy, a 512×512 icon, a 965×482 feature card, three 1280×720 screenshots, and the 52-second demo video are indexed in [GitHub Marketplace listing](GITHUB-MARKETPLACE.md). The refreshed media uses `donestate.proofandstate.com/mcp` rather than the legacy Worker hostname.
 
 The dedicated Marketplace webhook secret is configured through `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET`, deployed to the Worker binding, and live-tested. GitHub redelivery `7e964cd0-a495-11f1-9c22-dc3366715a90` returned HTTP 200 from the canonical webhook endpoint after PR #42 and deployment workflow `33324975105` completed successfully.
+
+Review hardening merged in PR #47 as `ac54dcaa2df2b4211814a076036cc2b3f3ace8a6`. Post-merge CI `33330067769` passed, deployment `33330067776` published Cloudflare version `c3c3dd14-512d-4ee5-a25a-f44914c00654`, and live read-only probes returned HTTP 200 at the service root and HTTP 405 for GET on the POST-only Marketplace webhook. Entitlement updates now reject older `effective_date` values atomically, and the Worker suite covers all five Marketplace lifecycle actions, duplicate delivery, and out-of-order delivery with 80 passing tests.
+
+The incident and support process is published in [Incident response](INCIDENT-RESPONSE.md). Public contact aliases, a legitimate operator service address, the ICO fee self-assessment, and offered-territory decisions remain blocked on genuine publisher input in `LEGAL-001`; no private contact value is recorded here.
 
 The operator's binding privacy notice and hosted-service terms were merged in PR #44 as `c791d70`; post-merge workflow `33326065889` passed all three required jobs. The private publisher contact record is complete, GitHub's account-level publisher prerequisites are satisfied, and the owner accepted GitHub Marketplace Developer Agreement v2.4 on 30 August 2026.
 

@@ -18,20 +18,20 @@
       "nextAction":"Keep the gate green and record every consequential change through the ledger.","waitCondition":"None.","reentryCondition":"Reopen if a consequential change can bypass the ledger or generated-state check.","dependencies":[],"evidenceIds":["E-004","E-006"]
     },
     {
-      "id":"MKT-001","title":"Remove reviewer-facing preview and submission contradictions","stream":"marketplace","status":"active","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
-      "nextAction":"Align README, ROADMAP, DIRECTORY-SUBMISSION, THREAT-MODEL, and Marketplace docs with Pending for publish without claiming approval.","waitCondition":"None.","reentryCondition":"Begin after GOV-001.","dependencies":["GOV-001"],"evidenceIds":["E-001","E-004"]
+      "id":"MKT-001","title":"Remove reviewer-facing preview and submission contradictions","stream":"marketplace","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
+      "nextAction":"Keep review and publication states separate and let the documentation closure check reject known stale claims.","waitCondition":"None.","reentryCondition":"Reopen if a reviewer-facing document contradicts the live external state.","dependencies":["GOV-001"],"evidenceIds":["E-001","E-004","E-007"]
     },
     {
-      "id":"MKT-002","title":"Reject stale Marketplace lifecycle events","stream":"marketplace","status":"active","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
-      "nextAction":"Make entitlement updates monotonic by effectiveAt and test out-of-order delivery.","waitCondition":"None.","reentryCondition":"Begin after GOV-001.","dependencies":["GOV-001"],"evidenceIds":["E-004"]
+      "id":"MKT-002","title":"Reject stale Marketplace lifecycle events","stream":"marketplace","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
+      "nextAction":"Preserve the atomic effectiveAt predicate and monitor real lifecycle evidence.","waitCondition":"None.","reentryCondition":"Reopen if a newer entitlement can be overwritten by an older event.","dependencies":["GOV-001"],"evidenceIds":["E-004","E-007"]
     },
     {
-      "id":"MKT-003","title":"Cover every Marketplace plan transition","stream":"marketplace","status":"active","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
-      "nextAction":"Test purchased, cancelled, changed, pending_change, pending_change_cancelled, duplicates, and reversals.","waitCondition":"None.","reentryCondition":"Begin with MKT-002.","dependencies":["GOV-001"],"evidenceIds":["E-001","E-004"]
+      "id":"MKT-003","title":"Cover every Marketplace plan transition","stream":"marketplace","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
+      "nextAction":"Keep all five actions, duplicates, and out-of-order delivery in the required Worker suite.","waitCondition":"None.","reentryCondition":"Reopen when GitHub adds or changes a lifecycle contract.","dependencies":["GOV-001"],"evidenceIds":["E-001","E-004","E-007"]
     },
     {
-      "id":"OPS-001","title":"Publish the production incident and support runbook","stream":"operations","status":"active","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-06",
-      "nextAction":"Document detection, triage, evidence preservation, communication, GitHub notification within 24 hours, recovery, and closure.","waitCondition":"None.","reentryCondition":"Begin after GOV-001.","dependencies":["GOV-001"],"evidenceIds":["E-004"]
+      "id":"OPS-001","title":"Publish the production incident and support runbook","stream":"operations","status":"complete","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
+      "nextAction":"Exercise the runbook during the first incident drill or real incident and record the evidence story.","waitCondition":"None.","reentryCondition":"Reopen if notification, support, recovery, or post-incident ownership becomes incomplete.","dependencies":["GOV-001"],"evidenceIds":["E-004","E-007"]
     },
     {
       "id":"LEGAL-001","title":"Complete public operator contact and jurisdiction decisions","stream":"legal","status":"blocked","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-06",
@@ -172,6 +172,11 @@
       "id":"E-006","date":"2026-08-30","identity":"Self-documenting governance merge","situation":"Marketplace submission exposed that external actions could outpace several manual project documents.","verification":"DoneState PR 46 merged as 364cf86e48cc9715c149867cbe0a5f5ac3899753 from exact tree 843bf3dce837010993d31f96d2c59ee15ac604c6; PR workflow 33329584126 and post-merge workflow 33329629870 passed core 22, core 24, and hosted-plugin, including the governance impact step.",
       "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Use the ledger and generated state for every consequential change.","waitCondition":"None.","staleDate":"2026-12-01"},
       "outcome":"The recovered backlog has one canonical source, generated human view, CI change-impact gate, PR template, and scheduled freshness check.","content":"Seven recovery stages, thirty-two work items, required accountability fields, evidence stories, stale-date enforcement, and separate-state language.","measurement":"One governance PR merged; two exact CI runs passed; one negative stale-date test failed as designed."
+    },
+    {
+      "id":"E-007","date":"2026-08-30","identity":"Marketplace review-hardening deployment","situation":"The submitted listing needed monotonic lifecycle state, full transition tests, accurate public language, and an operational incident process.","verification":"DoneState PR 47 merged as ac54dcaa2df2b4211814a076036cc2b3f3ace8a6 from exact tree aacf05144ff0edf2d460f6b9702a4454a35809ab; PR workflow 33330031280 and post-merge workflow 33330067769 passed all three jobs; deployment 33330067776 published Cloudflare version c3c3dd14-512d-4ee5-a25a-f44914c00654; live probes returned root HTTP 200 and webhook GET HTTP 405.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Monitor real Marketplace lifecycle evidence and keep LEGAL-001 visible.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"Reviewer-facing state is aligned, incident response is published, and stale Marketplace events cannot roll entitlement state backward.","content":"Atomic effectiveAt guard, five lifecycle actions, duplicates, out-of-order delivery, 80 Worker tests, documentation closure, and incident/support runbook.","measurement":"One hardening PR merged; three CI runs passed across PR and post-merge lanes; one deployment passed; two live read-only probes matched expected routing."
     }
   ]
 }
