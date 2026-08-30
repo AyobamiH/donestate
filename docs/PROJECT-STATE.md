@@ -46,7 +46,7 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 
 | ID | Status | Owner | Next action | Wait or re-entry condition | Stale date |
 |---|---|---|---|---|---|
-| MKT-004 — Create a separate Marketplace development app and listing | active | Publisher owner | Merge the isolated development Worker candidate, create and secure the separate OAuth App, deploy it, create the owner-only draft listing, and exercise the lifecycle. | Wait: Creating persistent OAuth credentials and transmitting their secret to GitHub Actions requires action-time confirmation; do not alter the submitted production listing or reuse the private maintenance GitHub App. Re-entry: Continue from the exact CI-passed isolation candidate after the required confirmation. | 2026-09-12 |
+| MKT-004 — Create a separate Marketplace development app and listing | active | Publisher owner | From the owner-only draft listing, record the exact signed cancelled delivery and resulting isolated entitlement state, then exercise and record changed, pending_change, and pending_change_cancelled without touching production. | Wait: The publisher reports that the zero-cost test subscription was cancelled, but authenticated browser control failed before the signed cancelled delivery ID and final development entitlement state could be independently recorded. Re-entry: Resume when the authenticated GitHub Marketplace delivery controls are available; keep the development listing draft and do not alter either production app. | 2026-09-12 |
 
 ### R4 — Prepare for the first external customer
 
@@ -168,3 +168,13 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 - **Outcome:** Proof & State now generates portfolio state from a canonical ledger and rejects consequential changes that omit governance updates.
 - **Content:** Product registry, status, roadmap, evidence index, exact DoneState source pointer, recovered gaps, PR template, weekly freshness check, and change-impact gate.
 - **Measurement:** One synchronization PR merged; two exact workflow runs passed; one DoneState source ledger pinned.
+
+### E-009 — DoneState Marketplace development OAuth App 3826463 and draft listing donestate-marketplace-development
+
+- **Date:** 2026-08-30
+- **Situation:** Real Marketplace lifecycle testing needed an owner-only environment that could not grant repository, MCP, maintenance, OpenAI-review, or production authority.
+- **Verification:** DoneState PR 49 merged as 34145185aa8703fd60d76049ce4e87475a78c132; PR CI 33331509990 and post-merge CI 33331882626 passed; development deployment run 33331882593 job 99322486219 published Cloudflare version be499906-19d4-4340-a968-e62aa5dc28d7. GitHub accepted signed ping 13cd1ca8-a4b8-11f1-888d-aba6875c1ba2 and purchased delivery 90c3e110-a4b8-11f1-8357-8b375ae56683. The publisher then reported cancelling the zero-cost test subscription; authenticated browser control failed before the signed cancelled delivery ID could be recorded. Public probes returned HTTP 200 at the development root and HTTP 404 for MCP, OAuth-provider, OpenAI-review, GitHub-App settings, and webhook GET routes.
+- **Accountability:** owner=Publisher owner; status=active; next=Record the signed cancelled delivery and isolated final entitlement, then complete live changed and pending-change coverage.; wait=Authenticated GitHub Marketplace delivery controls are temporarily unavailable to this session.; stale=2026-09-12
+- **Outcome:** The separate development OAuth App, encrypted development-only secrets, isolated Worker and owner-only draft listing are operational; purchase and publisher-reported cancellation did not touch production, but MKT-004 remains active until the exact cancellation and remaining live transitions are recorded.
+- **Content:** Development OAuth App and draft listing identities, dedicated Worker version, encrypted secret names, free Development Test plan, signed ping and purchase deliveries, user-reported cancellation, route isolation, and explicit remaining proof gaps; no secret values or personal billing data.
+- **Measurement:** Ninety-seven Worker tests passed; one development deployment, one signed ping and one signed purchased delivery were recorded; zero signed cancelled delivery IDs and zero live changed or pending-change deliveries are yet recorded.

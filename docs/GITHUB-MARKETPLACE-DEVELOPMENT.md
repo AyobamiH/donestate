@@ -38,6 +38,26 @@ All MCP, OAuth-provider, credential, GitHub App, maintenance webhook, OpenAI cha
 
 The private selected-repository maintenance GitHub App is a third, independent identity. It must not be attached to either Marketplace listing.
 
+## Current development evidence
+
+The isolated development surface was created on 30 August 2026 and remains separate from both production apps:
+
+| Evidence | Exact subject |
+|---|---|
+| Merged isolation source | PR #49; merge `34145185aa8703fd60d76049ce4e87475a78c132` |
+| CI | PR run `33331509990`; post-merge run `33331882626` |
+| Development deployment | Run `33331882593`; successful job `99322486219`; Cloudflare version `be499906-19d4-4340-a968-e62aa5dc28d7` |
+| OAuth App | `DoneState Marketplace Development`, App `3826463` |
+| Draft listing | `donestate-marketplace-development`; owner-only and not submitted for publication |
+| Test plan | `Development Test`; zero cost |
+| Signed ping | Delivery `13cd1ca8-a4b8-11f1-888d-aba6875c1ba2` |
+| Signed purchase | Delivery `90c3e110-a4b8-11f1-8357-8b375ae56683` |
+| Cancellation | Publisher reported the zero-cost subscription cancelled; the signed cancelled delivery ID and resulting isolated entitlement state have not yet been independently recorded |
+
+Public route probes returned HTTP 200 at the development root. MCP, OAuth-provider, OpenAI-review, GitHub-App settings, and webhook GET routes returned HTTP 404, matching the explicit development allowlist. The production OAuth App `3822030`, submitted production listing, production secrets, and private maintenance GitHub App were not changed by this test.
+
+This evidence does not close MKT-004. The next authenticated session must record the signed cancelled delivery and final isolated entitlement, then exercise `changed`, `pending_change`, and `pending_change_cancelled`. Do not infer those events from the 97 passing Worker tests or from the publisher's cancellation report.
+
 ## Evidence required to close MKT-004
 
 - exact OAuth App identity and draft listing identity;
