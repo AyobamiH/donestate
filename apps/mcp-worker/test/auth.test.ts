@@ -31,6 +31,18 @@ function authorizationEnv(
   } as unknown as AuthEnv;
 }
 
+function browserCookieJar(...responses: Response[]): string {
+  const jar = new Map<string, string>();
+  for (const response of responses) {
+    for (const setCookie of response.headers.getSetCookie()) {
+      const pair = setCookie.split(";", 1)[0];
+      const separator = pair.indexOf("=");
+      if (separator > 0) jar.set(pair.slice(0, separator), pair);
+    }
+  }
+  return [...jar.values()].join("; ");
+}
+
 async function approveRequest(env: AuthEnv): Promise<Response> {
   const consent = await authHandler.fetch(
     new Request("https://done.example/authorize?response_type=code"),
@@ -39,7 +51,7 @@ async function approveRequest(env: AuthEnv): Promise<Response> {
   const page = await consent.text();
   const stateId = page.match(/name="state_id" value="([^"]+)"/)?.[1];
   const csrf = page.match(/name="csrf" value="([^"]+)"/)?.[1];
-  const cookies = consent.headers.getSetCookie().map((value) => value.split(";", 1)[0]).join("; ");
+  const cookies = browserCookieJar(consent);
   expect(stateId).toBeTruthy();
   expect(csrf).toBeTruthy();
   return authHandler.fetch(new Request("https://done.example/authorize", {
@@ -93,6 +105,48 @@ describe("OAuth authorisation security policy", () => {
 
     expect(response.headers.get("Content-Security-Policy")).toContain("form-action 'self';");
     expect(response.headers.get("Content-Security-Policy")).not.toContain("https://github.com");
+  });
+
+  it("keeps concurrent browser authorization attempts isolated", async () => {
+    const env = authorizationEnv();
+    const firstConsent = await authHandler.fetch(
+      new Request("https://done.example/authorize?attempt=first"),
+      env,
+    );
+    const secondConsent = await authHandler.fetch(
+      new Request("https://done.example/authorize?attempt=second"),
+      env,
+    );
+    const firstPage = await firstConsent.text();
+    const secondPage = await secondConsent.text();
+    const firstStateId = firstPage.match(/name="state_id" value="([^"]+)"/)?.[1];
+    const firstCsrf = firstPage.match(/name="csrf" value="([^"]+)"/)?.[1];
+    const secondStateId = secondPage.match(/name="state_id" value="([^"]+)"/)?.[1];
+    const secondCsrf = secondPage.match(/name="csrf" value="([^"]+)"/)?.[1];
+    expect(firstStateId).toBeTruthy();
+    expect(firstCsrf).toBeTruthy();
+    expect(secondStateId).toBeTruthy();
+    expect(secondCsrf).toBeTruthy();
+
+    const cookies = browserCookieJar(firstConsent, secondConsent);
+    const approve = (stateId: string, csrf: string) => authHandler.fetch(
+      new Request("https://done.example/authorize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Cookie: cookies,
+        },
+        body: new URLSearchParams({ state_id: stateId, csrf }),
+      }),
+      env,
+    );
+
+    const [firstApproval, secondApproval] = await Promise.all([
+      approve(firstStateId!, firstCsrf!),
+      approve(secondStateId!, secondCsrf!),
+    ]);
+    expect(firstApproval.status).toBe(302);
+    expect(secondApproval.status).toBe(302);
   });
 
   it("redirects with the configured GitHub OAuth client ID", async () => {
