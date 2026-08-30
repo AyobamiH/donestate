@@ -16,8 +16,8 @@ interface PendingAuthorization {
   approved: boolean;
 }
 
-const STATE_COOKIE = "__Host-DONESTATE_STATE";
-const CSRF_COOKIE = "__Host-DONESTATE_CSRF";
+const STATE_COOKIE_PREFIX = "__Host-DONESTATE_STATE_";
+const CSRF_COOKIE_PREFIX = "__Host-DONESTATE_CSRF_";
 const TEN_MINUTES = 600;
 const OPENAI_APPS_CHALLENGE_PATH = "/.well-known/openai-apps-challenge";
 export const OAUTH_FORM_ACTION = "'self' https://github.com https://chatgpt.com";
@@ -37,6 +37,14 @@ function secureCookie(name: string, value: string, maxAge = TEN_MINUTES): string
 
 function clearCookie(name: string): string {
   return secureCookie(name, "", 0);
+}
+
+function stateCookieName(stateId: string): string {
+  return `${STATE_COOKIE_PREFIX}${stateId}`;
+}
+
+function csrfCookieName(stateId: string): string {
+  return `${CSRF_COOKIE_PREFIX}${stateId}`;
 }
 
 function requiredSecret(env: AuthEnv, name: "GITHUB_CLIENT_ID" | "GITHUB_CLIENT_SECRET"): string {
@@ -76,7 +84,7 @@ function html(body: string, status = 200, cookies: string[] = [], formAction = "
 }
 
 async function validateBrowserState(request: Request, stateId: string): Promise<boolean> {
-  const expected = cookie(request, STATE_COOKIE);
+  const expected = cookie(request, stateCookieName(stateId));
   return constantTimeEqual(expected, await digest(stateId));
 }
 
@@ -103,8 +111,8 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
 <p>GitHub will ask for repository access. DoneState will still require an explicit authority envelope for every objective. It cannot silently push or open a pull request.</p>
 <ul><li>Use your separately connected OpenAI API key for your runs</li><li>Run a coding agent in an isolated sandbox</li><li>Validate and commit bounded repository changes</li><li>Push or open a pull request only when granted</li><li>Stop before claiming completion until an independent verifier signs the exact snapshot</li></ul>
 <form method="post" action="/authorize"><input type="hidden" name="state_id" value="${stateId}"><input type="hidden" name="csrf" value="${csrf}"><div class="actions"><a class="cancel" href="/">Cancel</a><button class="approve" type="submit">Continue with GitHub</button></div></form></main></body></html>`, 200, [
-    secureCookie(STATE_COOKIE, await digest(stateId)),
-    secureCookie(CSRF_COOKIE, await digest(csrf)),
+    secureCookie(stateCookieName(stateId), await digest(stateId)),
+    secureCookie(csrfCookieName(stateId), await digest(csrf)),
   ], OAUTH_FORM_ACTION);
 }
 
@@ -117,7 +125,7 @@ async function approve(request: Request, env: AuthEnv): Promise<Response> {
   const pendingJson = await env.OAUTH_KV.get(`oauth:pending:${stateId}`);
   if (!pendingJson) return new Response("Expired approval", { status: 400 });
   const pending = JSON.parse(pendingJson) as PendingAuthorization;
-  const cookieCsrf = cookie(request, CSRF_COOKIE);
+  const cookieCsrf = cookie(request, csrfCookieName(stateId));
   const submittedDigest = await digest(csrf);
   const [cookieCsrfValid, pendingCsrfValid] = await Promise.all([
     constantTimeEqual(cookieCsrf, submittedDigest),
@@ -175,8 +183,8 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
   });
   await env.OAUTH_KV.delete(`oauth:pending:${stateId}`);
   const headers = new Headers({ Location: redirectTo });
-  headers.append("Set-Cookie", clearCookie(STATE_COOKIE));
-  headers.append("Set-Cookie", clearCookie(CSRF_COOKIE));
+  headers.append("Set-Cookie", clearCookie(stateCookieName(stateId)));
+  headers.append("Set-Cookie", clearCookie(csrfCookieName(stateId)));
   return new Response(null, { status: 302, headers });
 }
 
