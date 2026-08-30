@@ -287,9 +287,9 @@ function createServer(): McpServer {
   server.registerTool(
     "discover_maintenance_work",
     {
-      description: "Read selected-repository issues labeled donestate:repair and recent failing GitHub Actions runs. It records bounded findings but changes no repository state.",
+      description: "Read selected-repository issues labeled donestate:repair and recent failing GitHub Actions runs. It records bounded internal findings but changes no repository state.",
       inputSchema: { repository: z.string() },
-      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: true },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
     },
     async ({ repository }, context) => {
       requireExecutionScope(context);
