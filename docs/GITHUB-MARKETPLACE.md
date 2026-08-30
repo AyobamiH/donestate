@@ -79,10 +79,13 @@ The Marketplace webhook uses the Worker binding `GITHUB_MARKETPLACE_WEBHOOK_SECR
 - [x] Dedicated Marketplace webhook secret configured in GitHub and Cloudflare; signed GitHub ping delivery verified at HTTP 200.
 - [x] Operator published binding privacy, support, retention and hosted-service terms.
 - [x] Human owner accepted GitHub Marketplace Developer Agreement v2.4 on 30 August 2026.
-- [ ] Publisher contact record completed in the Marketplace dashboard.
-- [ ] Human owner completes GitHub's account-level publisher prerequisites and submits the final review request.
+- [x] Private publisher contact record completed in the Marketplace dashboard; contact values are intentionally not recorded here.
+- [x] GitHub account-level publisher prerequisites satisfied.
+- [x] Human owner submitted the final review request on 30 August 2026.
 
-The final account and submission actions remain owner-controlled. A successful technical preflight does not imply that GitHub has reviewed, approved or published the listing.
+GitHub acknowledged the submission and the Marketplace dashboard now reports **Pending for publish** and says the listing is under review. GitHub will send updates to the private publisher contact email. This does not mean GitHub has approved or published the listing.
+
+Before submission, GitHub warned that any existing subscriptions would be removed; the listing preview showed one install. The owner explicitly accepted that consequence. The dashboard acknowledgement proves that the review request was received, but it does not independently prove the downstream removal state of that prior install.
 
 ## Official GitHub references
 

@@ -1,6 +1,6 @@
 # Current status
 
-As of 2026-08-30, DoneState has a public local release, a deployed hosted preview, an owner-activated PR-only GitHub App installation, and an OpenAI directory version in review. These are separate product states.
+As of 2026-08-30, DoneState has a public local release, a deployed hosted preview, an owner-activated PR-only GitHub App installation, an OpenAI directory version in review, and a GitHub Marketplace listing under review. These are separate product states.
 
 ## Public local release
 
@@ -62,7 +62,7 @@ Canonical governance and evidence are indexed in `AyobamiH/proof-and-state`, mer
 
 Submission begins OpenAI's external review. It does not mean the plugin is approved, listed, or published.
 
-## GitHub Marketplace preparation
+## GitHub Marketplace review
 
 The GitHub Marketplace draft is attached to OAuth App `3822030`, not to the private maintenance GitHub App. This preserves installation `157513439` as **Only select repositories** on only `AyobamiH/donestate` while exposing the existing public-repository OAuth product separately.
 
@@ -70,7 +70,9 @@ The candidate implements one-time `read:user` purchase onboarding, active-plan v
 
 The dedicated Marketplace webhook secret is configured through `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET`, deployed to the Worker binding, and live-tested. GitHub redelivery `7e964cd0-a495-11f1-9c22-dc3366715a90` returned HTTP 200 from the canonical webhook endpoint after PR #42 and deployment workflow `33324975105` completed successfully.
 
-The operator's binding privacy notice and hosted-service terms are published on the Marketplace branch. Marketplace submission remains blocked only on completing the publisher contact record, satisfying GitHub's account-level publisher prerequisites, and the human owner's final review request.
+The operator's binding privacy notice and hosted-service terms were merged in PR #44 as `c791d70`; post-merge workflow `33326065889` passed all three required jobs. The private publisher contact record is complete, GitHub's account-level publisher prerequisites are satisfied, and the owner accepted GitHub Marketplace Developer Agreement v2.4 on 30 August 2026.
+
+The owner submitted the listing to GitHub for review on 30 August 2026. GitHub acknowledged the submission and now reports **Pending for publish** and **under review**. This is a review state only: the listing is not yet approved or published. GitHub will send review updates to the private publisher contact email; its value is intentionally not recorded in the repository.
 
 ## Not implemented
 
