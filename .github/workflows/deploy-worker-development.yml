@@ -2,12 +2,6 @@ name: Deploy Marketplace development Worker
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - apps/mcp-worker/**
-      - .github/workflows/deploy-worker-development.yml
 
 permissions:
   contents: read
@@ -62,3 +56,22 @@ jobs:
           GITHUB_MARKETPLACE_WEBHOOK_SECRET: ${{ secrets.DONE_STATE_DEV_GITHUB_MARKETPLACE_WEBHOOK_SECRET }}
       - name: Record deployment URL
         run: echo "### ${{ steps.deploy.outputs.deployment-url }}" >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify isolated live routes
+        env:
+          DEVELOPMENT_ORIGIN: https://donestate-mcp-development.woeinvests.workers.dev
+        run: |
+          root_body="$(curl --fail --silent --show-error --retry 5 --retry-delay 2 "$DEVELOPMENT_ORIGIN/")"
+          grep -F "DoneState Marketplace development" <<<"$root_body"
+
+          mcp_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$DEVELOPMENT_ORIGIN/mcp")"
+          test "$mcp_status" = "404"
+
+          unsigned_webhook_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+            --request POST "$DEVELOPMENT_ORIGIN/webhooks/github-marketplace")"
+          test "$unsigned_webhook_status" = "401"
+
+          {
+            echo "- development root: HTTP 200 with isolated-environment notice"
+            echo "- blocked MCP surface: HTTP $mcp_status"
+            echo "- unsigned Marketplace webhook: HTTP $unsigned_webhook_status"
+          } >> "$GITHUB_STEP_SUMMARY"
