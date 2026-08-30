@@ -1,12 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { authHandler, OAUTH_FORM_ACTION, type AuthEnv } from "../src/auth";
-import type { PendingAuthorization } from "../src/oauth-state";
 
 function authorizationEnv(
   githubClientId = "test-github-client-id",
   openaiAppsChallenge?: string,
 ): AuthEnv {
-  const states = new Map<string, PendingAuthorization>();
   return {
     OAUTH_PROVIDER: {
       parseAuthRequest: async () => ({
@@ -20,25 +18,7 @@ function authorizationEnv(
       }),
       lookupClient: async () => ({ clientName: "ChatGPT" }),
     },
-    OAUTH_STATE: {
-      getByName: (name: string) => ({
-        create: async (pending: PendingAuthorization) => {
-          states.set(name, { ...pending });
-        },
-        approve: async (submittedCsrfDigest: string) => {
-          const pending = states.get(name);
-          if (!pending) return { status: "missing" as const };
-          if (pending.csrfDigest !== submittedCsrfDigest) return { status: "invalid_csrf" as const };
-          const approved = { ...pending, approved: true };
-          states.set(name, approved);
-          return { status: "approved" as const, pending: approved };
-        },
-        read: async () => states.get(name) ?? null,
-        consume: async () => {
-          states.delete(name);
-        },
-      }),
-    },
+    COOKIE_ENCRYPTION_KEY: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
     GITHUB_CLIENT_ID: githubClientId,
     GITHUB_CLIENT_SECRET: "test-github-client-secret",
     OPENAI_APPS_CHALLENGE: openaiAppsChallenge,
@@ -51,7 +31,7 @@ async function approveRequest(env: AuthEnv): Promise<Response> {
     env,
   );
   const page = await consent.text();
-  const stateId = page.match(/name="state_id" value="([^"]+)"/)?.[1];
+  const stateId = page.match(/name="approval_state" value="([^"]+)"/)?.[1];
   const csrf = page.match(/name="csrf" value="([^"]+)"/)?.[1];
   expect(stateId).toBeTruthy();
   expect(csrf).toBeTruthy();
@@ -60,9 +40,13 @@ async function approveRequest(env: AuthEnv): Promise<Response> {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: new URLSearchParams({ state_id: stateId!, csrf: csrf! }),
+    body: new URLSearchParams({ approval_state: stateId!, csrf: csrf! }),
   }), env);
 }
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 describe("OAuth authorisation security policy", () => {
   it("serves the configured OpenAI apps domain challenge as plain text", async () => {
@@ -119,9 +103,9 @@ describe("OAuth authorisation security policy", () => {
     );
     const firstPage = await firstConsent.text();
     const secondPage = await secondConsent.text();
-    const firstStateId = firstPage.match(/name="state_id" value="([^"]+)"/)?.[1];
+    const firstStateId = firstPage.match(/name="approval_state" value="([^"]+)"/)?.[1];
     const firstCsrf = firstPage.match(/name="csrf" value="([^"]+)"/)?.[1];
-    const secondStateId = secondPage.match(/name="state_id" value="([^"]+)"/)?.[1];
+    const secondStateId = secondPage.match(/name="approval_state" value="([^"]+)"/)?.[1];
     const secondCsrf = secondPage.match(/name="csrf" value="([^"]+)"/)?.[1];
     expect(firstStateId).toBeTruthy();
     expect(firstCsrf).toBeTruthy();
@@ -134,7 +118,7 @@ describe("OAuth authorisation security policy", () => {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: new URLSearchParams({ state_id: stateId, csrf }),
+        body: new URLSearchParams({ approval_state: stateId, csrf }),
       }),
       env,
     );
@@ -161,20 +145,75 @@ describe("OAuth authorisation security policy", () => {
       env,
     );
     const page = await consent.text();
-    const stateId = page.match(/name="state_id" value="([^"]+)"/)?.[1];
+    const stateId = page.match(/name="approval_state" value="([^"]+)"/)?.[1];
     expect(stateId).toBeTruthy();
 
     const response = await authHandler.fetch(
       new Request("https://done.example/authorize", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ state_id: stateId!, csrf: "invalid-proof" }),
+        body: new URLSearchParams({ approval_state: stateId!, csrf: "invalid-proof" }),
       }),
       env,
     );
 
     expect(response.status).toBe(400);
     expect(await response.text()).toBe("CSRF validation failed");
+  });
+
+  it("rejects a tampered sealed approval", async () => {
+    const env = authorizationEnv();
+    const consent = await authHandler.fetch(
+      new Request("https://done.example/authorize?response_type=code"),
+      env,
+    );
+    const page = await consent.text();
+    const approvalState = page.match(/name="approval_state" value="([^"]+)"/)?.[1];
+    const csrf = page.match(/name="csrf" value="([^"]+)"/)?.[1];
+    expect(approvalState).toBeTruthy();
+    expect(csrf).toBeTruthy();
+    const last = approvalState!.at(-1);
+    const tampered = approvalState!.slice(0, -1) + (last === "A" ? "B" : "A");
+
+    const response = await authHandler.fetch(
+      new Request("https://done.example/authorize", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ approval_state: tampered, csrf: csrf! }),
+      }),
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    expect(await response.text()).toBe("Expired approval");
+  });
+
+  it("rejects a sealed approval after its ten-minute lifetime", async () => {
+    const now = 1_800_000_000_000;
+    vi.spyOn(Date, "now").mockReturnValue(now);
+    const env = authorizationEnv();
+    const consent = await authHandler.fetch(
+      new Request("https://done.example/authorize?response_type=code"),
+      env,
+    );
+    const page = await consent.text();
+    const approvalState = page.match(/name="approval_state" value="([^"]+)"/)?.[1];
+    const csrf = page.match(/name="csrf" value="([^"]+)"/)?.[1];
+    expect(approvalState).toBeTruthy();
+    expect(csrf).toBeTruthy();
+    vi.spyOn(Date, "now").mockReturnValue(now + 10 * 60 * 1_000 + 1);
+
+    const response = await authHandler.fetch(
+      new Request("https://done.example/authorize", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ approval_state: approvalState!, csrf: csrf! }),
+      }),
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    expect(await response.text()).toBe("Expired approval");
   });
 
   it("redirects with the configured GitHub OAuth client ID", async () => {

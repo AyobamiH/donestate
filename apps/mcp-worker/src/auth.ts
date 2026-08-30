@@ -1,10 +1,10 @@
 import type { OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 import { digest } from "./canonical";
+import { sealSecret, unsealSecret } from "./crypto";
 import { credentialSettingsHandler } from "./credential-settings";
 import { githubAppSettingsHandler, githubWebhookHandler } from "./github-app-settings";
 import type { DoneStateEnv } from "./environment";
 import { exchangeGitHubCode, getAuthenticatedUser } from "./github";
-import type { OAuthStateStore, PendingAuthorization } from "./oauth-state";
 import type { GitHubAuthProps } from "./types";
 
 export const EXECUTION_SCOPE = "donestate:execute";
@@ -12,7 +12,16 @@ export const EXECUTION_SCOPE = "donestate:execute";
 export type AuthEnv = DoneStateEnv & { OAUTH_PROVIDER: OAuthHelpers };
 
 const OPENAI_APPS_CHALLENGE_PATH = "/.well-known/openai-apps-challenge";
-const STATE_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const OAUTH_APPROVAL_SCHEMA = "donestate.oauth-approval.v1" as const;
+const OAUTH_APPROVAL_TTL_MS = 10 * 60 * 1_000;
+
+interface SealedAuthorization {
+  schema: typeof OAUTH_APPROVAL_SCHEMA;
+  stage: "consent" | "approved";
+  oauthRequest: Awaited<ReturnType<OAuthHelpers["parseAuthRequest"]>>;
+  csrfDigest: string;
+  expiresAt: number;
+}
 export const OAUTH_FORM_ACTION = "'self' https://github.com https://chatgpt.com";
 
 function requiredSecret(env: AuthEnv, name: "GITHUB_CLIENT_ID" | "GITHUB_CLIENT_SECRET"): string {
@@ -30,8 +39,40 @@ function escapeHtml(value: string): string {
     .replace(/'/g, "&#039;");
 }
 
-function stateStore(env: AuthEnv, stateId: string): DurableObjectStub<OAuthStateStore> | null {
-  return STATE_ID_PATTERN.test(stateId) ? env.OAUTH_STATE.getByName(stateId) : null;
+async function constantTimeEqual(left: string, right: string): Promise<boolean> {
+  const encoder = new TextEncoder();
+  const [leftHash, rightHash] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(left)),
+    crypto.subtle.digest("SHA-256", encoder.encode(right)),
+  ]);
+  return crypto.subtle.timingSafeEqual(leftHash, rightHash);
+}
+
+async function sealAuthorization(value: SealedAuthorization, env: AuthEnv): Promise<string> {
+  return sealSecret(JSON.stringify(value), env.COOKIE_ENCRYPTION_KEY);
+}
+
+async function readAuthorization(
+  value: string,
+  expectedStage: SealedAuthorization["stage"],
+  env: AuthEnv,
+): Promise<SealedAuthorization | null> {
+  if (!value || value.length > 10_000) return null;
+  try {
+    const parsed = JSON.parse(await unsealSecret(value, env.COOKIE_ENCRYPTION_KEY)) as Partial<SealedAuthorization>;
+    if (
+      parsed.schema !== OAUTH_APPROVAL_SCHEMA
+      || parsed.stage !== expectedStage
+      || !parsed.oauthRequest
+      || typeof parsed.oauthRequest !== "object"
+      || typeof parsed.csrfDigest !== "string"
+      || typeof parsed.expiresAt !== "number"
+      || parsed.expiresAt <= Date.now()
+    ) return null;
+    return parsed as SealedAuthorization;
+  } catch {
+    return null;
+  }
 }
 
 function html(body: string, status = 200, formAction = "'self'"): Response {
@@ -50,14 +91,14 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
   if (!oauthRequest.clientId) return new Response("Invalid client", { status: 400 });
   const client = await env.OAUTH_PROVIDER.lookupClient(oauthRequest.clientId);
   if (!client) return new Response("Unknown client", { status: 400 });
-  const stateId = crypto.randomUUID();
   const csrf = crypto.randomUUID();
-  const pending: PendingAuthorization = {
+  const approvalState = await sealAuthorization({
+    schema: OAUTH_APPROVAL_SCHEMA,
+    stage: "consent",
     oauthRequest,
     csrfDigest: await digest(csrf),
-    approved: false,
-  };
-  await env.OAUTH_STATE.getByName(stateId).create(pending);
+    expiresAt: Date.now() + OAUTH_APPROVAL_TTL_MS,
+  }, env);
   const clientName = escapeHtml(client.clientName || "ChatGPT");
   const scopes = escapeHtml(oauthRequest.scope.join(", ") || EXECUTION_SCOPE);
   return html(`<!doctype html>
@@ -67,26 +108,25 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
 <p class="scope"><strong>Client scopes:</strong> ${scopes}</p>
 <p>GitHub will ask for repository access. DoneState will still require an explicit authority envelope for every objective. It cannot silently push or open a pull request.</p>
 <ul><li>Use your separately connected OpenAI API key for your runs</li><li>Run a coding agent in an isolated sandbox</li><li>Validate and commit bounded repository changes</li><li>Push or open a pull request only when granted</li><li>Stop before claiming completion until an independent verifier signs the exact snapshot</li></ul>
-<form method="post" action="/authorize"><input type="hidden" name="state_id" value="${stateId}"><input type="hidden" name="csrf" value="${csrf}"><div class="actions"><a class="cancel" href="/">Cancel</a><button class="approve" type="submit">Continue with GitHub</button></div></form></main></body></html>`, 200, OAUTH_FORM_ACTION);
+<form method="post" action="/authorize"><input type="hidden" name="approval_state" value="${escapeHtml(approvalState)}"><input type="hidden" name="csrf" value="${csrf}"><div class="actions"><a class="cancel" href="/">Cancel</a><button class="approve" type="submit">Continue with GitHub</button></div></form></main></body></html>`, 200, OAUTH_FORM_ACTION);
 }
 
 async function approve(request: Request, env: AuthEnv): Promise<Response> {
   const form = await request.formData();
-  const stateId = form.get("state_id");
+  const approvalState = form.get("approval_state");
   const csrf = form.get("csrf");
-  if (typeof stateId !== "string" || typeof csrf !== "string") return new Response("Invalid approval", { status: 400 });
-  const store = stateStore(env, stateId);
-  if (!store) return new Response("Invalid approval", { status: 400 });
-  const approval = await store.approve(await digest(csrf));
-  if (approval.status === "missing") return new Response("Expired approval", { status: 400 });
-  if (approval.status === "invalid_csrf") return new Response("CSRF validation failed", { status: 400 });
-  const pending = approval.pending;
+  if (typeof approvalState !== "string" || typeof csrf !== "string") return new Response("Invalid approval", { status: 400 });
+  const pending = await readAuthorization(approvalState, "consent", env);
+  if (!pending) return new Response("Expired approval", { status: 400 });
+  if (!await constantTimeEqual(pending.csrfDigest, await digest(csrf))) {
+    return new Response("CSRF validation failed", { status: 400 });
+  }
   const callback = new URL("/callback", request.url).href;
   const upstream = new URL("https://github.com/login/oauth/authorize");
   upstream.searchParams.set("client_id", requiredSecret(env, "GITHUB_CLIENT_ID"));
   upstream.searchParams.set("redirect_uri", callback);
   upstream.searchParams.set("scope", "public_repo read:user");
-  upstream.searchParams.set("state", stateId);
+  upstream.searchParams.set("state", await sealAuthorization({ ...pending, stage: "approved" }, env));
   return Response.redirect(upstream.href, 302);
 }
 
@@ -95,11 +135,8 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
   const stateId = url.searchParams.get("state");
   const code = url.searchParams.get("code");
   if (!stateId || !code) return new Response("Invalid OAuth callback", { status: 400 });
-  const store = stateStore(env, stateId);
-  if (!store) return new Response("Invalid OAuth callback", { status: 400 });
-  const pending = await store.read();
+  const pending = await readAuthorization(stateId, "approved", env);
   if (!pending) return new Response("Expired OAuth callback", { status: 400 });
-  if (!pending.approved) return new Response("Consent was not recorded", { status: 400 });
   const callbackUrl = new URL("/callback", request.url).href;
   const accessToken = await exchangeGitHubCode(
     requiredSecret(env, "GITHUB_CLIENT_ID"),
@@ -127,7 +164,6 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
     scope: grantedScopes,
     props,
   });
-  await store.consume();
   return Response.redirect(redirectTo, 302);
 }
 
