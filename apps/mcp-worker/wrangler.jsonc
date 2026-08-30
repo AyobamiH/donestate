@@ -17,6 +17,7 @@
       { "name": "RUN_COORDINATOR", "class_name": "RunCoordinator" },
       { "name": "CREDENTIAL_VAULT", "class_name": "CredentialVault" },
       { "name": "MAINTENANCE_REGISTRY", "class_name": "MaintenanceRegistry" },
+      { "name": "OAUTH_STATE", "class_name": "OAuthStateStore" },
       { "name": "Sandbox", "class_name": "Sandbox" }
     ]
   },
@@ -32,6 +33,10 @@
     {
       "tag": "v3",
       "new_sqlite_classes": ["MaintenanceRegistry"]
+    },
+    {
+      "tag": "v4",
+      "new_sqlite_classes": ["OAuthStateStore"]
     }
   ],
   "kv_namespaces": [
