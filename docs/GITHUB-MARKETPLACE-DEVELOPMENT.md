@@ -43,19 +43,22 @@ The private selected-repository maintenance GitHub App is a third, independent i
 - Isolation PR [#49](https://github.com/AyobamiH/donestate/pull/49) merged as `34145185aa8703fd60d76049ce4e87475a78c132` from exact tree `d6ae69a4d3b2a62407475316aa20df46ab7907a6`.
 - Post-merge CI [33331882626](https://github.com/AyobamiH/donestate/actions/runs/33331882626) passed all three required jobs.
 - Production deployment [33331882611](https://github.com/AyobamiH/donestate/actions/runs/33331882611) passed independently and published version `7b4fa2fa-201f-4bd9-8746-4d911cb8d9d4`.
-- Development deployment [33331882593](https://github.com/AyobamiH/donestate/actions/runs/33331882593), attempt 2, validated all three isolated development secrets and published `donestate-mcp-development` version `be499906-19d4-4340-a968-e62aa5dc28d7` at `https://donestate-mcp-development.woeinvests.workers.dev`.
+- Development deployment [33331882593](https://github.com/AyobamiH/donestate/actions/runs/33331882593), attempt 2, validated the three development repository-secret inputs and published `donestate-mcp-development` version `be499906-19d4-4340-a968-e62aa5dc28d7` at `https://donestate-mcp-development.woeinvests.workers.dev`; later live evidence disproved the secret-upload target.
+- Follow-up PR [#50](https://github.com/AyobamiH/donestate/pull/50) merged as `e45958cf225395ed4112f6ebd60176724af25e64` from exact tree `d9d004614f3a454026cc6168b1fdf4eddd4cc65e`; PR CI `33337040955` and post-merge CI `33337079347` passed all three required jobs.
+- Evidence PR [#51](https://github.com/AyobamiH/donestate/pull/51) merged as `ecf2cb753ee9ccaaa0fe63ffb301d2633978cbe3` from exact tree `c788d790f920bd8bbb568a9502587f2980039b57`; PR CI `33337319451` and post-merge CI `33337369603` passed all three required jobs.
 - Development OAuth App: `DoneState Marketplace Development`, App `3826463`.
 - Owner-only draft listing: `donestate-marketplace-development`; never submitted for publication.
 - Zero-cost plan: `Development Test`.
 - Signed ping delivery: `13cd1ca8-a4b8-11f1-888d-aba6875c1ba2`.
 - Signed purchased delivery: `90c3e110-a4b8-11f1-8357-8b375ae56683`.
-- The publisher reports that the zero-cost test subscription was cancelled. Authenticated browser control failed before the signed cancelled delivery ID and resulting isolated entitlement state could be independently recorded.
+- The publisher reports that the zero-cost test subscription was cancelled, but the signed cancelled delivery and resulting isolated entitlement state remain unrecorded.
+- Read-only probes at `2026-08-30T21:42Z` returned root HTTP 200, `/mcp` HTTP 404, and unsigned `POST /webhooks/github-marketplace` HTTP 503. The deployment log shows the generic secret-upload phase resolving `donestate-mcp`, not `donestate-mcp-development`, so the development webhook secret was absent and the development values may have replaced production credentials.
+- Recovery must explicitly target `donestate-mcp-development`, independently restore production from its production secret names, and pass live HTTP 200/404/401/302 isolation probes before any lifecycle test.
+- The app, draft listing, ping, and purchase identities are recorded, but they do not override the later HTTP 503 or prove the current credential target. After recovery, record the exact cancellation and exercise `changed`, `pending_change`, and `pending_change_cancelled`.
 
-Future development deployments are explicit `workflow_dispatch` operations. The workflow records live proof that the development notice is reachable, `/mcp` is absent, and an unsigned Marketplace webhook is rejected.
+Normal development deployments are explicit `workflow_dispatch` operations. The active incident-recovery change temporarily permits one path-limited `main` push to restore both credential targets and record live proof; that trigger must be removed after the exact recovery runs pass. The workflow proves that the development notice is reachable, `/mcp` is absent, an unsigned Marketplace webhook is rejected, and OAuth starts with the development callback.
 
-Public probes also returned HTTP 404 for OAuth-provider, OpenAI-review, GitHub-App settings, and webhook GET routes. The production OAuth App `3822030`, submitted production listing, production secrets, and private maintenance GitHub App were not changed by this test.
-
-This evidence does not close MKT-004. The next authenticated session must record the signed cancelled delivery and final isolated entitlement, then exercise `changed`, `pending_change`, and `pending_change_cancelled`. Do not infer those live events from the 97 passing Worker tests or from the publisher's cancellation report.
+The production OAuth App and submitted listing configuration and the private maintenance GitHub App were not changed by the development test. The production Worker credential values are a separate runtime state and must be restored because the defective uploader targeted the production Worker name.
 
 ## Evidence required to close MKT-004
 
