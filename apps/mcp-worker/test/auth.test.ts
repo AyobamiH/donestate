@@ -89,6 +89,7 @@ describe("OAuth authorisation security policy", () => {
       `default-src 'none'; style-src 'unsafe-inline'; form-action ${OAUTH_FORM_ACTION}; frame-ancestors 'none'; base-uri 'none'`,
     );
     expect(OAUTH_FORM_ACTION).not.toContain("*");
+    expect(OAUTH_FORM_ACTION).toContain("https://platform.openai.com");
     expect(await response.text()).toContain('action="/authorize"');
   });
 
