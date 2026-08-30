@@ -249,8 +249,10 @@ describe("OAuth authorisation security policy", () => {
     const csrf = page.match(/name="csrf" value="([^"]+)"/)?.[1];
     expect(approvalState).toBeTruthy();
     expect(csrf).toBeTruthy();
-    const last = approvalState!.at(-1);
-    const tampered = approvalState!.slice(0, -1) + (last === "A" ? "B" : "A");
+    // Mutate the first base64url character so the decoded IV always changes.
+    // Mutating the final character can alter only discarded padding bits.
+    const first = approvalState!.at(0);
+    const tampered = (first === "A" ? "B" : "A") + approvalState!.slice(1);
 
     const response = await authHandler.fetch(
       new Request("https://done.example/authorize", {
