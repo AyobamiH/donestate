@@ -1,6 +1,6 @@
 # Current status
 
-As of 2026-08-29, DoneState has a public local release, a deployed hosted preview, and an owner-activated PR-only GitHub App installation. These are separate product states.
+As of 2026-08-30, DoneState has a public local release, a deployed hosted preview, an owner-activated PR-only GitHub App installation, and an OpenAI directory version in review. These are separate product states.
 
 ## Public local release
 
@@ -11,9 +11,9 @@ As of 2026-08-29, DoneState has a public local release, a deployed hosted previe
 ## Hosted preview
 
 - Worker version: `0.2.0`
-- deployed Worker source commit: `cb4509377ed1738ad7eb141f1f1051854b6a37a5`
+- deployed Worker source commit: `1588c0588dfcbfcefc70cda71e8197c1b14b7fed`
 - endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
-- latest deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33261815551` (success)
+- latest deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33297909318` (success)
 - prior verified hosted baseline source: `179e02c1a99dab780cabe09c4f5882e7e492ad18`
 - prior verified hosted baseline deployment: `https://github.com/AyobamiH/donestate/actions/runs/33210941821` (success)
 - verified historical baseline: GitHub OAuth, encrypted user-funded OpenAI key, Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable reconciliation, and OpsTruth v2 attestation
@@ -32,7 +32,7 @@ The historical public canary run `631d8a08-d337-4bae-bd18-b55c31f48a8b` previous
 - permissions: read Actions, issues, and metadata; read/write code and pull requests
 - excluded permissions: administration, merge, deployment, release, environment, secret management, and workflow write
 
-Supporting repairs were merged and deployed in PRs #12, #13, #14, #16, #19, and #24.
+Supporting GitHub App repairs were merged and deployed in PRs #12, #13, #14, #16, #19, and #24. Release assets and OAuth/reviewer hardening were merged through PRs #26–#36. The final review-path fix is PR #36; post-merge CI run `33297909263` and deployment run `33297909318` both succeeded.
 
 The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a`, App branch `donestate/b4242932-0bc1-4876-a202-634d9c12d72a`, head `ffec48e6c5abd9cef840ab591896613769d3e779`, and pull request #22. Its one-file documentation diff passed local validation and all three required checks in workflow `33260424569`. The PR remains intentionally open and unmerged.
 
@@ -40,15 +40,18 @@ OpsTruth repeatedly signed `uncertain` after observing the exact head, compare r
 
 Canonical governance and evidence are indexed in `AyobamiH/proof-and-state`, merge commit `fff0bc449ef06aa9771ac7429b3d5a640e53f66e`.
 
-## OpenAI directory draft
+## OpenAI directory review
 
-- a DoneState `0.2.0` draft exists under the verified individual identity `AYOBAMI JOHN HAASTRUP`;
-- listing metadata, three starter prompts, five positive review cases, and three non-trigger cases are saved;
-- the OpenAI platform verified `donestate-mcp.woeinvests.workers.dev` through the public well-known challenge route added in pull request #10;
-- pull request #10 passed CI run `33243914379` with all Worker checks and 51 tests;
-- the draft has not been submitted for review or published.
+- DoneState version `0.2.0` was submitted under the verified individual identity `AYOBAMI JOHN HAASTRUP` on 2026-08-30;
+- the OpenAI plugin status page reports `Review`; the version is not yet approved or published;
+- directory and composer icons, the repository-hosted demo recording, listing metadata, three starter prompts, five positive review cases, and three non-trigger cases are saved;
+- OpenAI scanned 19 MCP tools and every explicit annotation has a saved justification;
+- reviewers have a dedicated read-only account that requires no GitHub, MFA, email, SMS, passkey, or private network and is server-blocked from every mutation;
+- the platform verified `donestate-mcp.woeinvests.workers.dev` through the public well-known challenge route added in PR #10;
+- the reviewer OAuth callback CSP defect was corrected in PR #36 and deployed from `1588c0588dfcbfcefc70cda71e8197c1b14b7fed`;
+- the full submission evidence is recorded in [OpenAI review submission](OPENAI-REVIEW.md).
 
-Submitting the directory listing remains a separate product and legal review step; the GitHub owner-side activation does not change its state.
+Submission begins OpenAI's external review. It does not mean the plugin is approved, listed, or published.
 
 ## Not implemented
 
