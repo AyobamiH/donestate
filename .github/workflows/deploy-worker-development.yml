@@ -1,0 +1,64 @@
+name: Deploy Marketplace development Worker
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - apps/mcp-worker/**
+      - .github/workflows/deploy-worker-development.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: donestate-mcp-development
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: apps/mcp-worker/package-lock.json
+      - run: npm ci
+        working-directory: apps/mcp-worker
+      - run: npm run check
+        working-directory: apps/mcp-worker
+      - run: npm run deploy:development:check
+        working-directory: apps/mcp-worker
+      - name: Validate isolated development secrets
+        env:
+          GITHUB_CLIENT_ID: ${{ secrets.DONESTATE_DEV_GITHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.DONESTATE_DEV_GITHUB_CLIENT_SECRET }}
+          GITHUB_MARKETPLACE_WEBHOOK_SECRET: ${{ secrets.DONE_STATE_DEV_GITHUB_MARKETPLACE_WEBHOOK_SECRET }}
+        run: |
+          if [ -z "$GITHUB_CLIENT_ID" ] || [ -z "$GITHUB_CLIENT_SECRET" ] || [ -z "$GITHUB_MARKETPLACE_WEBHOOK_SECRET" ]; then
+            echo "DONESTATE_DEV_GITHUB_CLIENT_ID, DONESTATE_DEV_GITHUB_CLIENT_SECRET and DONE_STATE_DEV_GITHUB_MARKETPLACE_WEBHOOK_SECRET must be configured as repository Actions secrets" >&2
+            exit 1
+          fi
+      - id: deploy
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/mcp-worker
+          wranglerVersion: 4.127.1
+          packageManager: npm
+          command: deploy --config wrangler.development.jsonc
+          secrets: |
+            GITHUB_CLIENT_ID
+            GITHUB_CLIENT_SECRET
+            GITHUB_MARKETPLACE_WEBHOOK_SECRET
+        env:
+          GITHUB_CLIENT_ID: ${{ secrets.DONESTATE_DEV_GITHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.DONESTATE_DEV_GITHUB_CLIENT_SECRET }}
+          GITHUB_MARKETPLACE_WEBHOOK_SECRET: ${{ secrets.DONE_STATE_DEV_GITHUB_MARKETPLACE_WEBHOOK_SECRET }}
+      - name: Record deployment URL
+        run: echo "### ${{ steps.deploy.outputs.deployment-url }}" >> "$GITHUB_STEP_SUMMARY"

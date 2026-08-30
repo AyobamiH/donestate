@@ -1,5 +1,6 @@
-export type DoneStateEnv = Env & Readonly<{
+export type DoneStateEnv = Omit<Env, "DEPLOYMENT_MODE"> & Readonly<{
   CANONICAL_ORIGIN?: string;
+  DEPLOYMENT_MODE?: "production" | "marketplace-development";
   COOKIE_ENCRYPTION_KEY: string;
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET: string;

@@ -38,12 +38,12 @@
       "nextAction":"Choose public support/privacy aliases, record a legitimate service address, complete the ICO fee self-assessment, and record offered territories.","waitCondition":"Requires real publisher decisions; private contact data must not be invented or copied into the repository.","reentryCondition":"Resume when those decisions are available.","dependencies":["GOV-001"],"evidenceIds":["E-004"]
     },
     {
-      "id":"GOV-002","title":"Synchronize Proof & State governance records","stream":"governance","status":"planned","owner":"Proof & State maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-07",
-      "nextAction":"Update registry, status, and evidence for PRs 44 and 45, exact commits, CI, and both external review states.","waitCondition":"R1 must be exact and green first.","reentryCondition":"Begin after R1.","dependencies":["GOV-001","MKT-001","MKT-002","MKT-003","OPS-001"],"evidenceIds":["E-001","E-004"]
+      "id":"GOV-002","title":"Synchronize Proof & State governance records","stream":"governance","status":"complete","owner":"Proof & State maintainers","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
+      "nextAction":"Keep portfolio state pinned to exact product-ledger subjects and update both ledgers with later external transitions.","waitCondition":"None.","reentryCondition":"Reopen if Proof & State drifts from exact DoneState source, CI, deployment, runtime, review, or verification state.","dependencies":["GOV-001","MKT-001","MKT-002","MKT-003","OPS-001"],"evidenceIds":["E-001","E-004","E-008"]
     },
     {
-      "id":"MKT-004","title":"Create a separate Marketplace development app and listing","stream":"marketplace","status":"planned","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-12",
-      "nextAction":"Create a development OAuth App and draft listing for live purchase, cancellation, and plan-change testing.","waitCondition":"Do not alter the submitted production listing or reuse the private maintenance GitHub App.","reentryCondition":"Begin after GOV-002.","dependencies":["GOV-002"],"evidenceIds":["E-001"]
+      "id":"MKT-004","title":"Create a separate Marketplace development app and listing","stream":"marketplace","status":"active","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-12",
+      "nextAction":"Merge the isolated development Worker candidate, create and secure the separate OAuth App, deploy it, create the owner-only draft listing, and exercise the lifecycle.","waitCondition":"Creating persistent OAuth credentials and transmitting their secret to GitHub Actions requires action-time confirmation; do not alter the submitted production listing or reuse the private maintenance GitHub App.","reentryCondition":"Continue from the exact CI-passed isolation candidate after the required confirmation.","dependencies":["GOV-002"],"evidenceIds":["E-001","E-008"]
     },
     {
       "id":"CUST-001","title":"Add customer account and plan visibility","stream":"customer-readiness","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-18",
@@ -160,8 +160,8 @@
     },
     {
       "id":"E-004","date":"2026-08-30","identity":"Cross-documentation drift audit","situation":"Marketplace actions advanced faster than DoneState and Proof & State records.","verification":"Inspection found contradictory preview, pending-setup, and draft-not-submitted claims after GitHub accepted the review request.",
-      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Replace memory-dependent updates with a canonical ledger, generated state, and CI drift checks.","waitCondition":"None.","staleDate":"2026-09-02"},
-      "outcome":"The cause is a governance-system defect, not merely stale prose.","content":"Recovered backlog, statuses, owners, actions, wait/re-entry conditions, stale dates, and evidence.","measurement":"Four DoneState documents and multiple Proof & State records require synchronization."
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Keep both repository gates green and reopen this audit if exact cross-project state drifts.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"The governance-system defect was corrected with canonical ledgers, generated state, change-impact gates, and exact cross-project synchronization.","content":"Recovered backlog, statuses, owners, actions, wait/re-entry conditions, stale dates, and evidence.","measurement":"DoneState PR 46 and Proof & State PR 8 merged; both post-merge governance paths passed."
     },
     {
       "id":"E-005","date":"2026-08-30","identity":"DoneState OpenAI directory version 0.2.0","situation":"The plugin was submitted under AYOBAMI JOHN HAASTRUP.","verification":"The status page reported Review after submission materials and reviewer access were saved.",
@@ -177,6 +177,11 @@
       "id":"E-007","date":"2026-08-30","identity":"Marketplace review-hardening deployment","situation":"The submitted listing needed monotonic lifecycle state, full transition tests, accurate public language, and an operational incident process.","verification":"DoneState PR 47 merged as ac54dcaa2df2b4211814a076036cc2b3f3ace8a6 from exact tree aacf05144ff0edf2d460f6b9702a4454a35809ab; PR workflow 33330031280 and post-merge workflow 33330067769 passed all three jobs; deployment 33330067776 published Cloudflare version c3c3dd14-512d-4ee5-a25a-f44914c00654; live probes returned root HTTP 200 and webhook GET HTTP 405.",
       "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Monitor real Marketplace lifecycle evidence and keep LEGAL-001 visible.","waitCondition":"None.","staleDate":"2026-12-01"},
       "outcome":"Reviewer-facing state is aligned, incident response is published, and stale Marketplace events cannot roll entitlement state backward.","content":"Atomic effectiveAt guard, five lifecycle actions, duplicates, out-of-order delivery, 80 Worker tests, documentation closure, and incident/support runbook.","measurement":"One hardening PR merged; three CI runs passed across PR and post-merge lanes; one deployment passed; two live read-only probes matched expected routing."
+    },
+    {
+      "id":"E-008","date":"2026-08-30","identity":"Proof & State self-documenting portfolio synchronization","situation":"The portfolio registry and roadmap needed exact DoneState subjects and an automated closure rule after Marketplace work had outpaced manual records.","verification":"Proof & State PR 8 merged as 911949934fc9c6cb40cd24ffa4d594aa5ca0d44a from exact tree ccaf4931ac1c9dfa4fa3b8882b37c1b1e3f0cc85; PR workflow 33330727848 and post-merge Governance workflow 33330807325 passed generated-state and governance-impact checks. The portfolio ledger pins DoneState at b8caff89d3be82f3367e3a3ba039f0ce264045df.",
+      "accountability":{"owner":"Proof & State maintainers","status":"complete","nextAction":"Update exact subjects in the same change as each later portfolio transition.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"Proof & State now generates portfolio state from a canonical ledger and rejects consequential changes that omit governance updates.","content":"Product registry, status, roadmap, evidence index, exact DoneState source pointer, recovered gaps, PR template, weekly freshness check, and change-impact gate.","measurement":"One synchronization PR merged; two exact workflow runs passed; one DoneState source ledger pinned."
     }
   ]
 }
