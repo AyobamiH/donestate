@@ -2,7 +2,7 @@
 
 The canonical recovery order, owners, wait conditions, stale dates, and Evidence Story Bank are generated from `governance/project-ledger.json` into [Project state](PROJECT-STATE.md). Any consequential code, workflow, contract, deployment, distribution, or external-state change must update that ledger in the same change.
 
-As of 2026-08-30, DoneState has a public local release, a deployed hosted preview, an owner-activated PR-only GitHub App installation, an OpenAI directory version in review, and a GitHub Marketplace listing under review. These are separate product states.
+As of 2026-08-30, DoneState has a public local release, a deployed hosted service for supported public-repository paths, an owner-activated PR-only GitHub App installation, an OpenAI directory version in review, and a GitHub Marketplace listing under review. These are separate product states.
 
 ## Public local release
 
@@ -10,7 +10,7 @@ As of 2026-08-30, DoneState has a public local release, a deployed hosted previe
 - release tag commit: `ed17475`
 - capability: local durable coding control plane with explicit authority, deterministic validation, recovery, sealed verification handoff, and pinned independent attestation
 
-## Hosted preview
+## Hosted service
 
 - Worker version: `0.2.0`
 - deployed Worker source commit: `c69896d06f1a490ab1f67606fd0d406ab826191b`
@@ -66,7 +66,7 @@ Submission begins OpenAI's external review. It does not mean the plugin is appro
 
 ## GitHub Marketplace review
 
-The GitHub Marketplace draft is attached to OAuth App `3822030`, not to the private maintenance GitHub App. This preserves installation `157513439` as **Only select repositories** on only `AyobamiH/donestate` while exposing the existing public-repository OAuth product separately.
+The GitHub Marketplace listing under review is attached to OAuth App `3822030`, not to the private maintenance GitHub App. This preserves installation `157513439` as **Only select repositories** on only `AyobamiH/donestate` while exposing the existing public-repository OAuth product separately.
 
 The candidate implements one-time `read:user` purchase onboarding, active-plan verification, a dedicated signed and idempotent Marketplace lifecycle webhook, and a minimal entitlement record that grants no repository or execution authority. Listing copy, a 512×512 icon, a 965×482 feature card, three 1280×720 screenshots, and the 52-second demo video are indexed in [GitHub Marketplace listing](GITHUB-MARKETPLACE.md). The refreshed media uses `donestate.proofandstate.com/mcp` rather than the legacy Worker hostname.
 

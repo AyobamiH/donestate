@@ -1,6 +1,6 @@
-# Hosted ChatGPT plugin preview
+# Hosted service and ChatGPT plugin
 
-DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. It is deployed and submitted for OpenAI review, but it is not yet approved, published, or production-certified.
+DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. The supported public-repository path is deployed as the live hosted service and has recorded production evidence. Version 0.2.0 is submitted for OpenAI review but is not yet approved or published; separately gated capabilities and unresolved verification states are stated below.
 
 Canonical hosted endpoint: `https://donestate.proofandstate.com/mcp`
 
@@ -38,7 +38,7 @@ The reviewer OAuth path was exercised by the OpenAI Platform tool scanner after 
 | Branch | `local_read`, `local_write`, `test`, `commit`, `push`, `secret_access` |
 | Pull request | Branch authorities plus `open_pr` |
 
-The current OAuth preview requests GitHub's `public_repo` and `read:user` scopes. Private repositories are rejected as `BLOCKED_CAPABILITY`. They should use short-lived GitHub App installation tokens before production support is enabled.
+The hosted public-repository OAuth path requests GitHub's `public_repo` and `read:user` scopes. Private repositories are rejected as `BLOCKED_CAPABILITY`. They require a separately designed public customer GitHub App with short-lived installation tokens before private-repository support can be enabled.
 
 Remote mutations use durable intent records and provider probes. If a branch push or pull-request creation cannot be reconciled to the intended commit, the run stops at `AMBIGUOUS_EFFECT`; the mutation is not blindly replayed.
 
@@ -101,9 +101,9 @@ After deployment, replace the local URL in `plugins/donestate/.mcp.json` with th
 
 The server supports client ID metadata documents with dynamic client registration as a compatibility fallback, so the plugin does not embed a client secret. Every tool call also enforces the `donestate:execute` OAuth scope in addition to the per-objective consequence envelope.
 
-## Publication gates
+## Submission and publication gates
 
-Before submitting the plugin to the universal ChatGPT and Codex directory:
+The following gates were used to prepare the directory submission and remain publication or capability gates where applicable. Their exact completed, blocked, and planned states are tracked in [Project state](PROJECT-STATE.md):
 
 - deploy the Worker to its stable hostname
 - verify OAuth login, consent, execution, cancellation and deletion through the hosted client

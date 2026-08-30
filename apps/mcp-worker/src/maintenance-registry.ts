@@ -306,6 +306,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       || !Number.isFinite(Date.parse(input.effectiveAt))) {
       throw new Error("invalid GitHub Marketplace purchase");
     }
+    const effectiveAt = new Date(input.effectiveAt).toISOString();
     const now = new Date().toISOString();
     this.ctx.storage.sql.exec(
       `INSERT INTO marketplace_entitlements (
@@ -314,9 +315,10 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       ON CONFLICT(account_id) DO UPDATE SET account_login=excluded.account_login, account_type=excluded.account_type,
         authorized_by_login=COALESCE(excluded.authorized_by_login, marketplace_entitlements.authorized_by_login),
         plan_id=excluded.plan_id, plan_name=excluded.plan_name, state=excluded.state,
-        effective_at=excluded.effective_at, updated_at=excluded.updated_at`,
+        effective_at=excluded.effective_at, updated_at=excluded.updated_at
+       WHERE marketplace_entitlements.effective_at <= excluded.effective_at`,
       input.accountId, input.accountLogin, input.accountType, authorizedByLogin, input.planId, input.planName.trim(),
-      marketplaceState(input.action), new Date(input.effectiveAt).toISOString(), now,
+      marketplaceState(input.action), effectiveAt, now,
     );
     const entitlement = await this.marketplaceEntitlement(input.accountId);
     if (!entitlement) throw new Error("GitHub Marketplace entitlement write failed");
@@ -335,19 +337,23 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
   async ingestMarketplaceWebhook(input: {
     deliveryId: string;
     purchase: Parameters<MaintenanceRegistry["recordMarketplacePurchase"]>[0];
-  }): Promise<{ accepted: true; duplicate: boolean }> {
+  }): Promise<{ accepted: true; duplicate: boolean; stale?: boolean }> {
     if (!/^[A-Za-z0-9-]{1,100}$/.test(input.deliveryId)) throw new Error("invalid GitHub Marketplace delivery id");
     const existing = this.ctx.storage.sql.exec<{ delivery_id: string }>(
       "SELECT delivery_id FROM webhook_deliveries WHERE delivery_id = ?",
       input.deliveryId,
     ).toArray()[0];
     if (existing) return { accepted: true, duplicate: true };
-    await this.recordMarketplacePurchase(input.purchase);
+    const requestedEffectiveAt = Number.isFinite(Date.parse(input.purchase.effectiveAt))
+      ? new Date(input.purchase.effectiveAt).toISOString()
+      : "";
+    const entitlement = await this.recordMarketplacePurchase(input.purchase);
+    const stale = entitlement.effectiveAt > requestedEffectiveAt;
     this.ctx.storage.sql.exec(
       "INSERT INTO webhook_deliveries (delivery_id, event_name, repository, received_at) VALUES (?, 'marketplace_purchase', NULL, ?)",
       input.deliveryId, new Date().toISOString(),
     );
-    return { accepted: true, duplicate: false };
+    return { accepted: true, duplicate: false, stale };
   }
 
   async removeRepository(login: string, repository: string): Promise<{ repository: string; removed: boolean }> {

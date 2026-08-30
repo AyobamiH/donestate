@@ -72,7 +72,7 @@ npx donestate demo
 
 The demo intentionally ends at `AWAITING_VERIFICATION`. Self-verification would defeat the product boundary.
 
-## ChatGPT plugin preview
+## Hosted service and ChatGPT plugin
 
 Version 0.2 development now includes a ChatGPT and Codex plugin package plus a hosted MCP Worker under `plugins/donestate` and `apps/mcp-worker`. The plugin is the conversational control surface: a user states an outcome, approves one consequence envelope, and monitors durable execution without supervising every command.
 

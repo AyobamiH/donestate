@@ -71,7 +71,7 @@ Initial DoneState MCP submission. It provides bounded, user-authorised repositor
 
 Select countries only after the publisher identity, support process, privacy notice, and binding service terms are valid for those locations. No country selection is authorised by this repository document alone.
 
-## Evidence required before submission
+## Submission evidence and remaining review boundary
 
 - CI is green for the exact production merge commit.
 - The Worker is deployed from that exact commit.
@@ -81,8 +81,10 @@ Select countries only after the publisher identity, support process, privacy not
 - OpsTruth independently attests the exact pull-request head.
 - The final status and evidence subjects are recorded in `docs/CURRENT-STATUS.md`.
 - The verified individual developer identity remains selected, or Proof & State completes separate business verification before replacing it.
-- The production operator replaces preview-only legal language with binding contact, retention, and service terms.
+- The production operator published binding privacy, contact, retention, and hosted-service terms before submission.
+
+The repository, CI, deployment, reviewer-account, media, prompt, test-case, tool-annotation, domain-challenge, and owner-attestation evidence above supported submission. The fresh owner-side maintenance canary remains `AWAITING_VERIFICATION`; it is not misrepresented as a completed independent decision.
 
 ## Publication state
 
-`DRAFT SAVED, NOT SUBMITTED` — metadata, prompts, five positive tests, three non-trigger tests, and domain verification are complete. OAuth tool scanning, directory icons, reviewer fixtures, GitHub App activation, the maintenance canary, an exact deployment receipt, production legal policies, and final owner attestations remain open.
+`SUBMITTED, IN REVIEW` — version 0.2.0 was submitted under verified individual identity **AYOBAMI JOHN HAASTRUP** on 30 August 2026. The OpenAI status page reports `Review`; the version is not yet approved or published. The legacy Worker transport remains only for the immutable submitted review version and must not be removed until that review no longer depends on it.
