@@ -11,7 +11,7 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 ## Recovery order
 
 1. **R0 — Restore self-documenting governance.** The ledger, generated state, PR template, change-impact gate, and stale-state check are merged and green. (1 complete)
-2. **R1 — Harden the Marketplace review candidate.** Public wording matches live review state, lifecycle events are monotonic and tested, and operating decisions are documented. (4 active, 1 blocked)
+2. **R1 — Harden the Marketplace review candidate.** Public wording matches live review state, lifecycle events are monotonic and tested, and operating decisions are documented. (4 complete, 1 blocked)
 3. **R2 — Synchronize Proof & State.** Proof & State points to exact DoneState commits and external review states. (1 planned)
 4. **R3 — Separate Marketplace development from production.** A separate development OAuth App and draft listing can test lifecycle events without changing either production app. (1 planned)
 5. **R4 — Prepare for the first external customer.** Customers can inspect and delete their state, operators can detect failures, and useful outcomes are measured. (4 planned)
@@ -30,10 +30,10 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 
 | ID | Status | Owner | Next action | Wait or re-entry condition | Stale date |
 |---|---|---|---|---|---|
-| MKT-001 — Remove reviewer-facing preview and submission contradictions | active | DoneState maintainers | Align README, ROADMAP, DIRECTORY-SUBMISSION, THREAT-MODEL, and Marketplace docs with Pending for publish without claiming approval. | Wait: None. Re-entry: Begin after GOV-001. | 2026-09-04 |
-| MKT-002 — Reject stale Marketplace lifecycle events | active | DoneState maintainers | Make entitlement updates monotonic by effectiveAt and test out-of-order delivery. | Wait: None. Re-entry: Begin after GOV-001. | 2026-09-04 |
-| MKT-003 — Cover every Marketplace plan transition | active | DoneState maintainers | Test purchased, cancelled, changed, pending_change, pending_change_cancelled, duplicates, and reversals. | Wait: None. Re-entry: Begin with MKT-002. | 2026-09-04 |
-| OPS-001 — Publish the production incident and support runbook | active | Publisher owner | Document detection, triage, evidence preservation, communication, GitHub notification within 24 hours, recovery, and closure. | Wait: None. Re-entry: Begin after GOV-001. | 2026-09-06 |
+| MKT-001 — Remove reviewer-facing preview and submission contradictions | complete | DoneState maintainers | Keep review and publication states separate and let the documentation closure check reject known stale claims. | Wait: None. Re-entry: Reopen if a reviewer-facing document contradicts the live external state. | 2026-12-01 |
+| MKT-002 — Reject stale Marketplace lifecycle events | complete | DoneState maintainers | Preserve the atomic effectiveAt predicate and monitor real lifecycle evidence. | Wait: None. Re-entry: Reopen if a newer entitlement can be overwritten by an older event. | 2026-12-01 |
+| MKT-003 — Cover every Marketplace plan transition | complete | DoneState maintainers | Keep all five actions, duplicates, and out-of-order delivery in the required Worker suite. | Wait: None. Re-entry: Reopen when GitHub adds or changes a lifecycle contract. | 2026-12-01 |
+| OPS-001 — Publish the production incident and support runbook | complete | Publisher owner | Exercise the runbook during the first incident drill or real incident and record the evidence story. | Wait: None. Re-entry: Reopen if notification, support, recovery, or post-incident ownership becomes incomplete. | 2026-12-01 |
 | LEGAL-001 — Complete public operator contact and jurisdiction decisions | blocked | Publisher owner | Choose public support/privacy aliases, record a legitimate service address, complete the ICO fee self-assessment, and record offered territories. | Wait: Requires real publisher decisions; private contact data must not be invented or copied into the repository. Re-entry: Resume when those decisions are available. | 2026-09-06 |
 
 ### R2 — Synchronize Proof & State
@@ -148,3 +148,13 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 - **Outcome:** The recovered backlog has one canonical source, generated human view, CI change-impact gate, PR template, and scheduled freshness check.
 - **Content:** Seven recovery stages, thirty-two work items, required accountability fields, evidence stories, stale-date enforcement, and separate-state language.
 - **Measurement:** One governance PR merged; two exact CI runs passed; one negative stale-date test failed as designed.
+
+### E-007 — Marketplace review-hardening deployment
+
+- **Date:** 2026-08-30
+- **Situation:** The submitted listing needed monotonic lifecycle state, full transition tests, accurate public language, and an operational incident process.
+- **Verification:** DoneState PR 47 merged as ac54dcaa2df2b4211814a076036cc2b3f3ace8a6 from exact tree aacf05144ff0edf2d460f6b9702a4454a35809ab; PR workflow 33330031280 and post-merge workflow 33330067769 passed all three jobs; deployment 33330067776 published Cloudflare version c3c3dd14-512d-4ee5-a25a-f44914c00654; live probes returned root HTTP 200 and webhook GET HTTP 405.
+- **Accountability:** owner=DoneState maintainers; status=complete; next=Monitor real Marketplace lifecycle evidence and keep LEGAL-001 visible.; wait=None.; stale=2026-12-01
+- **Outcome:** Reviewer-facing state is aligned, incident response is published, and stale Marketplace events cannot roll entitlement state backward.
+- **Content:** Atomic effectiveAt guard, five lifecycle actions, duplicates, out-of-order delivery, 80 Worker tests, documentation closure, and incident/support runbook.
+- **Measurement:** One hardening PR merged; three CI runs passed across PR and post-merge lanes; one deployment passed; two live read-only probes matched expected routing.
