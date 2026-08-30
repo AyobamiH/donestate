@@ -1,4 +1,5 @@
 export type DoneStateEnv = Env & Readonly<{
+  CANONICAL_ORIGIN?: string;
   COOKIE_ENCRYPTION_KEY: string;
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET: string;

@@ -306,6 +306,18 @@ describe("OAuth authorisation security policy", () => {
     expect(location.searchParams.get("client_id")).not.toBe("undefined");
   });
 
+  it("uses the canonical callback while a legacy Worker hostname remains compatible", async () => {
+    const env = authorizationEnv();
+    env.CANONICAL_ORIGIN = "https://donestate.proofandstate.com";
+    const response = await approveRequest(env);
+
+    expect(response.status).toBe(302);
+    const location = new URL(response.headers.get("Location")!);
+    expect(location.searchParams.get("redirect_uri")).toBe(
+      "https://donestate.proofandstate.com/callback",
+    );
+  });
+
   it("fails closed when the GitHub OAuth client ID is absent", async () => {
     const response = await approveRequest(authorizationEnv(""));
 

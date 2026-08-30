@@ -2,7 +2,7 @@
   "mcpServers": {
     "donestate": {
       "type": "http",
-      "url": "https://donestate-mcp.woeinvests.workers.dev/mcp"
+      "url": "https://donestate.proofandstate.com/mcp"
     }
   }
 }

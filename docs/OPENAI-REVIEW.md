@@ -10,7 +10,8 @@ This is submission evidence, not approval or publication evidence.
 
 ## Submitted release surface
 
-- MCP endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
+- submitted MCP endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp` (immutable review transport for version 0.2.0)
+- canonical MCP endpoint for new configuration: `https://donestate.proofandstate.com/mcp`
 - Directory identity: DoneState — “Verified PR-only coding”
 - Demo recording: `assets/donestate-plugin-demo.mp4`
 - Directory and composer icon: `assets/donestate-icon.png`

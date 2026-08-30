@@ -4,6 +4,10 @@
   "main": "src/server.ts",
   "compatibility_date": "2026-08-28",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "donestate.proofandstate.com", "custom_domain": true }
+  ],
   "containers": [
     {
       "class_name": "Sandbox",
@@ -45,11 +49,12 @@
   "vars": {
     "USER_DAILY_RUN_LIMIT": "10",
     "PLATFORM_OWNER_LOGIN": "AyobamiH",
+    "CANONICAL_ORIGIN": "https://donestate.proofandstate.com",
     // Public proof required by the OpenAI Apps domain-verification flow.
     "OPENAI_APPS_CHALLENGE": "VGfoWKKZx7N8MuzA0jQ0kaKC4A1ofTziFyPLOk0Kn2A",
     // SHA-256 of the high-entropy password supplied only in the OpenAI review portal.
     "OPENAI_REVIEW_PASSWORD_SHA256": "f29bfd7af82b519a8c6aac3b11acd4be201a43872d4fedf9092481a1dc3f3b01",
-    "OPSTRUTH_MCP_URL": "https://opstruth-chatgpt.woeinvests.workers.dev/mcp",
+    "OPSTRUTH_MCP_URL": "https://mcp.opstruth.io/mcp",
     "OPSTRUTH_VERIFIER_FINGERPRINT": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
   },
   "triggers": {
