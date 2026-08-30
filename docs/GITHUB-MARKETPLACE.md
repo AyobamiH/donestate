@@ -19,8 +19,8 @@ This document is the source of truth for the DoneState GitHub Marketplace draft 
 | Content type | `application/json` |
 | Homepage | `https://donestate.proofandstate.com` |
 | Support | `https://github.com/AyobamiH/donestate/issues` |
-| Privacy draft | `https://github.com/AyobamiH/donestate/blob/main/docs/PRIVACY.md` |
-| Terms draft | `https://github.com/AyobamiH/donestate/blob/main/docs/TERMS.md` |
+| Privacy notice | `https://github.com/AyobamiH/donestate/blob/main/docs/PRIVACY.md` |
+| Hosted terms | `https://github.com/AyobamiH/donestate/blob/main/docs/TERMS.md` |
 
 The short description is 55 characters and intentionally has no terminal punctuation, matching GitHub's listing-copy guidance.
 
@@ -64,7 +64,7 @@ The refreshed video and derived screenshots use `donestate.proofandstate.com/mcp
 6. A correctly signed GitHub `ping` receives HTTP 200 without creating or changing an entitlement.
 7. Marketplace entitlement records never select a repository, grant execution authority, enable a schedule, start a run, push, or open a pull request.
 
-The Marketplace webhook uses the Worker binding `GITHUB_MARKETPLACE_WEBHOOK_SECRET`. The deployment workflow maps the repository Actions secret `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET` into that binding. The identical value must be configured in the GitHub Marketplace draft before the webhook is activated.
+The Marketplace webhook uses the Worker binding `GITHUB_MARKETPLACE_WEBHOOK_SECRET`. The deployment workflow maps the repository Actions secret `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET` into that binding. The identical value is configured in the active GitHub Marketplace webhook. GitHub signed ping redelivery `7e964cd0-a495-11f1-9c22-dc3366715a90` returned HTTP 200 from the canonical endpoint after deployment workflow `33324975105` succeeded.
 
 ## Publication gate
 
@@ -75,12 +75,14 @@ The Marketplace webhook uses the Worker binding `GITHUB_MARKETPLACE_WEBHOOK_SECR
 - [x] Logo, exact-size feature card, same-size screenshots, and refreshed demo video prepared.
 - [x] Free public-repository scope and user-funded AI requirement disclosed.
 - [x] Local technical preflight indexed in `docs/GITHUB-MARKETPLACE-PREFLIGHT.md`.
-- [ ] Hosted CI and deployment pass on the exact implementation commit.
-- [ ] Dedicated Marketplace webhook secret configured in GitHub and Cloudflare, then a stubbed purchase delivery verified.
-- [ ] Operator replaces the preview-only legal language with binding privacy, support, retention, and service terms.
-- [ ] Human owner accepts the GitHub Marketplace Developer Agreement and submits the irreversible review declaration.
+- [x] Hosted CI and deployment passed on the exact implementation commit.
+- [x] Dedicated Marketplace webhook secret configured in GitHub and Cloudflare; signed GitHub ping delivery verified at HTTP 200.
+- [x] Operator published binding privacy, support, retention and hosted-service terms.
+- [x] Human owner accepted GitHub Marketplace Developer Agreement v2.4 on 30 August 2026.
+- [ ] Publisher contact record completed in the Marketplace dashboard.
+- [ ] Human owner completes GitHub's account-level publisher prerequisites and submits the final review request.
 
-The final two legal and submission items are deliberately not inferred from repository code or prior OpenAI terms acceptance.
+The final account and submission actions remain owner-controlled. A successful technical preflight does not imply that GitHub has reviewed, approved or published the listing.
 
 ## Official GitHub references
 
