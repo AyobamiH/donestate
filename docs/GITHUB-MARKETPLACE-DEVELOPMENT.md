@@ -38,25 +38,24 @@ All MCP, OAuth-provider, credential, GitHub App, maintenance webhook, OpenAI cha
 
 The private selected-repository maintenance GitHub App is a third, independent identity. It must not be attached to either Marketplace listing.
 
-## Current development evidence
+## Current evidence
 
-The isolated development surface was created on 30 August 2026 and remains separate from both production apps:
+- Isolation PR [#49](https://github.com/AyobamiH/donestate/pull/49) merged as `34145185aa8703fd60d76049ce4e87475a78c132` from exact tree `d6ae69a4d3b2a62407475316aa20df46ab7907a6`.
+- Post-merge CI [33331882626](https://github.com/AyobamiH/donestate/actions/runs/33331882626) passed all three required jobs.
+- Production deployment [33331882611](https://github.com/AyobamiH/donestate/actions/runs/33331882611) passed independently and published version `7b4fa2fa-201f-4bd9-8746-4d911cb8d9d4`.
+- Development deployment [33331882593](https://github.com/AyobamiH/donestate/actions/runs/33331882593), attempt 2, validated all three isolated development secrets and published `donestate-mcp-development` version `be499906-19d4-4340-a968-e62aa5dc28d7` at `https://donestate-mcp-development.woeinvests.workers.dev`.
+- Development OAuth App: `DoneState Marketplace Development`, App `3826463`.
+- Owner-only draft listing: `donestate-marketplace-development`; never submitted for publication.
+- Zero-cost plan: `Development Test`.
+- Signed ping delivery: `13cd1ca8-a4b8-11f1-888d-aba6875c1ba2`.
+- Signed purchased delivery: `90c3e110-a4b8-11f1-8357-8b375ae56683`.
+- The publisher reports that the zero-cost test subscription was cancelled. Authenticated browser control failed before the signed cancelled delivery ID and resulting isolated entitlement state could be independently recorded.
 
-| Evidence | Exact subject |
-|---|---|
-| Merged isolation source | PR #49; merge `34145185aa8703fd60d76049ce4e87475a78c132` |
-| CI | PR run `33331509990`; post-merge run `33331882626` |
-| Development deployment | Run `33331882593`; successful job `99322486219`; Cloudflare version `be499906-19d4-4340-a968-e62aa5dc28d7` |
-| OAuth App | `DoneState Marketplace Development`, App `3826463` |
-| Draft listing | `donestate-marketplace-development`; owner-only and not submitted for publication |
-| Test plan | `Development Test`; zero cost |
-| Signed ping | Delivery `13cd1ca8-a4b8-11f1-888d-aba6875c1ba2` |
-| Signed purchase | Delivery `90c3e110-a4b8-11f1-8357-8b375ae56683` |
-| Cancellation | Publisher reported the zero-cost subscription cancelled; the signed cancelled delivery ID and resulting isolated entitlement state have not yet been independently recorded |
+Future development deployments are explicit `workflow_dispatch` operations. The workflow records live proof that the development notice is reachable, `/mcp` is absent, and an unsigned Marketplace webhook is rejected.
 
-Public route probes returned HTTP 200 at the development root. MCP, OAuth-provider, OpenAI-review, GitHub-App settings, and webhook GET routes returned HTTP 404, matching the explicit development allowlist. The production OAuth App `3822030`, submitted production listing, production secrets, and private maintenance GitHub App were not changed by this test.
+Public probes also returned HTTP 404 for OAuth-provider, OpenAI-review, GitHub-App settings, and webhook GET routes. The production OAuth App `3822030`, submitted production listing, production secrets, and private maintenance GitHub App were not changed by this test.
 
-This evidence does not close MKT-004. The next authenticated session must record the signed cancelled delivery and final isolated entitlement, then exercise `changed`, `pending_change`, and `pending_change_cancelled`. Do not infer those events from the 97 passing Worker tests or from the publisher's cancellation report.
+This evidence does not close MKT-004. The next authenticated session must record the signed cancelled delivery and final isolated entitlement, then exercise `changed`, `pending_change`, and `pending_change_cancelled`. Do not infer those live events from the 97 passing Worker tests or from the publisher's cancellation report.
 
 ## Evidence required to close MKT-004
 
