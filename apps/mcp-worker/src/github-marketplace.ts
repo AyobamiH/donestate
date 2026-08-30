@@ -158,7 +158,11 @@ export const githubMarketplaceWebhookHandler = {
     if (!await validSignature(body, request.headers.get("x-hub-signature-256") ?? "", secret)) {
       return Response.json({ accepted: false }, { status: 401, headers: { "Cache-Control": "no-store" } });
     }
-    if (request.headers.get("x-github-event") !== "marketplace_purchase") {
+    const event = request.headers.get("x-github-event");
+    if (event === "ping") {
+      return Response.json({ accepted: true, event }, { status: 200, headers: { "Cache-Control": "no-store" } });
+    }
+    if (event !== "marketplace_purchase") {
       return Response.json({ accepted: false }, { status: 400, headers: { "Cache-Control": "no-store" } });
     }
     try {
