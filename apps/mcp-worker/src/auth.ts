@@ -13,6 +13,7 @@ export type AuthEnv = DoneStateEnv & { OAUTH_PROVIDER: OAuthHelpers };
 const OPENAI_APPS_CHALLENGE_PATH = "/.well-known/openai-apps-challenge";
 const OAUTH_APPROVAL_SCHEMA = "donestate.oauth-approval.v1" as const;
 const OAUTH_APPROVAL_TTL_MS = 10 * 60 * 1_000;
+const OPENAI_REVIEW_USERNAME = "openai-reviewer";
 
 interface SealedAuthorization {
   schema: typeof OAUTH_APPROVAL_SCHEMA;
@@ -158,12 +159,17 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
   const scopes = escapeHtml(oauthRequest.scope.join(", ") || EXECUTION_SCOPE);
   return html(`<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Authorise DoneState</title>
-<style>body{font-family:system-ui,sans-serif;background:#f5f6f8;color:#15171a;margin:0}.card{max-width:620px;margin:8vh auto;background:white;padding:32px;border:1px solid #dfe3e8;border-radius:14px;box-shadow:0 10px 32px #0001}h1{margin-top:0}.scope{background:#f3f5f7;padding:12px;border-radius:8px}li{margin:.6rem 0}.actions{display:flex;gap:12px;margin-top:24px}button,a{font:inherit;padding:11px 18px;border-radius:8px;text-decoration:none}.approve{border:0;background:#15171a;color:white}.cancel{border:1px solid #ccd1d7;color:#15171a}</style></head>
+<style>body{font-family:system-ui,sans-serif;background:#f5f6f8;color:#15171a;margin:0}.card{max-width:620px;margin:8vh auto;background:white;padding:32px;border:1px solid #dfe3e8;border-radius:14px;box-shadow:0 10px 32px #0001}h1{margin-top:0}.scope{background:#f3f5f7;padding:12px;border-radius:8px}li{margin:.6rem 0}.actions{display:flex;gap:12px;margin-top:24px}button,a,input{font:inherit;padding:11px 18px;border-radius:8px;text-decoration:none}.approve{border:0;background:#15171a;color:white}.cancel{border:1px solid #ccd1d7;color:#15171a}.reviewer{margin-top:24px;padding-top:20px;border-top:1px solid #dfe3e8}.reviewer label{display:block;margin:12px 0}.reviewer input{display:block;width:100%;box-sizing:border-box;margin-top:6px;border:1px solid #aeb6c0}.hint{font-size:.9rem;color:#4b5563}</style></head>
 <body><main class="card"><h1>Authorise DoneState</h1><p><strong>${clientName}</strong> is requesting access to your DoneState execution plane.</p>
 <p class="scope"><strong>Client scopes:</strong> ${scopes}</p>
 <p>GitHub will ask for repository access. DoneState will still require an explicit authority envelope for every objective. It cannot silently push or open a pull request.</p>
 <ul><li>Use your separately connected OpenAI API key for your runs</li><li>Run a coding agent in an isolated sandbox</li><li>Validate and commit bounded repository changes</li><li>Push or open a pull request only when granted</li><li>Stop before claiming completion until an independent verifier signs the exact snapshot</li></ul>
-<form method="post" action="/authorize"><input type="hidden" name="approval_state" value="${escapeHtml(approvalState)}"><input type="hidden" name="csrf" value="${csrf}"><div class="actions"><a class="cancel" href="/">Cancel</a><button class="approve" type="submit">Continue with GitHub</button></div></form></main></body></html>`, 200, OAUTH_FORM_ACTION);
+<form method="post" action="/authorize"><input type="hidden" name="approval_state" value="${escapeHtml(approvalState)}"><input type="hidden" name="csrf" value="${csrf}"><div class="actions"><a class="cancel" href="/">Cancel</a><button class="approve" type="submit">Continue with GitHub</button></div></form>
+<p class="hint">Cloud Browser users: if GitHub asks you to confirm access, use your password or authenticator app. Passkeys are not supported in Cloud Browser.</p>
+<details class="reviewer"><summary>OpenAI reviewer test account</summary><p>For OpenAI review only. This account can inspect the sample repository and existing evidence but cannot create credentials, change repository selection, start work, open pull requests, merge, deploy, release, or submit verification.</p>
+<form method="post" action="/authorize/reviewer"><input type="hidden" name="approval_state" value="${escapeHtml(approvalState)}"><input type="hidden" name="csrf" value="${csrf}">
+<label>Username<input name="username" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+<button class="approve" type="submit">Sign in to review</button></form></details></main></body></html>`, 200, OAUTH_FORM_ACTION);
 }
 
 async function approve(request: Request, env: AuthEnv): Promise<Response> {
@@ -183,6 +189,57 @@ async function approve(request: Request, env: AuthEnv): Promise<Response> {
   upstream.searchParams.set("scope", "public_repo read:user");
   upstream.searchParams.set("state", await sealAuthorization({ ...pending, stage: "approved" }, env));
   return Response.redirect(upstream.href, 302);
+}
+
+async function reviewerApprove(request: Request, env: AuthEnv): Promise<Response> {
+  const form = await request.formData();
+  const approvalState = form.get("approval_state");
+  const csrf = form.get("csrf");
+  const username = form.get("username");
+  const password = form.get("password");
+  if (
+    typeof approvalState !== "string"
+    || typeof csrf !== "string"
+    || typeof username !== "string"
+    || typeof password !== "string"
+    || username.length > 100
+    || password.length > 200
+  ) return new Response("Invalid reviewer sign-in", { status: 400 });
+  const pending = await readAuthorization(approvalState, "consent", env);
+  if (!pending) return new Response("Expired approval", { status: 400 });
+  if (!await constantTimeEqual(pending.csrfDigest, await digest(csrf))) {
+    return new Response("CSRF validation failed", { status: 400 });
+  }
+  const expectedDigest = env.OPENAI_REVIEW_PASSWORD_SHA256;
+  const owner = env.PLATFORM_OWNER_LOGIN;
+  const validPassword = typeof expectedDigest === "string"
+    && /^[a-f0-9]{64}$/.test(expectedDigest)
+    && await constantTimeEqual(expectedDigest, await digest(password));
+  if (username !== OPENAI_REVIEW_USERNAME || !validPassword || !owner) {
+    return new Response("Reviewer sign-in failed", { status: 401 });
+  }
+  const grantedScopes = pending.oauthRequest.scope.length === 0
+    ? [EXECUTION_SCOPE]
+    : pending.oauthRequest.scope.filter((scope) => scope === EXECUTION_SCOPE);
+  if (!grantedScopes.includes(EXECUTION_SCOPE)) {
+    return new Response("Required DoneState scope was not requested", { status: 400 });
+  }
+  const { redirectTo } = await env.OAUTH_PROVIDER.completeAuthorization({
+    request: pending.oauthRequest,
+    userId: owner,
+    metadata: { label: "OpenAI reviewer" },
+    scope: grantedScopes,
+    props: {
+      userId: owner,
+      login: owner,
+      name: "OpenAI Reviewer",
+      email: null,
+      accessToken: "github-app-reviewer-read-only",
+      origin: new URL(request.url).origin,
+      reviewMode: true,
+    } satisfies GitHubAuthProps,
+  });
+  return Response.redirect(redirectTo, 302);
 }
 
 async function callback(request: Request, env: AuthEnv): Promise<Response> {
@@ -243,6 +300,7 @@ export const authHandler = {
       }
       if (url.pathname === "/authorize" && request.method === "GET") return await consent(request, env);
       if (url.pathname === "/authorize" && request.method === "POST") return await approve(request, env);
+      if (url.pathname === "/authorize/reviewer" && request.method === "POST") return await reviewerApprove(request, env);
       if (url.pathname === "/callback" && request.method === "GET") return await callback(request, env);
       if (url.pathname === "/settings/openai") return await credentialSettingsHandler.fetch(request, env);
       if (url.pathname === "/settings/github-app" || url.pathname === "/settings/github-app/callback") {

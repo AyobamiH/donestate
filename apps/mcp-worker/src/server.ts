@@ -41,6 +41,7 @@ function authProps(context: ServerContext): GitHubAuthProps {
   const email = Reflect.get(props, "email");
   const origin = Reflect.get(props, "origin");
   if (typeof origin !== "string" || !origin) throw new Error("Reconnect DoneState to enable secure credential setup");
+  const reviewMode = Reflect.get(props, "reviewMode") === true;
   return {
     userId: login,
     login,
@@ -48,7 +49,14 @@ function authProps(context: ServerContext): GitHubAuthProps {
     name: typeof name === "string" ? name : null,
     email: typeof email === "string" ? email : null,
     origin,
+    reviewMode,
   };
+}
+
+function requireWritableIdentity(identity: GitHubAuthProps): void {
+  if (identity.reviewMode) {
+    throw new Error("BLOCKED_AUTHORITY: the OpenAI reviewer account is read-only");
+  }
 }
 
 function coordinator(runId: string) {
@@ -174,6 +182,7 @@ function createServer(): McpServer {
     async (_input, context) => {
       requireExecutionScope(context);
       const identity = authProps(context);
+      requireWritableIdentity(identity);
       return textResult(await createCredentialSetup(doneStateEnv(), identity.login, identity.origin));
     },
   );
@@ -188,6 +197,7 @@ function createServer(): McpServer {
     async (_input, context) => {
       requireExecutionScope(context);
       const identity = authProps(context);
+      requireWritableIdentity(identity);
       return textResult(await credentialVault(identity.login).disconnect(identity.login));
     },
   );
@@ -216,6 +226,7 @@ function createServer(): McpServer {
     async (_input, context) => {
       requireExecutionScope(context);
       const identity = authProps(context);
+      requireWritableIdentity(identity);
       return textResult(await createGitHubAppSetup(doneStateEnv(), identity.login, identity.origin));
     },
   );
@@ -237,6 +248,7 @@ function createServer(): McpServer {
     async (input, context) => {
       requireExecutionScope(context);
       const identity = authProps(context);
+      requireWritableIdentity(identity);
       assertRepository(input.repository);
       assertRef(input.defaultBranch);
       return textResult(await maintenanceRegistry().selectRepository(identity.login, input));
@@ -267,6 +279,7 @@ function createServer(): McpServer {
     async ({ repository }, context) => {
       requireExecutionScope(context);
       const identity = authProps(context);
+      requireWritableIdentity(identity);
       return textResult(await maintenanceRegistry().removeRepository(identity.login, repository));
     },
   );
@@ -309,6 +322,7 @@ function createServer(): McpServer {
     async ({ findingId }, context) => {
       requireExecutionScope(context);
       const identity = authProps(context);
+      requireWritableIdentity(identity);
       const credential = await credentialVault(identity.login).status(identity.login);
       if (!credential.connected) throw new Error("BLOCKED_CAPABILITY: connect your OpenAI execution credential first");
       return textResult(await maintenanceRegistry().startRepair(identity.login, findingId));
@@ -339,6 +353,7 @@ function createServer(): McpServer {
     async (input, context) => {
       requireExecutionScope(context);
       const identity = authProps(context);
+      requireWritableIdentity(identity);
       const credential = await credentialVault(identity.login).status(identity.login);
       if (!credential.connected) {
         throw new Error("BLOCKED_CAPABILITY: connect your own OpenAI API key with create_openai_credential_setup before creating an objective");
@@ -395,7 +410,9 @@ function createServer(): McpServer {
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
-      return textResult(await coordinator(runId).start(authProps(context).login));
+      const identity = authProps(context);
+      requireWritableIdentity(identity);
+      return textResult(await coordinator(runId).start(identity.login));
     },
   );
 
@@ -421,7 +438,9 @@ function createServer(): McpServer {
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
-      return textResult(await coordinator(runId).cancel(authProps(context).login));
+      const identity = authProps(context);
+      requireWritableIdentity(identity);
+      return textResult(await coordinator(runId).cancel(identity.login));
     },
   );
 
@@ -434,7 +453,9 @@ function createServer(): McpServer {
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
-      return textResult(await coordinator(runId).purge(authProps(context).login));
+      const identity = authProps(context);
+      requireWritableIdentity(identity);
+      return textResult(await coordinator(runId).purge(identity.login));
     },
   );
 
@@ -447,7 +468,9 @@ function createServer(): McpServer {
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
-      return textResult(await coordinator(runId).handoff(authProps(context).login));
+      const identity = authProps(context);
+      requireWritableIdentity(identity);
+      return textResult(await coordinator(runId).handoff(identity.login));
     },
   );
 
@@ -460,8 +483,10 @@ function createServer(): McpServer {
     },
     async ({ attestation }, context) => {
       requireExecutionScope(context);
+      const identity = authProps(context);
+      requireWritableIdentity(identity);
       return textResult(await coordinator(attestation.runId).submitAttestation(
-        authProps(context).login,
+        identity.login,
         attestation as VerificationAttestation,
       ));
     },
@@ -476,7 +501,9 @@ function createServer(): McpServer {
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
-      return textResult(await coordinator(runId).requestIndependentVerification(authProps(context).login));
+      const identity = authProps(context);
+      requireWritableIdentity(identity);
+      return textResult(await coordinator(runId).requestIndependentVerification(identity.login));
     },
   );
 

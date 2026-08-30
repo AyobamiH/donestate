@@ -21,6 +21,12 @@ The Worker and Container application are deployed. Public reachability, OAuth pr
 
 The MCP surface also contains `get_openai_credential_status`, `create_openai_credential_setup` and `delete_openai_credential`. The setup link expires after ten minutes and is single-use. The execution surface contains `create_objective`, `start_objective`, `get_objective`, `cancel_objective`, `delete_objective`, `create_verification_handoff` and `submit_verifier_attestation`.
 
+## Authentication and OpenAI review access
+
+Normal users choose **Continue with GitHub**. When GitHub enters Confirm access or sudo mode inside Cloud Browser, use **your password** or **your authenticator app**. Do not choose a passkey: Cloud Browser does not support WebAuthn/passkey confirmation.
+
+The consent page also exposes a dedicated OpenAI reviewer test account. Its high-entropy password is supplied only through the OpenAI review portal; the repository contains only its SHA-256 digest. This account uses the owner’s already selected GitHub App installation for sample-repository reads and sets `reviewMode: true`. The server rejects every credential, repository-selection, execution, cancellation, deletion, handoff, attestation, and verification mutation for that identity with `BLOCKED_AUTHORITY`. It can only inspect configuration, selected repositories, maintenance evidence, and existing run evidence.
+
 ## Authority boundary
 
 | Publication | Required authorities |

@@ -20,11 +20,16 @@ function authorizationEnv(
         issuer: "https://done.example",
       }) as AuthRequest,
       lookupClient: async () => ({ clientName: "ChatGPT" }),
+      completeAuthorization: async () => ({
+        redirectTo: "https://chatgpt.com/connector_platform_oauth_redirect?code=review-code",
+      }),
     },
     COOKIE_ENCRYPTION_KEY: "existing-cookie-secret-with-non-base64-format",
     GITHUB_CLIENT_ID: githubClientId,
     GITHUB_CLIENT_SECRET: "test-github-client-secret",
     OPENAI_APPS_CHALLENGE: openaiAppsChallenge,
+    OPENAI_REVIEW_PASSWORD_SHA256: "f28c3bd6683a77da26a40e343452d03e1eee4839afefcc7f03bde9e42cf1067f",
+    PLATFORM_OWNER_LOGIN: "AyobamiH",
   } as unknown as AuthEnv;
 }
 
@@ -139,6 +144,75 @@ describe("OAuth authorisation security policy", () => {
 
     expect(response.status).toBe(302);
     expect(new URL(response.headers.get("Location")!).origin).toBe("https://github.com");
+  });
+
+  it("explains supported GitHub confirmation methods and offers a dedicated reviewer login", async () => {
+    const response = await authHandler.fetch(
+      new Request("https://done.example/authorize?response_type=code"),
+      authorizationEnv(),
+    );
+    const page = await response.text();
+
+    expect(page).toContain("use your password or authenticator app");
+    expect(page).toContain("Passkeys are not supported in Cloud Browser");
+    expect(page).toContain('action="/authorize/reviewer"');
+    expect(page).toContain("OpenAI reviewer test account");
+  });
+
+  it("authorizes the dedicated reviewer account without GitHub or MFA", async () => {
+    const env = authorizationEnv();
+    const consent = await authHandler.fetch(
+      new Request("https://done.example/authorize?response_type=code"),
+      env,
+    );
+    const page = await consent.text();
+    const approvalState = page.match(/name="approval_state" value="([^"]+)"/)?.[1];
+    const csrf = page.match(/name="csrf" value="([^"]+)"/)?.[1];
+
+    const response = await authHandler.fetch(
+      new Request("https://done.example/authorize/reviewer", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          approval_state: approvalState!,
+          csrf: csrf!,
+          username: "openai-reviewer",
+          password: "openai-review-test-password",
+        }),
+      }),
+      env,
+    );
+
+    expect(response.status).toBe(302);
+    expect(new URL(response.headers.get("Location")!).origin).toBe("https://chatgpt.com");
+  });
+
+  it("rejects an incorrect reviewer password without revealing which credential failed", async () => {
+    const env = authorizationEnv();
+    const consent = await authHandler.fetch(
+      new Request("https://done.example/authorize?response_type=code"),
+      env,
+    );
+    const page = await consent.text();
+    const approvalState = page.match(/name="approval_state" value="([^"]+)"/)?.[1];
+    const csrf = page.match(/name="csrf" value="([^"]+)"/)?.[1];
+
+    const response = await authHandler.fetch(
+      new Request("https://done.example/authorize/reviewer", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          approval_state: approvalState!,
+          csrf: csrf!,
+          username: "openai-reviewer",
+          password: "wrong-password",
+        }),
+      }),
+      env,
+    );
+
+    expect(response.status).toBe(401);
+    expect(await response.text()).toBe("Reviewer sign-in failed");
   });
 
   it("rejects authorization when the one-time CSRF proof is invalid", async () => {
