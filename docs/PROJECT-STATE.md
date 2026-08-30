@@ -10,8 +10,8 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 
 ## Recovery order
 
-1. **R0 — Restore self-documenting governance.** The ledger, generated state, PR template, change-impact gate, and stale-state check are merged and green. (1 active)
-2. **R1 — Harden the Marketplace review candidate.** Public wording matches live review state, lifecycle events are monotonic and tested, and operating decisions are documented. (4 planned, 1 blocked)
+1. **R0 — Restore self-documenting governance.** The ledger, generated state, PR template, change-impact gate, and stale-state check are merged and green. (1 complete)
+2. **R1 — Harden the Marketplace review candidate.** Public wording matches live review state, lifecycle events are monotonic and tested, and operating decisions are documented. (4 active, 1 blocked)
 3. **R2 — Synchronize Proof & State.** Proof & State points to exact DoneState commits and external review states. (1 planned)
 4. **R3 — Separate Marketplace development from production.** A separate development OAuth App and draft listing can test lifecycle events without changing either production app. (1 planned)
 5. **R4 — Prepare for the first external customer.** Customers can inspect and delete their state, operators can detect failures, and useful outcomes are measured. (4 planned)
@@ -24,16 +24,16 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 
 | ID | Status | Owner | Next action | Wait or re-entry condition | Stale date |
 |---|---|---|---|---|---|
-| GOV-001 — Enforce the Evidence Story Bank and documentation closure | active | DoneState maintainers | Merge the canonical ledger, generated state, CI impact gate, and scheduled stale-state check. | Wait: None. Re-entry: Already active. | 2026-09-02 |
+| GOV-001 — Enforce the Evidence Story Bank and documentation closure | complete | DoneState maintainers | Keep the gate green and record every consequential change through the ledger. | Wait: None. Re-entry: Reopen if a consequential change can bypass the ledger or generated-state check. | 2026-12-01 |
 
 ### R1 — Harden the Marketplace review candidate
 
 | ID | Status | Owner | Next action | Wait or re-entry condition | Stale date |
 |---|---|---|---|---|---|
-| MKT-001 — Remove reviewer-facing preview and submission contradictions | planned | DoneState maintainers | Align README, ROADMAP, DIRECTORY-SUBMISSION, THREAT-MODEL, and Marketplace docs with Pending for publish without claiming approval. | Wait: None. Re-entry: Begin after GOV-001. | 2026-09-04 |
-| MKT-002 — Reject stale Marketplace lifecycle events | planned | DoneState maintainers | Make entitlement updates monotonic by effectiveAt and test out-of-order delivery. | Wait: None. Re-entry: Begin after GOV-001. | 2026-09-04 |
-| MKT-003 — Cover every Marketplace plan transition | planned | DoneState maintainers | Test purchased, cancelled, changed, pending_change, pending_change_cancelled, duplicates, and reversals. | Wait: None. Re-entry: Begin with MKT-002. | 2026-09-04 |
-| OPS-001 — Publish the production incident and support runbook | planned | Publisher owner | Document detection, triage, evidence preservation, communication, GitHub notification within 24 hours, recovery, and closure. | Wait: None. Re-entry: Begin after GOV-001. | 2026-09-06 |
+| MKT-001 — Remove reviewer-facing preview and submission contradictions | active | DoneState maintainers | Align README, ROADMAP, DIRECTORY-SUBMISSION, THREAT-MODEL, and Marketplace docs with Pending for publish without claiming approval. | Wait: None. Re-entry: Begin after GOV-001. | 2026-09-04 |
+| MKT-002 — Reject stale Marketplace lifecycle events | active | DoneState maintainers | Make entitlement updates monotonic by effectiveAt and test out-of-order delivery. | Wait: None. Re-entry: Begin after GOV-001. | 2026-09-04 |
+| MKT-003 — Cover every Marketplace plan transition | active | DoneState maintainers | Test purchased, cancelled, changed, pending_change, pending_change_cancelled, duplicates, and reversals. | Wait: None. Re-entry: Begin with MKT-002. | 2026-09-04 |
+| OPS-001 — Publish the production incident and support runbook | active | Publisher owner | Document detection, triage, evidence preservation, communication, GitHub notification within 24 hours, recovery, and closure. | Wait: None. Re-entry: Begin after GOV-001. | 2026-09-06 |
 | LEGAL-001 — Complete public operator contact and jurisdiction decisions | blocked | Publisher owner | Choose public support/privacy aliases, record a legitimate service address, complete the ICO fee self-assessment, and record offered territories. | Wait: Requires real publisher decisions; private contact data must not be invented or copied into the repository. Re-entry: Resume when those decisions are available. | 2026-09-06 |
 
 ### R2 — Synchronize Proof & State
@@ -138,3 +138,13 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 - **Outcome:** Version 0.2.0 is in review, not approved or published.
 - **Content:** MCP submission, media, prompts, cases, annotations, challenge route, and read-only reviewer account.
 - **Measurement:** One version submitted; zero approval or publication decisions recorded.
+
+### E-006 — Self-documenting governance merge
+
+- **Date:** 2026-08-30
+- **Situation:** Marketplace submission exposed that external actions could outpace several manual project documents.
+- **Verification:** DoneState PR 46 merged as 364cf86e48cc9715c149867cbe0a5f5ac3899753 from exact tree 843bf3dce837010993d31f96d2c59ee15ac604c6; PR workflow 33329584126 and post-merge workflow 33329629870 passed core 22, core 24, and hosted-plugin, including the governance impact step.
+- **Accountability:** owner=DoneState maintainers; status=complete; next=Use the ledger and generated state for every consequential change.; wait=None.; stale=2026-12-01
+- **Outcome:** The recovered backlog has one canonical source, generated human view, CI change-impact gate, PR template, and scheduled freshness check.
+- **Content:** Seven recovery stages, thirty-two work items, required accountability fields, evidence stories, stale-date enforcement, and separate-state language.
+- **Measurement:** One governance PR merged; two exact CI runs passed; one negative stale-date test failed as designed.

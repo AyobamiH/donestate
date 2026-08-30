@@ -17,13 +17,13 @@
 | OAuth request forgery | Short-lived state and CSRF records, secure host cookies and explicit consent | A compromised browser session or deployment origin remains in scope |
 | Cross-user run access | Run ownership is bound to the authenticated GitHub login and checked on every tool call | Shared or compromised GitHub identities share that authority |
 | Cost abuse | User-owned OpenAI billing, one active run per user, a daily per-user run budget, bounded duration and a five-container global cap | Cloudflare compute remains operator-funded and attackers may distribute abuse across identities |
-| Unsafe publication | Separate `push` and `open_pr` grants, exact base and head checks, intent records and provider probes | OAuth currently uses user tokens; GitHub App tokens and merge queues are future work |
+| Unsafe publication | Separate `push` and `open_pr` grants, exact base and head checks, intent records and provider probes | The public OAuth path uses user tokens; the private maintenance App is scoped to one selected repository; a public customer GitHub App and merge queue remain gated work |
 | False public evidence | Hosted objectives require a public branch or pull request before handoff | Repository deletion or later force updates can make evidence unavailable |
 
 ## Non-goals for 0.1.0
 
 This release does not claim hostile multi-tenant isolation, a secret broker, distributed consensus, remote event-log anchoring, provider-native exactly-once publication or correctness of an external verifier.
 
-## Additional non-goals for the 0.2 hosted preview
+## Additional non-goals for the 0.2 hosted service
 
-The development preview does not claim private-repository support, GitHub App least-privilege installation tokens, merge-queue correctness, managed verifier keys, provider-independent event anchoring, penetration testing, formal verification, regional data residency, production incident response or fleet SLOs.
+The hosted service does not claim private-repository support, a public customer GitHub App, merge-queue correctness, managed verifier keys, provider-independent event anchoring, penetration testing, formal verification, regional data residency, 24/7 operations or fleet SLOs. The private owner-side maintenance App is separately scoped to one selected repository, and the [incident-response runbook](INCIDENT-RESPONSE.md) defines process without promising continuous staffing or recovery time.

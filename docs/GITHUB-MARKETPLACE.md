@@ -1,6 +1,6 @@
 # DoneState GitHub Marketplace listing
 
-This document is the source of truth for the DoneState GitHub Marketplace draft attached to the existing DoneState OAuth App. It does not convert the private maintenance GitHub App into a public app and does not widen installation `157513439` beyond `AyobamiH/donestate`.
+This document is the source of truth for the DoneState GitHub Marketplace listing under review, attached to the existing DoneState OAuth App. It does not convert the private maintenance GitHub App into a public app and does not widen installation `157513439` beyond `AyobamiH/donestate`.
 
 ## Listing identity
 
@@ -60,7 +60,7 @@ The refreshed video and derived screenshots use `donestate.proofandstate.com/mcp
 2. DoneState stores a ten-minute, one-time OAuth state and redirects to the existing GitHub OAuth App with only `read:user`.
 3. The callback consumes the state, exchanges the code, identifies the user, and verifies the selected plan through `GET /user/marketplace_purchases`.
 4. DoneState records only the account identifier, login, account type, authorizing login, plan identifier/name, effective time, and lifecycle state. The onboarding access token is not stored.
-5. The separate Marketplace webhook verifies `X-Hub-Signature-256`, deduplicates delivery IDs, and handles `purchased`, `changed`, `cancelled`, `pending_change`, and `pending_change_cancelled`.
+5. The separate Marketplace webhook verifies `X-Hub-Signature-256`, deduplicates delivery IDs, handles `purchased`, `changed`, `cancelled`, `pending_change`, and `pending_change_cancelled`, and acknowledges without applying an event whose `effective_date` is older than the stored entitlement state.
 6. A correctly signed GitHub `ping` receives HTTP 200 without creating or changing an entitlement.
 7. Marketplace entitlement records never select a repository, grant execution authority, enable a schedule, start a run, push, or open a pull request.
 
@@ -84,6 +84,8 @@ The Marketplace webhook uses the Worker binding `GITHUB_MARKETPLACE_WEBHOOK_SECR
 - [x] Human owner submitted the final review request on 30 August 2026.
 
 GitHub acknowledged the submission and the Marketplace dashboard now reports **Pending for publish** and says the listing is under review. GitHub will send updates to the private publisher contact email. This does not mean GitHub has approved or published the listing.
+
+Operational incidents follow the [incident-response runbook](INCIDENT-RESPONSE.md). Public support uses repository issues; confidential security and privacy reports use the private GitHub security-advisory route. Public contact aliases and the operator service-address decision remain blocked in the canonical ledger and are not invented here.
 
 Before submission, GitHub warned that any existing subscriptions would be removed; the listing preview showed one install. The owner explicitly accepted that consequence. The dashboard acknowledgement proves that the review request was received, but it does not independently prove the downstream removal state of that prior install.
 

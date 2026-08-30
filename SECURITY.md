@@ -10,6 +10,8 @@ Report vulnerabilities privately through the repository's GitHub security adviso
 
 Include the affected version, threat scenario, minimal reproduction and whether credentials or remote side effects are involved. Never include live secrets.
 
+Hosted-service incidents follow the [incident-response runbook](docs/INCIDENT-RESPONSE.md), including the Marketplace provider-notification and evidence-closure requirements.
+
 ## Security boundary
 
 DoneState is a deterministic orchestration control plane, not an operating-system sandbox. Child processes execute with the operating-system identity of the DoneState process and a deliberately reduced environment. Use an isolated runner or container for untrusted repositories or broad harness permissions.

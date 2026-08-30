@@ -14,23 +14,23 @@
   ],
   "workItems": [
     {
-      "id":"GOV-001","title":"Enforce the Evidence Story Bank and documentation closure","stream":"governance","status":"active","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-02",
-      "nextAction":"Merge the canonical ledger, generated state, CI impact gate, and scheduled stale-state check.","waitCondition":"None.","reentryCondition":"Already active.","dependencies":[],"evidenceIds":["E-004"]
+      "id":"GOV-001","title":"Enforce the Evidence Story Bank and documentation closure","stream":"governance","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
+      "nextAction":"Keep the gate green and record every consequential change through the ledger.","waitCondition":"None.","reentryCondition":"Reopen if a consequential change can bypass the ledger or generated-state check.","dependencies":[],"evidenceIds":["E-004","E-006"]
     },
     {
-      "id":"MKT-001","title":"Remove reviewer-facing preview and submission contradictions","stream":"marketplace","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
+      "id":"MKT-001","title":"Remove reviewer-facing preview and submission contradictions","stream":"marketplace","status":"active","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
       "nextAction":"Align README, ROADMAP, DIRECTORY-SUBMISSION, THREAT-MODEL, and Marketplace docs with Pending for publish without claiming approval.","waitCondition":"None.","reentryCondition":"Begin after GOV-001.","dependencies":["GOV-001"],"evidenceIds":["E-001","E-004"]
     },
     {
-      "id":"MKT-002","title":"Reject stale Marketplace lifecycle events","stream":"marketplace","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
+      "id":"MKT-002","title":"Reject stale Marketplace lifecycle events","stream":"marketplace","status":"active","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
       "nextAction":"Make entitlement updates monotonic by effectiveAt and test out-of-order delivery.","waitCondition":"None.","reentryCondition":"Begin after GOV-001.","dependencies":["GOV-001"],"evidenceIds":["E-004"]
     },
     {
-      "id":"MKT-003","title":"Cover every Marketplace plan transition","stream":"marketplace","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
+      "id":"MKT-003","title":"Cover every Marketplace plan transition","stream":"marketplace","status":"active","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
       "nextAction":"Test purchased, cancelled, changed, pending_change, pending_change_cancelled, duplicates, and reversals.","waitCondition":"None.","reentryCondition":"Begin with MKT-002.","dependencies":["GOV-001"],"evidenceIds":["E-001","E-004"]
     },
     {
-      "id":"OPS-001","title":"Publish the production incident and support runbook","stream":"operations","status":"planned","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-06",
+      "id":"OPS-001","title":"Publish the production incident and support runbook","stream":"operations","status":"active","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-06",
       "nextAction":"Document detection, triage, evidence preservation, communication, GitHub notification within 24 hours, recovery, and closure.","waitCondition":"None.","reentryCondition":"Begin after GOV-001.","dependencies":["GOV-001"],"evidenceIds":["E-004"]
     },
     {
@@ -167,6 +167,11 @@
       "id":"E-005","date":"2026-08-30","identity":"DoneState OpenAI directory version 0.2.0","situation":"The plugin was submitted under AYOBAMI JOHN HAASTRUP.","verification":"The status page reported Review after submission materials and reviewer access were saved.",
       "accountability":{"owner":"Publisher owner","status":"blocked","nextAction":"Record the decision and retire legacy transport when safe.","waitCondition":"OpenAI reviewer decision.","staleDate":"2026-09-15"},
       "outcome":"Version 0.2.0 is in review, not approved or published.","content":"MCP submission, media, prompts, cases, annotations, challenge route, and read-only reviewer account.","measurement":"One version submitted; zero approval or publication decisions recorded."
+    },
+    {
+      "id":"E-006","date":"2026-08-30","identity":"Self-documenting governance merge","situation":"Marketplace submission exposed that external actions could outpace several manual project documents.","verification":"DoneState PR 46 merged as 364cf86e48cc9715c149867cbe0a5f5ac3899753 from exact tree 843bf3dce837010993d31f96d2c59ee15ac604c6; PR workflow 33329584126 and post-merge workflow 33329629870 passed core 22, core 24, and hosted-plugin, including the governance impact step.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Use the ledger and generated state for every consequential change.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"The recovered backlog has one canonical source, generated human view, CI change-impact gate, PR template, and scheduled freshness check.","content":"Seven recovery stages, thirty-two work items, required accountability fields, evidence stories, stale-date enforcement, and separate-state language.","measurement":"One governance PR merged; two exact CI runs passed; one negative stale-date test failed as designed."
     }
   ]
 }

@@ -27,6 +27,37 @@ async function signature(body: string, secret: string): Promise<string> {
   return "sha256=" + [...bytes].map((value) => value.toString(16).padStart(2, "0")).join("");
 }
 
+async function sendMarketplaceEvent(
+  workerEnv: AuthEnv,
+  input: {
+    deliveryId: string;
+    action: "purchased" | "changed" | "cancelled" | "pending_change" | "pending_change_cancelled";
+    effectiveDate: string;
+    accountId?: number;
+    planId?: number;
+    planName?: string;
+  },
+): Promise<Response> {
+  const secret = workerEnv.GITHUB_MARKETPLACE_WEBHOOK_SECRET!;
+  const body = JSON.stringify({
+    action: input.action,
+    effective_date: input.effectiveDate,
+    marketplace_purchase: {
+      account: { id: input.accountId ?? 9201, login: "marketplace-org", type: "Organization" },
+      plan: { id: input.planId ?? 201, name: input.planName ?? "Public repositories" },
+    },
+  });
+  return authHandler.fetch(new Request(
+    "https://donestate.proofandstate.com/webhooks/github-marketplace",
+    { method: "POST", headers: {
+      "Content-Type": "application/json",
+      "x-github-delivery": input.deliveryId,
+      "x-github-event": "marketplace_purchase",
+      "x-hub-signature-256": await signature(body, secret),
+    }, body },
+  ), workerEnv);
+}
+
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
@@ -129,34 +160,15 @@ describe("GitHub Marketplace purchase webhook", () => {
     expect(await workerEnv.MAINTENANCE_REGISTRY.getByName("global").marketplaceEntitlement(672387368)).toBeNull();
   });
 
-  it("verifies signatures, records lifecycle changes idempotently, and grants no repository authority", async () => {
+  it("verifies signatures, records purchases idempotently, and grants no repository authority", async () => {
     const secret = "marketplace-webhook-secret-with-32-bytes";
     const workerEnv = marketplaceEnv(secret);
-    const payload = {
-      action: "purchased",
-      effective_date: "2026-08-30T12:00:00Z",
-      marketplace_purchase: {
-        account: { id: 9201, login: "marketplace-org", type: "Organization" },
-        plan: { id: 201, name: "Public repositories" },
-      },
-    };
-    const body = JSON.stringify(payload);
-    const headers = {
-      "Content-Type": "application/json",
-      "x-github-delivery": "marketplace-delivery-1",
-      "x-github-event": "marketplace_purchase",
-      "x-hub-signature-256": await signature(body, secret),
-    };
-    const first = await authHandler.fetch(new Request(
-      "https://donestate.proofandstate.com/webhooks/github-marketplace",
-      { method: "POST", headers, body },
-    ), workerEnv);
-    const duplicate = await authHandler.fetch(new Request(
-      "https://donestate.proofandstate.com/webhooks/github-marketplace",
-      { method: "POST", headers, body },
-    ), workerEnv);
+    const event = { deliveryId: "marketplace-delivery-1", action: "purchased" as const, effectiveDate: "2026-08-30T12:00:00Z" };
+    const first = await sendMarketplaceEvent(workerEnv, event);
+    const duplicate = await sendMarketplaceEvent(workerEnv, event);
 
     expect(first.status).toBe(202);
+    expect(await first.json()).toMatchObject({ accepted: true, duplicate: false, stale: false });
     expect(duplicate.status).toBe(200);
     expect(await duplicate.json()).toMatchObject({ accepted: true, duplicate: true });
     expect(await workerEnv.MAINTENANCE_REGISTRY.getByName("global").marketplaceEntitlement(9201)).toMatchObject({
@@ -164,22 +176,71 @@ describe("GitHub Marketplace purchase webhook", () => {
       state: "ACTIVE",
     });
     expect(await workerEnv.MAINTENANCE_REGISTRY.getByName("global").listRepositories("marketplace-org")).toEqual([]);
+  });
 
-    const cancellationBody = JSON.stringify({ ...payload, action: "cancelled", effective_date: "2026-09-30T00:00:00Z" });
-    const cancellation = await authHandler.fetch(new Request(
-      "https://donestate.proofandstate.com/webhooks/github-marketplace",
-      { method: "POST", headers: {
-        ...headers,
-        "x-github-delivery": "marketplace-delivery-2",
-        "x-hub-signature-256": await signature(cancellationBody, secret),
-      }, body: cancellationBody },
-    ), workerEnv);
+  it("applies every plan transition and keeps entitlement state separate from repository authority", async () => {
+    const workerEnv = marketplaceEnv();
+    const registry = workerEnv.MAINTENANCE_REGISTRY.getByName("global");
+    const transitions = [
+      { action: "purchased" as const, effectiveDate: "2026-08-30T12:00:00Z", state: "ACTIVE", planId: 201, planName: "Public repositories" },
+      { action: "pending_change" as const, effectiveDate: "2026-09-01T00:00:00Z", state: "PENDING_CHANGE", planId: 202, planName: "Public repositories plus" },
+      { action: "pending_change_cancelled" as const, effectiveDate: "2026-09-02T00:00:00Z", state: "ACTIVE", planId: 201, planName: "Public repositories" },
+      { action: "changed" as const, effectiveDate: "2026-09-03T00:00:00Z", state: "ACTIVE", planId: 202, planName: "Public repositories plus" },
+      { action: "cancelled" as const, effectiveDate: "2026-09-30T00:00:00Z", state: "CANCELLED", planId: 202, planName: "Public repositories plus" },
+    ];
 
+    for (const [index, transition] of transitions.entries()) {
+      const response = await sendMarketplaceEvent(workerEnv, {
+        deliveryId: `marketplace-transition-${index}`,
+        ...transition,
+      });
+      expect(response.status).toBe(202);
+      expect(await response.json()).toMatchObject({ accepted: true, duplicate: false, stale: false });
+      expect(await registry.marketplaceEntitlement(9201)).toMatchObject({
+        planId: transition.planId,
+        planName: transition.planName,
+        state: transition.state,
+        effectiveAt: new Date(transition.effectiveDate).toISOString(),
+      });
+      expect(await registry.listRepositories("marketplace-org")).toEqual([]);
+    }
+  });
+
+  it("acknowledges but does not apply an out-of-order lifecycle event", async () => {
+    const workerEnv = marketplaceEnv();
+    const registry = workerEnv.MAINTENANCE_REGISTRY.getByName("global");
+    const cancellation = await sendMarketplaceEvent(workerEnv, {
+      deliveryId: "marketplace-newer-cancellation",
+      action: "cancelled",
+      effectiveDate: "2026-09-30T00:00:00Z",
+    });
     expect(cancellation.status).toBe(202);
-    expect(await workerEnv.MAINTENANCE_REGISTRY.getByName("global").marketplaceEntitlement(9201)).toMatchObject({
+
+    const stale = await sendMarketplaceEvent(workerEnv, {
+      deliveryId: "marketplace-older-change",
+      action: "changed",
+      effectiveDate: "2026-09-01T00:00:00Z",
+      planId: 999,
+      planName: "Stale plan",
+    });
+    expect(stale.status).toBe(202);
+    expect(await stale.json()).toMatchObject({ accepted: true, duplicate: false, stale: true });
+    expect(await registry.marketplaceEntitlement(9201)).toMatchObject({
+      planId: 201,
+      planName: "Public repositories",
       state: "CANCELLED",
       effectiveAt: "2026-09-30T00:00:00.000Z",
     });
+
+    const duplicate = await sendMarketplaceEvent(workerEnv, {
+      deliveryId: "marketplace-older-change",
+      action: "changed",
+      effectiveDate: "2026-09-01T00:00:00Z",
+      planId: 999,
+      planName: "Stale plan",
+    });
+    expect(duplicate.status).toBe(200);
+    expect(await duplicate.json()).toMatchObject({ accepted: true, duplicate: true });
   });
 
   it("rejects an invalid signature without recording a purchase", async () => {
