@@ -1,5 +1,7 @@
 # Current status
 
+The canonical recovery order, owners, wait conditions, stale dates, and Evidence Story Bank are generated from `governance/project-ledger.json` into [Project state](PROJECT-STATE.md). Any consequential code, workflow, contract, deployment, distribution, or external-state change must update that ledger in the same change.
+
 As of 2026-08-30, DoneState has a public local release, a deployed hosted preview, an owner-activated PR-only GitHub App installation, an OpenAI directory version in review, and a GitHub Marketplace listing under review. These are separate product states.
 
 ## Public local release

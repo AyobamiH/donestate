@@ -26,6 +26,10 @@ Harness output is evidence, never authority.
 
 ## Change discipline
 
+- Select the relevant item in `governance/project-ledger.json` before consequential work. Update that item and its Evidence Story Bank record in the same change as code, workflow, public-contract, deployment, distribution or external-state evidence.
+- Every non-complete item must preserve an owner, status, next action, wait condition, re-entry condition and stale date. Deferred and blocked work is tracked work, never an omission.
+- Run `npm run governance:render` after changing the ledger. `docs/PROJECT-STATE.md` is generated and must not be edited by hand. CI rejects consequential changes without a matching ledger update and rejects stale generated state.
+- Keep repository, CI, deployment, runtime, credentials, Marketplace review, directory review and independent verification as separate states. Record exact subjects; never let one imply another.
 - Preserve existing tests and add failure-path tests for behaviour changes.
 - Never retry a mutating action whose effect is ambiguous.
 - Never allow DoneState or an unpinned key to produce `VERIFIED`.

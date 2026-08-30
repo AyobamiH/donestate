@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "project": "DoneState",
+  "updatedAt": "2026-08-30",
+  "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
+  "recoveryOrder": [
+    {"id":"R0","title":"Restore self-documenting governance","workItemIds":["GOV-001"],"exitCriterion":"The ledger, generated state, PR template, change-impact gate, and stale-state check are merged and green."},
+    {"id":"R1","title":"Harden the Marketplace review candidate","workItemIds":["MKT-001","MKT-002","MKT-003","OPS-001","LEGAL-001"],"exitCriterion":"Public wording matches live review state, lifecycle events are monotonic and tested, and operating decisions are documented."},
+    {"id":"R2","title":"Synchronize Proof & State","workItemIds":["GOV-002"],"exitCriterion":"Proof & State points to exact DoneState commits and external review states."},
+    {"id":"R3","title":"Separate Marketplace development from production","workItemIds":["MKT-004"],"exitCriterion":"A separate development OAuth App and draft listing can test lifecycle events without changing either production app."},
+    {"id":"R4","title":"Prepare for the first external customer","workItemIds":["CUST-001","CUST-002","OPS-002","GTM-001"],"exitCriterion":"Customers can inspect and delete their state, operators can detect failures, and useful outcomes are measured."},
+    {"id":"R5","title":"Close independent-verification proof gaps","workItemIds":["VERIFY-001","VERIFY-002","VERIFY-003","VERIFY-004","AGENTPROOF-001"],"exitCriterion":"OpsTruth resolves the exact-head defect and synthetic plus live cross-product loops have exact evidence."},
+    {"id":"R6","title":"Release and grow only through explicit gates","workItemIds":["RELEASE-001","MKT-005","MKT-006","MKT-007","PRIVATE-001","ENGINE-001","ENGINE-002","ENGINE-003","VERIFY-005","AUTH-001","FLEET-001","ADAPTER-001","OPENAI-001","UPSTREAM-001","SKILLS-001"],"exitCriterion":"Each capability advances only when its authority, evidence, demand, and release conditions are satisfied; fleet authority remains last."}
+  ],
+  "workItems": [
+    {
+      "id":"GOV-001","title":"Enforce the Evidence Story Bank and documentation closure","stream":"governance","status":"active","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-02",
+      "nextAction":"Merge the canonical ledger, generated state, CI impact gate, and scheduled stale-state check.","waitCondition":"None.","reentryCondition":"Already active.","dependencies":[],"evidenceIds":["E-004"]
+    },
+    {
+      "id":"MKT-001","title":"Remove reviewer-facing preview and submission contradictions","stream":"marketplace","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
+      "nextAction":"Align README, ROADMAP, DIRECTORY-SUBMISSION, THREAT-MODEL, and Marketplace docs with Pending for publish without claiming approval.","waitCondition":"None.","reentryCondition":"Begin after GOV-001.","dependencies":["GOV-001"],"evidenceIds":["E-001","E-004"]
+    },
+    {
+      "id":"MKT-002","title":"Reject stale Marketplace lifecycle events","stream":"marketplace","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
+      "nextAction":"Make entitlement updates monotonic by effectiveAt and test out-of-order delivery.","waitCondition":"None.","reentryCondition":"Begin after GOV-001.","dependencies":["GOV-001"],"evidenceIds":["E-004"]
+    },
+    {
+      "id":"MKT-003","title":"Cover every Marketplace plan transition","stream":"marketplace","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-04",
+      "nextAction":"Test purchased, cancelled, changed, pending_change, pending_change_cancelled, duplicates, and reversals.","waitCondition":"None.","reentryCondition":"Begin with MKT-002.","dependencies":["GOV-001"],"evidenceIds":["E-001","E-004"]
+    },
+    {
+      "id":"OPS-001","title":"Publish the production incident and support runbook","stream":"operations","status":"planned","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-06",
+      "nextAction":"Document detection, triage, evidence preservation, communication, GitHub notification within 24 hours, recovery, and closure.","waitCondition":"None.","reentryCondition":"Begin after GOV-001.","dependencies":["GOV-001"],"evidenceIds":["E-004"]
+    },
+    {
+      "id":"LEGAL-001","title":"Complete public operator contact and jurisdiction decisions","stream":"legal","status":"blocked","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-06",
+      "nextAction":"Choose public support/privacy aliases, record a legitimate service address, complete the ICO fee self-assessment, and record offered territories.","waitCondition":"Requires real publisher decisions; private contact data must not be invented or copied into the repository.","reentryCondition":"Resume when those decisions are available.","dependencies":["GOV-001"],"evidenceIds":["E-004"]
+    },
+    {
+      "id":"GOV-002","title":"Synchronize Proof & State governance records","stream":"governance","status":"planned","owner":"Proof & State maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-07",
+      "nextAction":"Update registry, status, and evidence for PRs 44 and 45, exact commits, CI, and both external review states.","waitCondition":"R1 must be exact and green first.","reentryCondition":"Begin after R1.","dependencies":["GOV-001","MKT-001","MKT-002","MKT-003","OPS-001"],"evidenceIds":["E-001","E-004"]
+    },
+    {
+      "id":"MKT-004","title":"Create a separate Marketplace development app and listing","stream":"marketplace","status":"planned","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-12",
+      "nextAction":"Create a development OAuth App and draft listing for live purchase, cancellation, and plan-change testing.","waitCondition":"Do not alter the submitted production listing or reuse the private maintenance GitHub App.","reentryCondition":"Begin after GOV-002.","dependencies":["GOV-002"],"evidenceIds":["E-001"]
+    },
+    {
+      "id":"CUST-001","title":"Add customer account and plan visibility","stream":"customer-readiness","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-18",
+      "nextAction":"Expose identity, entitlement status, plan, effective time, and support path.","waitCondition":"Lifecycle state must first be monotonic and contract-tested.","reentryCondition":"Begin after MKT-002 and MKT-003.","dependencies":["MKT-002","MKT-003"],"evidenceIds":[]
+    },
+    {
+      "id":"CUST-002","title":"Add whole-account and entitlement deletion","stream":"customer-readiness","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-18",
+      "nextAction":"Implement authenticated self-service deletion with a non-personal auditable tombstone.","waitCondition":"Deletion semantics and PRIVACY.md retention wording must agree.","reentryCondition":"Begin after MKT-002 and LEGAL-001.","dependencies":["MKT-002","LEGAL-001"],"evidenceIds":[]
+    },
+    {
+      "id":"OPS-002","title":"Detect and escalate Marketplace webhook failures","stream":"operations","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-18",
+      "nextAction":"Add bounded retry visibility, dead-letter evidence, operator alerts, and escalation instructions.","waitCondition":"Incident ownership must be declared in OPS-001.","reentryCondition":"Begin after OPS-001 and MKT-003.","dependencies":["OPS-001","MKT-003"],"evidenceIds":[]
+    },
+    {
+      "id":"GTM-001","title":"Instrument the useful-result funnel","stream":"go-to-market","status":"planned","owner":"Proof & State maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-25",
+      "nextAction":"Measure non-founder activation, run started, PR opened, verifier decision, repeat use, support load, and conversion without unnecessary personal data.","waitCondition":"Account and deletion semantics must be stable.","reentryCondition":"Begin before the first external-customer cohort.","dependencies":["CUST-001","CUST-002"],"evidenceIds":[]
+    },
+    {
+      "id":"VERIFY-001","title":"Resolve OpsTruth exact-head verification defect","stream":"verification","status":"blocked","owner":"OpsTruth maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-07",
+      "nextAction":"Correct and test AyobamiH/opstruth#12.","waitCondition":"Requires a verified OpsTruth change; DoneState cannot weaken or replace the independent decision.","reentryCondition":"Resume when the fix has exact public CI evidence.","dependencies":[],"evidenceIds":["E-003"]
+    },
+    {
+      "id":"VERIFY-002","title":"Independently decide the open maintenance canary","stream":"verification","status":"blocked","owner":"OpsTruth maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-08",
+      "nextAction":"Re-evaluate DoneState PR 22 at ffec48e6c5abd9cef840ab591896613769d3e779 after VERIFY-001.","waitCondition":"Blocked on VERIFY-001; the run remains AWAITING_VERIFICATION.","reentryCondition":"Resume after the verifier fix.","dependencies":["VERIFY-001"],"evidenceIds":["E-003"]
+    },
+    {
+      "id":"VERIFY-003","title":"Validate the exact installable plugin archive","stream":"verification","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-12",
+      "nextAction":"Build the exact archive, validate manifests and skills, scan secrets, and record digest plus CI.","waitCondition":"Repository validation alone is not archive validation.","reentryCondition":"Begin after R1.","dependencies":["MKT-001","MKT-002","MKT-003"],"evidenceIds":[]
+    },
+    {
+      "id":"VERIFY-004","title":"Prove synthetic and live DoneState-to-OpsTruth loops","stream":"verification","status":"blocked","owner":"DoneState and OpsTruth maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-15",
+      "nextAction":"Run shared vectors and one live bounded execution through handoff, independent attestation, and accepted decision.","waitCondition":"Blocked on VERIFY-001 and VERIFY-002; static code and historical evidence are insufficient.","reentryCondition":"Resume after a sound maintenance-canary decision.","dependencies":["VERIFY-001","VERIFY-002","VERIFY-003"],"evidenceIds":["E-002","E-003"]
+    },
+    {
+      "id":"AGENTPROOF-001","title":"Complete AgentProof consequence-receipt integration","stream":"verification","status":"planned","owner":"DoneState and AgentProof maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-25",
+      "nextAction":"Define the receipt boundary, add the repository-patch adapter, and prove receipts never become completion authority.","waitCondition":"The DoneState-to-OpsTruth loop must be proven first.","reentryCondition":"Begin after VERIFY-004.","dependencies":["VERIFY-004"],"evidenceIds":[]
+    },
+    {
+      "id":"RELEASE-001","title":"Gate DoneState 0.2 release and publication","stream":"release","status":"deferred","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-10-01",
+      "nextAction":"Run check, pack audit, secret scan, and exact asset verification before seeking publication authority.","waitCondition":"No autonomous merge, deploy, release, or package publication is authorised.","reentryCondition":"Resume after VERIFY-003 and VERIFY-004 plus explicit publication authority.","dependencies":["VERIFY-003","VERIFY-004"],"evidenceIds":[]
+    },
+    {
+      "id":"MKT-005","title":"Evaluate paid Marketplace plans","stream":"marketplace","status":"deferred","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-10-15",
+      "nextAction":"Choose flat-rate Pro, per-seat organisation, trial, or continued free access from observed usage and cost.","waitCondition":"Keep the free public-repository plan during review and validation.","reentryCondition":"Resume after approval, usage, organisation ownership, publisher eligibility, and applicable user threshold.","dependencies":["GTM-001"],"evidenceIds":["E-001"]
+    },
+    {
+      "id":"MKT-006","title":"Establish Marketplace Insights and transaction review","stream":"marketplace","status":"deferred","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-10-15",
+      "nextAction":"Review Insights, transactions, cancellations, support incidents, and entitlement reconciliation regularly.","waitCondition":"The listing is under review with no external transaction history.","reentryCondition":"Resume when approved or the first external transaction appears.","dependencies":["MKT-004"],"evidenceIds":["E-001"]
+    },
+    {
+      "id":"MKT-007","title":"Design a separate public customer GitHub App","stream":"marketplace","status":"deferred","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-11-01",
+      "nextAction":"Design fine-grained repository selection and short-lived customer tokens without reusing the private App.","waitCondition":"The OAuth path is the submitted candidate; migration during review adds risk.","reentryCondition":"Resume when approval and customer evidence show OAuth scope or rate limits are constraints.","dependencies":["GTM-001"],"evidenceIds":["E-001"]
+    },
+    {
+      "id":"PRIVATE-001","title":"Support private repositories safely","stream":"product","status":"deferred","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-11-15",
+      "nextAction":"Specify customer-controlled App permissions, confidentiality, retention, deletion, and reviewer fixtures.","waitCondition":"Public onboarding and deletion must be proven first.","reentryCondition":"Resume when demand is recorded and MKT-007 plus CUST-002 are complete.","dependencies":["MKT-007","CUST-002"],"evidenceIds":[]
+    },
+    {
+      "id":"ENGINE-001","title":"Implement exact-head merge queue","stream":"execution-engine","status":"deferred","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-11-15",
+      "nextAction":"Specify separately authorised merge with exact-head, independent-verification, and ambiguous-effect controls.","waitCondition":"Merge authority remains denied in the current product promise.","reentryCondition":"Resume only with explicit authority and customer evidence.","dependencies":["VERIFY-004"],"evidenceIds":[]
+    },
+    {
+      "id":"ENGINE-002","title":"Add Pi and OpenClaw session adapters","stream":"execution-engine","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-10-20",
+      "nextAction":"Define adapters that preserve deterministic authority and evidence ownership.","waitCondition":"Core review and verification gaps take priority.","reentryCondition":"Begin after VERIFY-004 and release gates are ready.","dependencies":["VERIFY-004"],"evidenceIds":[]
+    },
+    {
+      "id":"ENGINE-003","title":"Add queue, backpressure, priority, and global drift controls","stream":"execution-engine","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-10-20",
+      "nextAction":"Implement deduplication, repository leases, admission backpressure, priority lanes, then broader drift reconciliation.","waitCondition":"Single-repository customer and verifier loops must be proven first.","reentryCondition":"Begin after GTM-001 and VERIFY-004.","dependencies":["GTM-001","VERIFY-004"],"evidenceIds":[]
+    },
+    {
+      "id":"VERIFY-005","title":"Add managed verifier keys and external anchoring","stream":"verification","status":"deferred","owner":"Proof & State maintainers","lastUpdated":"2026-08-30","staleDate":"2026-11-30",
+      "nextAction":"Design key lifecycle, revocation, trust registry, and anchoring without letting DoneState mint verification authority.","waitCondition":"The pinned-key path must be proven live first.","reentryCondition":"Resume when multiple verifiers or customers require managed trust.","dependencies":["VERIFY-004","GTM-001"],"evidenceIds":[]
+    },
+    {
+      "id":"AUTH-001","title":"Preserve deployment and publication authority gates","stream":"governance","status":"deferred","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
+      "nextAction":"Define separate deploy, release, and publication envelopes before adding any autonomous path.","waitCondition":"No current authority permits autonomous deployment or publication.","reentryCondition":"Resume after an explicit consequence-boundary decision and rollback evidence.","dependencies":["RELEASE-001"],"evidenceIds":[]
+    },
+    {
+      "id":"FLEET-001","title":"Add multi-repository and fleet governance last","stream":"product","status":"deferred","owner":"Proof & State maintainers","lastUpdated":"2026-08-30","staleDate":"2027-01-15",
+      "nextAction":"Specify policy inheritance, isolation, observability, and controlled rollout after single-repository gates.","waitCondition":"The product invariant requires fleet authority to remain last.","reentryCondition":"Resume after private repositories, queue controls, verifier keys, and customer value are proven.","dependencies":["PRIVATE-001","ENGINE-003","VERIFY-005"],"evidenceIds":[]
+    },
+    {
+      "id":"ADAPTER-001","title":"Keep CrabBox and ClawPatch evidence-gated","stream":"execution-engine","status":"deferred","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2027-01-15",
+      "nextAction":"Record an unmet requirement before selecting either adapter.","waitCondition":"No evidence currently justifies either adapter.","reentryCondition":"Resume only with a named requirement and comparative proof.","dependencies":["GTM-001"],"evidenceIds":[]
+    },
+    {
+      "id":"OPENAI-001","title":"Close the OpenAI review and legacy transport","stream":"distribution","status":"blocked","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-15",
+      "nextAction":"Record the version 0.2.0 decision, then retire workers.dev callback/transport only when review no longer needs them.","waitCondition":"OpenAI version 0.2.0 remains in Review.","reentryCondition":"Resume when OpenAI sends a decision.","dependencies":[],"evidenceIds":["E-005"]
+    },
+    {
+      "id":"UPSTREAM-001","title":"Decide the upstream Codex OAuth reliability contribution","stream":"ecosystem","status":"deferred","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-11-01",
+      "nextAction":"Produce a reproducer, confirm upstream behavior, and contribute only if the defect remains.","waitCondition":"No AyobamiH pull request records this work in openai/codex.","reentryCondition":"Resume after Marketplace and verification recovery close.","dependencies":["VERIFY-004"],"evidenceIds":[]
+    },
+    {
+      "id":"SKILLS-001","title":"Extract reusable DoneState skills to ai-prompts","stream":"ecosystem","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-10-15",
+      "nextAction":"Select stable product-agnostic instructions, remove transient evidence, and open a tracked ai-prompts PR.","waitCondition":"No matching branch or PR exists in AyobamiH/ai-prompts.","reentryCondition":"Begin after VERIFY-003.","dependencies":["VERIFY-003"],"evidenceIds":[]
+    }
+  ],
+  "evidenceStories": [
+    {
+      "id":"E-001","date":"2026-08-30","identity":"DoneState Marketplace listing attached to OAuth App 3822030","situation":"The free public-repository listing completed prerequisites and was submitted for GitHub review.","verification":"GitHub displayed Thank you for your submission, Pending for publish, and under review; PR 45 merged as 37e049b9d6b6749c2085562ac84f433e40e404e4 and exact post-merge CI passed all three required jobs.",
+      "accountability":{"owner":"Publisher owner","status":"blocked","nextAction":"Respond to reviewer feedback and record every state transition.","waitCondition":"GitHub reviewer decision or request.","staleDate":"2026-09-15"},
+      "outcome":"The listing is under review, not approved or published.","content":"Listing copy, legal policies, media, demo, and signed lifecycle webhook.","measurement":"One signed GitHub ping returned HTTP 200; no live purchased or cancelled event has been observed."
+    },
+    {
+      "id":"E-002","date":"2026-08-30","identity":"Historical hosted canary 631d8a08-d337-4bae-bd18-b55c31f48a8b","situation":"The hosted path needed evidence beyond repository and deployment state.","verification":"The historical run reached VERIFIED against source 179e02c1a99dab780cabe09c4f5882e7e492ad18 and workflow 33210941821.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Keep as historical baseline and use a fresh canary for maintenance claims.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"The older public-repository path has one complete canary.","content":"OAuth, encrypted user-funded key, isolated execution, exact-head publication, reconciliation, and OpsTruth v2 attestation.","measurement":"One historical run reached VERIFIED; it does not prove the current maintenance path."
+    },
+    {
+      "id":"E-003","date":"2026-08-30","identity":"Maintenance canary b4242932-0bc1-4876-a202-634d9c12d72a","situation":"The private selected-repository App opened DoneState PR 22 at ffec48e6c5abd9cef840ab591896613769d3e779.","verification":"Workflow 33260424569 passed all three required jobs; signed uncertain decisions were returned and AyobamiH/opstruth#12 tracks the defect.",
+      "accountability":{"owner":"OpsTruth maintainers","status":"blocked","nextAction":"Fix issue 12 and independently re-evaluate the exact head.","waitCondition":"A corrected verifier path with exact CI evidence.","staleDate":"2026-09-08"},
+      "outcome":"PR 22 remains open and the run remains AWAITING_VERIFICATION.","content":"One-file PR-only patch, exact-head evidence, and signed uncertain attestations.","measurement":"Three checks passed; zero sound terminal decisions accepted."
+    },
+    {
+      "id":"E-004","date":"2026-08-30","identity":"Cross-documentation drift audit","situation":"Marketplace actions advanced faster than DoneState and Proof & State records.","verification":"Inspection found contradictory preview, pending-setup, and draft-not-submitted claims after GitHub accepted the review request.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Replace memory-dependent updates with a canonical ledger, generated state, and CI drift checks.","waitCondition":"None.","staleDate":"2026-09-02"},
+      "outcome":"The cause is a governance-system defect, not merely stale prose.","content":"Recovered backlog, statuses, owners, actions, wait/re-entry conditions, stale dates, and evidence.","measurement":"Four DoneState documents and multiple Proof & State records require synchronization."
+    },
+    {
+      "id":"E-005","date":"2026-08-30","identity":"DoneState OpenAI directory version 0.2.0","situation":"The plugin was submitted under AYOBAMI JOHN HAASTRUP.","verification":"The status page reported Review after submission materials and reviewer access were saved.",
+      "accountability":{"owner":"Publisher owner","status":"blocked","nextAction":"Record the decision and retire legacy transport when safe.","waitCondition":"OpenAI reviewer decision.","staleDate":"2026-09-15"},
+      "outcome":"Version 0.2.0 is in review, not approved or published.","content":"MCP submission, media, prompts, cases, annotations, challenge route, and read-only reviewer account.","measurement":"One version submitted; zero approval or publication decisions recorded."
+    }
+  ]
+}

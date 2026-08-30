@@ -16,12 +16,18 @@ jobs:
         node-version: [22, 24]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
       - run: npm ci
       - run: npm run check
+      - if: ${{ matrix.node-version == 22 }}
+        env:
+          GOVERNANCE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: npm run governance:impact -- "$GOVERNANCE_BASE_SHA"
 
   hosted-plugin:
     runs-on: ubuntu-latest
