@@ -61,6 +61,12 @@ The private selected-repository maintenance GitHub App is a third, independent i
 
 Development deployments are explicit `workflow_dispatch` operations. The one-time path-limited incident trigger was removed after both credential targets and live probes recovered. The workflow proves that the development notice is reachable, `/mcp` is absent, an unsigned Marketplace webhook is rejected, and OAuth starts with the development callback.
 
+## Lifecycle response receipt
+
+Every accepted `marketplace_purchase` delivery returns a non-personal JSON receipt with schema `donestate.marketplace-webhook-receipt.v1`. The receipt includes only the delivery ID, action, duplicate flag, stale result, current entitlement state, and current effective time. It excludes account IDs, account logins, plan IDs, plan names, credentials, and secret values.
+
+For a first delivery, `stale` states whether the event was older than the stored entitlement. For a duplicate or GitHub redelivery, `stale` is `null` because DoneState does not invent the original application result; `currentState` and `currentEffectiveAt` report the state observed at redelivery time. This makes a controlled redelivery the evidence path for the already-recorded cancellation without creating a public entitlement endpoint or a new evidence credential.
+
 The production OAuth App and submitted listing configuration and the private maintenance GitHub App were not changed by the development test. The production Worker credential values are a separate runtime state and must be restored because the defective uploader targeted the production Worker name.
 
 ## Evidence required to close MKT-004

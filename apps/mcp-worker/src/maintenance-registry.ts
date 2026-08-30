@@ -65,6 +65,17 @@ interface MarketplaceEntitlementRow extends Record<string, SqlStorageValue> {
   updated_at: string;
 }
 
+interface MarketplaceWebhookReceipt {
+  schema: "donestate.marketplace-webhook-receipt.v1";
+  accepted: true;
+  deliveryId: string;
+  action: MarketplacePurchaseAction;
+  duplicate: boolean;
+  stale: boolean | null;
+  currentState: MarketplaceEntitlement["state"];
+  currentEffectiveAt: string;
+}
+
 const MAX_SCHEDULED_REPOSITORIES = 20;
 const MAX_AUTOMATIC_REPAIRS_PER_SWEEP = 2;
 
@@ -337,23 +348,46 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
   async ingestMarketplaceWebhook(input: {
     deliveryId: string;
     purchase: Parameters<MaintenanceRegistry["recordMarketplacePurchase"]>[0];
-  }): Promise<{ accepted: true; duplicate: boolean; stale?: boolean }> {
+  }): Promise<MarketplaceWebhookReceipt> {
     if (!/^[A-Za-z0-9-]{1,100}$/.test(input.deliveryId)) throw new Error("invalid GitHub Marketplace delivery id");
+    const requestedEffectiveAt = Number.isFinite(Date.parse(input.purchase.effectiveAt))
+      ? new Date(input.purchase.effectiveAt).toISOString()
+      : "";
+    if (!requestedEffectiveAt) throw new Error("invalid GitHub Marketplace effective date");
     const existing = this.ctx.storage.sql.exec<{ delivery_id: string }>(
       "SELECT delivery_id FROM webhook_deliveries WHERE delivery_id = ?",
       input.deliveryId,
     ).toArray()[0];
-    if (existing) return { accepted: true, duplicate: true };
-    const requestedEffectiveAt = Number.isFinite(Date.parse(input.purchase.effectiveAt))
-      ? new Date(input.purchase.effectiveAt).toISOString()
-      : "";
+    if (existing) {
+      const current = await this.marketplaceEntitlement(input.purchase.accountId);
+      if (!current) throw new Error("GitHub Marketplace duplicate has no current entitlement");
+      return {
+        schema: "donestate.marketplace-webhook-receipt.v1",
+        accepted: true,
+        deliveryId: input.deliveryId,
+        action: input.purchase.action,
+        duplicate: true,
+        stale: null,
+        currentState: current.state,
+        currentEffectiveAt: current.effectiveAt,
+      };
+    }
     const entitlement = await this.recordMarketplacePurchase(input.purchase);
     const stale = entitlement.effectiveAt > requestedEffectiveAt;
     this.ctx.storage.sql.exec(
       "INSERT INTO webhook_deliveries (delivery_id, event_name, repository, received_at) VALUES (?, 'marketplace_purchase', NULL, ?)",
       input.deliveryId, new Date().toISOString(),
     );
-    return { accepted: true, duplicate: false, stale };
+    return {
+      schema: "donestate.marketplace-webhook-receipt.v1",
+      accepted: true,
+      deliveryId: input.deliveryId,
+      action: input.purchase.action,
+      duplicate: false,
+      stale,
+      currentState: entitlement.state,
+      currentEffectiveAt: entitlement.effectiveAt,
+    };
   }
 
   async removeRepository(login: string, repository: string): Promise<{ repository: string; removed: boolean }> {

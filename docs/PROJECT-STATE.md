@@ -46,7 +46,7 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 
 | ID | Status | Owner | Next action | Wait or re-entry condition | Stale date |
 |---|---|---|---|---|---|
-| MKT-004 — Create a separate Marketplace development app and listing | active | Publisher owner | Verify the recorded cancelled delivery response and resulting isolated entitlement state, then exercise and record changed, pending_change, and pending_change_cancelled without touching production. | Wait: Credential isolation is recovered under E-010 and the publisher supplied cancelled delivery 90b920c0-a4ba-11f1-852b-f37103c46ff2; its response result and the resulting development entitlement state remain unrecorded. Re-entry: Resume when authenticated GitHub Marketplace delivery controls are available; keep the development listing draft and do not alter either production app. | 2026-09-12 |
+| MKT-004 — Create a separate Marketplace development app and listing | active | Publisher owner | Merge and deploy the privacy-minimal lifecycle receipt candidate to development, redeliver cancelled delivery 90b920c0-a4ba-11f1-852b-f37103c46ff2, then exercise changed, pending_change, and pending_change_cancelled without touching production listing state. | Wait: Credential isolation is recovered under E-010; merging Worker source invokes the production deployment workflow, while the required development deployment remains an explicit workflow_dispatch operation. Re-entry: Resume after explicit merge/deployment authority; keep the development listing draft and do not alter either production app configuration. | 2026-09-12 |
 
 ### R4 — Prepare for the first external customer
 
@@ -188,3 +188,13 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 - **Outcome:** Development credentials now target only the development Worker, production credentials were independently restored, and the temporary automatic recovery trigger was removed.
 - **Content:** Explicit development secret bulk target, target-name inventory check, independent production restoration, manual-only steady-state deployment, and live root, MCP, unsigned-webhook, and OAuth-start probes.
 - **Measurement:** One incident found and recovered; three CI jobs, two deployments, four development assertions, three direct development probes, and two direct production probes passed.
+
+### E-011 — Privacy-minimal Marketplace lifecycle response receipt candidate
+
+- **Date:** 2026-08-30
+- **Situation:** GitHub delivery IDs alone did not expose the resulting isolated entitlement, while a public diagnostics endpoint or additional evidence credential would widen the development surface.
+- **Verification:** The candidate returns schema donestate.marketplace-webhook-receipt.v1 after signed ingestion with delivery ID, action, duplicate, stale, currentState, and currentEffectiveAt only. Worker tests cover applied, duplicate, stale, every lifecycle action, and explicit exclusion of account and plan identity. Exact PR CI, merge, production deployment, development deployment, and live redelivery remain separate states to record.
+- **Accountability:** owner=DoneState maintainers; status=active; next=Obtain merge/deployment authority, pass exact CI, deploy development explicitly, and redeliver the recorded cancellation.; wait=A merge changes Worker source and automatically invokes production deployment; development deployment is manual-only.; stale=2026-09-12
+- **Outcome:** The implementation candidate provides a deterministic non-personal evidence contract without adding a public state reader or reusing a secret.
+- **Content:** Versioned response schema, truthful duplicate semantics, current entitlement state, privacy exclusions, transition tests, and deployment boundary.
+- **Measurement:** One response contract and one privacy test added; exact CI, deployments, and live cancellation receipt remain pending.
