@@ -146,6 +146,7 @@ export interface GitHubAuthProps {
   email: string | null;
   accessToken: string;
   origin: string;
+  reviewMode?: boolean;
 }
 
 export interface VerificationHandoffV2 {
