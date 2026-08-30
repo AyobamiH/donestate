@@ -1,3 +1,4 @@
+import type { AuthRequest } from "@cloudflare/workers-oauth-provider";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { authHandler, OAUTH_FORM_ACTION, type AuthEnv } from "../src/auth";
 
@@ -7,7 +8,7 @@ function authorizationEnv(
 ): AuthEnv {
   return {
     OAUTH_PROVIDER: {
-      parseAuthRequest: async () => ({
+      parseAuthRequest: async () => Object.create({
         clientId: "https://chatgpt.com/oauth/client.json",
         redirectUri: "https://chatgpt.com/connector_platform_oauth_redirect",
         responseType: "code",
@@ -15,10 +16,12 @@ function authorizationEnv(
         state: "chatgpt-state",
         codeChallenge: "challenge",
         codeChallengeMethod: "S256",
-      }),
+        resource: "https://done.example/mcp",
+        issuer: "https://done.example",
+      }) as AuthRequest,
       lookupClient: async () => ({ clientName: "ChatGPT" }),
     },
-    COOKIE_ENCRYPTION_KEY: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+    COOKIE_ENCRYPTION_KEY: "existing-cookie-secret-with-non-base64-format",
     GITHUB_CLIENT_ID: githubClientId,
     GITHUB_CLIENT_SECRET: "test-github-client-secret",
     OPENAI_APPS_CHALLENGE: openaiAppsChallenge,
