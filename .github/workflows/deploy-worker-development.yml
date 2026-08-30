@@ -2,14 +2,6 @@ name: Deploy Marketplace development Worker
 
 on:
   workflow_dispatch:
-  # Temporary incident-recovery trigger. Remove after the repaired deployment
-  # and live probes have passed and their exact run is recorded.
-  push:
-    branches:
-      - main
-    paths:
-      - apps/mcp-worker/wrangler.development.jsonc
-      - .github/workflows/deploy-worker-development.yml
 
 permissions:
   contents: read
