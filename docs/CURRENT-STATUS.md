@@ -70,7 +70,7 @@ The candidate implements one-time `read:user` purchase onboarding, active-plan v
 
 The dedicated Marketplace webhook secret is configured through `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET`, deployed to the Worker binding, and live-tested. GitHub redelivery `7e964cd0-a495-11f1-9c22-dc3366715a90` returned HTTP 200 from the canonical webhook endpoint after PR #42 and deployment workflow `33324975105` completed successfully.
 
-Marketplace submission remains blocked only on completing the contact record, replacing preview-only legal language with the operator's binding terms, and the human owner's final review declaration.
+The operator's binding privacy notice and hosted-service terms are published on the Marketplace branch. Marketplace submission remains blocked only on completing the publisher contact record, satisfying GitHub's account-level publisher prerequisites, and the human owner's final review request.
 
 ## Not implemented
 
