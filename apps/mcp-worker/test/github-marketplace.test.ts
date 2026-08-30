@@ -110,6 +110,25 @@ describe("GitHub Marketplace OAuth App onboarding", () => {
 });
 
 describe("GitHub Marketplace purchase webhook", () => {
+  it("accepts a signed GitHub ping without creating an entitlement", async () => {
+    const secret = "marketplace-webhook-secret-with-32-bytes";
+    const workerEnv = marketplaceEnv(secret);
+    const body = JSON.stringify({ zen: "Keep it logically awesome.", hook_id: 672387368 });
+    const response = await authHandler.fetch(new Request(
+      "https://donestate.proofandstate.com/webhooks/github-marketplace",
+      { method: "POST", headers: {
+        "Content-Type": "application/json",
+        "x-github-delivery": "marketplace-ping-1",
+        "x-github-event": "ping",
+        "x-hub-signature-256": await signature(body, secret),
+      }, body },
+    ), workerEnv);
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ accepted: true, event: "ping" });
+    expect(await workerEnv.MAINTENANCE_REGISTRY.getByName("global").marketplaceEntitlement(672387368)).toBeNull();
+  });
+
   it("verifies signatures, records lifecycle changes idempotently, and grants no repository authority", async () => {
     const secret = "marketplace-webhook-secret-with-32-bytes";
     const workerEnv = marketplaceEnv(secret);
