@@ -11,15 +11,19 @@ As of 2026-08-30, DoneState has a public local release, a deployed hosted previe
 ## Hosted preview
 
 - Worker version: `0.2.0`
-- deployed Worker source commit: `1588c0588dfcbfcefc70cda71e8197c1b14b7fed`
+- deployed Worker source commit: `c69896d06f1a490ab1f67606fd0d406ab826191b`
 - canonical endpoint: `https://donestate.proofandstate.com/mcp`
 - review compatibility endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp` (retained while OpenAI version 0.2.0 is in review)
-- latest deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33297909318` (success)
+- post-cutover CI workflow: `https://github.com/AyobamiH/donestate/actions/runs/33300648343` (success)
+- post-cutover deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33300648341` (success)
+- deployed Cloudflare version: `11018054-685f-4e7e-ab6b-f30817b2d89f`
 - prior verified hosted baseline source: `179e02c1a99dab780cabe09c4f5882e7e492ad18`
 - prior verified hosted baseline deployment: `https://github.com/AyobamiH/donestate/actions/runs/33210941821` (success)
 - verified historical baseline: GitHub OAuth, encrypted user-funded OpenAI key, Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable reconciliation, and OpsTruth v2 attestation
 
 The historical public canary run `631d8a08-d337-4bae-bd18-b55c31f48a8b` previously reached `VERIFIED`. It was not rechecked during the fresh owner-side GitHub App activation.
+
+The owned-domain cutover was merged in PR #38. Live read-only probes observed the canonical root and OAuth metadata at HTTP 200, the OpenAI Apps challenge route at HTTP 200, the protected MCP endpoint at HTTP 401 with canonical resource metadata, and the GitHub webhook route at HTTP 405 for GET. The legacy Worker hostname remains enabled only so OpenAI can review the immutable version 0.2.0 submission. See [Owned-domain cutover evidence](OWNED-DOMAIN-CUTOVER.md).
 
 ## Owner-side GitHub App activation
 
@@ -34,6 +38,8 @@ The historical public canary run `631d8a08-d337-4bae-bd18-b55c31f48a8b` previous
 - excluded permissions: administration, merge, deployment, release, environment, secret management, and workflow write
 
 Supporting GitHub App repairs were merged and deployed in PRs #12, #13, #14, #16, #19, and #24. Release assets and OAuth/reviewer hardening were merged through PRs #26–#36. The final review-path fix is PR #36; post-merge CI run `33297909263` and deployment run `33297909318` both succeeded.
+
+The owner-side OAuth App now has `https://donestate.proofandstate.com` as its homepage and `https://donestate.proofandstate.com/callback` as an exact redirect URI. The earlier Worker callback remains registered for the in-review submission. The private GitHub App homepage and webhook now use the canonical origin, with SSL verification enabled and no change to its selected-repository scope or PR-only permissions.
 
 The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a`, App branch `donestate/b4242932-0bc1-4876-a202-634d9c12d72a`, head `ffec48e6c5abd9cef840ab591896613769d3e779`, and pull request #22. Its one-file documentation diff passed local validation and all three required checks in workflow `33260424569`. The PR remains intentionally open and unmerged.
 
