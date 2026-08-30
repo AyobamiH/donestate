@@ -2,6 +2,14 @@ name: Deploy Marketplace development Worker
 
 on:
   workflow_dispatch:
+  # Temporary incident-recovery trigger. Remove after the repaired deployment
+  # and live probes have passed and their exact run is recorded.
+  push:
+    branches:
+      - main
+    paths:
+      - apps/mcp-worker/wrangler.development.jsonc
+      - .github/workflows/deploy-worker-development.yml
 
 permissions:
   contents: read
@@ -37,6 +45,24 @@ jobs:
             echo "DONESTATE_DEV_GITHUB_CLIENT_ID, DONESTATE_DEV_GITHUB_CLIENT_SECRET and DONE_STATE_DEV_GITHUB_MARKETPLACE_WEBHOOK_SECRET must be configured as repository Actions secrets" >&2
             exit 1
           fi
+      - name: Upload secrets to the explicit development Worker
+        working-directory: apps/mcp-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GITHUB_CLIENT_ID: ${{ secrets.DONESTATE_DEV_GITHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.DONESTATE_DEV_GITHUB_CLIENT_SECRET }}
+          GITHUB_MARKETPLACE_WEBHOOK_SECRET: ${{ secrets.DONE_STATE_DEV_GITHUB_MARKETPLACE_WEBHOOK_SECRET }}
+        run: |
+          jq -n \
+            --arg client_id "$GITHUB_CLIENT_ID" \
+            --arg client_secret "$GITHUB_CLIENT_SECRET" \
+            --arg webhook_secret "$GITHUB_MARKETPLACE_WEBHOOK_SECRET" \
+            '{GITHUB_CLIENT_ID: $client_id, GITHUB_CLIENT_SECRET: $client_secret, GITHUB_MARKETPLACE_WEBHOOK_SECRET: $webhook_secret}' \
+            | npx wrangler secret bulk --name donestate-mcp-development --config wrangler.development.jsonc
+
+          npx wrangler secret list --name donestate-mcp-development --config wrangler.development.jsonc --format json \
+            | jq -e '[.[].name] | sort == ["GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET", "GITHUB_MARKETPLACE_WEBHOOK_SECRET"]'
       - id: deploy
         uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
         with:
@@ -46,14 +72,6 @@ jobs:
           wranglerVersion: 4.127.1
           packageManager: npm
           command: deploy --config wrangler.development.jsonc
-          secrets: |
-            GITHUB_CLIENT_ID
-            GITHUB_CLIENT_SECRET
-            GITHUB_MARKETPLACE_WEBHOOK_SECRET
-        env:
-          GITHUB_CLIENT_ID: ${{ secrets.DONESTATE_DEV_GITHUB_CLIENT_ID }}
-          GITHUB_CLIENT_SECRET: ${{ secrets.DONESTATE_DEV_GITHUB_CLIENT_SECRET }}
-          GITHUB_MARKETPLACE_WEBHOOK_SECRET: ${{ secrets.DONE_STATE_DEV_GITHUB_MARKETPLACE_WEBHOOK_SECRET }}
       - name: Record deployment URL
         run: echo "### ${{ steps.deploy.outputs.deployment-url }}" >> "$GITHUB_STEP_SUMMARY"
       - name: Verify isolated live routes
@@ -70,8 +88,20 @@ jobs:
             --request POST "$DEVELOPMENT_ORIGIN/webhooks/github-marketplace")"
           test "$unsigned_webhook_status" = "401"
 
+          install_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+            --dump-header "$RUNNER_TEMP/marketplace-install-headers" --max-redirs 0 \
+            "$DEVELOPMENT_ORIGIN/github/marketplace/install?marketplace_listing_plan_id=1")"
+          test "$install_status" = "302"
+          install_location="$(awk 'BEGIN { IGNORECASE=1 } /^location:/ { sub(/^[^:]+:[[:space:]]*/, ""); sub(/\r$/, ""); print; exit }' "$RUNNER_TEMP/marketplace-install-headers")"
+          case "$install_location" in
+            https://github.com/login/oauth/authorize\?*) ;;
+            *) exit 1 ;;
+          esac
+          grep -F "redirect_uri=https%3A%2F%2Fdonestate-mcp-development.woeinvests.workers.dev%2Fcallback" <<<"$install_location" >/dev/null
+
           {
             echo "- development root: HTTP 200 with isolated-environment notice"
             echo "- blocked MCP surface: HTTP $mcp_status"
             echo "- unsigned Marketplace webhook: HTTP $unsigned_webhook_status"
+            echo "- development OAuth start: HTTP $install_status with the development callback"
           } >> "$GITHUB_STEP_SUMMARY"

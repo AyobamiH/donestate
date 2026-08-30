@@ -1,4 +1,5 @@
 {
+  // Secrets are uploaded explicitly to this Worker name before deployment.
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "donestate-mcp-development",
   "main": "src/server.ts",
