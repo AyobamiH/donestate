@@ -38,6 +38,16 @@ All MCP, OAuth-provider, credential, GitHub App, maintenance webhook, OpenAI cha
 
 The private selected-repository maintenance GitHub App is a third, independent identity. It must not be attached to either Marketplace listing.
 
+## Current evidence
+
+- Isolation PR [#49](https://github.com/AyobamiH/donestate/pull/49) merged as `34145185aa8703fd60d76049ce4e87475a78c132` from exact tree `d6ae69a4d3b2a62407475316aa20df46ab7907a6`.
+- Post-merge CI [33331882626](https://github.com/AyobamiH/donestate/actions/runs/33331882626) passed all three required jobs.
+- Production deployment [33331882611](https://github.com/AyobamiH/donestate/actions/runs/33331882611) passed independently and published version `7b4fa2fa-201f-4bd9-8746-4d911cb8d9d4`.
+- Development deployment [33331882593](https://github.com/AyobamiH/donestate/actions/runs/33331882593), attempt 2, validated all three isolated development secrets and published `donestate-mcp-development` version `be499906-19d4-4340-a968-e62aa5dc28d7` at `https://donestate-mcp-development.woeinvests.workers.dev`.
+- The exact development OAuth App identity, exact owner-only draft listing identity, signed webhook ping, and lifecycle deliveries have not yet been recorded. Deployment does not prove those external states.
+
+Future development deployments are explicit `workflow_dispatch` operations. The workflow records live proof that the development notice is reachable, `/mcp` is absent, and an unsigned Marketplace webhook is rejected.
+
 ## Evidence required to close MKT-004
 
 - exact OAuth App identity and draft listing identity;

@@ -46,7 +46,7 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 
 | ID | Status | Owner | Next action | Wait or re-entry condition | Stale date |
 |---|---|---|---|---|---|
-| MKT-004 — Create a separate Marketplace development app and listing | active | Publisher owner | Merge the isolated development Worker candidate, create and secure the separate OAuth App, deploy it, create the owner-only draft listing, and exercise the lifecycle. | Wait: Creating persistent OAuth credentials and transmitting their secret to GitHub Actions requires action-time confirmation; do not alter the submitted production listing or reuse the private maintenance GitHub App. Re-entry: Continue from the exact CI-passed isolation candidate after the required confirmation. | 2026-09-12 |
+| MKT-004 — Create a separate Marketplace development app and listing | active | Publisher owner | Verify the exact separate OAuth App and owner-only draft listing identities, run the live route probes, send a signed webhook ping, and exercise the full draft-listing lifecycle. | Wait: The isolated Worker and development secrets are deployed, but authenticated evidence has not yet established the exact OAuth App or draft-listing identity; do not alter the submitted production listing or reuse the private maintenance GitHub App. Re-entry: Resume in authenticated GitHub settings, preserving the deployed development runtime and the production review candidate. | 2026-09-12 |
 
 ### R4 — Prepare for the first external customer
 
@@ -168,3 +168,13 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 - **Outcome:** Proof & State now generates portfolio state from a canonical ledger and rejects consequential changes that omit governance updates.
 - **Content:** Product registry, status, roadmap, evidence index, exact DoneState source pointer, recovered gaps, PR template, weekly freshness check, and change-impact gate.
 - **Measurement:** One synchronization PR merged; two exact workflow runs passed; one DoneState source ledger pinned.
+
+### E-009 — Isolated Marketplace development Worker deployment
+
+- **Date:** 2026-08-30
+- **Situation:** Draft-listing lifecycle tests needed a runtime, state, and credentials separated from the submitted production listing and the private maintenance GitHub App.
+- **Verification:** DoneState PR 49 merged as 34145185aa8703fd60d76049ce4e87475a78c132 from exact tree d6ae69a4d3b2a62407475316aa20df46ab7907a6. Post-merge CI 33331882626 passed core 22, core 24, and hosted-plugin. Production deployment 33331882611 published version 7b4fa2fa-201f-4bd9-8746-4d911cb8d9d4. Development deployment 33331882593 attempt 2 validated all three isolated development secrets and published donestate-mcp-development version be499906-19d4-4340-a968-e62aa5dc28d7 at its separate workers.dev origin.
+- **Accountability:** owner=Publisher owner; status=active; next=Verify the exact development OAuth App and draft-listing identities, prove live route isolation, then record a signed ping and complete lifecycle.; wait=Authenticated GitHub app/listing identity and lifecycle evidence remain unrecorded.; stale=2026-09-12
+- **Outcome:** The isolated development runtime is deployed with separate state and secrets; the app/listing and lifecycle exit criterion remains open.
+- **Content:** Development-only Worker, MaintenanceRegistry namespace, OAUTH_KV namespace, credential names, route allowlist, deployment workflow, and operating boundary.
+- **Measurement:** One isolation PR merged; three post-merge CI jobs passed; one production deployment and one isolated development deployment passed; zero exact development app/listing identities or lifecycle deliveries are yet recorded.
