@@ -31,19 +31,6 @@ function authorizationEnv(
   } as unknown as AuthEnv;
 }
 
-function browserCookieJar(...responses: Response[]): string {
-  const jar = new Map<string, string>();
-  for (const response of responses) {
-    for (const setCookie of response.headers.getSetCookie()) {
-      const pair = setCookie.split(";", 1)[0];
-      if (!pair) continue;
-      const separator = pair.indexOf("=");
-      if (separator > 0) jar.set(pair.slice(0, separator), pair);
-    }
-  }
-  return [...jar.values()].join("; ");
-}
-
 async function approveRequest(env: AuthEnv): Promise<Response> {
   const consent = await authHandler.fetch(
     new Request("https://done.example/authorize?response_type=code"),
@@ -52,14 +39,12 @@ async function approveRequest(env: AuthEnv): Promise<Response> {
   const page = await consent.text();
   const stateId = page.match(/name="state_id" value="([^"]+)"/)?.[1];
   const csrf = page.match(/name="csrf" value="([^"]+)"/)?.[1];
-  const cookies = browserCookieJar(consent);
   expect(stateId).toBeTruthy();
   expect(csrf).toBeTruthy();
   return authHandler.fetch(new Request("https://done.example/authorize", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      Cookie: cookies,
     },
     body: new URLSearchParams({ state_id: stateId!, csrf: csrf! }),
   }), env);
@@ -129,13 +114,11 @@ describe("OAuth authorisation security policy", () => {
     expect(secondStateId).toBeTruthy();
     expect(secondCsrf).toBeTruthy();
 
-    const cookies = browserCookieJar(firstConsent, secondConsent);
     const approve = (stateId: string, csrf: string) => authHandler.fetch(
       new Request("https://done.example/authorize", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Cookie: cookies,
         },
         body: new URLSearchParams({ state_id: stateId, csrf }),
       }),
@@ -148,6 +131,36 @@ describe("OAuth authorisation security policy", () => {
     ]);
     expect(firstApproval.status).toBe(302);
     expect(secondApproval.status).toBe(302);
+  });
+
+  it("preserves valid authorization when a browser handoff does not retain cookies", async () => {
+    const response = await approveRequest(authorizationEnv());
+
+    expect(response.status).toBe(302);
+    expect(new URL(response.headers.get("Location")!).origin).toBe("https://github.com");
+  });
+
+  it("rejects authorization when the one-time CSRF proof is invalid", async () => {
+    const env = authorizationEnv();
+    const consent = await authHandler.fetch(
+      new Request("https://done.example/authorize?response_type=code"),
+      env,
+    );
+    const page = await consent.text();
+    const stateId = page.match(/name="state_id" value="([^"]+)"/)?.[1];
+    expect(stateId).toBeTruthy();
+
+    const response = await authHandler.fetch(
+      new Request("https://done.example/authorize", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ state_id: stateId!, csrf: "invalid-proof" }),
+      }),
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    expect(await response.text()).toBe("CSRF validation failed");
   });
 
   it("redirects with the configured GitHub OAuth client ID", async () => {
