@@ -63,7 +63,7 @@ The refreshed video and derived screenshots use `donestate.proofandstate.com/mcp
 5. The separate Marketplace webhook verifies `X-Hub-Signature-256`, deduplicates delivery IDs, and handles `purchased`, `changed`, `cancelled`, `pending_change`, and `pending_change_cancelled`.
 6. Marketplace entitlement records never select a repository, grant execution authority, enable a schedule, start a run, push, or open a pull request.
 
-The Marketplace webhook uses a dedicated `GITHUB_MARKETPLACE_WEBHOOK_SECRET`. It must be configured in both the GitHub draft and the Cloudflare Worker before the draft webhook is activated.
+The Marketplace webhook uses the Worker binding `GITHUB_MARKETPLACE_WEBHOOK_SECRET`. The deployment workflow maps the repository Actions secret `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET` into that binding. The identical value must be configured in the GitHub Marketplace draft before the webhook is activated.
 
 ## Publication gate
 
