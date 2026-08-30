@@ -12,7 +12,8 @@ This file is the canonical, reviewable handoff for the DoneState ChatGPT plugin 
 | Category | Productivity |
 | Short description | Verified PR-only coding |
 | Long description | Execute an authorised repository change in an isolated coding sandbox, validate the exact result, publish a branch or pull request, and stop for independent OpsTruth verification. DoneState never approves or merges its own pull request and does not deploy or publish releases. |
-| MCP endpoint | `https://donestate-mcp.woeinvests.workers.dev/mcp` |
+| Canonical MCP endpoint | `https://donestate.proofandstate.com/mcp` |
+| Version 0.2.0 review transport | `https://donestate-mcp.woeinvests.workers.dev/mcp` |
 | Website | `https://github.com/AyobamiH/donestate` |
 | Support | `https://github.com/AyobamiH/donestate/issues` |
 | Privacy | `https://github.com/AyobamiH/donestate/blob/main/docs/PRIVACY.md` |

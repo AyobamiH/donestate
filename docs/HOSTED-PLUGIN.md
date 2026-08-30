@@ -2,7 +2,9 @@
 
 DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. It is deployed and submitted for OpenAI review, but it is not yet approved, published, or production-certified.
 
-Hosted endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
+Canonical hosted endpoint: `https://donestate.proofandstate.com/mcp`
+
+The original `https://donestate-mcp.woeinvests.workers.dev/mcp` endpoint remains enabled temporarily because OpenAI directory version 0.2.0 was submitted against that immutable review transport. New configuration and documentation use the Proof & State hostname.
 
 The Worker and Container application are deployed. Public reachability, OAuth protection, authenticated GitHub OAuth, user-funded OpenAI credential setup, an end-to-end pull-request objective, and the independent OpsTruth v2 round trip have been verified. The private GitHub App is installed on only `AyobamiH/donestate`; its fresh PR-only canary remains open and `AWAITING_VERIFICATION` after OpsTruth signed `uncertain`. OpenAI directory version 0.2.0 is in `Review`.
 

@@ -30,6 +30,16 @@ function requiredSecret(env: AuthEnv, name: "GITHUB_CLIENT_ID" | "GITHUB_CLIENT_
   return value;
 }
 
+function githubCallbackUrl(request: Request, env: AuthEnv): string {
+  const configured = env.CANONICAL_ORIGIN?.trim();
+  if (!configured) return new URL("/callback", request.url).href;
+  const origin = new URL(configured);
+  if (origin.protocol !== "https:" || origin.origin !== configured) {
+    throw new Error("CANONICAL_ORIGIN must be an HTTPS origin without a path");
+  }
+  return new URL("/callback", origin).href;
+}
+
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -182,7 +192,7 @@ async function approve(request: Request, env: AuthEnv): Promise<Response> {
   if (!await constantTimeEqual(pending.csrfDigest, await digest(csrf))) {
     return new Response("CSRF validation failed", { status: 400 });
   }
-  const callback = new URL("/callback", request.url).href;
+  const callback = githubCallbackUrl(request, env);
   const upstream = new URL("https://github.com/login/oauth/authorize");
   upstream.searchParams.set("client_id", requiredSecret(env, "GITHUB_CLIENT_ID"));
   upstream.searchParams.set("redirect_uri", callback);
@@ -249,7 +259,7 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
   if (!stateId || !code) return new Response("Invalid OAuth callback", { status: 400 });
   const pending = await readAuthorization(stateId, "approved", env);
   if (!pending) return new Response("Expired OAuth callback", { status: 400 });
-  const callbackUrl = new URL("/callback", request.url).href;
+  const callbackUrl = githubCallbackUrl(request, env);
   const accessToken = await exchangeGitHubCode(
     requiredSecret(env, "GITHUB_CLIENT_ID"),
     requiredSecret(env, "GITHUB_CLIENT_SECRET"),

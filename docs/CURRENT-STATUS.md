@@ -12,7 +12,8 @@ As of 2026-08-30, DoneState has a public local release, a deployed hosted previe
 
 - Worker version: `0.2.0`
 - deployed Worker source commit: `1588c0588dfcbfcefc70cda71e8197c1b14b7fed`
-- endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
+- canonical endpoint: `https://donestate.proofandstate.com/mcp`
+- review compatibility endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp` (retained while OpenAI version 0.2.0 is in review)
 - latest deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33297909318` (success)
 - prior verified hosted baseline source: `179e02c1a99dab780cabe09c4f5882e7e492ad18`
 - prior verified hosted baseline deployment: `https://github.com/AyobamiH/donestate/actions/runs/33210941821` (success)
