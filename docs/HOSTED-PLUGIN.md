@@ -1,10 +1,10 @@
 # Hosted ChatGPT plugin preview
 
-DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. It is a deployed preview, not a published or production-certified service.
+DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. It is deployed and submitted for OpenAI review, but it is not yet approved, published, or production-certified.
 
 Hosted endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp`
 
-The Worker and Container application are deployed. Public reachability, OAuth protection, authenticated GitHub OAuth, user-funded OpenAI credential setup, an end-to-end pull-request objective, and the independent OpsTruth v2 round trip have been verified. GitHub App maintenance must now pass its own deployed canary before directory submission.
+The Worker and Container application are deployed. Public reachability, OAuth protection, authenticated GitHub OAuth, user-funded OpenAI credential setup, an end-to-end pull-request objective, and the independent OpsTruth v2 round trip have been verified. The private GitHub App is installed on only `AyobamiH/donestate`; its fresh PR-only canary remains open and `AWAITING_VERIFICATION` after OpsTruth signed `uncertain`. OpenAI directory version 0.2.0 is in `Review`.
 
 ## What the hosted slice does
 
@@ -26,6 +26,8 @@ The MCP surface also contains `get_openai_credential_status`, `create_openai_cre
 Normal users choose **Continue with GitHub**. When GitHub enters Confirm access or sudo mode inside Cloud Browser, use **your password** or **your authenticator app**. Do not choose a passkey: Cloud Browser does not support WebAuthn/passkey confirmation.
 
 The consent page also exposes a dedicated OpenAI reviewer test account. Its high-entropy password is supplied only through the OpenAI review portal; the repository contains only its SHA-256 digest. This account uses the owner’s already selected GitHub App installation for sample-repository reads and sets `reviewMode: true`. The server rejects every credential, repository-selection, execution, cancellation, deletion, handoff, attestation, and verification mutation for that identity with `BLOCKED_AUTHORITY`. It can only inspect configuration, selected repositories, maintenance evidence, and existing run evidence.
+
+The reviewer OAuth path was exercised by the OpenAI Platform tool scanner after PR #36 added the explicit `https://platform.openai.com` callback origin to the consent page's no-wildcard CSP. OpenAI imported all 19 tools, and all 57 annotation justifications were saved. See [OpenAI review submission](OPENAI-REVIEW.md).
 
 ## Authority boundary
 

@@ -16,9 +16,20 @@ All notable changes follow Keep a Changelog. This project uses Semantic Versioni
 - Private GitHub App manifest setup with encrypted credentials and short-lived installation tokens.
 - Read-only maintenance discovery and opt-in `donestate:repair` PR-only repair objectives.
 - Automatic OpsTruth attestation requests for pinned verification runs.
+- Repository-hosted demo recording and square icon assets for the OpenAI directory.
+- Dedicated read-only OpenAI reviewer access and a completed version 0.2.0 review submission.
+
+### Fixed
+
+- Isolate concurrent OAuth attempts and preserve authorization across browser handoffs that do not retain cookies.
+- Seal portable OAuth approval state and store strongly consistent authorization state.
+- Make the sealed-approval tamper regression deterministic.
+- Allow the explicitly trusted OpenAI Platform callback origin without introducing a wildcard form target.
+- Describe maintenance discovery as non-read-only because it persists findings.
 
 ### Security
 
+- Block every mutation for the dedicated OpenAI reviewer identity at the server boundary.
 - Reject private repositories until short-lived GitHub App installation tokens are available.
 - Require an externally visible branch or pull request before independent verification handoff.
 - Stop uncertain remote effects at `AMBIGUOUS_EFFECT` instead of retrying them.
