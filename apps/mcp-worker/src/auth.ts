@@ -1,6 +1,5 @@
-import type { OAuthHelpers } from "@cloudflare/workers-oauth-provider";
+import type { AuthRequest, OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 import { digest } from "./canonical";
-import { sealSecret, unsealSecret } from "./crypto";
 import { credentialSettingsHandler } from "./credential-settings";
 import { githubAppSettingsHandler, githubWebhookHandler } from "./github-app-settings";
 import type { DoneStateEnv } from "./environment";
@@ -18,7 +17,7 @@ const OAUTH_APPROVAL_TTL_MS = 10 * 60 * 1_000;
 interface SealedAuthorization {
   schema: typeof OAUTH_APPROVAL_SCHEMA;
   stage: "consent" | "approved";
-  oauthRequest: Awaited<ReturnType<OAuthHelpers["parseAuthRequest"]>>;
+  oauthRequest: AuthRequest;
   csrfDigest: string;
   expiresAt: number;
 }
@@ -48,8 +47,64 @@ async function constantTimeEqual(left: string, right: string): Promise<boolean> 
   return crypto.subtle.timingSafeEqual(leftHash, rightHash);
 }
 
+function bytesToBase64Url(bytes: Uint8Array): string {
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function base64UrlToBytes(value: string): Uint8Array<ArrayBuffer> {
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+  const binary = atob(normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "="));
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+  return bytes;
+}
+
+async function approvalEncryptionKey(secret: string): Promise<CryptoKey> {
+  if (!secret) throw new Error("OAuth approval encryption secret is missing");
+  const keyMaterial = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(`${OAUTH_APPROVAL_SCHEMA}\0${secret}`),
+  );
+  return crypto.subtle.importKey("raw", keyMaterial, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
+}
+
+function portableAuthRequest(request: AuthRequest): AuthRequest {
+  return {
+    responseType: request.responseType,
+    clientId: request.clientId,
+    redirectUri: request.redirectUri,
+    scope: [...request.scope],
+    state: request.state,
+    ...(request.codeChallenge ? { codeChallenge: request.codeChallenge } : {}),
+    ...(request.codeChallengeMethod ? { codeChallengeMethod: request.codeChallengeMethod } : {}),
+    ...(request.resource
+      ? { resource: Array.isArray(request.resource) ? [...request.resource] : request.resource }
+      : {}),
+    ...(request.issuer ? { issuer: request.issuer } : {}),
+  };
+}
+
 async function sealAuthorization(value: SealedAuthorization, env: AuthEnv): Promise<string> {
-  return sealSecret(JSON.stringify(value), env.COOKIE_ENCRYPTION_KEY);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    await approvalEncryptionKey(env.COOKIE_ENCRYPTION_KEY),
+    new TextEncoder().encode(JSON.stringify(value)),
+  );
+  return `v1.${bytesToBase64Url(iv)}.${bytesToBase64Url(new Uint8Array(ciphertext))}`;
+}
+
+async function unsealAuthorization(value: string, env: AuthEnv): Promise<string> {
+  const [version, encodedIv, encodedCiphertext] = value.split(".");
+  if (version !== "v1" || !encodedIv || !encodedCiphertext) throw new Error("unsupported sealed approval format");
+  const plaintext = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv: base64UrlToBytes(encodedIv) },
+    await approvalEncryptionKey(env.COOKIE_ENCRYPTION_KEY),
+    base64UrlToBytes(encodedCiphertext),
+  );
+  return new TextDecoder().decode(plaintext);
 }
 
 async function readAuthorization(
@@ -59,7 +114,7 @@ async function readAuthorization(
 ): Promise<SealedAuthorization | null> {
   if (!value || value.length > 10_000) return null;
   try {
-    const parsed = JSON.parse(await unsealSecret(value, env.COOKIE_ENCRYPTION_KEY)) as Partial<SealedAuthorization>;
+    const parsed = JSON.parse(await unsealAuthorization(value, env)) as Partial<SealedAuthorization>;
     if (
       parsed.schema !== OAUTH_APPROVAL_SCHEMA
       || parsed.stage !== expectedStage
@@ -95,7 +150,7 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
   const approvalState = await sealAuthorization({
     schema: OAUTH_APPROVAL_SCHEMA,
     stage: "consent",
-    oauthRequest,
+    oauthRequest: portableAuthRequest(oauthRequest),
     csrfDigest: await digest(csrf),
     expiresAt: Date.now() + OAUTH_APPROVAL_TTL_MS,
   }, env);
