@@ -296,7 +296,10 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
   return Response.redirect(redirectTo, 302);
 }
 
-function home(): Response {
+function home(env: DoneStateEnv): Response {
+  if (env.DEPLOYMENT_MODE === "marketplace-development") {
+    return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState Marketplace development</title></head><body><main><h1>DoneState Marketplace development</h1><p>This isolated environment accepts draft-listing onboarding and signed Marketplace lifecycle events only.</p><p>Repository access, MCP execution, maintenance automation, OpenAI review access, and production entitlements are disabled here.</p></main></body></html>`);
+  }
   return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState MCP</title></head><body><main><h1>DoneState MCP</h1><p>Governed autonomous coding for ChatGPT. Connect an MCP client at <code>/mcp</code>.</p><p>DoneState completes authorised work. Independent verifiers such as OpsTruth prove it.</p></main></body></html>`);
 }
 
@@ -328,7 +331,7 @@ export const authHandler = {
       }
       if (url.pathname === "/webhooks/github") return await githubWebhookHandler.fetch(request, env);
       if (url.pathname === "/webhooks/github-marketplace") return await githubMarketplaceWebhookHandler.fetch(request, env);
-      if (url.pathname === "/" && request.method === "GET") return home();
+      if (url.pathname === "/" && request.method === "GET") return home(env);
       return new Response("Not found", { status: 404 });
     } catch (error) {
       const message = error instanceof Error ? error.message : "unknown authorization error";

@@ -2,6 +2,8 @@
 
 This document is the source of truth for the DoneState GitHub Marketplace listing under review, attached to the existing DoneState OAuth App. It does not convert the private maintenance GitHub App into a public app and does not widen installation `157513439` beyond `AyobamiH/donestate`.
 
+The production listing is never used for test purchases. Its separate development boundary, app identity, Worker, state, secrets, and owner-only draft-listing rules are defined in [GitHub Marketplace development boundary](GITHUB-MARKETPLACE-DEVELOPMENT.md).
+
 ## Listing identity
 
 | Field | Value |

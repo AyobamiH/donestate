@@ -12,6 +12,7 @@ import type { DoneStateEnv } from "./environment";
 import { getBranchHead, getRepositoryAccess } from "./github";
 import { mcpAuthInfo, type TokenInspector } from "./mcp-auth";
 import { MaintenanceRegistry } from "./maintenance-registry";
+import { allowsMarketplaceDevelopmentRequest, isMarketplaceDevelopment } from "./marketplace-development";
 import { AUTHORITY_CLASSES, type GitHubAuthProps, type HostedObjective, type VerificationAttestation } from "./types";
 import { assertRef, assertRepository } from "./validation";
 
@@ -544,6 +545,10 @@ const oauthProvider = new OAuthProvider({
 
 export default {
   fetch(request: Request, workerEnv: DoneStateEnv, ctx: ExecutionContext) {
+    if (isMarketplaceDevelopment(workerEnv)) {
+      if (!allowsMarketplaceDevelopmentRequest(request)) return new Response("Not found", { status: 404 });
+      return authHandler.fetch(request, workerEnv as AuthEnv, ctx);
+    }
     return oauthProvider.fetch(request, workerEnv, ctx);
   },
   scheduled(_controller: ScheduledController, workerEnv: DoneStateEnv, ctx: ExecutionContext) {

@@ -138,6 +138,39 @@ describe("GitHub Marketplace OAuth App onboarding", () => {
     expect(await replay.text()).toContain("setup expired");
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });
+
+  it("keeps development onboarding on the isolated test surface", async () => {
+    const workerEnv = marketplaceEnv();
+    (workerEnv as unknown as { CANONICAL_ORIGIN: string }).CANONICAL_ORIGIN = "https://development.example";
+    (workerEnv as unknown as { DEPLOYMENT_MODE: "marketplace-development" }).DEPLOYMENT_MODE = "marketplace-development";
+    const begin = await authHandler.fetch(new Request(
+      "https://development.example/github/marketplace/install?marketplace_listing_plan_id=103",
+    ), workerEnv);
+    const state = new URL(begin.headers.get("Location")!).searchParams.get("state")!;
+    vi.stubGlobal("fetch", vi.fn(async (input: string | URL | Request) => {
+      const url = String(input);
+      if (url === "https://github.com/login/oauth/access_token") return Response.json({ access_token: "development-token" });
+      if (url === "https://api.github.com/user") return Response.json({ login: "development-owner", name: null, email: null });
+      if (url === "https://api.github.com/user/marketplace_purchases?per_page=100") {
+        return Response.json([{
+          account: { id: 9103, login: "development-owner", type: "User" },
+          plan: { id: 103, name: "Development lifecycle" },
+        }]);
+      }
+      return new Response("unexpected", { status: 500 });
+    }));
+
+    const callback = new URL("https://development.example/callback");
+    callback.searchParams.set("state", state);
+    callback.searchParams.set("code", "development-code");
+    const response = await authHandler.fetch(new Request(callback), workerEnv);
+    const page = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(page).toContain("isolated from production");
+    expect(page).toContain("MCP execution");
+    expect(page).not.toContain("/mcp");
+  });
 });
 
 describe("GitHub Marketplace purchase webhook", () => {

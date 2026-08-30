@@ -7,6 +7,8 @@
     "build": "npm run types && tsc --noEmit",
     "check": "npm run build && npm test",
     "deploy:check": "wrangler deploy --dry-run",
+    "deploy:development:check": "wrangler deploy --config wrangler.development.jsonc --dry-run",
+    "deploy:development": "wrangler deploy --config wrangler.development.jsonc",
     "deploy": "wrangler deploy",
     "deploy:dry": "wrangler deploy --dry-run",
     "dev": "wrangler dev --port 8788",

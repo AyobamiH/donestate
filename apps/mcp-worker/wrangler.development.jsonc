@@ -1,0 +1,36 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "donestate-mcp-development",
+  "main": "src/server.ts",
+  "compatibility_date": "2026-08-28",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "routes": [],
+  "containers": [],
+  "durable_objects": {
+    "bindings": [
+      { "name": "MAINTENANCE_REGISTRY", "class_name": "MaintenanceRegistry" }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["MaintenanceRegistry"]
+    }
+  ],
+  "kv_namespaces": [
+    { "binding": "OAUTH_KV" }
+  ],
+  "vars": {
+    "CANONICAL_ORIGIN": "https://donestate-mcp-development.woeinvests.workers.dev",
+    "DEPLOYMENT_MODE": "marketplace-development"
+  },
+  "triggers": {
+    "crons": []
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}

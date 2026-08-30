@@ -100,6 +100,18 @@ describe("OAuth authorisation security policy", () => {
     expect(response.headers.get("Content-Security-Policy")).not.toContain("https://github.com");
   });
 
+  it("identifies the isolated Marketplace development surface without advertising MCP execution", async () => {
+    const env = authorizationEnv();
+    (env as unknown as { DEPLOYMENT_MODE: "marketplace-development" }).DEPLOYMENT_MODE = "marketplace-development";
+    const response = await authHandler.fetch(new Request("https://development.example/"), env);
+    const page = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(page).toContain("DoneState Marketplace development");
+    expect(page).toContain("MCP execution");
+    expect(page).not.toContain("Connect an MCP client");
+  });
+
   it("keeps concurrent browser authorization attempts isolated", async () => {
     const env = authorizationEnv();
     const firstConsent = await authHandler.fetch(

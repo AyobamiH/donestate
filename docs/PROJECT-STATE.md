@@ -12,8 +12,8 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 
 1. **R0 — Restore self-documenting governance.** The ledger, generated state, PR template, change-impact gate, and stale-state check are merged and green. (1 complete)
 2. **R1 — Harden the Marketplace review candidate.** Public wording matches live review state, lifecycle events are monotonic and tested, and operating decisions are documented. (4 complete, 1 blocked)
-3. **R2 — Synchronize Proof & State.** Proof & State points to exact DoneState commits and external review states. (1 planned)
-4. **R3 — Separate Marketplace development from production.** A separate development OAuth App and draft listing can test lifecycle events without changing either production app. (1 planned)
+3. **R2 — Synchronize Proof & State.** Proof & State points to exact DoneState commits and external review states. (1 complete)
+4. **R3 — Separate Marketplace development from production.** A separate development OAuth App and draft listing can test lifecycle events without changing either production app. (1 active)
 5. **R4 — Prepare for the first external customer.** Customers can inspect and delete their state, operators can detect failures, and useful outcomes are measured. (4 planned)
 6. **R5 — Close independent-verification proof gaps.** OpsTruth resolves the exact-head defect and synthetic plus live cross-product loops have exact evidence. (3 blocked, 2 planned)
 7. **R6 — Release and grow only through explicit gates.** Each capability advances only when its authority, evidence, demand, and release conditions are satisfied; fleet authority remains last. (11 deferred, 3 planned, 1 blocked)
@@ -40,13 +40,13 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 
 | ID | Status | Owner | Next action | Wait or re-entry condition | Stale date |
 |---|---|---|---|---|---|
-| GOV-002 — Synchronize Proof & State governance records | planned | Proof & State maintainers | Update registry, status, and evidence for PRs 44 and 45, exact commits, CI, and both external review states. | Wait: R1 must be exact and green first. Re-entry: Begin after R1. | 2026-09-07 |
+| GOV-002 — Synchronize Proof & State governance records | complete | Proof & State maintainers | Keep portfolio state pinned to exact product-ledger subjects and update both ledgers with later external transitions. | Wait: None. Re-entry: Reopen if Proof & State drifts from exact DoneState source, CI, deployment, runtime, review, or verification state. | 2026-12-01 |
 
 ### R3 — Separate Marketplace development from production
 
 | ID | Status | Owner | Next action | Wait or re-entry condition | Stale date |
 |---|---|---|---|---|---|
-| MKT-004 — Create a separate Marketplace development app and listing | planned | Publisher owner | Create a development OAuth App and draft listing for live purchase, cancellation, and plan-change testing. | Wait: Do not alter the submitted production listing or reuse the private maintenance GitHub App. Re-entry: Begin after GOV-002. | 2026-09-12 |
+| MKT-004 — Create a separate Marketplace development app and listing | active | Publisher owner | Merge the isolated development Worker candidate, create and secure the separate OAuth App, deploy it, create the owner-only draft listing, and exercise the lifecycle. | Wait: Creating persistent OAuth credentials and transmitting their secret to GitHub Actions requires action-time confirmation; do not alter the submitted production listing or reuse the private maintenance GitHub App. Re-entry: Continue from the exact CI-passed isolation candidate after the required confirmation. | 2026-09-12 |
 
 ### R4 — Prepare for the first external customer
 
@@ -124,10 +124,10 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 - **Date:** 2026-08-30
 - **Situation:** Marketplace actions advanced faster than DoneState and Proof & State records.
 - **Verification:** Inspection found contradictory preview, pending-setup, and draft-not-submitted claims after GitHub accepted the review request.
-- **Accountability:** owner=DoneState maintainers; status=active; next=Replace memory-dependent updates with a canonical ledger, generated state, and CI drift checks.; wait=None.; stale=2026-09-02
-- **Outcome:** The cause is a governance-system defect, not merely stale prose.
+- **Accountability:** owner=DoneState maintainers; status=complete; next=Keep both repository gates green and reopen this audit if exact cross-project state drifts.; wait=None.; stale=2026-12-01
+- **Outcome:** The governance-system defect was corrected with canonical ledgers, generated state, change-impact gates, and exact cross-project synchronization.
 - **Content:** Recovered backlog, statuses, owners, actions, wait/re-entry conditions, stale dates, and evidence.
-- **Measurement:** Four DoneState documents and multiple Proof & State records require synchronization.
+- **Measurement:** DoneState PR 46 and Proof & State PR 8 merged; both post-merge governance paths passed.
 
 ### E-005 — DoneState OpenAI directory version 0.2.0
 
@@ -158,3 +158,13 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 - **Outcome:** Reviewer-facing state is aligned, incident response is published, and stale Marketplace events cannot roll entitlement state backward.
 - **Content:** Atomic effectiveAt guard, five lifecycle actions, duplicates, out-of-order delivery, 80 Worker tests, documentation closure, and incident/support runbook.
 - **Measurement:** One hardening PR merged; three CI runs passed across PR and post-merge lanes; one deployment passed; two live read-only probes matched expected routing.
+
+### E-008 — Proof & State self-documenting portfolio synchronization
+
+- **Date:** 2026-08-30
+- **Situation:** The portfolio registry and roadmap needed exact DoneState subjects and an automated closure rule after Marketplace work had outpaced manual records.
+- **Verification:** Proof & State PR 8 merged as 911949934fc9c6cb40cd24ffa4d594aa5ca0d44a from exact tree ccaf4931ac1c9dfa4fa3b8882b37c1b1e3f0cc85; PR workflow 33330727848 and post-merge Governance workflow 33330807325 passed generated-state and governance-impact checks. The portfolio ledger pins DoneState at b8caff89d3be82f3367e3a3ba039f0ce264045df.
+- **Accountability:** owner=Proof & State maintainers; status=complete; next=Update exact subjects in the same change as each later portfolio transition.; wait=None.; stale=2026-12-01
+- **Outcome:** Proof & State now generates portfolio state from a canonical ledger and rejects consequential changes that omit governance updates.
+- **Content:** Product registry, status, roadmap, evidence index, exact DoneState source pointer, recovered gaps, PR template, weekly freshness check, and change-impact gate.
+- **Measurement:** One synchronization PR merged; two exact workflow runs passed; one DoneState source ledger pinned.

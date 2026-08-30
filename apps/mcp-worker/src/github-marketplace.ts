@@ -135,8 +135,12 @@ export async function completeMarketplaceInstall(
     action: "purchased",
     effectiveAt: new Date().toISOString(),
   });
+  const origin = canonicalOrigin(request, env);
+  const nextStep = env.DEPLOYMENT_MODE === "marketplace-development"
+    ? "<p>This test entitlement is isolated from production. MCP execution, repository access, and maintenance automation remain disabled in this environment.</p>"
+    : `<p>Connect your client at <code>${escapeHtml(new URL("/mcp", origin).href)}</code> to continue.</p><p><a href="${escapeHtml(origin)}">Return to DoneState</a></p>`;
   return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState Marketplace setup</title>
-<style>body{font-family:system-ui,sans-serif;background:#0d1117;color:#f0f6fc;margin:0}.card{max-width:680px;margin:8vh auto;padding:32px;border:1px solid #30363d;border-radius:14px;background:#161b22}code{color:#7ee787}a{color:#58a6ff}</style></head><body><main class="card"><p>GitHub Marketplace · ${escapeHtml(entitlement.planName)}</p><h1>DoneState is linked</h1><p><strong>${escapeHtml(entitlement.accountLogin)}</strong> is provisioned for the free public-repository service.</p><p>This purchase does not grant execution authority. Every objective still requires explicit repository scope and PR-only publication authority, and independent OpsTruth verification remains separate.</p><p>Connect your client at <code>https://donestate.proofandstate.com/mcp</code> to continue.</p><p><a href="https://donestate.proofandstate.com">Return to DoneState</a></p></main></body></html>`);
+<style>body{font-family:system-ui,sans-serif;background:#0d1117;color:#f0f6fc;margin:0}.card{max-width:680px;margin:8vh auto;padding:32px;border:1px solid #30363d;border-radius:14px;background:#161b22}code{color:#7ee787}a{color:#58a6ff}</style></head><body><main class="card"><p>GitHub Marketplace · ${escapeHtml(entitlement.planName)}</p><h1>DoneState is linked</h1><p><strong>${escapeHtml(entitlement.accountLogin)}</strong> is provisioned for the free public-repository service.</p><p>This purchase does not grant execution authority. Every objective still requires explicit repository scope and PR-only publication authority, and independent OpsTruth verification remains separate.</p>${nextStep}</main></body></html>`);
 }
 
 async function validSignature(body: string, signature: string, secret: string): Promise<boolean> {
