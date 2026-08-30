@@ -34,7 +34,7 @@ The new code contains no OAuth client secret, access token, Marketplace webhook 
 ## Not yet verified
 
 - `wrangler deploy --dry-run` could not complete in the managed local channel because its network approval was cancelled. Hosted CI and the existing Cloudflare deployment workflow remain the required exact-commit gate.
-- The dedicated `GITHUB_MARKETPLACE_WEBHOOK_SECRET` is not yet configured in Cloudflare or the GitHub draft.
+- The dedicated repository Actions secret is configured as `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET`. The deployment workflow maps it to the Worker's `GITHUB_MARKETPLACE_WEBHOOK_SECRET`; Cloudflare deployment and the matching GitHub draft value still require live verification.
 - No GitHub Marketplace stubbed purchase or webhook delivery has been sent to production.
 - The draft has not been saved with these details and no Marketplace review submission has been made.
 - Preview-only privacy and terms documents are not a substitute for the operator's binding legal terms.
