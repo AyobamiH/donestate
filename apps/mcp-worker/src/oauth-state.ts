@@ -74,7 +74,7 @@ export class OAuthStateStore extends DurableObject<DoneStateEnv> {
     await this.ctx.storage.deleteAll();
   }
 
-  async alarm(): Promise<void> {
+  override async alarm(): Promise<void> {
     await this.ctx.storage.deleteAll();
   }
 }
