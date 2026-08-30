@@ -17,6 +17,8 @@ As of 2026-08-30, DoneState has a public local release, a deployed hosted previe
 - post-cutover CI workflow: `https://github.com/AyobamiH/donestate/actions/runs/33300648343` (success)
 - post-cutover deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33300648341` (success)
 - deployed Cloudflare version: `11018054-685f-4e7e-ab6b-f30817b2d89f`
+- current Marketplace webhook source: `2d6cb6c`
+- current Marketplace webhook deployment: `https://github.com/AyobamiH/donestate/actions/runs/33324975105` (success; 78 Worker tests)
 - prior verified hosted baseline source: `179e02c1a99dab780cabe09c4f5882e7e492ad18`
 - prior verified hosted baseline deployment: `https://github.com/AyobamiH/donestate/actions/runs/33210941821` (success)
 - verified historical baseline: GitHub OAuth, encrypted user-funded OpenAI key, Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable reconciliation, and OpsTruth v2 attestation
@@ -66,7 +68,9 @@ The GitHub Marketplace draft is attached to OAuth App `3822030`, not to the priv
 
 The candidate implements one-time `read:user` purchase onboarding, active-plan verification, a dedicated signed and idempotent Marketplace lifecycle webhook, and a minimal entitlement record that grants no repository or execution authority. Listing copy, a 512×512 icon, a 965×482 feature card, three 1280×720 screenshots, and the 52-second demo video are indexed in [GitHub Marketplace listing](GITHUB-MARKETPLACE.md). The refreshed media uses `donestate.proofandstate.com/mcp` rather than the legacy Worker hostname.
 
-Marketplace submission remains blocked until the exact candidate passes hosted CI and deployment, the dedicated webhook secret is configured and tested, the operator replaces preview-only legal language, and the human owner accepts GitHub's Marketplace Developer Agreement and final review declaration.
+The dedicated Marketplace webhook secret is configured through `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET`, deployed to the Worker binding, and live-tested. GitHub redelivery `7e964cd0-a495-11f1-9c22-dc3366715a90` returned HTTP 200 from the canonical webhook endpoint after PR #42 and deployment workflow `33324975105` completed successfully.
+
+Marketplace submission remains blocked only on completing the contact record, replacing preview-only legal language with the operator's binding terms, and the human owner's final review declaration.
 
 ## Not implemented
 
