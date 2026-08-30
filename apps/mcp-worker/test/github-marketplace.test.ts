@@ -201,14 +201,69 @@ describe("GitHub Marketplace purchase webhook", () => {
     const duplicate = await sendMarketplaceEvent(workerEnv, event);
 
     expect(first.status).toBe(202);
-    expect(await first.json()).toMatchObject({ accepted: true, duplicate: false, stale: false });
+    expect(await first.json()).toEqual({
+      schema: "donestate.marketplace-webhook-receipt.v1",
+      accepted: true,
+      deliveryId: "marketplace-delivery-1",
+      action: "purchased",
+      duplicate: false,
+      stale: false,
+      currentState: "ACTIVE",
+      currentEffectiveAt: "2026-08-30T12:00:00.000Z",
+    });
     expect(duplicate.status).toBe(200);
-    expect(await duplicate.json()).toMatchObject({ accepted: true, duplicate: true });
+    expect(await duplicate.json()).toEqual({
+      schema: "donestate.marketplace-webhook-receipt.v1",
+      accepted: true,
+      deliveryId: "marketplace-delivery-1",
+      action: "purchased",
+      duplicate: true,
+      stale: null,
+      currentState: "ACTIVE",
+      currentEffectiveAt: "2026-08-30T12:00:00.000Z",
+    });
     expect(await workerEnv.MAINTENANCE_REGISTRY.getByName("global").marketplaceEntitlement(9201)).toMatchObject({
       accountLogin: "marketplace-org",
       state: "ACTIVE",
     });
     expect(await workerEnv.MAINTENANCE_REGISTRY.getByName("global").listRepositories("marketplace-org")).toEqual([]);
+  });
+
+  it("returns a machine-readable receipt without account or plan identity", async () => {
+    const workerEnv = marketplaceEnv();
+    const response = await sendMarketplaceEvent(workerEnv, {
+      deliveryId: "marketplace-cancelled-receipt",
+      action: "cancelled",
+      effectiveDate: "2026-09-30T00:00:00Z",
+      accountId: 9202,
+      planId: 202,
+      planName: "Private development plan name",
+    });
+
+    expect(response.status).toBe(202);
+    const receipt = await response.json();
+    expect(receipt).toEqual({
+      schema: "donestate.marketplace-webhook-receipt.v1",
+      accepted: true,
+      deliveryId: "marketplace-cancelled-receipt",
+      action: "cancelled",
+      duplicate: false,
+      stale: false,
+      currentState: "CANCELLED",
+      currentEffectiveAt: "2026-09-30T00:00:00.000Z",
+    });
+    expect(Object.keys(receipt as Record<string, unknown>).sort()).toEqual([
+      "accepted",
+      "action",
+      "currentEffectiveAt",
+      "currentState",
+      "deliveryId",
+      "duplicate",
+      "schema",
+      "stale",
+    ]);
+    expect(JSON.stringify(receipt)).not.toContain("marketplace-org");
+    expect(JSON.stringify(receipt)).not.toContain("Private development plan name");
   });
 
   it("applies every plan transition and keeps entitlement state separate from repository authority", async () => {
@@ -228,7 +283,16 @@ describe("GitHub Marketplace purchase webhook", () => {
         ...transition,
       });
       expect(response.status).toBe(202);
-      expect(await response.json()).toMatchObject({ accepted: true, duplicate: false, stale: false });
+      expect(await response.json()).toMatchObject({
+        schema: "donestate.marketplace-webhook-receipt.v1",
+        accepted: true,
+        deliveryId: `marketplace-transition-${index}`,
+        action: transition.action,
+        duplicate: false,
+        stale: false,
+        currentState: transition.state,
+        currentEffectiveAt: new Date(transition.effectiveDate).toISOString(),
+      });
       expect(await registry.marketplaceEntitlement(9201)).toMatchObject({
         planId: transition.planId,
         planName: transition.planName,
@@ -257,7 +321,13 @@ describe("GitHub Marketplace purchase webhook", () => {
       planName: "Stale plan",
     });
     expect(stale.status).toBe(202);
-    expect(await stale.json()).toMatchObject({ accepted: true, duplicate: false, stale: true });
+    expect(await stale.json()).toMatchObject({
+      accepted: true,
+      duplicate: false,
+      stale: true,
+      currentState: "CANCELLED",
+      currentEffectiveAt: "2026-09-30T00:00:00.000Z",
+    });
     expect(await registry.marketplaceEntitlement(9201)).toMatchObject({
       planId: 201,
       planName: "Public repositories",
@@ -273,7 +343,13 @@ describe("GitHub Marketplace purchase webhook", () => {
       planName: "Stale plan",
     });
     expect(duplicate.status).toBe(200);
-    expect(await duplicate.json()).toMatchObject({ accepted: true, duplicate: true });
+    expect(await duplicate.json()).toMatchObject({
+      accepted: true,
+      duplicate: true,
+      stale: null,
+      currentState: "CANCELLED",
+      currentEffectiveAt: "2026-09-30T00:00:00.000Z",
+    });
   });
 
   it("rejects an invalid signature without recording a purchase", async () => {
