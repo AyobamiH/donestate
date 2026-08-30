@@ -22,6 +22,9 @@
 | Canonical media endpoint | Visual inspection confirmed `donestate.proofandstate.com/mcp`; no Marketplace source or documentation references the legacy Worker hostname. |
 | Production deployment | Pass. PR #42 merged as `2d6cb6c`; deployment workflow `33324975105` succeeded with 16 test files and 78 tests. |
 | Marketplace webhook delivery | Pass. GitHub redelivery `7e964cd0-a495-11f1-9c22-dc3366715a90` reached `https://donestate.proofandstate.com/webhooks/github-marketplace` and returned HTTP 200 in 0.29 seconds. |
+| Binding operator documents | Pass. Privacy notice and hosted-service terms merged in PR #44 as `c791d70`; post-merge workflow `33326065889` passed all three required jobs. |
+| Publisher account gates | Pass. Private contact record completed, account-level publisher prerequisites satisfied, and Marketplace Developer Agreement v2.4 accepted on 30 August 2026. |
+| Marketplace review request | Submitted on 30 August 2026. GitHub acknowledged receipt and reports `Pending for publish` and `under review`. |
 
 The new code contains no OAuth client secret, access token, Marketplace webhook secret, Cloudflare credential, OpenAI key, private GitHub App key, or installation token. Test-only values are explicit fixtures.
 
@@ -36,9 +39,9 @@ The new code contains no OAuth client secret, access token, Marketplace webhook 
 ## Not yet verified
 
 - No GitHub Marketplace purchase lifecycle event has been sent to production; only GitHub's signed listing `ping` has been accepted.
-- The draft is complete through its five technical sections, but no Marketplace review submission has been made.
-- The operator's binding privacy notice and hosted-service terms are published; Marketplace publisher contact and final account-level submission prerequisites remain incomplete.
+- GitHub has not yet approved or published the listing; `Pending for publish` is a review state only.
+- GitHub warned before submission that any existing subscriptions would be removed. The listing preview showed one install, but the downstream removal state of that install has not been independently verified.
 
 ## Next safe step
 
-Complete the Marketplace publisher contact record, satisfy GitHub's account-level publisher prerequisites, verify that the resulting review button is enabled, and stop for the owner's final review request.
+Wait for GitHub's review response at the private publisher contact email. Address any reviewer feedback through a bounded change and re-run the relevant preflight before resubmission; do not describe the listing as published until GitHub reports approval and the public Marketplace page is independently observed.
