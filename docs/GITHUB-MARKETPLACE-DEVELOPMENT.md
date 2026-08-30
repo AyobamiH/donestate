@@ -51,13 +51,13 @@ The private selected-repository maintenance GitHub App is a third, independent i
 - Zero-cost plan: `Development Test`.
 - Signed ping delivery: `13cd1ca8-a4b8-11f1-888d-aba6875c1ba2`.
 - Signed purchased delivery: `90c3e110-a4b8-11f1-8357-8b375ae56683`.
-- The publisher reports that the zero-cost test subscription was cancelled, but the signed cancelled delivery and resulting isolated entitlement state remain unrecorded.
+- The publisher supplied exact `marketplace_purchase.cancelled` delivery ID `90b920c0-a4ba-11f1-852b-f37103c46ff2`. Its response result and resulting isolated entitlement state remain unrecorded.
 - Read-only probes at `2026-08-30T21:42Z` returned root HTTP 200, `/mcp` HTTP 404, and unsigned `POST /webhooks/github-marketplace` HTTP 503. The deployment log shows the generic secret-upload phase resolving `donestate-mcp`, not `donestate-mcp-development`, so the development webhook secret was absent and the development values may have replaced production credentials.
 - Recovery PR [#52](https://github.com/AyobamiH/donestate/pull/52) merged as `f10fabc7501e8ed86b5136c465f00a3560d62f7a` from exact tree `83299fb9d55c7f2487a644d932eaf1b9d10c35ea`; PR CI `33337515371` and post-merge CI `33337554919` passed all three required jobs.
 - Development run [33337554945](https://github.com/AyobamiH/donestate/actions/runs/33337554945), job `99327095747`, explicitly processed secrets for `donestate-mcp-development`, deployed version `69e76740-b9b6-48ea-a979-34e04acbc47b`, and passed root 200, MCP 404, unsigned-webhook 401, and OAuth-start 302 assertions.
 - Production restoration run [33337555133](https://github.com/AyobamiH/donestate/actions/runs/33337555133), job `99327096294`, restored the five production secrets to `donestate-mcp` and deployed version `fd8fe1b0-81bd-4ba6-aa84-b288ea9bc583`.
 - Independent follow-up probes returned development root 200, `/mcp` 404, and unsigned webhook 401; production returned root 200 and unsigned webhook 401.
-- The app, draft listing, ping, purchase, and recovered credential targets are recorded. Next record the exact cancellation and exercise `changed`, `pending_change`, and `pending_change_cancelled`.
+- The app, draft listing, ping, purchase, cancellation delivery ID, and recovered credential targets are recorded. Next verify the cancellation response and final isolated entitlement, then exercise `changed`, `pending_change`, and `pending_change_cancelled`.
 
 Development deployments are explicit `workflow_dispatch` operations. The one-time path-limited incident trigger was removed after both credential targets and live probes recovered. The workflow proves that the development notice is reachable, `/mcp` is absent, an unsigned Marketplace webhook is rejected, and OAuth starts with the development callback.
 
