@@ -22,7 +22,7 @@ interface SealedAuthorization {
   csrfDigest: string;
   expiresAt: number;
 }
-export const OAUTH_FORM_ACTION = "'self' https://github.com https://chatgpt.com";
+export const OAUTH_FORM_ACTION = "'self' https://github.com https://chatgpt.com https://platform.openai.com";
 
 function requiredSecret(env: AuthEnv, name: "GITHUB_CLIENT_ID" | "GITHUB_CLIENT_SECRET"): string {
   const value = env[name];
