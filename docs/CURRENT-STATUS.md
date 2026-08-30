@@ -13,15 +13,15 @@ As of 2026-08-30, DoneState has a public local release, a deployed hosted servic
 ## Hosted service
 
 - Worker version: `0.2.0`
-- deployed Worker source commit: `c69896d06f1a490ab1f67606fd0d406ab826191b`
+- deployed Worker source commit: `1d6f2144d2fd84b9f241834dabc6ba50466b7555`
 - canonical endpoint: `https://donestate.proofandstate.com/mcp`
 - review compatibility endpoint: `https://donestate-mcp.woeinvests.workers.dev/mcp` (retained while OpenAI version 0.2.0 is in review)
 - post-cutover CI workflow: `https://github.com/AyobamiH/donestate/actions/runs/33300648343` (success)
 - post-cutover deployment workflow: `https://github.com/AyobamiH/donestate/actions/runs/33300648341` (success)
-- deployed Cloudflare version: `11018054-685f-4e7e-ab6b-f30817b2d89f`
-- current Marketplace webhook source: `ac54dcaa2df2b4211814a076036cc2b3f3ace8a6`
-- current Marketplace webhook CI: `https://github.com/AyobamiH/donestate/actions/runs/33330067769` (success; all three required jobs)
-- current Marketplace webhook deployment: `https://github.com/AyobamiH/donestate/actions/runs/33330067776` (success; 80 Worker tests; Cloudflare version `c3c3dd14-512d-4ee5-a25a-f44914c00654`)
+- deployed Cloudflare version: `774f0298-062f-4442-96d4-e2d52d7b1f94`
+- current Marketplace webhook source: `1d6f2144d2fd84b9f241834dabc6ba50466b7555`
+- current Marketplace webhook CI: `https://github.com/AyobamiH/donestate/actions/runs/33339639434` (success; all three required jobs)
+- current Marketplace webhook deployment: `https://github.com/AyobamiH/donestate/actions/runs/33339639417` (success; 98 Worker tests; Cloudflare version `774f0298-062f-4442-96d4-e2d52d7b1f94`)
 - prior verified hosted baseline source: `179e02c1a99dab780cabe09c4f5882e7e492ad18`
 - prior verified hosted baseline deployment: `https://github.com/AyobamiH/donestate/actions/runs/33210941821` (success)
 - verified historical baseline: GitHub OAuth, encrypted user-funded OpenAI key, Cloudflare Sandbox execution, exact-head branch and pull-request publication, durable reconciliation, and OpsTruth v2 attestation
@@ -74,6 +74,8 @@ The candidate implements one-time `read:user` purchase onboarding, active-plan v
 The dedicated Marketplace webhook secret is configured through `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET`, deployed to the Worker binding, and live-tested. GitHub redelivery `7e964cd0-a495-11f1-9c22-dc3366715a90` returned HTTP 200 from the canonical webhook endpoint after PR #42 and deployment workflow `33324975105` completed successfully.
 
 Review hardening merged in PR #47 as `ac54dcaa2df2b4211814a076036cc2b3f3ace8a6`. Post-merge CI `33330067769` passed, deployment `33330067776` published Cloudflare version `c3c3dd14-512d-4ee5-a25a-f44914c00654`, and live read-only probes returned HTTP 200 at the service root and HTTP 405 for GET on the POST-only Marketplace webhook. Entitlement updates now reject older `effective_date` values atomically, and the Worker suite covers all five Marketplace lifecycle actions, duplicate delivery, and out-of-order delivery with 80 passing tests.
+
+Lifecycle receipt PR [#55](https://github.com/AyobamiH/donestate/pull/55) merged as `1d6f2144d2fd84b9f241834dabc6ba50466b7555`. PR CI `33339529661` and post-merge CI `33339639434` passed all three required jobs. Production deployment `33339639417` published version `774f0298-062f-4442-96d4-e2d52d7b1f94`; separate manual development run `33339800955` published version `b09b3849-eab3-4be4-a405-b61449e4801b` after the dry run, isolated-secret target, and four live-route assertions passed. Redelivery `90b920c0-a4ba-11f1-852b-f37103c46ff2` then returned HTTP 202 in 1.14 seconds with a non-personal receipt recording `cancelled`, `duplicate=false`, `stale=false`, `currentState=CANCELLED`, and `currentEffectiveAt=2026-08-30T00:00:00.000Z`.
 
 The incident and support process is published in [Incident response](INCIDENT-RESPONSE.md). Public contact aliases, a legitimate operator service address, the ICO fee self-assessment, and offered-territory decisions remain blocked on genuine publisher input in `LEGAL-001`; no private contact value is recorded here.
 
