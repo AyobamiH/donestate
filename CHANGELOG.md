@@ -18,6 +18,7 @@ All notable changes follow Keep a Changelog. This project uses Semantic Versioni
 - Automatic OpsTruth attestation requests for pinned verification runs.
 - Repository-hosted demo recording and square icon assets for the OpenAI directory.
 - Dedicated read-only OpenAI reviewer access and a completed version 0.2.0 review submission.
+- GitHub Marketplace OAuth purchase onboarding, signed lifecycle webhooks, and exact-size listing media.
 
 ### Fixed
 
@@ -26,6 +27,7 @@ All notable changes follow Keep a Changelog. This project uses Semantic Versioni
 - Make the sealed-approval tamper regression deterministic.
 - Allow the explicitly trusted OpenAI Platform callback origin without introducing a wildcard form target.
 - Describe maintenance discovery as non-read-only because it persists findings.
+- Refresh the repository-hosted demo video and screenshots to use the canonical `donestate.proofandstate.com` service domain.
 
 ### Security
 

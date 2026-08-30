@@ -90,6 +90,21 @@ export interface MaintenanceFinding {
   updatedAt: string;
 }
 
+export type MarketplacePurchaseAction = "purchased" | "changed" | "cancelled" | "pending_change" | "pending_change_cancelled";
+
+export interface MarketplaceEntitlement {
+  schema: "donestate.marketplace-entitlement.v1";
+  accountId: number;
+  accountLogin: string;
+  accountType: "User" | "Organization";
+  authorizedByLogin: string | null;
+  planId: number;
+  planName: string;
+  state: "ACTIVE" | "PENDING_CHANGE" | "CANCELLED";
+  effectiveAt: string;
+  updatedAt: string;
+}
+
 export interface ActionRecord {
   id: string;
   authority: AuthorityClass;
