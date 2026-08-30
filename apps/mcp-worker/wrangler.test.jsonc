@@ -8,13 +8,15 @@
     "bindings": [
       { "name": "RUN_COORDINATOR", "class_name": "RunCoordinator" },
       { "name": "CREDENTIAL_VAULT", "class_name": "CredentialVault" },
-      { "name": "MAINTENANCE_REGISTRY", "class_name": "MaintenanceRegistry" }
+      { "name": "MAINTENANCE_REGISTRY", "class_name": "MaintenanceRegistry" },
+      { "name": "OAUTH_STATE", "class_name": "OAuthStateStore" }
     ]
   },
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["RunCoordinator"] },
     { "tag": "v2", "new_sqlite_classes": ["CredentialVault"] },
-    { "tag": "v3", "new_sqlite_classes": ["MaintenanceRegistry"] }
+    { "tag": "v3", "new_sqlite_classes": ["MaintenanceRegistry"] },
+    { "tag": "v4", "new_sqlite_classes": ["OAuthStateStore"] }
   ],
   "kv_namespaces": [
     { "binding": "OAUTH_KV", "id": "00000000000000000000000000000000" }

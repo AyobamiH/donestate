@@ -18,6 +18,7 @@ import { assertRef, assertRepository } from "./validation";
 export { RunCoordinator } from "./coordinator";
 export { CredentialVault } from "./credential-vault";
 export { MaintenanceRegistry } from "./maintenance-registry";
+export { OAuthStateStore } from "./oauth-state";
 export { Sandbox } from "@cloudflare/sandbox";
 
 function doneStateEnv(): DoneStateEnv {

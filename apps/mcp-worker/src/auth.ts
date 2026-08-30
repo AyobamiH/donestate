@@ -1,23 +1,18 @@
-import type { AuthRequest, OAuthHelpers } from "@cloudflare/workers-oauth-provider";
+import type { OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 import { digest } from "./canonical";
 import { credentialSettingsHandler } from "./credential-settings";
 import { githubAppSettingsHandler, githubWebhookHandler } from "./github-app-settings";
 import type { DoneStateEnv } from "./environment";
 import { exchangeGitHubCode, getAuthenticatedUser } from "./github";
+import type { OAuthStateStore, PendingAuthorization } from "./oauth-state";
 import type { GitHubAuthProps } from "./types";
 
 export const EXECUTION_SCOPE = "donestate:execute";
 
 export type AuthEnv = DoneStateEnv & { OAUTH_PROVIDER: OAuthHelpers };
 
-interface PendingAuthorization {
-  oauthRequest: AuthRequest;
-  csrfDigest: string;
-  approved: boolean;
-}
-
-const TEN_MINUTES = 600;
 const OPENAI_APPS_CHALLENGE_PATH = "/.well-known/openai-apps-challenge";
+const STATE_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 export const OAUTH_FORM_ACTION = "'self' https://github.com https://chatgpt.com";
 
 function requiredSecret(env: AuthEnv, name: "GITHUB_CLIENT_ID" | "GITHUB_CLIENT_SECRET"): string {
@@ -35,13 +30,8 @@ function escapeHtml(value: string): string {
     .replace(/'/g, "&#039;");
 }
 
-async function constantTimeEqual(left: string | null, right: string): Promise<boolean> {
-  const encoder = new TextEncoder();
-  const [leftHash, rightHash] = await Promise.all([
-    crypto.subtle.digest("SHA-256", encoder.encode(left ?? "")),
-    crypto.subtle.digest("SHA-256", encoder.encode(right)),
-  ]);
-  return left !== null && crypto.subtle.timingSafeEqual(leftHash, rightHash);
+function stateStore(env: AuthEnv, stateId: string): DurableObjectStub<OAuthStateStore> | null {
+  return STATE_ID_PATTERN.test(stateId) ? env.OAUTH_STATE.getByName(stateId) : null;
 }
 
 function html(body: string, status = 200, formAction = "'self'"): Response {
@@ -67,7 +57,7 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
     csrfDigest: await digest(csrf),
     approved: false,
   };
-  await env.OAUTH_KV.put(`oauth:pending:${stateId}`, JSON.stringify(pending), { expirationTtl: TEN_MINUTES });
+  await env.OAUTH_STATE.getByName(stateId).create(pending);
   const clientName = escapeHtml(client.clientName || "ChatGPT");
   const scopes = escapeHtml(oauthRequest.scope.join(", ") || EXECUTION_SCOPE);
   return html(`<!doctype html>
@@ -85,15 +75,12 @@ async function approve(request: Request, env: AuthEnv): Promise<Response> {
   const stateId = form.get("state_id");
   const csrf = form.get("csrf");
   if (typeof stateId !== "string" || typeof csrf !== "string") return new Response("Invalid approval", { status: 400 });
-  const pendingJson = await env.OAUTH_KV.get(`oauth:pending:${stateId}`);
-  if (!pendingJson) return new Response("Expired approval", { status: 400 });
-  const pending = JSON.parse(pendingJson) as PendingAuthorization;
-  const submittedDigest = await digest(csrf);
-  if (!await constantTimeEqual(pending.csrfDigest, submittedDigest)) {
-    return new Response("CSRF validation failed", { status: 400 });
-  }
-  pending.approved = true;
-  await env.OAUTH_KV.put(`oauth:pending:${stateId}`, JSON.stringify(pending), { expirationTtl: TEN_MINUTES });
+  const store = stateStore(env, stateId);
+  if (!store) return new Response("Invalid approval", { status: 400 });
+  const approval = await store.approve(await digest(csrf));
+  if (approval.status === "missing") return new Response("Expired approval", { status: 400 });
+  if (approval.status === "invalid_csrf") return new Response("CSRF validation failed", { status: 400 });
+  const pending = approval.pending;
   const callback = new URL("/callback", request.url).href;
   const upstream = new URL("https://github.com/login/oauth/authorize");
   upstream.searchParams.set("client_id", requiredSecret(env, "GITHUB_CLIENT_ID"));
@@ -108,9 +95,10 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
   const stateId = url.searchParams.get("state");
   const code = url.searchParams.get("code");
   if (!stateId || !code) return new Response("Invalid OAuth callback", { status: 400 });
-  const pendingJson = await env.OAUTH_KV.get(`oauth:pending:${stateId}`);
-  if (!pendingJson) return new Response("Expired OAuth callback", { status: 400 });
-  const pending = JSON.parse(pendingJson) as PendingAuthorization;
+  const store = stateStore(env, stateId);
+  if (!store) return new Response("Invalid OAuth callback", { status: 400 });
+  const pending = await store.read();
+  if (!pending) return new Response("Expired OAuth callback", { status: 400 });
   if (!pending.approved) return new Response("Consent was not recorded", { status: 400 });
   const callbackUrl = new URL("/callback", request.url).href;
   const accessToken = await exchangeGitHubCode(
@@ -139,7 +127,7 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
     scope: grantedScopes,
     props,
   });
-  await env.OAUTH_KV.delete(`oauth:pending:${stateId}`);
+  await store.consume();
   return Response.redirect(redirectTo, 302);
 }
 
