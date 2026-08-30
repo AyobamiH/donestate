@@ -1,5 +1,7 @@
 # Roadmap
 
+Milestone themes live here; the executable recovery order and every active, blocked, planned, deferred, or complete item live in the generated [Project state](PROJECT-STATE.md). Deferred work must have a named re-entry condition there and is never silently removed.
+
 ## 0.1: durable local control plane
 
 - Prose-first Codex path and explicit objective/policy path.
