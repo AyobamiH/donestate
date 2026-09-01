@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AyobamiH/donestate/schemas/verification-response-v2.schema.json",
+  "title": "DoneState to OpsTruth verification response contract v2",
+  "type": "object",
+  "required": ["contractVersion", "report", "attestation"],
+  "additionalProperties": false,
+  "properties": {
+    "contractVersion": { "const": "donestate.verification-contract.v2" },
+    "report": { "$ref": "https://github.com/AyobamiH/donestate/schemas/verification-report-v1.schema.json" },
+    "attestation": { "$ref": "https://github.com/AyobamiH/donestate/schemas/verification-attestation-v2.schema.json" }
+  }
+}

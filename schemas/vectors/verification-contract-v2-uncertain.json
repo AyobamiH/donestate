@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "2.0.0",
+  "warning": "Public deterministic compatibility vector only. The test signer has no production authority and its private key is not stored.",
+  "evaluationNow": "2026-09-01T20:01:30.000Z",
+  "handoff": {
+    "schema": "donestate.verification-handoff.v2",
+    "runId": "33333333-3333-4333-8333-333333333333",
+    "generatedAt": "2026-09-01T20:00:00.000Z",
+    "objectiveDigest": "4444444444444444444444444444444444444444444444444444444444444444",
+    "executionSnapshotDigest": "5555555555555555555555555555555555555555555555555555555555555555",
+    "verificationNonce": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "repositoryRoot": "https://github.com/Example/project/tree/2222222222222222222222222222222222222222",
+    "subject": {
+      "repository": "Example/project",
+      "baseRef": "main",
+      "baseHeadSha": "1111111111111111111111111111111111111111",
+      "branchName": "donestate/vector",
+      "headSha": "2222222222222222222222222222222222222222",
+      "publication": "pull_request",
+      "pullRequestNumber": 42,
+      "pullRequestUrl": "https://github.com/Example/project/pull/42"
+    },
+    "acceptanceCriteria": [
+      "README exists at the exact published head."
+    ],
+    "verificationRequirements": [
+      {
+        "id": "readme_exists",
+        "criterionIndex": 0,
+        "kind": "path_exists",
+        "path": "README.md"
+      }
+    ],
+    "actions": [
+      {
+        "id": "push-branch",
+        "state": "SUCCEEDED",
+        "authority": "push",
+        "idempotencyKey": "33333333-3333-4333-8333-333333333333:push:v1",
+        "intentDigest": "6666666666666666666666666666666666666666666666666666666666666666",
+        "resultDigest": "7777777777777777777777777777777777777777777777777777777777777777"
+      }
+    ],
+    "eventChainHead": "8888888888888888888888888888888888888888888888888888888888888888",
+    "handoffDigest": "39459b08c9e527ae1ea3c657872987e5866123f27331c7a5d5bd4a41a99b32bd"
+  },
+  "response": {
+    "contractVersion": "donestate.verification-contract.v2",
+    "report": {
+      "schema": "opstruth.donestate-verification-report.v1",
+      "runId": "33333333-3333-4333-8333-333333333333",
+      "handoffDigest": "39459b08c9e527ae1ea3c657872987e5866123f27331c7a5d5bd4a41a99b32bd",
+      "verificationNonce": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "observedAt": "2026-09-01T20:01:00.000Z",
+      "subject": {
+        "repository": "Example/project",
+        "providerRepositoryId": 123456,
+        "baseHeadSha": "1111111111111111111111111111111111111111",
+        "expectedHeadSha": "2222222222222222222222222222222222222222",
+        "observedHeadSha": "2222222222222222222222222222222222222222"
+      },
+      "decision": "uncertain",
+      "requirementResults": [
+        {
+          "requirementId": "readme_exists",
+          "criterionIndex": 0,
+          "kind": "path_exists",
+          "verdict": "UNPROVEN",
+          "observed": null,
+          "evidenceRefs": [
+            "https://github.com/Example/project/commit/2222222222222222222222222222222222222222"
+          ],
+          "explanation": "The exact commit tree was unavailable."
+        }
+      ],
+      "subjectErrors": [],
+      "incompleteActions": [],
+      "evidenceRefs": [
+        "https://github.com/Example/project/commit/2222222222222222222222222222222222222222"
+      ],
+      "changedState": false
+    },
+    "attestation": {
+      "schema": "donestate.verification-attestation.v2",
+      "runId": "33333333-3333-4333-8333-333333333333",
+      "executionSnapshotDigest": "5555555555555555555555555555555555555555555555555555555555555555",
+      "verificationNonce": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "handoffDigest": "39459b08c9e527ae1ea3c657872987e5866123f27331c7a5d5bd4a41a99b32bd",
+      "verificationReportDigest": "63b05d89954a98881795ccc2b40a25cec10d434f735b490892e4ddf44af58aac",
+      "decision": "uncertain",
+      "issuedBy": "urn:opstruth:service:compatibility-vector",
+      "issuedAt": "2026-09-01T20:01:00.000Z",
+      "evidenceRefs": [
+        "https://github.com/Example/project/commit/2222222222222222222222222222222222222222"
+      ],
+      "signature": {
+        "algorithm": "ed25519",
+        "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAQF5Xo4vl5gQewrdgLHVRk3CIM50xrqcOwIooG1h3+mw=\n-----END PUBLIC KEY-----\n",
+        "signerFingerprint": "c5a062a3429ffb4fe967ffb775663f98a777d0e0a2dd253e9ae370eb6590031e",
+        "signatureBase64": "epKjATb/fBxaB+vdVkM/05Lk7hvzCycvlDzd9jUc+GFNxmU4OGNZKSlHXtPTXEKPNciMHz3w01/M59EsnzVpCg=="
+      }
+    }
+  }
+}

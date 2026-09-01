@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "donestate.verification-contract.v2",
+  "producer": "OpsTruth independent read-only verifier",
+  "consumer": "DoneState bounded execution plane",
+  "handoffSchema": "donestate.verification-handoff.v2",
+  "reportSchema": "opstruth.donestate-verification-report.v1",
+  "attestationSchema": "donestate.verification-attestation.v2",
+  "responseSchemaPath": "schemas/verification-response-v2.schema.json",
+  "canonicalization": {
+    "algorithm": "recursive-json-key-sort-v1",
+    "objectKeys": "lexicographic ascending",
+    "arrayOrder": "preserved",
+    "encoding": "UTF-8"
+  },
+  "digests": {
+    "algorithm": "SHA-256",
+    "handoffDomain": "donestate.verification-handoff.v2\\0",
+    "reportDomain": "opstruth.donestate-verification-report.v1\\0"
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "attestationDomain": "donestate.verification-attestation.v2\\0",
+    "trust": "objective-pinned SHA-256 SPKI fingerprint",
+    "revocation": "OPSTRUTH_REVOKED_VERIFIER_FINGERPRINTS denylist is checked before signature acceptance"
+  },
+  "freshness": {
+    "maximumAgeMs": 900000,
+    "maximumFutureSkewMs": 300000,
+    "reportMustNotPredateHandoff": true,
+    "attestationIssuedAtMustEqualReportObservedAt": true
+  },
+  "replay": {
+    "scope": "one accepted response per runId plus verificationNonce and handoffDigest",
+    "storage": "durable verification_replays table",
+    "uncertainRetry": "an uncertain response advances the event chain, producing a fresh handoff and nonce for a subsequent independent observation"
+  },
+  "decisionRule": {
+    "verified": "no subject errors, no incomplete actions, at least one requirement result, and every requirement VERIFIED",
+    "failed": "exact head mismatch, any CONTRADICTED requirement, or an incomplete action in FAILED or AMBIGUOUS state",
+    "uncertain": "all other partial or unavailable evidence states",
+    "uncertainDoneStateState": "AWAITING_VERIFICATION"
+  },
+  "compatibility": {
+    "newHostedRuns": "complete response bundle required",
+    "legacyAttestationOnly": "accepted only for objectives created before verificationContractVersion was recorded",
+    "historicalOutcomes": "never rewritten by this contract"
+  }
+}

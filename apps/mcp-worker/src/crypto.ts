@@ -65,6 +65,11 @@ export async function verifyAttestation(
   snapshotDigest: string,
   trustedFingerprints: string[],
   handoff?: VerificationHandoff,
+  options: {
+    now?: number;
+    maxAgeMs?: number;
+    maxFutureSkewMs?: number;
+  } = {},
 ): Promise<void> {
   const domain = ATTESTATION_DOMAINS[attestation.schema];
   if (!domain) throw new Error("unsupported attestation schema");
@@ -88,8 +93,13 @@ export async function verifyAttestation(
       throw new Error("attestation verification report digest is invalid");
     }
     const issuedAt = Date.parse(attestation.issuedAt);
+    const now = options.now ?? Date.now();
+    const maxFutureSkewMs = options.maxFutureSkewMs ?? 5 * 60_000;
     if (issuedAt < Date.parse(handoff.generatedAt)) throw new Error("attestation predates the sealed handoff");
-    if (issuedAt > Date.now() + 5 * 60_000) throw new Error("attestation issuance time is in the future");
+    if (issuedAt > now + maxFutureSkewMs) throw new Error("attestation issuance time is in the future");
+    if (options.maxAgeMs !== undefined && issuedAt < now - options.maxAgeMs) {
+      throw new Error("attestation is stale");
+    }
   }
   if (attestation.signature.algorithm !== "ed25519") throw new Error("only Ed25519 verifier signatures are accepted");
   const der = publicKeyDer(attestation.signature.publicKeyPem);

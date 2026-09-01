@@ -3,8 +3,22 @@ import { canonicalJson, digest } from "./canonical";
 import { sealSecret, unsealSecret, verifyAttestation } from "./crypto";
 import type { DoneStateEnv } from "./environment";
 import { executeObjective, type ActionSettlement, type ExecutionJournal } from "./executor";
-import { requestOpsTruthAttestation } from "./opstruth";
-import { RunFailure, type ActionRecord, type AuthorityClass, type EventRecord, type HostedObjective, type PublicRunRecord, type RunState, type VerificationAttestation, type VerificationHandoff, type VerifierDecisionSummary } from "./types";
+import { requestOpsTruthAttestation, requestOpsTruthVerification } from "./opstruth";
+import {
+  VERIFICATION_CONTRACT_VERSION,
+  RunFailure,
+  type ActionRecord,
+  type AuthorityClass,
+  type EventRecord,
+  type HostedObjective,
+  type PublicRunRecord,
+  type RunState,
+  type VerificationAttestation,
+  type VerificationHandoff,
+  type VerificationResponseV2,
+  type VerifierDecisionSummary,
+} from "./types";
+import { revokedVerifierFingerprints, validateVerificationResponse } from "./verification-contract";
 import { validateHostedObjective } from "./validation";
 
 interface RunRow extends Record<string, SqlStorageValue> {
@@ -22,6 +36,7 @@ interface RunRow extends Record<string, SqlStorageValue> {
   pull_request_url: string | null;
   verification_snapshot_digest: string | null;
   attestation_json: string | null;
+  verification_response_json: string | null;
 }
 
 interface ActionRow extends Record<string, SqlStorageValue> {
@@ -137,9 +152,26 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
         digest TEXT NOT NULL
       );
     `);
+    const runColumns = this.ctx.storage.sql.exec<{ name: string }>("PRAGMA table_info(run)").toArray();
+    if (!runColumns.some((column) => column.name === "verification_response_json")) {
+      this.ctx.storage.sql.exec("ALTER TABLE run ADD COLUMN verification_response_json TEXT");
+    }
+    this.ctx.storage.sql.exec(`
+      CREATE TABLE IF NOT EXISTS verification_replays (
+        run_id TEXT NOT NULL,
+        verification_nonce TEXT NOT NULL,
+        handoff_digest TEXT NOT NULL,
+        accepted_at TEXT NOT NULL,
+        PRIMARY KEY (run_id, verification_nonce),
+        UNIQUE (handoff_digest)
+      );
+    `);
   }
 
   async create(objective: HostedObjective, githubToken: string): Promise<PublicRunRecord> {
+    if (objective.verificationContractVersion !== VERIFICATION_CONTRACT_VERSION) {
+      throw new Error("new hosted objectives require the versioned verification response contract");
+    }
     validateHostedObjective(objective);
     if (!githubToken) throw new Error("GitHub authorization is missing");
     if (this.runRow()) throw new Error("run already exists");
@@ -251,10 +283,13 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
 
   async submitAttestation(ownerLogin: string, attestation: VerificationAttestation): Promise<PublicRunRecord> {
     const run = this.assertOwner(ownerLogin);
+    const objective = JSON.parse(run.objective_json) as HostedObjective;
+    if (objective.verificationContractVersion === VERIFICATION_CONTRACT_VERSION) {
+      throw new Error("new hosted objectives require the complete versioned verification response");
+    }
     if (run.state !== "AWAITING_VERIFICATION" || !run.verification_snapshot_digest) {
       throw new Error("run is not awaiting independent verification");
     }
-    const objective = JSON.parse(run.objective_json) as HostedObjective;
     const handoff = attestation.schema === "donestate.verification-attestation.v2"
       ? await this.handoff(ownerLogin)
       : undefined;
@@ -284,11 +319,101 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
     return this.get(ownerLogin);
   }
 
+  async submitVerificationResponse(
+    ownerLogin: string,
+    response: VerificationResponseV2,
+  ): Promise<PublicRunRecord> {
+    const run = this.assertOwner(ownerLogin);
+    if (run.state !== "AWAITING_VERIFICATION" || !run.verification_snapshot_digest) {
+      throw new Error("run is not awaiting independent verification");
+    }
+    const objective = JSON.parse(run.objective_json) as HostedObjective;
+    if (objective.verificationContractVersion !== VERIFICATION_CONTRACT_VERSION) {
+      throw new Error("historical objective does not use the versioned verification response contract");
+    }
+    const handoff = await this.handoff(ownerLogin);
+    await validateVerificationResponse(response, handoff, objective, {
+      revokedFingerprints: revokedVerifierFingerprints(this.env.OPSTRUTH_REVOKED_VERIFIER_FINGERPRINTS),
+    });
+
+    const current = this.assertOwner(ownerLogin);
+    const currentHead = this.events().at(-1)?.digest ?? null;
+    const sealedHead = handoff.eventChainHead;
+    if (current.state !== "AWAITING_VERIFICATION"
+      || current.verification_snapshot_digest !== handoff.executionSnapshotDigest
+      || currentHead !== sealedHead) {
+      throw new Error("verification response no longer matches the current sealed run");
+    }
+    const replay = this.ctx.storage.sql.exec<{ run_id: string }>(
+      "SELECT run_id FROM verification_replays WHERE run_id = ? AND verification_nonce = ? LIMIT 1",
+      current.id,
+      handoff.verificationNonce,
+    ).toArray()[0];
+    if (replay) throw new Error("verification response replayed");
+
+    const nextState: RunState = response.report.decision === "verified"
+      ? "VERIFIED"
+      : response.report.decision === "failed"
+        ? "FAILED_SAFE"
+        : "AWAITING_VERIFICATION";
+    const now = new Date().toISOString();
+    const event = await this.nextEvent(
+      current.state,
+      nextState,
+      "independent_verification_response_recorded",
+      response.report.decision,
+      now,
+    );
+
+    this.ctx.storage.transactionSync(() => {
+      const locked = this.runRow();
+      const lockedHead = this.events().at(-1)?.digest ?? null;
+      if (!locked || locked.id !== current.id || locked.state !== current.state
+        || locked.verification_snapshot_digest !== handoff.executionSnapshotDigest
+        || lockedHead !== sealedHead) {
+        throw new Error("verification response conflicted with another coordinator request");
+      }
+      const lockedReplay = this.ctx.storage.sql.exec<{ run_id: string }>(
+        "SELECT run_id FROM verification_replays WHERE run_id = ? AND verification_nonce = ? LIMIT 1",
+        current.id,
+        handoff.verificationNonce,
+      ).toArray()[0];
+      if (lockedReplay) throw new Error("verification response replayed");
+
+      this.ctx.storage.sql.exec(
+        "INSERT INTO verification_replays (run_id, verification_nonce, handoff_digest, accepted_at) VALUES (?, ?, ?, ?)",
+        current.id,
+        handoff.verificationNonce,
+        handoff.handoffDigest,
+        now,
+      );
+      this.ctx.storage.sql.exec(
+        `UPDATE run
+           SET state = ?, updated_at = ?, last_error = ?, attestation_json = ?, verification_response_json = ?
+         WHERE id = ? AND state = ?`,
+        nextState,
+        now,
+        nextState === "FAILED_SAFE" ? "independent verifier reported failed" : null,
+        canonicalJson(response.attestation),
+        canonicalJson(response),
+        current.id,
+        current.state,
+      );
+      this.insertEvent(event);
+    });
+    return this.get(ownerLogin);
+  }
+
   async requestIndependentVerification(ownerLogin: string): Promise<PublicRunRecord> {
     const run = this.assertOwner(ownerLogin);
     if (run.state !== "AWAITING_VERIFICATION") throw new Error("run is not awaiting independent verification");
     if (!this.env.OPSTRUTH_MCP_URL) throw new Error("OpsTruth MCP endpoint is not configured");
+    const objective = JSON.parse(run.objective_json) as HostedObjective;
     const handoff = await this.handoff(ownerLogin);
+    if (objective.verificationContractVersion === VERIFICATION_CONTRACT_VERSION) {
+      const response = await requestOpsTruthVerification(this.env.OPSTRUTH_MCP_URL, handoff);
+      return this.submitVerificationResponse(ownerLogin, response);
+    }
     const attestation = await requestOpsTruthAttestation(this.env.OPSTRUTH_MCP_URL, handoff);
     return this.submitAttestation(ownerLogin, attestation);
   }

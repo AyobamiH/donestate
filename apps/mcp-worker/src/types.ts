@@ -10,6 +10,9 @@ export const AUTHORITY_CLASSES = [
 
 export type AuthorityClass = (typeof AUTHORITY_CLASSES)[number];
 
+
+export const VERIFICATION_CONTRACT_VERSION = "donestate.verification-contract.v2" as const;
+
 export const RUN_STATES = [
   "RECEIVED",
   "QUEUED",
@@ -53,6 +56,7 @@ export interface HostedObjective {
   validationProfile: ValidationProfile;
   publication: PublicationMode;
   objectiveClass?: ObjectiveClass;
+  verificationContractVersion?: typeof VERIFICATION_CONTRACT_VERSION;
   trustedVerifierFingerprints: string[];
   verificationRequirements: VerificationRequirement[];
   maxChangedFiles: number;
@@ -194,6 +198,48 @@ export interface VerificationHandoffV2 {
     resultDigest: string | null;
   }>;
   eventChainHead: string;
+}
+
+
+export type VerificationDecision = "verified" | "failed" | "uncertain";
+export type VerificationRequirementVerdict = "VERIFIED" | "CONTRADICTED" | "UNPROVEN";
+
+export interface VerificationRequirementResult {
+  requirementId: string;
+  criterionIndex: number;
+  kind: VerificationRequirement["kind"];
+  verdict: VerificationRequirementVerdict;
+  observed: unknown;
+  evidenceRefs: string[];
+  explanation: string;
+  reasonCode?: string;
+}
+
+export interface VerificationReportV1 {
+  schema: "opstruth.donestate-verification-report.v1";
+  runId: string;
+  handoffDigest: string;
+  verificationNonce: string;
+  observedAt: string;
+  subject: {
+    repository: string;
+    providerRepositoryId: number | null;
+    baseHeadSha: string;
+    expectedHeadSha: string;
+    observedHeadSha: string | null;
+  };
+  decision: VerificationDecision;
+  requirementResults: VerificationRequirementResult[];
+  subjectErrors: string[];
+  incompleteActions: Array<{ id: string; state: ActionRecord["state"] }>;
+  evidenceRefs: string[];
+  changedState: false;
+}
+
+export interface VerificationResponseV2 {
+  contractVersion: typeof VERIFICATION_CONTRACT_VERSION;
+  report: VerificationReportV1;
+  attestation: VerificationAttestationV2;
 }
 
 export interface VerificationAttestationV1 {

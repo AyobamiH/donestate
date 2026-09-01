@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "2.0.0",
+  "baseVector": "verification-contract-v2-verified.json",
+  "mutations": [
+    {
+      "id": "unsupported_contract",
+      "operation": "replace",
+      "path": "/response/contractVersion",
+      "value": "donestate.verification-contract.v999",
+      "expected": "unsupported verification contract version"
+    },
+    {
+      "id": "missing_requirement",
+      "operation": "replace",
+      "path": "/response/report/requirementResults",
+      "value": [],
+      "expected": "does not cover every sealed requirement"
+    },
+    {
+      "id": "decision_mismatch",
+      "operation": "replace",
+      "path": "/response/report/decision",
+      "value": "failed",
+      "expected": "decision contradicts its evidence or signed report digest mismatch"
+    },
+    {
+      "id": "altered_handoff",
+      "operation": "replace",
+      "path": "/response/report/handoffDigest",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000",
+      "expected": "targets another sealed handoff"
+    },
+    {
+      "id": "future_observation",
+      "operation": "replace",
+      "path": "/response/report/observedAt",
+      "value": "2026-09-01T20:10:00.000Z",
+      "expected": "observation is in the future"
+    },
+    {
+      "id": "stale_observation",
+      "operation": "replace",
+      "path": "/response/report/observedAt",
+      "value": "2026-09-01T19:40:00.000Z",
+      "expected": "report is stale"
+    },
+    {
+      "id": "revoked_signer",
+      "operation": "configure_revocation",
+      "path": "/response/attestation/signature/signerFingerprint",
+      "expected": "verifier key is revoked"
+    },
+    {
+      "id": "replayed_nonce",
+      "operation": "submit_twice",
+      "path": "/response/report/verificationNonce",
+      "expected": "second acceptance is rejected"
+    },
+    {
+      "id": "extra_response_field",
+      "operation": "add",
+      "path": "/response/unsupported",
+      "value": true,
+      "expected": "strict response envelope rejects additional properties"
+    },
+    {
+      "id": "extra_attestation_field",
+      "operation": "add",
+      "path": "/response/attestation/unsupported",
+      "value": true,
+      "expected": "strict attestation envelope rejects additional properties"
+    },
+    {
+      "id": "extra_signature_field",
+      "operation": "add",
+      "path": "/response/attestation/signature/unsupported",
+      "value": true,
+      "expected": "strict signature envelope rejects additional properties"
+    }
+  ]
+}

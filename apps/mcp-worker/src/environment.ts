@@ -11,5 +11,6 @@ export type DoneStateEnv = Omit<Env, "DEPLOYMENT_MODE"> & Readonly<{
   OPENAI_REVIEW_PASSWORD_SHA256?: string;
   OPSTRUTH_MCP_URL?: string;
   OPSTRUTH_VERIFIER_FINGERPRINT?: string;
+  OPSTRUTH_REVOKED_VERIFIER_FINGERPRINTS?: string;
   PLATFORM_OWNER_LOGIN?: string;
 }>;

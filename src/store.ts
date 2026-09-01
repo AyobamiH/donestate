@@ -523,7 +523,7 @@ export class DoneStateStore {
           nextState,
           canonicalJson(attestation),
           now,
-          attestation.decision === "verified" ? null : `Verifier returned ${attestation.decision}.`,
+          attestation.decision === "failed" ? "Verifier returned failed." : null,
           runId,
         );
         this.appendEvent(database, runId, "independent_attestation_recorded", row.state, nextState, attestation.issuedBy, now);

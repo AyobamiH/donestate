@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { requestOpsTruthAttestation } from "../src/opstruth";
-import type { VerificationAttestationV2, VerificationHandoff } from "../src/types";
+import { requestOpsTruthAttestation, requestOpsTruthVerification } from "../src/opstruth";
+import { VERIFICATION_CONTRACT_VERSION, type VerificationAttestationV2, type VerificationHandoff } from "../src/types";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -80,6 +80,50 @@ describe("OpsTruth verification bridge", () => {
       requestOpsTruthAttestation("https://opstruth.example/mcp", handoff),
     ).resolves.toEqual(attestation);
     expect(request).toHaveBeenCalledOnce();
+  });
+
+
+  it("retains the complete versioned report and attestation bundle", async () => {
+    const report = { schema: "opstruth.donestate-verification-report.v1", runId: handoff.runId };
+    vi.stubGlobal("fetch", vi.fn(async () => Response.json({
+      jsonrpc: "2.0",
+      id: handoff.runId,
+      result: { structuredContent: { contractVersion: VERIFICATION_CONTRACT_VERSION, report, attestation } },
+    })));
+
+    await expect(requestOpsTruthVerification("https://opstruth.example/mcp", handoff)).resolves.toEqual({
+      contractVersion: VERIFICATION_CONTRACT_VERSION,
+      report,
+      attestation,
+    });
+  });
+
+  it("rejects extra fields in the versioned response, attestation, or signature", async () => {
+    const report = { schema: "opstruth.donestate-verification-report.v1", runId: handoff.runId };
+    const payloads = [
+      { contractVersion: VERIFICATION_CONTRACT_VERSION, report, attestation, unsupported: true },
+      { contractVersion: VERIFICATION_CONTRACT_VERSION, report, attestation: { ...attestation, unsupported: true } },
+      {
+        contractVersion: VERIFICATION_CONTRACT_VERSION,
+        report,
+        attestation: { ...attestation, signature: { ...attestation.signature, unsupported: true } },
+      },
+    ];
+    const request = vi.fn();
+    for (const structuredContent of payloads) {
+      request.mockResolvedValueOnce(Response.json({
+        jsonrpc: "2.0",
+        id: handoff.runId,
+        result: { structuredContent },
+      }));
+    }
+    vi.stubGlobal("fetch", request);
+
+    for (const _payload of payloads) {
+      await expect(requestOpsTruthVerification("https://opstruth.example/mcp", handoff))
+        .rejects.toThrow("strict verification contract bundle");
+    }
+    expect(request).toHaveBeenCalledTimes(payloads.length);
   });
 
   it("rejects credentialed or non-HTTPS endpoints before network access", async () => {

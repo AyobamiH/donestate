@@ -12,7 +12,7 @@ export async function recordIndependentAttestation(
   const nextState: RunState = attestation.decision === "verified"
     ? "VERIFIED"
     : attestation.decision === "uncertain"
-      ? "AMBIGUOUS_EFFECT"
+      ? "AWAITING_VERIFICATION"
       : "FAILED_SAFE";
   await store.saveAttestation(run.id, attestation, nextState);
   return store.getRun(run.id);
