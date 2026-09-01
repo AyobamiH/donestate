@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "proposalId": "donestate.main-governance.v1",
+  "repository": {
+    "fullName": "AyobamiH/donestate",
+    "repositoryId": 1348643925,
+    "defaultBranch": "main"
+  },
+  "providerObservation": {
+    "observedAt": "2026-09-01",
+    "branch": "main",
+    "headCommit": "4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a",
+    "state": "UNPROTECTED",
+    "source": "authenticated GitHub branches page",
+    "providerMessage": "Your main branch isn't protected",
+    "rulesetId": null
+  },
+  "activation": {
+    "state": "BLOCKED",
+    "desiredProviderEnforcement": "active",
+    "artifactProviderEnforcement": "disabled",
+    "appliedAt": null,
+    "blockingIssue": "https://github.com/AyobamiH/donestate/issues/60",
+    "blockers": [
+      {
+        "id": "SECOND_TRUSTED_HUMAN_REVIEWER",
+        "state": "UNRESOLVED",
+        "detail": "No second trusted human reviewer has been named, granted qualifying review access, or added to CODEOWNERS."
+      },
+      {
+        "id": "QUALIFYING_REVIEW_ACCESS_MODEL",
+        "state": "UNRESOLVED",
+        "detail": "The owner has not accepted and recorded how qualifying GitHub review access can coexist with the owner-only merge authority policy. Provider write access may expose merge capability, but capability does not grant DoneState merge authority."
+      },
+      {
+        "id": "PR58_DEFAULT_BRANCH_RECOVERY",
+        "state": "UNRESOLVED",
+        "detail": "PR 58 must be owner-reviewed and merged, then its exact post-merge main CI must pass before ruleset activation."
+      },
+      {
+        "id": "OWNER_ACTIVATION_APPROVAL",
+        "state": "UNRESOLVED",
+        "detail": "The repository owner has not authorized or performed the provider settings change."
+      }
+    ]
+  },
+  "ownership": {
+    "mergeExecutor": {
+      "login": "AyobamiH",
+      "userId": 47716486,
+      "authority": "OWNER_ONLY"
+    },
+    "codeOwners": [
+      "@AyobamiH"
+    ],
+    "independentReviewer": {
+      "login": null,
+      "state": "UNNAMED",
+      "mustBeHuman": true,
+      "mustNotBePullRequestAuthor": true,
+      "automatedReviewDoesNotQualify": true,
+      "mustBeCodeOwnerBeforeActivation": true,
+      "qualifyingProviderAccess": "UNRESOLVED"
+    },
+    "reviewAccessModel": {
+      "state": "UNRESOLVED",
+      "providerMergeCapabilityMayBeConferred": true,
+      "authorityGranted": "REVIEW_ONLY",
+      "mergeAuthorityRemains": "AyobamiH"
+    }
+  },
+  "checkInventory": {
+    "workflowPath": ".github/workflows/ci.yml",
+    "workflowName": "CI",
+    "event": "pull_request",
+    "branchFiltered": false,
+    "pathFiltered": false,
+    "jobLevelConditions": false,
+    "contexts": [
+      "core (22)",
+      "core (24)",
+      "hosted-plugin"
+    ],
+    "providerApp": {
+      "slug": "github-actions",
+      "integrationId": 15368
+    },
+    "providerEvidence": {
+      "sourceCommit": "c84faf1433a01a5cd3e7eef616175b4273d0bb47",
+      "workflowRunId": 33484917639,
+      "jobs": [
+        {
+          "name": "core (22)",
+          "jobId": 99782635467,
+          "conclusion": "success"
+        },
+        {
+          "name": "core (24)",
+          "jobId": 99782635540,
+          "conclusion": "success"
+        },
+        {
+          "name": "hosted-plugin",
+          "jobId": 99782635216,
+          "conclusion": "success"
+        }
+      ]
+    }
+  },
+  "githubRuleset": {
+    "name": "DoneState main governance",
+    "target": "branch",
+    "enforcement": "disabled",
+    "bypass_actors": [
+      {
+        "actor_id": 47716486,
+        "actor_type": "User",
+        "bypass_mode": "always"
+      }
+    ],
+    "conditions": {
+      "ref_name": {
+        "include": [
+          "refs/heads/main"
+        ],
+        "exclude": []
+      }
+    },
+    "rules": [
+      {
+        "type": "deletion"
+      },
+      {
+        "type": "non_fast_forward"
+      },
+      {
+        "type": "pull_request",
+        "parameters": {
+          "allowed_merge_methods": [
+            "merge",
+            "squash",
+            "rebase"
+          ],
+          "dismiss_stale_reviews_on_push": true,
+          "require_code_owner_review": true,
+          "require_last_push_approval": true,
+          "required_approving_review_count": 1,
+          "required_review_thread_resolution": true
+        }
+      },
+      {
+        "type": "required_status_checks",
+        "parameters": {
+          "do_not_enforce_on_create": false,
+          "required_status_checks": [
+            {
+              "context": "core (22)",
+              "integration_id": 15368
+            },
+            {
+              "context": "core (24)",
+              "integration_id": 15368
+            },
+            {
+              "context": "hosted-plugin",
+              "integration_id": 15368
+            }
+          ],
+          "strict_required_status_checks_policy": true
+        }
+      }
+    ]
+  },
+  "emergencyRecovery": {
+    "mode": "OWNER_BYPASS",
+    "bypassMode": "always",
+    "rulesetMustRemainEnabled": true,
+    "providerBypassMustRemainAuditable": true,
+    "normalMergeMayNotUseBypass": true,
+    "requiredRecords": [
+      "incident or recovery issue",
+      "exact recovery commit",
+      "provider bypass record",
+      "post-recovery CI result",
+      "post-incident review"
+    ]
+  },
+  "activationReadBack": {
+    "state": "NOT_ATTEMPTED",
+    "observedAt": null,
+    "rulesetId": null,
+    "providerEnforcement": null,
+    "effectiveBranchRules": []
+  }
+}

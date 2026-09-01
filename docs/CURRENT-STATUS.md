@@ -6,6 +6,14 @@ The canonical recovery order, owners, wait conditions, stale dates, and Evidence
 
 As of 2026-09-01, DoneState has a public local release, a deployed hosted service for supported public-repository paths, an owner-activated PR-only GitHub App installation, an OpenAI directory version in Review, and a GitHub Marketplace submission that remains `Pending for publish`. These are separate product states.
 
+## Default branch governance
+
+The authenticated GitHub branches page reported `Your main branch isn't protected` on 1 September 2026. The current provider state for `main` is therefore `UNPROTECTED`; pull requests, human approval, required checks, force-push blocking, and deletion blocking are not evidenced as enforced.
+
+Issue [#60](https://github.com/AyobamiH/donestate/issues/60) tracks a review-only ruleset proposal and the [main governance runbook](MAIN-GOVERNANCE.md). Its only require-safe contexts are `core (22)`, `core (24)`, and `hosted-plugin`, each pinned to GitHub Actions App integration `15368`. The unfiltered `pull_request` workflow emitted all three successfully in run [`33484917639`](https://github.com/AyobamiH/donestate/actions/runs/33484917639) at exact PR #58 head `c84faf1433a01a5cd3e7eef616175b4273d0bb47`.
+
+Activation is `BLOCKED`. No second trusted human reviewer has been named, the qualifying provider review-access model remains unresolved, PR #58 has not restored green post-merge default-branch evidence, and the owner has not authorized a provider settings change. Provider review capability does not grant DoneState merge authority; the owner remains the only authorized merge executor. The checked-in proposal remains disabled and cannot establish active protection. GitHub Marketplace separately remains `Pending for publish`, draft, and unpublished under current evidence `E-013`.
+
 ## Public local release
 
 - npm/CLI version: `0.1.2`
