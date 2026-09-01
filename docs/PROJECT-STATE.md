@@ -10,7 +10,7 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 
 ## Recovery order
 
-1. **R0 — Restore self-documenting governance.** The ledger, generated state, PR template, change-impact gate, and stale-state check are merged and green. (1 active)
+1. **R0 — Restore self-documenting governance.** The ledger, generated state, PR template, change-impact gate, stale-state check, and reviewable main-governance design are merged and green; ruleset activation remains a separately evidenced owner action. (1 active, 1 blocked)
 2. **R1 — Keep Marketplace channel truth current.** Public wording matches live provider state, lifecycle events are monotonic and tested, and operating decisions are documented. (4 complete, 1 blocked)
 3. **R2 — Synchronize Proof & State.** Proof & State points to exact DoneState commits and external review states. (1 active)
 4. **R3 — Separate Marketplace development from production.** A separate development OAuth App and draft listing can test lifecycle events without changing either production app. (1 active)
@@ -25,6 +25,7 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 | ID | Status | Owner | Next action | Wait or re-entry condition | Stale date |
 |---|---|---|---|---|---|
 | GOV-001 — Enforce the Evidence Story Bank and documentation closure | active | DoneState maintainers | Make the issue 57 truth-repair pull request pass every required check, obtain owner review and merge authority, then record the exact post-merge CI result. | Wait: The default branch remains red at workflow 33474288066 until a separately reviewed repair is merged; this work has no merge authority. Re-entry: Close only after the canonical ledger, generated state, public status documents, and exact post-merge checks agree. | 2026-09-08 |
+| GOV-003 — Activate reviewed main-branch governance | blocked | Repository owner | After PR 58 is merged with green post-merge main CI, name a second trusted human reviewer, record the qualifying review-access model, obtain explicit owner approval, activate the exact main-only ruleset, and record a separate authenticated provider read-back. | Wait: GitHub reports main as UNPROTECTED; no second trusted human reviewer is named; the review-access and owner-only merge authority model is unresolved; PR 58 has no post-merge recovery evidence; no provider settings action is authorized. Re-entry: Resume only after the reviewer accepts review-only authority, is added to CODEOWNERS, the owner accepts the provider capability boundary, and PR 58 restores the default branch; close only when an exact ruleset ID, active enforcement, effective branch rules, and a test pull request are recorded. | 2026-09-08 |
 
 ### R1 — Keep Marketplace channel truth current
 
@@ -218,3 +219,13 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 - **Outcome:** The production submission remains SUBMITTED / IN_REVIEW, Pending for publish, draft, and unpublished. The owner preview shows the listing content and a displayed count of 1, not public discoverability or a public install. OpenAI version 0.2.0 separately remains in Review.
 - **Content:** Authenticated submission status, draft and unpublished notice, Withdraw request control, owner-preview identity and content, unauthenticated search result, authenticated listing inventory, separate OpenAI review state, and explicit proof gaps.
 - **Measurement:** One authenticated edit-state read-back, one owner preview, one authenticated inventory, and one unauthenticated exact search were assessed; the preview displayed 1 install, while public listing availability was not evidenced.
+
+### E-014 — DoneState main branch governance remains unapplied
+
+- **Date:** 2026-09-01
+- **Situation:** Issue 60 requires an enforceable main-only governance design without granting this review lane authority to alter GitHub settings or invent an independent reviewer.
+- **Verification:** On 1 September 2026, the authenticated GitHub branches page reported: Your main branch isn't protected. Exact PR 58 head c84faf1433a01a5cd3e7eef616175b4273d0bb47 emitted CI run 33484917639 with successful jobs core (22) 99782635467, core (24) 99782635540, and hosted-plugin 99782635216. The exact check-run payload identified GitHub Actions App integration 15368 as the source of all three jobs. The CI workflow has an unfiltered pull_request trigger, no path filters, and no job-level conditions for those jobs. The repository proposal stores GitHub enforcement as disabled and records no ruleset ID or activation timestamp.
+- **Accountability:** owner=Repository owner; status=blocked; next=Merge PR 58 under owner authority, record green post-merge main CI, name a second trusted human reviewer, accept the qualifying provider access model, explicitly approve activation, and perform a separate authenticated settings read-back.; wait=Main remains UNPROTECTED, activation remains BLOCKED, no second trusted human reviewer is named, qualifying review access may expose provider merge capability, and this review-only change has no settings authority.; stale=2026-09-08
+- **Outcome:** A machine-readable main-only proposal, truthful CODEOWNERS surface, require-safe check inventory, validation, and auditable emergency runbook are reviewable; no protection is active.
+- **Content:** Exact repository and owner IDs, exact main head, disabled GitHub ruleset body, pull-request and human-review requirements, explicit review-capability versus merge-authority boundary, force-push and deletion blocks, three always-emitted check contexts pinned to GitHub Actions integration 15368, one owner bypass, activation gates, negative tests, and provider read-back requirements.
+- **Measurement:** One authenticated branch-state observation at main 4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a, one exact PR-head workflow with three successful jobs from one pinned provider App, zero named independent reviewers, zero ruleset IDs, and zero provider settings changes are recorded.
