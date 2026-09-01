@@ -1,0 +1,40 @@
+name: Repair verifier finalizer test harness
+
+on:
+  push:
+    branches:
+      - repair/versioned-verification-contract-59
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.event.head_commit.message == 'Repair verifier finalizer test harness'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fix expected Durable Object rejection harness
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('.github/workflows/finalize-verifier-contract.yml')
+          text = path.read_text()
+          old = '''    const stub = env.RUN_COORDINATOR.getByName(runId);\\n    await expect(stub.create(candidate, "github-test-token"))\\n      .rejects.toThrow("new hosted objectives require the versioned verification response contract");\\n  });\\n\\n  it("persists a received run without exposing its GitHub token", async () => {\\n'''
+          new = '''    const stub = env.RUN_COORDINATOR.getByName(runId);\\n    await runInDurableObject(stub, async (instance: RunCoordinator) => {\\n      await expect(instance.create(candidate, "github-test-token"))\\n        .rejects.toThrow("new hosted objectives require the versioned verification response contract");\\n    });\\n  });\\n\\n  it("persists a received run without exposing its GitHub token", async () => {\\n'''
+          if old not in text:
+              raise SystemExit('expected finalizer test-harness anchor missing')
+          path.write_text(text.replace(old, new, 1))
+          PY
+          rm -f .github/workflows/retry-verifier-finalizer.yml
+          git diff --check
+          git config user.name "Ayobami Haastrup"
+          git config user.email "47716486+AyobamiH@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "Stage verifier contract finalizer"
+          git push origin HEAD:repair/versioned-verification-contract-59
