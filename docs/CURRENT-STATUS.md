@@ -10,9 +10,9 @@ As of 2026-09-01, DoneState has a public local release, a deployed hosted servic
 
 The authenticated GitHub branches page reported `Your main branch isn't protected` on 1 September 2026. The current provider state for `main` is therefore `UNPROTECTED`; pull requests, human approval, required checks, force-push blocking, and deletion blocking are not evidenced as enforced.
 
-Issue [#60](https://github.com/AyobamiH/donestate/issues/60) tracks a review-only ruleset proposal and the [main governance runbook](MAIN-GOVERNANCE.md). Its only require-safe contexts are `core (22)`, `core (24)`, and `hosted-plugin`, each pinned to GitHub Actions App integration `15368`. The unfiltered `pull_request` workflow emitted all three successfully in run [`33484917639`](https://github.com/AyobamiH/donestate/actions/runs/33484917639) at exact PR #58 head `c84faf1433a01a5cd3e7eef616175b4273d0bb47`.
+The review-only ruleset proposal from issue [#60](https://github.com/AyobamiH/donestate/issues/60) is now merged with the [main governance runbook](MAIN-GOVERNANCE.md). Current `main` is `32f045850c8d9f04f60b38fa9ced6ea83c377dc9`; exact post-merge CI [`33520196979`](https://github.com/AyobamiH/donestate/actions/runs/33520196979) passed `core (22)`, `core (24)`, and `hosted-plugin`. A fresh provider read-back still reports `protected=false` and status-check enforcement `off`.
 
-Activation is `BLOCKED`. No second trusted human reviewer has been named, the qualifying provider review-access model remains unresolved, PR #58 has not restored green post-merge default-branch evidence, and the owner has not authorized a provider settings change. Provider review capability does not grant DoneState merge authority; the owner remains the only authorized merge executor. The checked-in proposal remains disabled and cannot establish active protection. GitHub Marketplace separately remains `Pending for publish`, draft, and unpublished under current evidence `E-013`.
+Activation is therefore still `BLOCKED`. No second trusted human reviewer has been named and the owner has not authorized a provider settings change. Provider review capability does not grant DoneState merge authority; the owner remains the only authorized merge executor. The checked-in proposal is deliberately disabled and cannot establish active protection. GitHub Marketplace separately remains `Pending for publish`, draft, and unpublished under current evidence `E-013`.
 
 ## Public local release
 
@@ -40,6 +40,12 @@ The historical public canary run `631d8a08-d337-4bae-bd18-b55c31f48a8b` previous
 
 The owned-domain cutover was merged in PR #38. Live read-only probes observed the canonical root and OAuth metadata at HTTP 200, the OpenAI Apps challenge route at HTTP 200, the protected MCP endpoint at HTTP 401 with canonical resource metadata, and the GitHub webhook route at HTTP 405 for GET. The legacy Worker hostname remains enabled only so OpenAI can review the immutable version 0.2.0 submission. See [Owned-domain cutover evidence](OWNED-DOMAIN-CUTOVER.md).
 
+## Independent verification contract
+
+Issue [#59](https://github.com/AyobamiH/donestate/issues/59) is being repaired in review-only PR #63. The candidate requires new hosted objectives to use `donestate.verification-contract.v2` and retain the complete OpsTruth `{contractVersion, report, attestation}` response instead of discarding the report. It binds the report digest, decision, sealed requirements, repository subject, freshness, pinned signer, revocation state, and one-time nonce/handoff consumption. Concurrent replay claims are serialized through Durable Object storage and `uncertain` remains `AWAITING_VERIFICATION`. See [Verification contract](VERIFICATION-CONTRACT.md).
+
+This is not yet live interoperability evidence. The matching OpsTruth response-envelope change is not merged or deployed, and the authenticated read lane remains an independent blocker. The historical PR #22 run is not rewritten.
+
 ## Owner-side GitHub App activation
 
 - private App: `donestate-maintenance-ayobamih`
@@ -58,7 +64,7 @@ The owner-side OAuth App now has `https://donestate.proofandstate.com` as its ho
 
 The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a`, App branch `donestate/b4242932-0bc1-4876-a202-634d9c12d72a`, head `ffec48e6c5abd9cef840ab591896613769d3e779`, and pull request #22. Its one-file documentation diff passed local validation and all three required checks in workflow `33260424569`. The owner later merged PR #22 as `4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a`. DoneState did not have merge authority, and the owner's separate merge did not retroactively widen the canary's PR-only envelope.
 
-Post-merge workflow `33474288066` passed `core (24)` and `hosted-plugin` but failed `core (22)` at governance impact because `docs/MAINTENANCE-CANARY.md` changed without the canonical ledger. The default branch is therefore red at that exact merge. Issue #57 tracks this truth repair; a repair branch or green PR check does not by itself establish a green default branch.
+Post-merge workflow `33474288066` passed `core (24)` and `hosted-plugin` but failed `core (22)` at governance impact because `docs/MAINTENANCE-CANARY.md` changed without the canonical ledger. That historical failure is preserved. The truth repair later merged in PR #58 as `044bf9886737ac12d8a0f8adaeb97d5cce6b80ee` with green post-merge CI `33489837532`; PR #62 then advanced current main to `32f045850c8d9f04f60b38fa9ced6ea83c377dc9`, whose post-merge CI `33520196979` passed all three required jobs. Repository governance recovery does not alter the historical canary verifier state.
 
 Earlier OpsTruth attempts signed `uncertain` after observing the exact PR head, compare range, and required job URLs. The latest retry failed closed on GitHub's anonymous rate limit. DoneState correctly remains `AWAITING_VERIFICATION`, and `AyobamiH/opstruth-chatgpt-plugin#11` tracks the least-privilege authenticated read lane required for a fresh terminal decision. A repository merge is not independent verification.
 

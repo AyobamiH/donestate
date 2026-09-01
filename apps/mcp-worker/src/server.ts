@@ -13,7 +13,14 @@ import { getBranchHead, getRepositoryAccess } from "./github";
 import { mcpAuthInfo, type TokenInspector } from "./mcp-auth";
 import { MaintenanceRegistry } from "./maintenance-registry";
 import { allowsMarketplaceDevelopmentRequest, isMarketplaceDevelopment } from "./marketplace-development";
-import { AUTHORITY_CLASSES, type GitHubAuthProps, type HostedObjective, type VerificationAttestation } from "./types";
+import {
+  AUTHORITY_CLASSES,
+  VERIFICATION_CONTRACT_VERSION,
+  type GitHubAuthProps,
+  type HostedObjective,
+  type VerificationAttestation,
+  type VerificationResponseV2,
+} from "./types";
 import { assertRef, assertRepository } from "./validation";
 
 export { RunCoordinator } from "./coordinator";
@@ -152,6 +159,44 @@ const attestationV2Schema = z.object({
   }),
 });
 const attestationSchema = z.discriminatedUnion("schema", [attestationV1Schema, attestationV2Schema]);
+const verificationRequirementResultSchema = z.object({
+  requirementId: z.string().regex(/^[a-z][a-z0-9_-]{0,63}$/),
+  criterionIndex: z.number().int().min(0).max(19),
+  kind: z.enum(["path_exists", "path_absent", "file_contains", "json_equals", "changed_files", "github_checks_pass"]),
+  verdict: z.enum(["VERIFIED", "CONTRADICTED", "UNPROVEN"]),
+  observed: z.json(),
+  evidenceRefs: z.array(z.string().url().max(2_000)).max(100),
+  explanation: z.string().min(1).max(4_000),
+  reasonCode: z.string().regex(/^[a-z0-9][a-z0-9_.:-]{0,127}$/).optional(),
+}).strict();
+const verificationReportSchema = z.object({
+  schema: z.literal("opstruth.donestate-verification-report.v1"),
+  runId: z.string().uuid(),
+  handoffDigest: z.string().regex(/^[a-f0-9]{64}$/),
+  verificationNonce: z.string().regex(/^[a-f0-9]{64}$/),
+  observedAt: z.string().datetime(),
+  subject: z.object({
+    repository: z.string().regex(/^[A-Za-z0-9_.-]{1,100}\/[A-Za-z0-9_.-]{1,100}$/),
+    providerRepositoryId: z.number().int().positive().nullable(),
+    baseHeadSha: z.string().regex(/^[a-f0-9]{40}$/),
+    expectedHeadSha: z.string().regex(/^[a-f0-9]{40}$/),
+    observedHeadSha: z.string().regex(/^[a-f0-9]{40}$/).nullable(),
+  }).strict(),
+  decision: z.enum(["verified", "failed", "uncertain"]),
+  requirementResults: z.array(verificationRequirementResultSchema).max(100),
+  subjectErrors: z.array(z.string().regex(/^[a-z0-9][a-z0-9_.:-]{0,127}$/)).max(20),
+  incompleteActions: z.array(z.object({
+    id: z.string().min(1).max(200),
+    state: z.enum(["PENDING", "RUNNING", "FAILED", "AMBIGUOUS"]),
+  }).strict()).max(100),
+  evidenceRefs: z.array(z.string().url().max(2_000)).min(1).max(100),
+  changedState: z.literal(false),
+}).strict();
+const verificationResponseSchema = z.object({
+  contractVersion: z.literal(VERIFICATION_CONTRACT_VERSION),
+  report: verificationReportSchema,
+  attestation: attestationV2Schema.strict(),
+}).strict();
 
 function createServer(): McpServer {
   const server = new McpServer({ name: "DoneState", version: "0.2.0" });
@@ -390,6 +435,7 @@ function createServer(): McpServer {
         authorities: [...new Set(input.authorities)],
         validationProfile: input.validationProfile,
         publication: input.publication,
+        verificationContractVersion: VERIFICATION_CONTRACT_VERSION,
         trustedVerifierFingerprints: input.trustedVerifierFingerprints,
         verificationRequirements: input.verificationRequirements,
         maxChangedFiles: input.maxChangedFiles,
@@ -478,7 +524,7 @@ function createServer(): McpServer {
   server.registerTool(
     "submit_verifier_attestation",
     {
-      description: "Submit a pinned Ed25519 attestation from an independent verifier. DoneState cannot sign or self-verify this input.",
+      description: "Historical compatibility adapter for pre-contract objectives only. New hosted objectives require submit_verifier_response.",
       inputSchema: { attestation: attestationSchema },
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     },
@@ -494,9 +540,27 @@ function createServer(): McpServer {
   );
 
   server.registerTool(
+    "submit_verifier_response",
+    {
+      description: "Submit the complete versioned OpsTruth verification response for a new hosted objective. The signed report and attestation are validated together and replayed nonces are rejected.",
+      inputSchema: { response: verificationResponseSchema },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+    },
+    async ({ response }, context) => {
+      requireExecutionScope(context);
+      const identity = authProps(context);
+      requireWritableIdentity(identity);
+      return textResult(await coordinator(response.report.runId).submitVerificationResponse(
+        identity.login,
+        response as VerificationResponseV2,
+      ));
+    },
+  );
+
+  server.registerTool(
     "request_opstruth_verification",
     {
-      description: "Ask the configured independent OpsTruth service to re-observe and attest one sealed run, then submit its signed decision. DoneState never signs the result.",
+      description: "Ask the configured independent OpsTruth service to re-observe one sealed run and return the complete versioned verification response. DoneState never signs the result.",
       inputSchema: { runId: z.string().uuid() },
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
     },

@@ -4,6 +4,7 @@ import { canonicalJson } from "../src/canonical";
 import type { RunCoordinator } from "../src/coordinator";
 import { verifierFingerprint } from "../src/crypto";
 import type { HostedObjective, PublicRunRecord, VerificationAttestationV1, VerificationAttestationV2 } from "../src/types";
+import { contractObjective, signedResponse, verifierKeys } from "./verification-fixtures";
 
 function objective(runId: string): HostedObjective {
   return {
@@ -234,4 +235,55 @@ describe("RunCoordinator", () => {
     });
     await expect(stub.get("operator")).resolves.toMatchObject({ verifierDecisionSummary: null });
   });
+
+  it("consumes one versioned verification nonce exactly once under concurrent submission", async () => {
+    const runId = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+    const keys = await verifierKeys();
+    const stub = env.RUN_COORDINATOR.getByName(runId);
+    await stub.create(contractObjective(runId, keys.fingerprint), "github-test-token");
+
+    await runInDurableObject(stub, async (instance: RunCoordinator, state) => {
+      state.storage.sql.exec(
+        "UPDATE run SET branch_name = ?, branch_head_sha = ? WHERE id = ?",
+        "donestate/test-contract",
+        "b".repeat(40),
+        runId,
+      );
+      const run = state.storage.sql.exec<Record<string, SqlStorageValue>>("SELECT * FROM run WHERE id = ?", runId).one();
+      const snapshot = await (instance as unknown as {
+        snapshotDigest(run: Record<string, SqlStorageValue>, actions: unknown[]): Promise<string>;
+      }).snapshotDigest(run, []);
+      state.storage.sql.exec(
+        "UPDATE run SET state = 'AWAITING_VERIFICATION', verification_snapshot_digest = ? WHERE id = ?",
+        snapshot,
+        runId,
+      );
+    });
+
+    const sealed = await stub.handoff("operator");
+    const response = await signedResponse({
+      handoff: sealed,
+      privateKey: keys.pair.privateKey,
+      publicKeyPem: keys.pem,
+      fingerprint: keys.fingerprint,
+      decision: "uncertain",
+    });
+    const results = await Promise.allSettled([
+      stub.submitVerificationResponse("operator", response),
+      stub.submitVerificationResponse("operator", response),
+    ]);
+    expect(results.filter((result) => result.status === "fulfilled")).toHaveLength(1);
+    expect(results.filter((result) => result.status === "rejected")).toHaveLength(1);
+
+    const run: PublicRunRecord = await stub.get("operator");
+    expect(run.state).toBe("AWAITING_VERIFICATION");
+    expect(run.events.filter((event) => event.eventType === "independent_verification_response_recorded")).toHaveLength(1);
+    await runInDurableObject(stub, async (_instance: RunCoordinator, state) => {
+      expect(state.storage.sql.exec<{ count: number }>(
+        "SELECT COUNT(*) AS count FROM verification_replays WHERE run_id = ?",
+        runId,
+      ).one().count).toBe(1);
+    });
+  });
+
 });

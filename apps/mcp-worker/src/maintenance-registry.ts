@@ -4,8 +4,9 @@ import { sealSecret, unsealSecret } from "./crypto";
 import type { DoneStateEnv } from "./environment";
 import { createInstallationToken, repositoryInstallationId, type GitHubAppCredentials } from "./github-app";
 import { discoverMaintenanceCandidates, getBranchHead, type MaintenanceCandidate } from "./github";
-import type {
-  HostedObjective,
+import {
+  VERIFICATION_CONTRACT_VERSION,
+  type HostedObjective,
   MaintenanceFinding,
   MarketplaceEntitlement,
   MarketplacePurchaseAction,
@@ -487,6 +488,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       validationProfile: "auto",
       publication: "pull_request",
       objectiveClass: "maintenance_pr",
+      verificationContractVersion: VERIFICATION_CONTRACT_VERSION,
       trustedVerifierFingerprints: [this.env.OPSTRUTH_VERIFIER_FINGERPRINT],
       verificationRequirements: [{
         id: "required_ci",

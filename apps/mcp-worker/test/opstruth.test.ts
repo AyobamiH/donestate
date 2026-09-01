@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { requestOpsTruthAttestation } from "../src/opstruth";
-import type { VerificationAttestationV2, VerificationHandoff } from "../src/types";
+import { requestOpsTruthAttestation, requestOpsTruthVerification } from "../src/opstruth";
+import { VERIFICATION_CONTRACT_VERSION, type VerificationAttestationV2, type VerificationHandoff } from "../src/types";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -80,6 +80,22 @@ describe("OpsTruth verification bridge", () => {
       requestOpsTruthAttestation("https://opstruth.example/mcp", handoff),
     ).resolves.toEqual(attestation);
     expect(request).toHaveBeenCalledOnce();
+  });
+
+
+  it("retains the complete versioned report and attestation bundle", async () => {
+    const report = { schema: "opstruth.donestate-verification-report.v1", runId: handoff.runId };
+    vi.stubGlobal("fetch", vi.fn(async () => Response.json({
+      jsonrpc: "2.0",
+      id: handoff.runId,
+      result: { structuredContent: { contractVersion: VERIFICATION_CONTRACT_VERSION, report, attestation } },
+    })));
+
+    await expect(requestOpsTruthVerification("https://opstruth.example/mcp", handoff)).resolves.toEqual({
+      contractVersion: VERIFICATION_CONTRACT_VERSION,
+      report,
+      attestation,
+    });
   });
 
   it("rejects credentialed or non-HTTPS endpoints before network access", async () => {

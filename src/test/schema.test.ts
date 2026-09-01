@@ -8,6 +8,7 @@ import { canonicalJson, digest } from "../hash.js";
 
 const require = createRequire(import.meta.url);
 const Ajv2020 = require("ajv/dist/2020").default as new (options: Record<string, unknown>) => {
+  addSchema(schema: unknown): void;
   compile(schema: unknown): ((value: unknown) => boolean) & { errors?: unknown };
 };
 const addFormats = require("ajv-formats").default as (ajv: unknown) => void;
@@ -25,6 +26,8 @@ test("published schemas compile and examples conform", async () => {
   const attestationSchema = await json("schemas/verification-attestation.schema.json");
   const handoffV2Schema = await json("schemas/verification-handoff-v2.schema.json");
   const attestationV2Schema = await json("schemas/verification-attestation-v2.schema.json");
+  const reportV1Schema = await json("schemas/verification-report-v1.schema.json");
+  const responseV2Schema = await json("schemas/verification-response-v2.schema.json");
 
   const validateObjective = ajv.compile(objectiveSchema);
   const validatePolicy = ajv.compile(policySchema);
@@ -33,7 +36,10 @@ test("published schemas compile and examples conform", async () => {
   assert.doesNotThrow(() => ajv.compile(handoffSchema));
   assert.doesNotThrow(() => ajv.compile(attestationSchema));
   const validateHandoffV2 = ajv.compile(handoffV2Schema);
-  const validateAttestationV2 = ajv.compile(attestationV2Schema);
+  ajv.addSchema(reportV1Schema);
+  ajv.addSchema(attestationV2Schema);
+  const validateAttestationV2 = ajv.compile({ $ref: "https://github.com/AyobamiH/donestate/schemas/verification-attestation-v2.schema.json" });
+  const validateResponseV2 = ajv.compile(responseV2Schema);
   const vector = await json("schemas/vectors/donestate-v2.json") as {
     handoff: Record<string, unknown>;
     verificationReport: Record<string, unknown>;
@@ -58,4 +64,30 @@ test("published schemas compile and examples conform", async () => {
     createPublicKey(signature.publicKeyPem),
     Buffer.from(signature.signatureBase64, "base64"),
   ), true);
+  for (const decision of ["verified", "failed", "uncertain"] as const) {
+    const contractVector = await json(`schemas/vectors/verification-contract-v2-${decision}.json`) as {
+      handoff: Record<string, unknown>;
+      response: {
+        contractVersion: string;
+        report: Record<string, unknown>;
+        attestation: Record<string, unknown> & { signature: { publicKeyPem: string; signatureBase64: string } };
+      };
+    };
+    assert.equal(validateHandoffV2(contractVector.handoff), true, JSON.stringify(validateHandoffV2.errors));
+    assert.equal(validateResponseV2(contractVector.response), true, JSON.stringify(validateResponseV2.errors));
+    assert.equal(
+      contractVector.response.attestation.verificationReportDigest,
+      digest(`opstruth.donestate-verification-report.v1\0${canonicalJson(contractVector.response.report)}`),
+    );
+    const { signature: vectorSignature, ...vectorUnsigned } = contractVector.response.attestation;
+    assert.equal(verify(
+      null,
+      Buffer.from(`donestate.verification-attestation.v2\0${canonicalJson(vectorUnsigned)}`),
+      createPublicKey(vectorSignature.publicKeyPem),
+      Buffer.from(vectorSignature.signatureBase64, "base64"),
+    ), true);
+  }
+  const negative = await json("schemas/vectors/verification-contract-v2-negative.json") as { mutations?: unknown[] };
+  assert.equal(Array.isArray(negative.mutations) && negative.mutations.length >= 8, true);
+
 });

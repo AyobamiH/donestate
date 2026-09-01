@@ -1,4 +1,11 @@
-import type { AuthorityClass, HostedObjective, PublicationMode, ValidationProfile, VerificationRequirement } from "./types";
+import {
+  VERIFICATION_CONTRACT_VERSION,
+  type AuthorityClass,
+  type HostedObjective,
+  type PublicationMode,
+  type ValidationProfile,
+  type VerificationRequirement,
+} from "./types";
 
 const REPOSITORY_PATTERN = /^[A-Za-z0-9_.-]{1,100}\/[A-Za-z0-9_.-]{1,100}$/;
 const REF_PATTERN = /^(?!\/)(?!.*(?:\.\.|\/\/|@\{|\\|\s))[A-Za-z0-9._\/-]{1,255}$/;
@@ -92,6 +99,10 @@ export function requiredAuthorities(publication: PublicationMode): AuthorityClas
 
 export function validateHostedObjective(objective: HostedObjective): void {
   assertRepository(objective.repository);
+  if (objective.verificationContractVersion !== undefined
+    && objective.verificationContractVersion !== VERIFICATION_CONTRACT_VERSION) {
+    throw new Error("unsupported verification contract version");
+  }
   assertRef(objective.baseRef);
   if (!/^[a-f0-9]{40}$/.test(objective.baseHeadSha)) throw new Error("baseHeadSha must be a full Git SHA-1");
   if (!objective.goal.trim() || objective.goal.length > 20_000) throw new Error("goal must contain 1 to 20,000 characters");

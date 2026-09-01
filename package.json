@@ -17,6 +17,7 @@
   "files": [
     "dist",
     "schemas",
+    "contracts",
     "examples",
     "docs",
     "AGENTS.md",

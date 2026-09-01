@@ -92,6 +92,37 @@ test("records VERIFIED after a matching attestation from the pinned verifier", a
   assert.equal(verified.lastError, null);
 });
 
+test("keeps an uncertain verifier decision in AWAITING_VERIFICATION for a fresh retry", async () => {
+  const root = await temporaryRoot();
+  const store = new DoneStateStore(path.join(root, "state.sqlite"));
+  const pair = generateKeyPairSync("ed25519");
+  const publicKeyPem = pair.publicKey.export({ type: "spki", format: "pem" }).toString();
+  const fingerprint = verifierFingerprint(publicKeyPem);
+  const policy = policyFor(root);
+  policy.trustedVerifierFingerprints = [fingerprint];
+  const run = await new DoneStateController(store).start(simpleObjective(root), policy);
+  const unsigned = {
+    schema: "donestate.verification-attestation.v1" as const,
+    runId: run.id,
+    executionSnapshotDigest: run.verificationSnapshotDigest!,
+    decision: "uncertain" as const,
+    issuedBy: "opstruth:independent-test",
+    issuedAt: new Date().toISOString(),
+    evidenceRefs: ["evidence://exact-snapshot"],
+  };
+  const uncertain = await recordIndependentAttestation(store, {
+    ...unsigned,
+    signature: {
+      algorithm: "ed25519",
+      publicKeyPem,
+      signerFingerprint: fingerprint,
+      signatureBase64: sign(null, attestationSigningInput(unsigned), pair.privateKey).toString("base64"),
+    },
+  });
+  assert.equal(uncertain.state, "AWAITING_VERIFICATION");
+  assert.equal(uncertain.lastError, null);
+});
+
 test("blocks an action when its consequence lacks standing authority", async () => {
   const root = await temporaryRoot();
   const objective = simpleObjective(root);
