@@ -14,12 +14,17 @@ jobs:
     steps:
       - name: Check out exact branch head
         uses: actions/checkout@v4
-      - name: Create source archive
-        run: tar --exclude=.git -czf "$RUNNER_TEMP/source.tgz" .
+      - name: Install root dependencies
+        run: npm ci --ignore-scripts
+      - name: Install hosted Worker dependencies
+        working-directory: apps/mcp-worker
+        run: npm ci --ignore-scripts
+      - name: Create dependency-complete source archive
+        run: tar --exclude=.git -czf "$RUNNER_TEMP/source-with-deps.tgz" .
       - name: Upload source archive
         uses: actions/upload-artifact@v4
         with:
-          name: donestate-review-source
-          path: ${{ runner.temp }}/source.tgz
+          name: donestate-review-workspace
+          path: ${{ runner.temp }}/source-with-deps.tgz
           retention-days: 1
           if-no-files-found: error
