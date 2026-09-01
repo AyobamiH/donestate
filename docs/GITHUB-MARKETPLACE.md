@@ -1,6 +1,8 @@
 # DoneState GitHub Marketplace listing
 
-This document is the source of truth for the DoneState GitHub Marketplace listing under review, attached to the existing DoneState OAuth App. It does not convert the private maintenance GitHub App into a public app and does not widen installation `157513439` beyond `AyobamiH/donestate`.
+<!-- Current GitHub Marketplace evidence: E-013 -->
+
+This document is the source of truth for the DoneState GitHub Marketplace submission attached to the existing DoneState OAuth App. The [owner preview](https://github.com/marketplace/donestate) is not evidence of publication. The submission does not convert the private maintenance GitHub App into a public app and does not widen installation `157513439` beyond `AyobamiH/donestate`.
 
 The production listing is never used for test purchases. Its separate development boundary, app identity, Worker, state, secrets, and owner-only draft-listing rules are defined in [GitHub Marketplace development boundary](GITHUB-MARKETPLACE-DEVELOPMENT.md).
 
@@ -11,11 +13,17 @@ The production listing is never used for test purchases. Its separate developmen
 | App type | OAuth App |
 | OAuth App ID | `3822030` |
 | Listing name | `DoneState` |
+| Owner preview | `https://github.com/marketplace/donestate` |
+| Submission state | `SUBMITTED / IN_REVIEW`; `Pending for publish` |
+| Publication state | Draft; not published on GitHub Marketplace |
+| Public discoverability | Not evidenced; unauthenticated exact search returned no result |
+| Provider shown in preview | `AyobamiH` |
 | Primary category | `Agent apps` |
 | Secondary category | `Developer tools` |
 | Short description | `PR-only autonomous coding with independent verification` |
-| Pricing | Free |
-| Plan name | `Public repositories` |
+| Preview pricing | `$0` (`Free`) |
+| Preview plan name | `Public repositories` |
+| Preview displayed installs | `1 install` on 1 September 2026 |
 | Installation URL | `https://donestate.proofandstate.com/github/marketplace/install` |
 | Marketplace webhook URL | `https://donestate.proofandstate.com/webhooks/github-marketplace` |
 | Content type | `application/json` |
@@ -47,12 +55,12 @@ The free Marketplace plan does not grant repository or execution authority. Purc
 
 | Asset | Requirement | Repository file |
 | --- | --- | --- |
-| Logo | Square, at least 200×200 | `assets/donestate-icon.png` — 512×512 |
+| Logo | Square, at least 200×200 | `assets/donestate-icon.png` (512×512) |
 | Feature card | Exactly 965×482 | `assets/github-marketplace/feature-card.png` |
-| Screenshot 1 | At least 1200 px wide | `assets/github-marketplace/screenshot-01-authority.png` — 1280×720 |
-| Screenshot 2 | Same dimensions | `assets/github-marketplace/screenshot-02-pr-only.png` — 1280×720 |
-| Screenshot 3 | Same dimensions | `assets/github-marketplace/screenshot-03-verification.png` — 1280×720 |
-| Demo video | Repository-hosted product demonstration | `assets/donestate-plugin-demo.mp4` — 1280×720, 52 seconds |
+| Screenshot 1 | At least 1200 px wide | `assets/github-marketplace/screenshot-01-authority.png` (1280×720) |
+| Screenshot 2 | Same dimensions | `assets/github-marketplace/screenshot-02-pr-only.png` (1280×720) |
+| Screenshot 3 | Same dimensions | `assets/github-marketplace/screenshot-03-verification.png` (1280×720) |
+| Demo video | Repository-hosted product demonstration | `assets/donestate-plugin-demo.mp4` (1280×720, 52 seconds) |
 
 The refreshed video and derived screenshots use `donestate.proofandstate.com/mcp`. The legacy `workers.dev` hostname is not used in Marketplace media.
 
@@ -68,7 +76,7 @@ The refreshed video and derived screenshots use `donestate.proofandstate.com/mcp
 
 The Marketplace webhook uses the Worker binding `GITHUB_MARKETPLACE_WEBHOOK_SECRET`. The deployment workflow maps the repository Actions secret `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET` into that binding. The identical value is configured in the active GitHub Marketplace webhook. GitHub signed ping redelivery `7e964cd0-a495-11f1-9c22-dc3366715a90` returned HTTP 200 from the canonical endpoint after deployment workflow `33324975105` succeeded.
 
-## Publication gate
+## Listing and publication gate
 
 - [x] Canonical owned-domain installation and webhook URLs defined.
 - [x] One-time OAuth purchase provisioning implemented with replay protection.
@@ -84,12 +92,21 @@ The Marketplace webhook uses the Worker binding `GITHUB_MARKETPLACE_WEBHOOK_SECR
 - [x] Private publisher contact record completed in the Marketplace dashboard; contact values are intentionally not recorded here.
 - [x] GitHub account-level publisher prerequisites satisfied.
 - [x] Human owner submitted the final review request on 30 August 2026.
+- [ ] Public production listing observed without owner authentication.
 
-GitHub acknowledged the submission and the Marketplace dashboard now reports **Pending for publish** and says the listing is under review. GitHub will send updates to the private publisher contact email. This does not mean GitHub has approved or published the listing.
+## Provider status read-back
+
+GitHub acknowledged the review submission on 30 August 2026. That observation is preserved as historical evidence under `E-001`.
+
+On 1 September 2026, the sudo-authenticated page at `https://github.com/marketplace/donestate/edit` confirmed the same pending state. It showed `Pending for publish`, offered `Withdraw request`, and stated: `This listing has not been published to Marketplace. This listing is a draft and has not yet been published on GitHub Marketplace.`
+
+The owner-authenticated preview at `https://github.com/marketplace/donestate` displayed DoneState, provider `AyobamiH`, `Add`, `Install it for free`, a `$0` `Public repositories` plan, and `1 install`. An unauthenticated exact Marketplace search returned no result. The authenticated page at `https://github.com/marketplace/manage` listed both production and development listings, which is owner inventory rather than public evidence. The OpenAI provider portal separately still displayed DoneState version `0.2.0` as `Review`.
+
+This read-back establishes the pending submission state and owner-preview content only. It does not establish public availability, webhook delivery, entitlement state, OAuth completion, repository selection, execution, billing, retention, or a user outcome.
 
 Operational incidents follow the [incident-response runbook](INCIDENT-RESPONSE.md). Public support uses repository issues; confidential security and privacy reports use the private GitHub security-advisory route. Public contact aliases and the operator service-address decision remain blocked in the canonical ledger and are not invented here.
 
-Before submission, GitHub warned that any existing subscriptions would be removed; the listing preview showed one install. The owner explicitly accepted that consequence. The dashboard acknowledgement proves that the review request was received, but it does not independently prove the downstream removal state of that prior install.
+Before submission, GitHub warned that any existing subscriptions would be removed; the listing preview showed one install. The current owner preview also displays `1 install`. Neither snapshot proves a public install, continuity, completed production onboarding, or a useful user outcome.
 
 ## Official GitHub references
 

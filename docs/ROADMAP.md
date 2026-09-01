@@ -1,5 +1,7 @@
 # Roadmap
 
+<!-- Current GitHub Marketplace evidence: E-013 -->
+
 Milestone themes live here; the executable recovery order and every active, blocked, planned, deferred, or complete item live in the generated [Project state](PROJECT-STATE.md). Deferred work must have a named re-entry condition there and is never silently removed.
 
 ## 0.1: durable local control plane
@@ -14,6 +16,7 @@ Milestone themes live here; the executable recovery order and every active, bloc
 ## 0.2: provider transactions
 
 - ChatGPT and Codex plugin control surface with prose-first objective skills. Deployed; directory version 0.2.0 submitted and in OpenAI Review.
+- GitHub Marketplace OAuth submission. Still `SUBMITTED / IN_REVIEW` and `Pending for publish`; the authenticated edit page says the listing is a draft and has not been published. The owner preview at `https://github.com/marketplace/donestate` displays provider `AyobamiH`, a `$0` `Public repositories` plan, and `1 install`, while an unauthenticated exact Marketplace search returns no result. Preview content and authenticated inventory do not prove public availability, webhook delivery, entitlement, OAuth completion, repository selection, execution, billing, retention, or user outcome. The separate development listing remains owner-only.
 - OAuth 2.1 MCP transport, durable hosted run coordination and isolated Codex execution. Deployed and canary-verified for the public-repository path.
 - Exact-head branch push and pull-request actions with durable effect probes. Deployed and canary-verified for the public-repository path.
 - First-class AgentProof repository-patch adapter.

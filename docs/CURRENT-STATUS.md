@@ -1,8 +1,10 @@
 # Current status
 
+<!-- Current GitHub Marketplace evidence: E-013 -->
+
 The canonical recovery order, owners, wait conditions, stale dates, and Evidence Story Bank are generated from `governance/project-ledger.json` into [Project state](PROJECT-STATE.md). Any consequential code, workflow, contract, deployment, distribution, or external-state change must update that ledger in the same change.
 
-As of 2026-09-01, DoneState has a public local release, a deployed hosted service for supported public-repository paths, an owner-activated PR-only GitHub App installation, an OpenAI directory version in review, and a GitHub Marketplace listing under review. These are separate product states.
+As of 2026-09-01, DoneState has a public local release, a deployed hosted service for supported public-repository paths, an owner-activated PR-only GitHub App installation, an OpenAI directory version in Review, and a GitHub Marketplace submission that remains `Pending for publish`. These are separate product states.
 
 ## Public local release
 
@@ -69,7 +71,7 @@ Submission begins OpenAI's external review. It does not mean the plugin is appro
 
 ## GitHub Marketplace review
 
-The GitHub Marketplace listing under review is attached to OAuth App `3822030`, not to the private maintenance GitHub App. This preserves installation `157513439` as **Only select repositories** on only `AyobamiH/donestate` while exposing the existing public-repository OAuth product separately.
+The GitHub Marketplace submission is attached to OAuth App `3822030`, not to the private maintenance GitHub App. This preserves installation `157513439` as **Only select repositories** on only `AyobamiH/donestate` while keeping the public-repository OAuth candidate separate.
 
 The candidate implements one-time `read:user` purchase onboarding, active-plan verification, a dedicated signed and idempotent Marketplace lifecycle webhook, and a minimal entitlement record that grants no repository or execution authority. Listing copy, a 512×512 icon, a 965×482 feature card, three 1280×720 screenshots, and the 52-second demo video are indexed in [GitHub Marketplace listing](GITHUB-MARKETPLACE.md). The refreshed media uses `donestate.proofandstate.com/mcp` rather than the legacy Worker hostname.
 
@@ -83,7 +85,7 @@ The incident and support process is published in [Incident response](INCIDENT-RE
 
 The operator's binding privacy notice and hosted-service terms were merged in PR #44 as `c791d70`; post-merge workflow `33326065889` passed all three required jobs. The private publisher contact record is complete, GitHub's account-level publisher prerequisites are satisfied, and the owner accepted GitHub Marketplace Developer Agreement v2.4 on 30 August 2026.
 
-The owner submitted the listing to GitHub for review on 30 August 2026. GitHub acknowledged the submission and now reports **Pending for publish** and **under review**. This is a review state only: the listing is not yet approved or published. GitHub will send review updates to the private publisher contact email; its value is intentionally not recorded in the repository.
+The 30 August submission and review acknowledgement remains historical evidence under `E-001`. A stronger provider read-back on 1 September 2026 confirmed the same current state: the sudo-authenticated edit page at `https://github.com/marketplace/donestate/edit` showed `Pending for publish`, offered `Withdraw request`, and explicitly said the listing was a draft that had not been published on GitHub Marketplace. The owner-authenticated preview at `https://github.com/marketplace/donestate` displayed provider `AyobamiH`, `Add`, `Install it for free`, a `$0` `Public repositories` plan, and `1 install`. An unauthenticated exact Marketplace search returned no result. The authenticated management page listed both production and development listings, but that is owner inventory rather than public evidence. The preview and inventory do not establish public availability, webhook delivery, entitlement state, OAuth completion, repository selection, execution, billing, retention, or a user outcome. The OpenAI provider portal separately still reports DoneState version `0.2.0` as `Review`.
 
 ## Not implemented
 
