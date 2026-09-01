@@ -34,7 +34,7 @@ jobs:
           npm ci --ignore-scripts
           npm run check
           rm -f worker-configuration.d.ts
-      - name: Commit exact recovered files
+      - name: Commit and verify exact recovered tree
         shell: bash
         run: |
           git config user.name "Ayobami Haastrup"
@@ -53,6 +53,9 @@ jobs:
             schemas/vectors/verification-contract-v2-failed.json schemas/vectors/verification-contract-v2-uncertain.json \
             schemas/vectors/verification-contract-v2-negative.json src/store.ts src/test/controller.test.ts \
             src/test/schema.test.ts src/verification.ts
+          git rm -f .github/workflows/export-review-source.yml .recovery/contract-overlay.* .recovery/TRIGGER
           git diff --cached --check
           git commit -m "Enforce versioned DoneState OpsTruth verification contract"
+          npm run governance:impact -- origin/main
+          git diff --check origin/main...HEAD
           git push origin HEAD:repair/versioned-verification-contract-59
