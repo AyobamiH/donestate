@@ -18,8 +18,8 @@ The machine-readable contract is `contracts/donestate-opstruth-verification.v2.j
 
 DoneState does not trust a successful RPC or a signature by itself. The complete response must bind to the sealed run and satisfy all of these checks:
 
-1. The contract, report, handoff, and attestation versions are supported.
-2. Run ID, handoff digest, verification nonce, execution snapshot, repository, base SHA, expected head SHA, and exact observed head agree.
+1. The contract, report, handoff, and attestation versions are supported, and the response/attestation/signature envelopes contain no unsupported fields.
+2. Run ID, handoff digest, verification nonce, execution snapshot, repository, base SHA, expected head SHA, and exact observed head agree. The handoff digest also seals the branch/publication/PR identity carried by handoff v2.
 3. Every sealed verification requirement appears exactly once with the same ID, criterion index, and requirement kind.
 4. The report decision is mechanically coherent with subject errors, requirement verdicts, and incomplete action states.
 5. The SHA-256 digest of the canonical report matches the digest signed inside the attestation.

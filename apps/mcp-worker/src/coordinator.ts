@@ -169,6 +169,9 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
   }
 
   async create(objective: HostedObjective, githubToken: string): Promise<PublicRunRecord> {
+    if (objective.verificationContractVersion !== VERIFICATION_CONTRACT_VERSION) {
+      throw new Error("new hosted objectives require the versioned verification response contract");
+    }
     validateHostedObjective(objective);
     if (!githubToken) throw new Error("GitHub authorization is missing");
     if (this.runRow()) throw new Error("run already exists");

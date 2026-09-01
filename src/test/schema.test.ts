@@ -17,6 +17,20 @@ async function json(file: string): Promise<unknown> {
   return JSON.parse(await readFile(path.resolve(file), "utf8"));
 }
 
+function mutateJsonPointer(root: unknown, pointer: string, value: unknown): unknown {
+  const copy = structuredClone(root) as Record<string, unknown>;
+  const parts = pointer.split("/").slice(1).map((part) => part.replace(/~1/g, "/").replace(/~0/g, "~"));
+  assert.ok(parts.length > 0);
+  let cursor: Record<string, unknown> = copy;
+  for (const part of parts.slice(0, -1)) {
+    const next = cursor[part];
+    assert.ok(next && typeof next === "object" && !Array.isArray(next));
+    cursor = next as Record<string, unknown>;
+  }
+  cursor[parts.at(-1)!] = value;
+  return copy;
+}
+
 test("published schemas compile and examples conform", async () => {
   const ajv = new Ajv2020({ allErrors: true, strict: true });
   addFormats(ajv);
@@ -87,7 +101,25 @@ test("published schemas compile and examples conform", async () => {
       Buffer.from(vectorSignature.signatureBase64, "base64"),
     ), true);
   }
-  const negative = await json("schemas/vectors/verification-contract-v2-negative.json") as { mutations?: unknown[] };
-  assert.equal(Array.isArray(negative.mutations) && negative.mutations.length >= 8, true);
+  const negative = await json("schemas/vectors/verification-contract-v2-negative.json") as {
+    mutations?: Array<{ id: string; operation: string; path: string; value?: unknown; expected: string }>;
+  };
+  assert.equal(Array.isArray(negative.mutations) && negative.mutations.length >= 11, true);
+  const mutations = new Map(negative.mutations!.map((mutation) => [mutation.id, mutation]));
+  for (const id of [
+    "unsupported_contract", "missing_requirement", "decision_mismatch", "altered_handoff",
+    "future_observation", "stale_observation", "revoked_signer", "replayed_nonce",
+    "extra_response_field", "extra_attestation_field", "extra_signature_field",
+  ]) {
+    assert.equal(mutations.has(id), true, `missing negative verification mutation ${id}`);
+  }
+
+  const verifiedVector = await json("schemas/vectors/verification-contract-v2-verified.json") as { response: unknown };
+  for (const id of ["unsupported_contract", "extra_response_field", "extra_attestation_field", "extra_signature_field"]) {
+    const mutation = mutations.get(id)!;
+    assert.equal(["replace", "add"].includes(mutation.operation), true);
+    const mutated = mutateJsonPointer(verifiedVector, mutation.path, mutation.value) as { response: unknown };
+    assert.equal(validateResponseV2(mutated.response), false, `${id} must fail the published response schema`);
+  }
 
 });

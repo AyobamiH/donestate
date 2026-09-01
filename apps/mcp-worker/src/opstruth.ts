@@ -5,6 +5,35 @@ import {
   type VerificationResponseV2,
 } from "./types";
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function hasExactKeys(value: Record<string, unknown>, expected: readonly string[]): boolean {
+  const actual = Object.keys(value).sort();
+  const required = [...expected].sort();
+  return actual.length === required.length && actual.every((key, index) => key === required[index]);
+}
+
+function assertStrictVerificationEnvelope(structured: Record<string, unknown>): void {
+  if (!hasExactKeys(structured, ["contractVersion", "report", "attestation"])) {
+    throw new Error("OpsTruth response did not contain a strict verification contract bundle");
+  }
+  const attestation = structured.attestation;
+  if (!isRecord(attestation) || !hasExactKeys(attestation, [
+    "schema", "runId", "executionSnapshotDigest", "verificationNonce", "handoffDigest",
+    "verificationReportDigest", "decision", "issuedBy", "issuedAt", "evidenceRefs", "signature",
+  ])) {
+    throw new Error("OpsTruth response did not contain a strict verification contract bundle");
+  }
+  const signature = attestation.signature;
+  if (!isRecord(signature) || !hasExactKeys(signature, [
+    "algorithm", "publicKeyPem", "signerFingerprint", "signatureBase64",
+  ])) {
+    throw new Error("OpsTruth response did not contain a strict verification contract bundle");
+  }
+}
+
 async function callOpsTruth(endpoint: string, handoff: VerificationHandoff): Promise<Record<string, unknown>> {
   const url = new URL(endpoint);
   if (url.protocol !== "https:" || url.username || url.password || url.search || url.hash) {
@@ -39,9 +68,9 @@ export async function requestOpsTruthVerification(
   handoff: VerificationHandoff,
 ): Promise<VerificationResponseV2> {
   const structured = await callOpsTruth(endpoint, handoff);
+  assertStrictVerificationEnvelope(structured);
   if (structured.contractVersion !== VERIFICATION_CONTRACT_VERSION
-    || !structured.report || typeof structured.report !== "object" || Array.isArray(structured.report)
-    || !structured.attestation || typeof structured.attestation !== "object" || Array.isArray(structured.attestation)) {
+    || !structured.report || typeof structured.report !== "object" || Array.isArray(structured.report)) {
     throw new Error("OpsTruth response did not contain the supported verification contract bundle");
   }
   return {

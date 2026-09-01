@@ -98,6 +98,34 @@ describe("OpsTruth verification bridge", () => {
     });
   });
 
+  it("rejects extra fields in the versioned response, attestation, or signature", async () => {
+    const report = { schema: "opstruth.donestate-verification-report.v1", runId: handoff.runId };
+    const payloads = [
+      { contractVersion: VERIFICATION_CONTRACT_VERSION, report, attestation, unsupported: true },
+      { contractVersion: VERIFICATION_CONTRACT_VERSION, report, attestation: { ...attestation, unsupported: true } },
+      {
+        contractVersion: VERIFICATION_CONTRACT_VERSION,
+        report,
+        attestation: { ...attestation, signature: { ...attestation.signature, unsupported: true } },
+      },
+    ];
+    const request = vi.fn();
+    for (const structuredContent of payloads) {
+      request.mockResolvedValueOnce(Response.json({
+        jsonrpc: "2.0",
+        id: handoff.runId,
+        result: { structuredContent },
+      }));
+    }
+    vi.stubGlobal("fetch", request);
+
+    for (const _payload of payloads) {
+      await expect(requestOpsTruthVerification("https://opstruth.example/mcp", handoff))
+        .rejects.toThrow("strict verification contract bundle");
+    }
+    expect(request).toHaveBeenCalledTimes(payloads.length);
+  });
+
   it("rejects credentialed or non-HTTPS endpoints before network access", async () => {
     const request = vi.fn();
     vi.stubGlobal("fetch", request);

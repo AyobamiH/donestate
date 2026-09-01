@@ -156,8 +156,8 @@ const attestationV2Schema = z.object({
     publicKeyPem: z.string().min(1).max(10_000),
     signerFingerprint: z.string().regex(/^[a-f0-9]{64}$/),
     signatureBase64: z.string().min(1).max(10_000),
-  }),
-});
+  }).strict(),
+}).strict();
 const attestationSchema = z.discriminatedUnion("schema", [attestationV1Schema, attestationV2Schema]);
 const verificationRequirementResultSchema = z.object({
   requirementId: z.string().regex(/^[a-z][a-z0-9_-]{0,63}$/),

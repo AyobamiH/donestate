@@ -55,6 +55,27 @@
       "operation": "submit_twice",
       "path": "/response/report/verificationNonce",
       "expected": "second acceptance is rejected"
+    },
+    {
+      "id": "extra_response_field",
+      "operation": "add",
+      "path": "/response/unsupported",
+      "value": true,
+      "expected": "strict response envelope rejects additional properties"
+    },
+    {
+      "id": "extra_attestation_field",
+      "operation": "add",
+      "path": "/response/attestation/unsupported",
+      "value": true,
+      "expected": "strict attestation envelope rejects additional properties"
+    },
+    {
+      "id": "extra_signature_field",
+      "operation": "add",
+      "path": "/response/attestation/signature/unsupported",
+      "value": true,
+      "expected": "strict signature envelope rejects additional properties"
     }
   ]
 }

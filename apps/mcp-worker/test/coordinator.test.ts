@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { canonicalJson } from "../src/canonical";
 import type { RunCoordinator } from "../src/coordinator";
 import { verifierFingerprint } from "../src/crypto";
-import type { HostedObjective, PublicRunRecord, VerificationAttestationV1, VerificationAttestationV2 } from "../src/types";
+import { VERIFICATION_CONTRACT_VERSION, type HostedObjective, type PublicRunRecord, type VerificationAttestationV1, type VerificationAttestationV2 } from "../src/types";
 import { contractObjective, signedResponse, verifierKeys } from "./verification-fixtures";
 
 function objective(runId: string): HostedObjective {
@@ -19,6 +19,7 @@ function objective(runId: string): HostedObjective {
     authorities: ["local_read", "local_write", "test", "commit", "push", "secret_access"],
     validationProfile: "none",
     publication: "branch",
+    verificationContractVersion: VERIFICATION_CONTRACT_VERSION,
     trustedVerifierFingerprints: [],
     verificationRequirements: [],
     maxChangedFiles: 10,
@@ -71,6 +72,22 @@ async function signedAttestation(input: {
 }
 
 describe("RunCoordinator", () => {
+  it("rejects a new objective that omits the versioned verification contract", async () => {
+    const runId = "77777777-7777-4777-8777-777777777777";
+    const candidate = objective(runId);
+    delete candidate.verificationContractVersion;
+    const stub = env.RUN_COORDINATOR.getByName(runId);
+    await runInDurableObject(stub, async (instance: RunCoordinator) => {
+      let rejection = "";
+      try {
+        await instance.create(candidate, "github-test-token");
+      } catch (error) {
+        rejection = error instanceof Error ? error.message : String(error);
+      }
+      expect(rejection).toContain("new hosted objectives require the versioned verification response contract");
+    });
+  });
+
   it("persists a received run without exposing its GitHub token", async () => {
     const runId = "11111111-1111-4111-8111-111111111111";
     const stub = env.RUN_COORDINATOR.getByName(runId);
@@ -124,8 +141,11 @@ describe("RunCoordinator", () => {
     const stub = env.RUN_COORDINATOR.getByName(runId);
     await stub.create(configuredObjective, "github-test-token");
     await runInDurableObject(stub, async (_instance: RunCoordinator, state) => {
+      const historicalObjective = { ...configuredObjective };
+      delete historicalObjective.verificationContractVersion;
       state.storage.sql.exec(
-        "UPDATE run SET state = 'AWAITING_VERIFICATION', verification_snapshot_digest = ? WHERE id = ?",
+        "UPDATE run SET objective_json = ?, state = 'AWAITING_VERIFICATION', verification_snapshot_digest = ? WHERE id = ?",
+        canonicalJson(historicalObjective),
         snapshotDigest,
         runId,
       );
