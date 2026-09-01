@@ -96,7 +96,7 @@
       "signature": {
         "algorithm": "ed25519",
         "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAQF5Xo4vl5gQewrdgLHVRk3CIM50xrqcOwIooG1h3+mw=\n-----END PUBLIC KEY-----\n",
-        "signerFingerprint": "d13c0ed5c4b0e4a143e390c93a66cab599bacf6128bc3064e3b21db2a28176ee",
+        "signerFingerprint": "c5a062a3429ffb4fe967ffb775663f98a777d0e0a2dd253e9ae370eb6590031e",
         "signatureBase64": "+Uaoify4SIu3dsiezEjKUScjGPxAUaTJaua9DO1D0yfTWhEvdhSDFJYWTwYyhpZyf9vo7AS3kos1WlUypQQpAQ=="
       }
     }
