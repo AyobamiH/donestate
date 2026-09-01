@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-08-30",
+  "updatedAt": "2026-09-01",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {"id":"R0","title":"Restore self-documenting governance","workItemIds":["GOV-001"],"exitCriterion":"The ledger, generated state, PR template, change-impact gate, and stale-state check are merged and green."},
@@ -9,13 +9,13 @@
     {"id":"R2","title":"Synchronize Proof & State","workItemIds":["GOV-002"],"exitCriterion":"Proof & State points to exact DoneState commits and external review states."},
     {"id":"R3","title":"Separate Marketplace development from production","workItemIds":["MKT-004"],"exitCriterion":"A separate development OAuth App and draft listing can test lifecycle events without changing either production app."},
     {"id":"R4","title":"Prepare for the first external customer","workItemIds":["CUST-001","CUST-002","OPS-002","GTM-001"],"exitCriterion":"Customers can inspect and delete their state, operators can detect failures, and useful outcomes are measured."},
-    {"id":"R5","title":"Close independent-verification proof gaps","workItemIds":["VERIFY-001","VERIFY-002","VERIFY-003","VERIFY-004","AGENTPROOF-001"],"exitCriterion":"OpsTruth resolves the exact-head defect and synthetic plus live cross-product loops have exact evidence."},
+    {"id":"R5","title":"Close independent-verification proof gaps","workItemIds":["VERIFY-001","VERIFY-002","VERIFY-003","VERIFY-004","AGENTPROOF-001"],"exitCriterion":"OpsTruth restores an authenticated exact-head read lane and synthetic plus live cross-product loops have exact evidence."},
     {"id":"R6","title":"Release and grow only through explicit gates","workItemIds":["RELEASE-001","MKT-005","MKT-006","MKT-007","PRIVATE-001","ENGINE-001","ENGINE-002","ENGINE-003","VERIFY-005","AUTH-001","FLEET-001","ADAPTER-001","OPENAI-001","UPSTREAM-001","SKILLS-001"],"exitCriterion":"Each capability advances only when its authority, evidence, demand, and release conditions are satisfied; fleet authority remains last."}
   ],
   "workItems": [
     {
-      "id":"GOV-001","title":"Enforce the Evidence Story Bank and documentation closure","stream":"governance","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
-      "nextAction":"Keep the gate green and record every consequential change through the ledger.","waitCondition":"None.","reentryCondition":"Reopen if a consequential change can bypass the ledger or generated-state check.","dependencies":[],"evidenceIds":["E-004","E-006"]
+      "id":"GOV-001","title":"Enforce the Evidence Story Bank and documentation closure","stream":"governance","status":"active","owner":"DoneState maintainers","lastUpdated":"2026-09-01","staleDate":"2026-09-08",
+      "nextAction":"Make the issue 57 truth-repair pull request pass every required check, obtain owner review and merge authority, then record the exact post-merge CI result.","waitCondition":"The default branch remains red at workflow 33474288066 until a separately reviewed repair is merged; this work has no merge authority.","reentryCondition":"Close only after the canonical ledger, generated state, public status documents, and exact post-merge checks agree.","dependencies":[],"evidenceIds":["E-004","E-006","E-012"]
     },
     {
       "id":"MKT-001","title":"Remove reviewer-facing preview and submission contradictions","stream":"marketplace","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
@@ -38,8 +38,8 @@
       "nextAction":"Choose public support/privacy aliases, record a legitimate service address, complete the ICO fee self-assessment, and record offered territories.","waitCondition":"Requires real publisher decisions; private contact data must not be invented or copied into the repository.","reentryCondition":"Resume when those decisions are available.","dependencies":["GOV-001"],"evidenceIds":["E-004"]
     },
     {
-      "id":"GOV-002","title":"Synchronize Proof & State governance records","stream":"governance","status":"complete","owner":"Proof & State maintainers","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
-      "nextAction":"Keep portfolio state pinned to exact product-ledger subjects and update both ledgers with later external transitions.","waitCondition":"None.","reentryCondition":"Reopen if Proof & State drifts from exact DoneState source, CI, deployment, runtime, review, or verification state.","dependencies":["GOV-001","MKT-001","MKT-002","MKT-003","OPS-001"],"evidenceIds":["E-001","E-004","E-008"]
+      "id":"GOV-002","title":"Synchronize Proof & State governance records","stream":"governance","status":"active","owner":"Proof & State maintainers","lastUpdated":"2026-09-01","staleDate":"2026-09-08",
+      "nextAction":"Use AyobamiH/proof-and-state#14 to record Proof & State merge 2ad721357993a92dfc4d26b2b3ea4a9239ab95d6, the final publishing-disabled canary, and DoneState main 4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a with its red post-merge governance state.","waitCondition":"The Proof & State portfolio ledger still pins stale product and deployment subjects; a local or PR-only repair is not portfolio closure.","reentryCondition":"Close only after the exact Proof & State repair merge and post-merge governance run are recorded in both ledgers.","dependencies":["GOV-001","MKT-001","MKT-002","MKT-003","OPS-001"],"evidenceIds":["E-001","E-004","E-008","E-012"]
     },
     {
       "id":"MKT-004","title":"Create a separate Marketplace development app and listing","stream":"marketplace","status":"active","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-12",
@@ -62,20 +62,20 @@
       "nextAction":"Measure non-founder activation, run started, PR opened, verifier decision, repeat use, support load, and conversion without unnecessary personal data.","waitCondition":"Account and deletion semantics must be stable.","reentryCondition":"Begin before the first external-customer cohort.","dependencies":["CUST-001","CUST-002"],"evidenceIds":[]
     },
     {
-      "id":"VERIFY-001","title":"Resolve OpsTruth exact-head verification defect","stream":"verification","status":"blocked","owner":"OpsTruth maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-07",
-      "nextAction":"Correct and test AyobamiH/opstruth#12.","waitCondition":"Requires a verified OpsTruth change; DoneState cannot weaken or replace the independent decision.","reentryCondition":"Resume when the fix has exact public CI evidence.","dependencies":[],"evidenceIds":["E-003"]
+      "id":"VERIFY-001","title":"Restore the OpsTruth authenticated exact-head verification lane","stream":"verification","status":"blocked","owner":"OpsTruth maintainers","lastUpdated":"2026-09-01","staleDate":"2026-09-08",
+      "nextAction":"Implement and validate the least-privilege authenticated GitHub read lane tracked in AyobamiH/opstruth-chatgpt-plugin#11.","waitCondition":"The latest retry failed closed on GitHub's anonymous rate limit; DoneState cannot weaken or replace the independent decision.","reentryCondition":"Resume when the authenticated verifier lane has exact public source, CI, deployment, and runtime evidence.","dependencies":[],"evidenceIds":["E-003","E-012"]
     },
     {
-      "id":"VERIFY-002","title":"Independently decide the open maintenance canary","stream":"verification","status":"blocked","owner":"OpsTruth maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-08",
-      "nextAction":"Re-evaluate DoneState PR 22 at ffec48e6c5abd9cef840ab591896613769d3e779 after VERIFY-001.","waitCondition":"Blocked on VERIFY-001; the run remains AWAITING_VERIFICATION.","reentryCondition":"Resume after the verifier fix.","dependencies":["VERIFY-001"],"evidenceIds":["E-003"]
+      "id":"VERIFY-002","title":"Independently decide the maintenance canary","stream":"verification","status":"blocked","owner":"OpsTruth maintainers","lastUpdated":"2026-09-01","staleDate":"2026-09-09",
+      "nextAction":"After VERIFY-001, re-evaluate run b4242932-0bc1-4876-a202-634d9c12d72a against PR 22 head ffec48e6c5abd9cef840ab591896613769d3e779 and record the exact signed result.","waitCondition":"PR 22 was later owner-merged as 4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a, but the run remains AWAITING_VERIFICATION and the merge is not verifier evidence.","reentryCondition":"Resume after the authenticated verifier read lane is proven.","dependencies":["VERIFY-001"],"evidenceIds":["E-003","E-012"]
     },
     {
       "id":"VERIFY-003","title":"Validate the exact installable plugin archive","stream":"verification","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-12",
       "nextAction":"Build the exact archive, validate manifests and skills, scan secrets, and record digest plus CI.","waitCondition":"Repository validation alone is not archive validation.","reentryCondition":"Begin after R1.","dependencies":["MKT-001","MKT-002","MKT-003"],"evidenceIds":[]
     },
     {
-      "id":"VERIFY-004","title":"Prove synthetic and live DoneState-to-OpsTruth loops","stream":"verification","status":"blocked","owner":"DoneState and OpsTruth maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-15",
-      "nextAction":"Run shared vectors and one live bounded execution through handoff, independent attestation, and accepted decision.","waitCondition":"Blocked on VERIFY-001 and VERIFY-002; static code and historical evidence are insufficient.","reentryCondition":"Resume after a sound maintenance-canary decision.","dependencies":["VERIFY-001","VERIFY-002","VERIFY-003"],"evidenceIds":["E-002","E-003"]
+      "id":"VERIFY-004","title":"Prove synthetic and live DoneState-to-OpsTruth loops","stream":"verification","status":"blocked","owner":"DoneState and OpsTruth maintainers","lastUpdated":"2026-09-01","staleDate":"2026-09-15",
+      "nextAction":"Run shared vectors and one live bounded execution through handoff, independent attestation, and accepted decision.","waitCondition":"Blocked on VERIFY-001 and VERIFY-002; a repository merge, static code, and historical evidence are insufficient.","reentryCondition":"Resume after a sound maintenance-canary decision.","dependencies":["VERIFY-001","VERIFY-002","VERIFY-003"],"evidenceIds":["E-002","E-003","E-012"]
     },
     {
       "id":"AGENTPROOF-001","title":"Complete AgentProof consequence-receipt integration","stream":"verification","status":"planned","owner":"DoneState and AgentProof maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-25",
@@ -154,9 +154,9 @@
       "outcome":"The older public-repository path has one complete canary.","content":"OAuth, encrypted user-funded key, isolated execution, exact-head publication, reconciliation, and OpsTruth v2 attestation.","measurement":"One historical run reached VERIFIED; it does not prove the current maintenance path."
     },
     {
-      "id":"E-003","date":"2026-08-30","identity":"Maintenance canary b4242932-0bc1-4876-a202-634d9c12d72a","situation":"The private selected-repository App opened DoneState PR 22 at ffec48e6c5abd9cef840ab591896613769d3e779.","verification":"Workflow 33260424569 passed all three required jobs; signed uncertain decisions were returned and AyobamiH/opstruth#12 tracks the defect.",
-      "accountability":{"owner":"OpsTruth maintainers","status":"blocked","nextAction":"Fix issue 12 and independently re-evaluate the exact head.","waitCondition":"A corrected verifier path with exact CI evidence.","staleDate":"2026-09-08"},
-      "outcome":"PR 22 remains open and the run remains AWAITING_VERIFICATION.","content":"One-file PR-only patch, exact-head evidence, and signed uncertain attestations.","measurement":"Three checks passed; zero sound terminal decisions accepted."
+      "id":"E-003","date":"2026-09-01","identity":"Maintenance canary b4242932-0bc1-4876-a202-634d9c12d72a","situation":"The private selected-repository App opened DoneState PR 22 at ffec48e6c5abd9cef840ab591896613769d3e779 under a one-file PR-only authority envelope that prohibited DoneState from merging it. The owner later merged the pull request as 4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a; that separate owner action did not retroactively widen the canary authority.","verification":"PR workflow 33260424569 passed all three required jobs. Earlier OpsTruth attempts returned signed uncertain decisions, and the latest retry failed closed on GitHub's anonymous rate limit. AyobamiH/opstruth-chatgpt-plugin#11 tracks the authenticated read-lane blocker. No publicly evidenced signed terminal decision has been accepted.",
+      "accountability":{"owner":"OpsTruth maintainers","status":"blocked","nextAction":"Prove the issue 11 authenticated read lane and independently re-evaluate the exact canary head.","waitCondition":"A least-privilege verifier path with exact source, CI, deployment, runtime, and signed-result evidence.","staleDate":"2026-09-09"},
+      "outcome":"PR 22 is owner-merged, while the canary run remains AWAITING_VERIFICATION.","content":"Historical one-file PR-only authorization, exact PR head and checks, separate owner merge, failed-closed retry, and an explicit independent-verification blocker.","measurement":"Three PR-head checks passed; one owner merge occurred; zero sound terminal verifier decisions were accepted."
     },
     {
       "id":"E-004","date":"2026-08-30","identity":"Cross-documentation drift audit","situation":"Marketplace actions advanced faster than DoneState and Proof & State records.","verification":"Inspection found contradictory preview, pending-setup, and draft-not-submitted claims after GitHub accepted the review request.",
@@ -197,6 +197,11 @@
       "id":"E-011","date":"2026-08-30","identity":"Privacy-minimal Marketplace lifecycle response receipt","situation":"GitHub delivery IDs alone did not expose the resulting isolated entitlement, while a public diagnostics endpoint or additional evidence credential would widen the development surface.","verification":"PR 55 merged as 1d6f2144d2fd84b9f241834dabc6ba50466b7555 after PR CI 33339529661 passed all three jobs. Post-merge CI 33339639434 passed separately. Production deployment 33339639417 published version 774f0298-062f-4442-96d4-e2d52d7b1f94. Manual development run 33339800955, job 99333252695, passed 98 Worker tests, the development dry run, explicit secret targeting, deployment version b09b3849-eab3-4be4-a405-b61449e4801b, and four route assertions. GitHub cancellation redelivery 90b920c0-a4ba-11f1-852b-f37103c46ff2 returned HTTP 202 in 1.14 seconds at 2026-08-30T22:43:17Z with schema donestate.marketplace-webhook-receipt.v1, action cancelled, duplicate false, stale false, currentState CANCELLED, and currentEffectiveAt 2026-08-30T00:00:00.000Z; the response contained no account or plan identity.",
       "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Preserve the versioned privacy boundary and use the same receipt contract for the three remaining development transitions.","waitCondition":"None.","staleDate":"2026-12-01"},
       "outcome":"Signed Marketplace lifecycle ingestion now returns a deterministic non-personal evidence contract without adding a public state reader or reusing a secret.","content":"Versioned response schema, truthful duplicate semantics, current entitlement state, privacy exclusions, transition tests, separate deployment evidence, and one live cancellation receipt.","measurement":"One response contract, one privacy test, 98 passing Worker tests, two successful three-job CI runs, two successful deployments, four development route assertions, and one live HTTP 202 cancellation receipt are recorded."
+    },
+    {
+      "id":"E-012","date":"2026-09-01","identity":"Maintenance-canary merge governance incident","situation":"PR 22 changed docs/MAINTENANCE-CANARY.md without changing the canonical project ledger, and the owner merged it after the PR-only canary checks had passed.","verification":"The live default branch is 4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a. Post-merge workflow 33474288066 passed core (24) and hosted-plugin but failed core (22) at governance impact because governance/project-ledger.json was unchanged. Issue 57 tracks the truth repair.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Require the issue 57 repair to pass all PR checks, preserve owner-only merge authority, and record the exact post-merge result.","waitCondition":"Default-branch recovery is not evidenced until a reviewed repair is merged and its exact post-merge checks are observed.","staleDate":"2026-09-08"},
+      "outcome":"Repository merge state is known, default-branch governance is red, and independent verification remains unproven.","content":"Exact merge commit, failed workflow and job, historical authority boundary, corrected canonical state, and reconciled public status language.","measurement":"One owner merge, one failed post-merge workflow, one governance-impact failure, and zero accepted terminal verifier decisions are recorded."
     }
   ]
 }

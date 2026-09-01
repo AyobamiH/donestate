@@ -43,6 +43,6 @@ No application secret, private key, repository permission, installation scope, o
 
 ## Truth boundary
 
-This evidence does not rerun the already verified historical canary `631d8a08-d337-4bae-bd18-b55c31f48a8b`. It also does not upgrade the fresh maintenance canary: run `b4242932-0bc1-4876-a202-634d9c12d72a` remains `AWAITING_VERIFICATION` because the independent OpsTruth decision remains `uncertain`; PR #22 remains open and unmerged.
+This evidence does not rerun the already verified historical canary `631d8a08-d337-4bae-bd18-b55c31f48a8b`. It also does not upgrade the fresh maintenance canary: run `b4242932-0bc1-4876-a202-634d9c12d72a` remains `AWAITING_VERIFICATION`. The owner later merged PR #22 as `4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a` outside DoneState's PR-only authority, and that repository action is not independent-verification evidence. The latest OpsTruth retry failed closed on GitHub's anonymous rate limit; `AyobamiH/opstruth-chatgpt-plugin#11` tracks the authenticated read-lane blocker.
 
 OpenAI directory version 0.2.0 remains in Review. The domain cutover is deployment evidence, not OpenAI approval or publication evidence.

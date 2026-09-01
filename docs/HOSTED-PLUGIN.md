@@ -6,7 +6,7 @@ Canonical hosted endpoint: `https://donestate.proofandstate.com/mcp`
 
 The original `https://donestate-mcp.woeinvests.workers.dev/mcp` endpoint remains enabled temporarily because OpenAI directory version 0.2.0 was submitted against that immutable review transport. New configuration and documentation use the Proof & State hostname.
 
-The Worker and Container application are deployed. Public reachability, OAuth protection, authenticated GitHub OAuth, user-funded OpenAI credential setup, an end-to-end pull-request objective, and the independent OpsTruth v2 round trip have been verified. The private GitHub App is installed on only `AyobamiH/donestate`; its fresh PR-only canary remains open and `AWAITING_VERIFICATION` after OpsTruth signed `uncertain`. OpenAI directory version 0.2.0 is in `Review`.
+The Worker and Container application are deployed. Public reachability, OAuth protection, authenticated GitHub OAuth, user-funded OpenAI credential setup, an end-to-end pull-request objective, and the historical independent OpsTruth v2 round trip have been verified. The private GitHub App is installed on only `AyobamiH/donestate`. Its fresh PR-only canary PR was later owner-merged, but the canary run remains `AWAITING_VERIFICATION` because no fresh signed terminal verifier decision is publicly evidenced. OpenAI directory version 0.2.0 is in `Review`.
 
 ## What the hosted slice does
 
@@ -119,8 +119,8 @@ The following gates were used to prepare the directory submission and remain pub
 
 The private GitHub App `donestate-maintenance-ayobamih` is configured and installed with Only select repositories on only `AyobamiH/donestate`. Installation `157513439` supplies short-lived App tokens for the PR-only maintenance path. Automatic repair and scheduling are enabled with required checks `core (22)`, `core (24)`, and `hosted-plugin`.
 
-The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a` and pull request #22 at head `ffec48e6c5abd9cef840ab591896613769d3e779`. The App created the branch, commit, and PR; local validation passed; GitHub workflow `33260424569` shows all three required checks successful. The pull request remains intentionally open because the App has no merge authority.
+The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a` and pull request #22 at head `ffec48e6c5abd9cef840ab591896613769d3e779`. The App created the branch, commit, and PR; local validation passed; GitHub workflow `33260424569` shows all three required checks successful. Its authority was one-file and PR-only. The owner later merged the pull request as `4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a`; that separate action did not give the App merge authority or prove the canary.
 
-OpsTruth observed the exact head, comparison, and required job URLs but signed `uncertain`. DoneState correctly remains `AWAITING_VERIFICATION`; the verifier decision defect is tracked in `AyobamiH/opstruth#12`. Until a corrected signed decision is accepted, the owner-side canary must not be described as independently verified.
+Post-merge workflow `33474288066` passed `core (24)` and `hosted-plugin` but failed `core (22)` at governance impact because the canary document changed without the canonical ledger. Earlier OpsTruth attempts signed `uncertain`; the latest retry failed closed on GitHub's anonymous rate limit. DoneState correctly remains `AWAITING_VERIFICATION`, and `AyobamiH/opstruth-chatgpt-plugin#11` tracks the authenticated read-lane blocker. Until a fresh signed terminal decision is accepted, the owner-side canary must not be described as independently verified.
 
 DoneState still does not implement merge queues, autonomous deployment or package publication, multi-repository objectives, hardware-backed verifier-key custody, external event anchoring, or fleet SLOs. These remain gated work and must not be implied by the plugin listing.

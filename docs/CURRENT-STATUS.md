@@ -2,7 +2,7 @@
 
 The canonical recovery order, owners, wait conditions, stale dates, and Evidence Story Bank are generated from `governance/project-ledger.json` into [Project state](PROJECT-STATE.md). Any consequential code, workflow, contract, deployment, distribution, or external-state change must update that ledger in the same change.
 
-As of 2026-08-30, DoneState has a public local release, a deployed hosted service for supported public-repository paths, an owner-activated PR-only GitHub App installation, an OpenAI directory version in review, and a GitHub Marketplace listing under review. These are separate product states.
+As of 2026-09-01, DoneState has a public local release, a deployed hosted service for supported public-repository paths, an owner-activated PR-only GitHub App installation, an OpenAI directory version in review, and a GitHub Marketplace listing under review. These are separate product states.
 
 ## Public local release
 
@@ -46,11 +46,13 @@ Supporting GitHub App repairs were merged and deployed in PRs #12, #13, #14, #16
 
 The owner-side OAuth App now has `https://donestate.proofandstate.com` as its homepage and `https://donestate.proofandstate.com/callback` as an exact redirect URI. The earlier Worker callback remains registered for the in-review submission. The private GitHub App homepage and webhook now use the canonical origin, with SSL verification enabled and no change to its selected-repository scope or PR-only permissions.
 
-The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a`, App branch `donestate/b4242932-0bc1-4876-a202-634d9c12d72a`, head `ffec48e6c5abd9cef840ab591896613769d3e779`, and pull request #22. Its one-file documentation diff passed local validation and all three required checks in workflow `33260424569`. The PR remains intentionally open and unmerged.
+The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a`, App branch `donestate/b4242932-0bc1-4876-a202-634d9c12d72a`, head `ffec48e6c5abd9cef840ab591896613769d3e779`, and pull request #22. Its one-file documentation diff passed local validation and all three required checks in workflow `33260424569`. The owner later merged PR #22 as `4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a`. DoneState did not have merge authority, and the owner's separate merge did not retroactively widen the canary's PR-only envelope.
 
-OpsTruth repeatedly signed `uncertain` after observing the exact head, compare range, and all three successful job URLs. DoneState correctly remains `AWAITING_VERIFICATION`. The verifier defect is tracked in `AyobamiH/opstruth#12`; no terminal owner-side verification claim is made until a corrected independent decision is accepted.
+Post-merge workflow `33474288066` passed `core (24)` and `hosted-plugin` but failed `core (22)` at governance impact because `docs/MAINTENANCE-CANARY.md` changed without the canonical ledger. The default branch is therefore red at that exact merge. Issue #57 tracks this truth repair; a repair branch or green PR check does not by itself establish a green default branch.
 
-Canonical governance and evidence are indexed in `AyobamiH/proof-and-state`, merge commit `fff0bc449ef06aa9771ac7429b3d5a640e53f66e`.
+Earlier OpsTruth attempts signed `uncertain` after observing the exact PR head, compare range, and required job URLs. The latest retry failed closed on GitHub's anonymous rate limit. DoneState correctly remains `AWAITING_VERIFICATION`, and `AyobamiH/opstruth-chatgpt-plugin#11` tracks the least-privilege authenticated read lane required for a fresh terminal decision. A repository merge is not independent verification.
+
+Canonical portfolio governance is indexed in `AyobamiH/proof-and-state`, current merge commit `2ad721357993a92dfc4d26b2b3ea4a9239ab95d6`. Its ledger still pins stale DoneState and final-canary subjects; `AyobamiH/proof-and-state#14` tracks that reconciliation.
 
 ## OpenAI directory review
 

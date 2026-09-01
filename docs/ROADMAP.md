@@ -17,17 +17,17 @@ Milestone themes live here; the executable recovery order and every active, bloc
 - OAuth 2.1 MCP transport, durable hosted run coordination and isolated Codex execution. Deployed and canary-verified for the public-repository path.
 - Exact-head branch push and pull-request actions with durable effect probes. Deployed and canary-verified for the public-repository path.
 - First-class AgentProof repository-patch adapter.
-- GitHub App manifest setup, encrypted credentials and short-lived selected-repository installation tokens. Deployed and owner-activated for only `AyobamiH/donestate`; the PR-only maintenance canary remains `AWAITING_VERIFICATION` on the independent exact-head defect.
+- GitHub App manifest setup, encrypted credentials and short-lived selected-repository installation tokens. Deployed and owner-activated for only `AyobamiH/donestate`; the PR-only maintenance canary remains `AWAITING_VERIFICATION` until OpsTruth has an authenticated exact-head read lane.
 - Merge-queue action with exact-head preconditions.
 - Native Pi and OpenClaw session metadata adapters.
-- Automatic independent OpsTruth attestation request and pinned signer acceptance. Deployed; the maintenance-path canary is `AWAITING_VERIFICATION` on OpsTruth issue #12.
+- Automatic independent OpsTruth attestation request and pinned signer acceptance. Deployed; the maintenance-path canary is `AWAITING_VERIFICATION` on the authenticated GitHub read-lane blocker in `AyobamiH/opstruth-chatgpt-plugin#11`.
 
 ## 0.3: autonomous maintenance
 
 - Durable objective queue with deduplication and priority lanes.
 - Admission backpressure and repository leases.
 - Semantic findings, patch attempts, targeted repair and separate revalidation.
-- Selected-repository registry, signed webhooks, six-hour discovery schedule and PR-only labeled-issue repair. Deployed and activated for one selected repository; the open canary PR is intentionally unmerged and awaiting independent verification.
+- Selected-repository registry, signed webhooks, six-hour discovery schedule and PR-only labeled-issue repair. Deployed and activated for one selected repository. The owner later merged canary PR #22 outside DoneState's PR-only authority; the run still awaits independent verification.
 - Broader drift reconciliation and global priority lanes remain pending.
 
 ## 0.4: managed execution plane
