@@ -1,4 +1,6 @@
-# GitHub Marketplace technical preflight
+# Historical GitHub Marketplace technical preflight
+
+<!-- Current GitHub Marketplace evidence: E-013 -->
 
 - **Date:** 2026-08-30
 - **Candidate branch:** `codex/donestate-marketplace-app`
@@ -24,7 +26,7 @@
 | Marketplace webhook delivery | Pass. GitHub redelivery `7e964cd0-a495-11f1-9c22-dc3366715a90` reached `https://donestate.proofandstate.com/webhooks/github-marketplace` and returned HTTP 200 in 0.29 seconds. |
 | Binding operator documents | Pass. Privacy notice and hosted-service terms merged in PR #44 as `c791d70`; post-merge workflow `33326065889` passed all three required jobs. |
 | Publisher account gates | Pass. Private contact record completed, account-level publisher prerequisites satisfied, and Marketplace Developer Agreement v2.4 accepted on 30 August 2026. |
-| Marketplace review request | Submitted on 30 August 2026. GitHub acknowledged receipt and reports `Pending for publish` and `under review`. |
+| Marketplace review request | Historical receipt from 30 August 2026: GitHub acknowledged submission and reported `Pending for publish` and `under review`. |
 
 The new code contains no OAuth client secret, access token, Marketplace webhook secret, Cloudflare credential, OpenAI key, private GitHub App key, or installation token. Test-only values are explicit fixtures.
 
@@ -36,12 +38,17 @@ The new code contains no OAuth client secret, access token, Marketplace webhook 
 - The private maintenance GitHub App, installation `157513439`, repository selection, and permissions are unchanged.
 - The existing OpenAI review snapshot and legacy compatibility endpoint are unchanged.
 
+## Current provider read-back
+
+On 1 September 2026, the sudo-authenticated edit page at `https://github.com/marketplace/donestate/edit` showed `Pending for publish`, offered `Withdraw request`, and explicitly said the listing was a draft that had not been published on GitHub Marketplace. The owner preview at `https://github.com/marketplace/donestate` displayed DoneState, provider `AyobamiH`, `Add`, `Install it for free`, a `$0` `Public repositories` plan, and `1 install`. An unauthenticated exact Marketplace search returned no result. The authenticated page at `https://github.com/marketplace/manage` listed both production and development listings, which is owner inventory rather than public evidence. This strengthens the preflight's historical review receipt instead of establishing publication. The OpenAI provider portal separately still displayed DoneState version `0.2.0` as `Review`.
+
 ## Not yet verified
 
-- No GitHub Marketplace purchase lifecycle event has been sent to production; only GitHub's signed listing `ping` has been accepted.
-- GitHub has not yet approved or published the listing; `Pending for publish` is a review state only.
-- GitHub warned before submission that any existing subscriptions would be removed. The listing preview showed one install, but the downstream removal state of that install has not been independently verified.
+- At the 30 August preflight, no GitHub Marketplace purchase lifecycle event had been sent to production; only GitHub's signed listing `ping` had been accepted. The 1 September provider read-back did not re-evaluate lifecycle delivery.
+- The submission remains `SUBMITTED / IN_REVIEW`, `Pending for publish`, draft, and not published. Public availability is not established.
+- The owner preview and its displayed `1 install` do not establish current webhook delivery, entitlement state, OAuth completion, repository selection, execution, billing, retention, or a user outcome.
+- GitHub warned before submission that any existing subscriptions would be removed. The pre-submission and current owner previews each showed one install, but the snapshots do not prove a public install, continuity, or downstream state.
 
 ## Next safe step
 
-Wait for GitHub's review response at the private publisher contact email. Address any reviewer feedback through a bounded change and re-run the relevant preflight before resubmission; do not describe the listing as published until GitHub reports approval and the public Marketplace page is independently observed.
+Wait for GitHub's review decision and record an unauthenticated listing read-back before describing the submission as published or discoverable. If publication occurs, use a separately authorised clean production onboarding to collect exact downstream evidence without touching the development listing.

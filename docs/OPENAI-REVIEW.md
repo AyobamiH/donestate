@@ -58,4 +58,4 @@ Every source branch remains preserved.
 
 The already verified historical hosted canary `631d8a08-d337-4bae-bd18-b55c31f48a8b` was not rechecked.
 
-The fresh GitHub App maintenance canary remains run `b4242932-0bc1-4876-a202-634d9c12d72a`, PR #22, and `AWAITING_VERIFICATION` because the independent OpsTruth decision is still `uncertain`. PR #22 remains open and unmerged. The OpenAI review submission does not change that verification state.
+The fresh GitHub App maintenance canary remains run `b4242932-0bc1-4876-a202-634d9c12d72a`, PR #22 at head `ffec48e6c5abd9cef840ab591896613769d3e779`, and `AWAITING_VERIFICATION`. The owner later merged the PR as `4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a`, outside DoneState's PR-only authority. Earlier OpsTruth attempts were `uncertain`, and the latest retry failed closed on the anonymous GitHub rate limit; `AyobamiH/opstruth-chatgpt-plugin#11` tracks the authenticated read-lane blocker. Neither the repository merge nor the OpenAI review submission changes the canary's verification state.

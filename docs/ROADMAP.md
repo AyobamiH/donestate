@@ -1,5 +1,7 @@
 # Roadmap
 
+<!-- Current GitHub Marketplace evidence: E-013 -->
+
 Milestone themes live here; the executable recovery order and every active, blocked, planned, deferred, or complete item live in the generated [Project state](PROJECT-STATE.md). Deferred work must have a named re-entry condition there and is never silently removed.
 
 ## 0.1: durable local control plane
@@ -14,20 +16,21 @@ Milestone themes live here; the executable recovery order and every active, bloc
 ## 0.2: provider transactions
 
 - ChatGPT and Codex plugin control surface with prose-first objective skills. Deployed; directory version 0.2.0 submitted and in OpenAI Review.
+- GitHub Marketplace OAuth submission. Still `SUBMITTED / IN_REVIEW` and `Pending for publish`; the authenticated edit page says the listing is a draft and has not been published. The owner preview at `https://github.com/marketplace/donestate` displays provider `AyobamiH`, a `$0` `Public repositories` plan, and `1 install`, while an unauthenticated exact Marketplace search returns no result. Preview content and authenticated inventory do not prove public availability, webhook delivery, entitlement, OAuth completion, repository selection, execution, billing, retention, or user outcome. The separate development listing remains owner-only.
 - OAuth 2.1 MCP transport, durable hosted run coordination and isolated Codex execution. Deployed and canary-verified for the public-repository path.
 - Exact-head branch push and pull-request actions with durable effect probes. Deployed and canary-verified for the public-repository path.
 - First-class AgentProof repository-patch adapter.
-- GitHub App manifest setup, encrypted credentials and short-lived selected-repository installation tokens. Deployed and owner-activated for only `AyobamiH/donestate`; the PR-only maintenance canary remains `AWAITING_VERIFICATION` on the independent exact-head defect.
+- GitHub App manifest setup, encrypted credentials and short-lived selected-repository installation tokens. Deployed and owner-activated for only `AyobamiH/donestate`; the PR-only maintenance canary remains `AWAITING_VERIFICATION` until OpsTruth has an authenticated exact-head read lane.
 - Merge-queue action with exact-head preconditions.
 - Native Pi and OpenClaw session metadata adapters.
-- Automatic independent OpsTruth attestation request and pinned signer acceptance. Deployed; the maintenance-path canary is `AWAITING_VERIFICATION` on OpsTruth issue #12.
+- Automatic independent OpsTruth attestation request and pinned signer acceptance. Deployed; the maintenance-path canary is `AWAITING_VERIFICATION` on the authenticated GitHub read-lane blocker in `AyobamiH/opstruth-chatgpt-plugin#11`.
 
 ## 0.3: autonomous maintenance
 
 - Durable objective queue with deduplication and priority lanes.
 - Admission backpressure and repository leases.
 - Semantic findings, patch attempts, targeted repair and separate revalidation.
-- Selected-repository registry, signed webhooks, six-hour discovery schedule and PR-only labeled-issue repair. Deployed and activated for one selected repository; the open canary PR is intentionally unmerged and awaiting independent verification.
+- Selected-repository registry, signed webhooks, six-hour discovery schedule and PR-only labeled-issue repair. Deployed and activated for one selected repository. The owner later merged canary PR #22 outside DoneState's PR-only authority; the run still awaits independent verification.
 - Broader drift reconciliation and global priority lanes remain pending.
 
 ## 0.4: managed execution plane

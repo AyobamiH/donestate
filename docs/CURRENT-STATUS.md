@@ -1,8 +1,10 @@
 # Current status
 
+<!-- Current GitHub Marketplace evidence: E-013 -->
+
 The canonical recovery order, owners, wait conditions, stale dates, and Evidence Story Bank are generated from `governance/project-ledger.json` into [Project state](PROJECT-STATE.md). Any consequential code, workflow, contract, deployment, distribution, or external-state change must update that ledger in the same change.
 
-As of 2026-08-30, DoneState has a public local release, a deployed hosted service for supported public-repository paths, an owner-activated PR-only GitHub App installation, an OpenAI directory version in review, and a GitHub Marketplace listing under review. These are separate product states.
+As of 2026-09-01, DoneState has a public local release, a deployed hosted service for supported public-repository paths, an owner-activated PR-only GitHub App installation, an OpenAI directory version in Review, and a GitHub Marketplace submission that remains `Pending for publish`. These are separate product states.
 
 ## Public local release
 
@@ -46,11 +48,13 @@ Supporting GitHub App repairs were merged and deployed in PRs #12, #13, #14, #16
 
 The owner-side OAuth App now has `https://donestate.proofandstate.com` as its homepage and `https://donestate.proofandstate.com/callback` as an exact redirect URI. The earlier Worker callback remains registered for the in-review submission. The private GitHub App homepage and webhook now use the canonical origin, with SSL verification enabled and no change to its selected-repository scope or PR-only permissions.
 
-The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a`, App branch `donestate/b4242932-0bc1-4876-a202-634d9c12d72a`, head `ffec48e6c5abd9cef840ab591896613769d3e779`, and pull request #22. Its one-file documentation diff passed local validation and all three required checks in workflow `33260424569`. The PR remains intentionally open and unmerged.
+The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a`, App branch `donestate/b4242932-0bc1-4876-a202-634d9c12d72a`, head `ffec48e6c5abd9cef840ab591896613769d3e779`, and pull request #22. Its one-file documentation diff passed local validation and all three required checks in workflow `33260424569`. The owner later merged PR #22 as `4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a`. DoneState did not have merge authority, and the owner's separate merge did not retroactively widen the canary's PR-only envelope.
 
-OpsTruth repeatedly signed `uncertain` after observing the exact head, compare range, and all three successful job URLs. DoneState correctly remains `AWAITING_VERIFICATION`. The verifier defect is tracked in `AyobamiH/opstruth#12`; no terminal owner-side verification claim is made until a corrected independent decision is accepted.
+Post-merge workflow `33474288066` passed `core (24)` and `hosted-plugin` but failed `core (22)` at governance impact because `docs/MAINTENANCE-CANARY.md` changed without the canonical ledger. The default branch is therefore red at that exact merge. Issue #57 tracks this truth repair; a repair branch or green PR check does not by itself establish a green default branch.
 
-Canonical governance and evidence are indexed in `AyobamiH/proof-and-state`, merge commit `fff0bc449ef06aa9771ac7429b3d5a640e53f66e`.
+Earlier OpsTruth attempts signed `uncertain` after observing the exact PR head, compare range, and required job URLs. The latest retry failed closed on GitHub's anonymous rate limit. DoneState correctly remains `AWAITING_VERIFICATION`, and `AyobamiH/opstruth-chatgpt-plugin#11` tracks the least-privilege authenticated read lane required for a fresh terminal decision. A repository merge is not independent verification.
+
+Canonical portfolio governance is indexed in `AyobamiH/proof-and-state`, current merge commit `2ad721357993a92dfc4d26b2b3ea4a9239ab95d6`. Its ledger still pins stale DoneState and final-canary subjects; `AyobamiH/proof-and-state#14` tracks that reconciliation.
 
 ## OpenAI directory review
 
@@ -67,7 +71,7 @@ Submission begins OpenAI's external review. It does not mean the plugin is appro
 
 ## GitHub Marketplace review
 
-The GitHub Marketplace listing under review is attached to OAuth App `3822030`, not to the private maintenance GitHub App. This preserves installation `157513439` as **Only select repositories** on only `AyobamiH/donestate` while exposing the existing public-repository OAuth product separately.
+The GitHub Marketplace submission is attached to OAuth App `3822030`, not to the private maintenance GitHub App. This preserves installation `157513439` as **Only select repositories** on only `AyobamiH/donestate` while keeping the public-repository OAuth candidate separate.
 
 The candidate implements one-time `read:user` purchase onboarding, active-plan verification, a dedicated signed and idempotent Marketplace lifecycle webhook, and a minimal entitlement record that grants no repository or execution authority. Listing copy, a 512×512 icon, a 965×482 feature card, three 1280×720 screenshots, and the 52-second demo video are indexed in [GitHub Marketplace listing](GITHUB-MARKETPLACE.md). The refreshed media uses `donestate.proofandstate.com/mcp` rather than the legacy Worker hostname.
 
@@ -81,7 +85,7 @@ The incident and support process is published in [Incident response](INCIDENT-RE
 
 The operator's binding privacy notice and hosted-service terms were merged in PR #44 as `c791d70`; post-merge workflow `33326065889` passed all three required jobs. The private publisher contact record is complete, GitHub's account-level publisher prerequisites are satisfied, and the owner accepted GitHub Marketplace Developer Agreement v2.4 on 30 August 2026.
 
-The owner submitted the listing to GitHub for review on 30 August 2026. GitHub acknowledged the submission and now reports **Pending for publish** and **under review**. This is a review state only: the listing is not yet approved or published. GitHub will send review updates to the private publisher contact email; its value is intentionally not recorded in the repository.
+The 30 August submission and review acknowledgement remains historical evidence under `E-001`. A stronger provider read-back on 1 September 2026 confirmed the same current state: the sudo-authenticated edit page at `https://github.com/marketplace/donestate/edit` showed `Pending for publish`, offered `Withdraw request`, and explicitly said the listing was a draft that had not been published on GitHub Marketplace. The owner-authenticated preview at `https://github.com/marketplace/donestate` displayed provider `AyobamiH`, `Add`, `Install it for free`, a `$0` `Public repositories` plan, and `1 install`. An unauthenticated exact Marketplace search returned no result. The authenticated management page listed both production and development listings, but that is owner inventory rather than public evidence. The preview and inventory do not establish public availability, webhook delivery, entitlement state, OAuth completion, repository selection, execution, billing, retention, or a user outcome. The OpenAI provider portal separately still reports DoneState version `0.2.0` as `Review`.
 
 ## Not implemented
 

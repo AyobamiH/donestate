@@ -1,5 +1,7 @@
 # GitHub Marketplace development boundary
 
+<!-- Current GitHub Marketplace evidence: E-013 -->
+
 GitHub recommends a separate development app and owner-only draft listing for Marketplace testing. A listing can be associated with only one app registration, and test purchases must not be made against the live production listing.
 
 ## Separation contract
@@ -7,14 +9,14 @@ GitHub recommends a separate development app and owner-only draft listing for Ma
 | Surface | Production | Marketplace development |
 |---|---|---|
 | OAuth app | Existing DoneState OAuth App `3822030` | Separate `DoneState Marketplace Development` OAuth App |
-| Listing | `DoneState`, submitted for GitHub review | Separate owner-only draft; never submit for publication |
+| Listing | `DoneState` submission is `Pending for publish`; owner preview at `https://github.com/marketplace/donestate` | Separate owner-only draft; never submit for publication |
 | Runtime | `https://donestate.proofandstate.com` | `https://donestate-mcp-development.woeinvests.workers.dev` |
 | Worker | `donestate-mcp` | `donestate-mcp-development` |
 | Entitlements | Production `MaintenanceRegistry` Durable Object | Separate development `MaintenanceRegistry` namespace |
 | OAuth state | Production `OAUTH_KV` namespace | Separately provisioned development `OAUTH_KV` namespace |
 | OAuth credentials | Production repository secrets | `DONESTATE_DEV_GITHUB_CLIENT_ID` and `DONESTATE_DEV_GITHUB_CLIENT_SECRET` |
 | Webhook secret | `DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET` | `DONE_STATE_DEV_GITHUB_MARKETPLACE_WEBHOOK_SECRET` |
-| Product authority | Submitted public-repository service | No MCP, repository, credential, maintenance, scheduler, OpenAI-review, or verifier surface |
+| Product authority | Submitted public-repository candidate; not published | No MCP, repository, credential, maintenance, scheduler, OpenAI-review, or verifier surface |
 
 The development Worker accepts only:
 
@@ -48,6 +50,7 @@ The private selected-repository maintenance GitHub App is a third, independent i
 - Evidence PR [#51](https://github.com/AyobamiH/donestate/pull/51) merged as `ecf2cb753ee9ccaaa0fe63ffb301d2633978cbe3` from exact tree `c788d790f920bd8bbb568a9502587f2980039b57`; PR CI `33337319451` and post-merge CI `33337369603` passed all three required jobs.
 - Development OAuth App: `DoneState Marketplace Development`, App `3826463`.
 - Owner-only draft listing: `donestate-marketplace-development`; never submitted for publication.
+- Provider read-back on 1 September 2026 found the production edit page `Pending for publish`, with a draft and not-published notice. The owner preview displayed provider `AyobamiH`, a `$0` `Public repositories` plan, and `1 install`, but an unauthenticated exact Marketplace search returned no result. The authenticated management page listed both production and development; that inventory and the preview do not establish public availability, webhook delivery, entitlement state, OAuth completion, repository selection, execution, billing, retention, or a user outcome in either environment.
 - Zero-cost plan: `Development Test`.
 - Signed ping delivery: `13cd1ca8-a4b8-11f1-888d-aba6875c1ba2`.
 - Signed purchased delivery: `90c3e110-a4b8-11f1-8357-8b375ae56683`.
