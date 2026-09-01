@@ -1,0 +1,25 @@
+name: Export review source
+
+on:
+  push:
+    branches:
+      - repair/versioned-verification-contract-59
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out exact branch head
+        uses: actions/checkout@v4
+      - name: Create source archive
+        run: tar --exclude=.git --exclude=source.tgz -czf source.tgz .
+      - name: Upload source archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: donestate-review-source
+          path: source.tgz
+          retention-days: 1
+          if-no-files-found: error
