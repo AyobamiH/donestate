@@ -79,7 +79,7 @@ jobs:
           replace_once(
               "apps/mcp-worker/test/coordinator.test.ts",
               '''describe("RunCoordinator", () => {\n  it("persists a received run without exposing its GitHub token", async () => {\n''',
-              '''describe("RunCoordinator", () => {\n  it("rejects a new objective that omits the versioned verification contract", async () => {\n    const runId = "77777777-7777-4777-8777-777777777777";\n    const candidate = objective(runId);\n    delete candidate.verificationContractVersion;\n    const stub = env.RUN_COORDINATOR.getByName(runId);\n    await expect(stub.create(candidate, "github-test-token"))\n      .rejects.toThrow("new hosted objectives require the versioned verification response contract");\n  });\n\n  it("persists a received run without exposing its GitHub token", async () => {\n''',
+              '''describe("RunCoordinator", () => {\n  it("rejects a new objective that omits the versioned verification contract", async () => {\n    const runId = "77777777-7777-4777-8777-777777777777";\n    const candidate = objective(runId);\n    delete candidate.verificationContractVersion;\n    const stub = env.RUN_COORDINATOR.getByName(runId);\n    await runInDurableObject(stub, async (instance: RunCoordinator) => {\n      let rejection = "";\n      try {\n        await instance.create(candidate, "github-test-token");\n      } catch (error) {\n        rejection = error instanceof Error ? error.message : String(error);\n      }\n      expect(rejection).toContain("new hosted objectives require the versioned verification response contract");\n    });\n  });\n\n  it("persists a received run without exposing its GitHub token", async () => {\n''',
           )
           replace_once(
               "apps/mcp-worker/test/coordinator.test.ts",
@@ -148,7 +148,6 @@ jobs:
           doc.write_text(text.replace(old, new, 1))
           PY
 
-          rm -f .github/workflows/finalize-verifier-contract.yml
           git diff --check
 
       - name: Install and validate root
