@@ -1,0 +1,108 @@
+name: Materialize verified run branch retirement r2
+
+on:
+  push:
+    branches:
+      - repair/verified-run-branch-retirement-r2
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: repair/verified-run-branch-retirement-r2
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Reuse the already-gated lifecycle source without stale ledger state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin repair/verified-run-branch-retirement
+          for path in \
+            apps/mcp-worker/src/github.ts \
+            apps/mcp-worker/src/maintenance-registry.ts \
+            apps/mcp-worker/test/maintenance-registry.test.ts \
+            docs/HOSTED-PLUGIN.md
+          do
+            git show "origin/repair/verified-run-branch-retirement:$path" > "$path"
+          done
+      - name: Add current-main governance closure as E-021
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          path = Path('governance/project-ledger.json')
+          text = path.read_text()
+
+          old_r0 = '{"id":"R0","title":"Restore self-documenting governance","workItemIds":["GOV-001","GOV-003"],"exitCriterion":"The ledger, generated state, PR template, change-impact gate, stale-state check, and reviewable main-governance design are merged and green; ruleset activation remains a separately evidenced owner action."}'
+          new_r0 = '{"id":"R0","title":"Restore self-documenting governance","workItemIds":["GOV-001","GOV-003","GOV-004"],"exitCriterion":"The ledger, generated state, PR template, change-impact gate, stale-state check, reviewable main-governance design, and bounded branch-retirement lifecycle are merged and green; provider ruleset and ordinary merged-branch auto-deletion remain separately evidenced owner settings."}'
+          if old_r0 not in text:
+              raise SystemExit('R0 anchor missing')
+          text = text.replace(old_r0, new_r0, 1)
+
+          gov3_end = '''      "nextAction":"Name a second trusted human reviewer, record the qualifying review-access model, obtain explicit owner approval, activate the checked-in main-only ruleset, and record a separate authenticated provider read-back plus a test pull request.","waitCondition":"PR 58 and PR 62 are merged and exact main CI is green, but GitHub still reports main as UNPROTECTED; no second trusted human reviewer is named and no provider settings action is authorized.","reentryCondition":"Resume after the reviewer accepts review-only authority and the owner accepts the provider capability boundary; close only when an exact ruleset ID, active enforcement, effective branch rules, and a test pull request are recorded.","dependencies":["GOV-001"],"evidenceIds":["E-012","E-014"]
+    },
+          '''
+          gov4 = gov3_end + '''    {
+      "id":"GOV-004","title":"Retire completed work branches without deleting evidence","stream":"governance","status":"active","owner":"DoneState maintainers","lastUpdated":"2026-09-02","staleDate":"2026-09-16",
+      "nextAction":"Merge and deploy the exact verified-run branch-retirement repair, then enable GitHub's ordinary head-branch deletion setting for DoneState and OpsTruth under repository-owner authority and record provider read-back.","waitCondition":"The branch backlog has been safely reconciled, but automatic retirement of future DoneState run branches is not deployed yet and GitHub still reports delete_branch_on_merge=false for ordinary merged branches.","reentryCondition":"Close only when exact merged VERIFIED donestate/<run-id> branches retire automatically, historical/unmerged/unverified evidence branches remain resolvable, and both repositories report ordinary post-merge branch deletion enabled.","dependencies":["GOV-001"],"evidenceIds":["E-021"]
+    },
+          '''
+          if gov3_end not in text:
+              raise SystemExit('GOV-003 boundary missing')
+          text = text.replace(gov3_end, gov4, 1)
+
+          if '"id":"E-021"' not in text:
+              story = '''    {
+      "id":"E-021","date":"2026-09-02","identity":"Branch backlog reconciled and verified-run retirement lifecycle bounded","situation":"DoneState and OpsTruth accumulated merged, superseded and diagnostic branches because both repositories reported delete_branch_on_merge=false and DoneState intentionally lacked arbitrary destructive authority. The visible branch surface made completed work look unresolved and allowed operational debris to compound.","verification":"Conservative one-shot cleanup run 33666714383 completed successfully in AyobamiH/donestate and run 33666737621 completed successfully in AyobamiH/opstruth-chatgpt-plugin. Final explicit stale-ref cleanup removed the two superseded OpsTruth precursor branches and the DoneState ref that was already identical to main. Provider read-back then showed OpsTruth with main only and DoneState with main, two explicitly preserved plugin-asset branches, seven historical donestate/<run-id> evidence branches, and one recent parallel diagnostic branch deliberately left untouched. The runtime candidate permits deletion only for an exact DoneState-owned UUID branch whose maintenance run is VERIFIED and whose merged PR repository, base ref, branch, head SHA and PR number still match; a signed PR-close webhook attempts immediate retirement and the hourly sweep reconciles event ordering.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Land and deploy the bounded retirement runtime, then have the repository owner enable ordinary delete-after-merge for both repositories and record read-back.","waitCondition":"Backlog cleanup is complete; runtime retirement and the separate repository-admin settings still require their own exact evidence.","staleDate":"2026-09-16"},
+      "outcome":"OpsTruth branch clutter fell from eighteen branches to main only; DoneState branch clutter was reduced to the intentional evidence surface plus one parallel diagnostic branch, while no historical canary or explicitly preserved asset branch was deleted.","content":"Exact cleanup workflow runs, post-cleanup branch inventories, preservation rules, and a fail-closed future branch-retirement contract.","measurement":"Two successful broad cleanup runs, one successful explicit OpsTruth stale-ref cleanup, zero open-PR branches deleted, seven DoneState run-evidence branches preserved, and zero OpsTruth non-main branches remaining at cleanup read-back."
+    }'''
+              boundary = '\n  ]\n}\n'
+              pos = text.rfind(boundary)
+              if pos < 0:
+                  raise SystemExit('ledger evidence boundary missing')
+              prior = text[:pos].rstrip()
+              if not prior.endswith('}'):
+                  raise SystemExit('ledger final evidence story missing')
+              text = prior + ',\n' + story + '\n  ]\n}\n'
+
+          json.loads(text)
+          path.write_text(text)
+          PY
+      - name: Render and validate exact current-main candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run governance:render
+          npm run check
+          (cd apps/mcp-worker && npm ci && npm run check)
+          git diff --check
+      - name: Commit only lasting lifecycle changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            apps/mcp-worker/src/github.ts \
+            apps/mcp-worker/src/maintenance-registry.ts \
+            apps/mcp-worker/test/maintenance-registry.test.ts \
+            docs/HOSTED-PLUGIN.md \
+            governance/project-ledger.json \
+            docs/PROJECT-STATE.md
+          git rm .github/workflows/materialize-verified-run-retirement-r2.yml
+          git diff --cached --check
+          git commit -m "Retire only merged verified DoneState run branches"
+          npm run governance:impact -- origin/main
+          git push origin HEAD:repair/verified-run-branch-retirement-r2
