@@ -1,0 +1,55 @@
+name: Query replacement canary observability
+
+on:
+  push:
+    branches:
+      - ops/tail-replacement-canary-68
+
+permissions:
+  contents: read
+
+jobs:
+  query:
+    if: github.event.head_commit.message == 'Query replacement canary observability'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query safe production log messages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          query_logs() {
+            local needle="$1"
+            local request="$RUNNER_TEMP/request.json"
+            local response="$RUNNER_TEMP/response.json"
+            jq -n --arg needle "$needle" '{
+              queryId: "donestate-canary-68-adhoc",
+              timeframe: {from: 1788370980000, to: 1788372000000},
+              view: "events",
+              limit: 200,
+              parameters: {
+                datasets: [],
+                filterCombination: "and",
+                filters: [{key: "$metadata.service", operation: "eq", type: "string", value: "donestate-mcp"}],
+                limit: 100,
+                needle: {value: $needle, isRegex: false, matchCase: false}
+              }
+            }' > "$request"
+            http_code=$(curl -sS -o "$response" -w '%{http_code}' \
+              -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              -H 'Content-Type: application/json' \
+              --data-binary @"$request")
+            echo "=== $needle (HTTP $http_code) ==="
+            jq '{success, errors, messages, count: .result.events.count, events: [(.result.events.events // [])[] | {
+              timestamp,
+              metadata: ((.["$metadata"] // {}) | {id, service, trigger, message, error, level, type, origin}),
+              workers: ((.["$workers"] // {}) | {eventType, outcome, entrypoint, durableObjectId, scriptVersion})
+            }]}' "$response"
+          }
+          query_logs "maintenance repair queued from issue webhook"
+          query_logs "maintenance issue webhook repair did not queue"
+          query_logs "DoneState run stopped"
+          query_logs "automatic independent verification did not complete"
