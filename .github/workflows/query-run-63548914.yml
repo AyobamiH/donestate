@@ -1,0 +1,56 @@
+name: Query run 63548914 observability
+
+on:
+  push:
+    branches:
+      - ops/diagnose-run-63548914
+
+permissions:
+  contents: read
+
+jobs:
+  query:
+    if: github.event.head_commit.message == 'Query run 63548914 observability'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query safe production execution logs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          query_logs() {
+            local needle="$1"
+            local request="$RUNNER_TEMP/request.json"
+            local response="$RUNNER_TEMP/response.json"
+            jq -n --arg needle "$needle" '{
+              queryId: "donestate-run-63548914",
+              timeframe: {from: 1788373200000, to: 1788379800000},
+              view: "events",
+              limit: 200,
+              parameters: {
+                datasets: [],
+                filterCombination: "and",
+                filters: [{key: "$metadata.service", operation: "eq", type: "string", value: "donestate-mcp"}],
+                limit: 100,
+                needle: {value: $needle, isRegex: false, matchCase: false}
+              }
+            }' > "$request"
+            http_code=$(curl -sS -o "$response" -w '%{http_code}' \
+              -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              -H 'Content-Type: application/json' \
+              --data-binary @"$request")
+            echo "=== $needle (HTTP $http_code) ==="
+            jq '{success, errors, messages, count: .result.events.count, events: [(.result.events.events // [])[] | {
+              timestamp,
+              metadata: ((.["$metadata"] // {}) | {service, message, error, level, type, origin}),
+              workers: ((.["$workers"] // {}) | {eventType, outcome, entrypoint, durableObjectId, scriptVersion})
+            }]}' "$response"
+          }
+          query_logs "63548914-2b17-4534-8a1c-008ca8c20c93"
+          query_logs "DoneState run stopped"
+          query_logs "clone"
+          query_logs "retry"
+          query_logs "automatic independent verification did not complete"
