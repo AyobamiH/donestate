@@ -7,6 +7,7 @@ import { discoverMaintenanceCandidates, getBranchHead, type MaintenanceCandidate
 import {
   VERIFICATION_CONTRACT_VERSION,
   type HostedObjective,
+  type PublicRunRecord,
   MaintenanceFinding,
   MarketplaceEntitlement,
   MarketplacePurchaseAction,
@@ -79,6 +80,12 @@ interface MarketplaceWebhookReceipt {
 
 const MAX_SCHEDULED_REPOSITORIES = 20;
 const MAX_AUTOMATIC_REPAIRS_PER_SWEEP = 2;
+
+export function workflowVerificationRetryEligible(run: PublicRunRecord, repository: string, headSha: string): boolean {
+  return run.state === "AWAITING_VERIFICATION"
+    && run.objective.repository === repository
+    && run.branchHeadSha === headSha;
+}
 
 function repositoryRecord(row: RepositoryRow): SelectedRepository {
   return {
@@ -511,6 +518,37 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     return { finding: findingRecord(updated), runId };
   }
 
+  private async retryVerificationForCompletedWorkflow(ownerLogin: string, repository: string, headSha: string): Promise<void> {
+    const queued = this.ctx.storage.sql.exec<{ run_id: string }>(
+      `SELECT run_id FROM findings
+       WHERE owner_login = ? AND repository = ? AND state = 'REPAIR_QUEUED' AND run_id IS NOT NULL
+       ORDER BY updated_at DESC LIMIT 20`,
+      ownerLogin, repository,
+    ).toArray();
+    for (const row of queued) {
+      const coordinator = this.env.RUN_COORDINATOR.getByName(row.run_id);
+      try {
+        const run = await coordinator.get(ownerLogin);
+        if (!workflowVerificationRetryEligible(run, repository, headSha)) continue;
+        await coordinator.requestIndependentVerification(ownerLogin);
+        console.log(JSON.stringify({
+          message: "maintenance verification retry completed",
+          runId: row.run_id,
+          repository,
+          headSha,
+        }));
+      } catch (error) {
+        console.error(JSON.stringify({
+          message: "maintenance verification retry did not complete",
+          runId: row.run_id,
+          repository,
+          headSha,
+          error: error instanceof Error ? error.message : "unknown verification retry error",
+        }));
+      }
+    }
+  }
+
   async scheduledSweep(): Promise<{ repositories: number; findings: number; repairsQueued: number; blocked: string[] }> {
     const selected = this.ctx.storage.sql.exec<RepositoryRow>(
       "SELECT * FROM selected_repositories WHERE schedule_enabled = 1 ORDER BY updated_at LIMIT ?",
@@ -558,7 +596,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       action?: string;
       repository?: { full_name?: string };
       issue?: { number?: number; title?: string; body?: string | null; html_url?: string; labels?: Array<{ name?: string }> };
-      workflow_run?: { id?: number; conclusion?: string; name?: string; display_title?: string; html_url?: string };
+      workflow_run?: { id?: number; conclusion?: string; name?: string; display_title?: string; html_url?: string; head_sha?: string };
     };
     const repository = payload.repository?.full_name ?? null;
     const now = new Date().toISOString();
@@ -581,7 +619,16 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
         && payload.workflow_run.id && payload.workflow_run.html_url) {
         candidates.push({ source: "workflow_run", sourceId: String(payload.workflow_run.id), title: `${payload.workflow_run.name ?? "workflow"}: ${payload.workflow_run.display_title ?? "failed"}`.slice(0, 500), detail: "Failing workflow event; read-only evidence only.", url: payload.workflow_run.html_url, repairEligible: false });
       }
-      for (const owner of owners) await this.upsertCandidates(owner.owner_login, repository, candidates);
+      const completedWorkflowHead = input.eventName === "workflow_run" && payload.action === "completed"
+        && /^[a-f0-9]{40}$/.test(payload.workflow_run?.head_sha ?? "")
+        ? payload.workflow_run!.head_sha!
+        : null;
+      for (const owner of owners) {
+        await this.upsertCandidates(owner.owner_login, repository, candidates);
+        if (completedWorkflowHead) {
+          await this.retryVerificationForCompletedWorkflow(owner.owner_login, repository, completedWorkflowHead);
+        }
+      }
     }
     return { accepted: true, duplicate: false };
   }
