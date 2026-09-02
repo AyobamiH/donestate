@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, decodeChangedFiles, implementationPrompt, protectedMaintenancePath } from "../src/executor";
+import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, PUBLIC_CLONE_MAX_ATTEMPTS, decodeChangedFiles, implementationPrompt, protectedMaintenancePath, publicCloneCommand } from "../src/executor";
 import type { HostedObjective } from "../src/types";
 
 describe("hosted Codex executor contract", () => {
@@ -13,6 +13,23 @@ describe("hosted Codex executor contract", () => {
     expect(CODEX_IMPLEMENT_COMMAND).toContain("shell_environment_policy.inherit");
     expect(CODEX_IMPLEMENT_COMMAND).toContain("\"$DONESTATE_OBJECTIVE\"");
     expect(CODEX_IMPLEMENT_COMMAND).not.toMatch(/\s-\s*$/);
+  });
+
+  it("retries anonymous public clone only within one bounded read-only action", () => {
+    const objective = {
+      baseRef: "main",
+      repository: "AyobamiH/donestate",
+    } as HostedObjective;
+    const command = publicCloneCommand(objective, "/workspace/repo");
+
+    expect(PUBLIC_CLONE_MAX_ATTEMPTS).toBe(3);
+    expect(command).toContain('while [ "$attempt" -le 3 ]');
+    expect(command).toContain("rm -rf /workspace/repo");
+    expect(command).toContain("git clone --no-tags --single-branch --branch main https://github.com/AyobamiH/donestate.git /workspace/repo");
+    expect(command).toContain('sleep "$((attempt * 2))"');
+    expect(command).toContain('attempt="$((attempt + 1))"');
+    expect(command).not.toContain("x-access-token");
+    expect(command).not.toContain("GITHUB_TOKEN");
   });
 
   it("counts a complete NUL-delimited changed-file inventory without duplicates", () => {

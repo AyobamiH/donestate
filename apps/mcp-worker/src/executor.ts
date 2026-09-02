@@ -32,6 +32,21 @@ export interface ExecutionResult {
 
 export const CODEX_IMPLEMENT_COMMAND = "codex --ask-for-approval never --config 'shell_environment_policy.inherit=\"core\"' exec --json --sandbox workspace-write --ephemeral --ignore-user-config \"$DONESTATE_OBJECTIVE\"";
 export const CHANGED_FILES_COMMAND = "{ git diff --name-only -z HEAD; git ls-files --others --exclude-standard -z; } | base64 -w0";
+export const PUBLIC_CLONE_MAX_ATTEMPTS = 3;
+
+export function publicCloneCommand(objective: Pick<HostedObjective, "baseRef" | "repository">, repositoryPath: string): string {
+  const clone = `git clone --no-tags --single-branch --branch ${objective.baseRef} https://github.com/${objective.repository}.git ${repositoryPath}`;
+  return [
+    "attempt=1",
+    `while [ "$attempt" -le ${PUBLIC_CLONE_MAX_ATTEMPTS} ]; do`,
+    `  rm -rf ${repositoryPath}`,
+    `  if ${clone}; then exit 0; fi`,
+    `  if [ "$attempt" -eq ${PUBLIC_CLONE_MAX_ATTEMPTS} ]; then exit 1; fi`,
+    '  sleep "$((attempt * 2))"',
+    '  attempt="$((attempt + 1))"',
+    "done",
+  ].join("\n");
+}
 export const MAINTENANCE_PROTECTED_PATHS = [
   "AGENTS.md",
   "SECURITY.md",
@@ -272,7 +287,7 @@ export async function executeObjective(
       objective,
       "clone",
       "local_read",
-      `git clone --no-tags --single-branch --branch ${objective.baseRef} https://github.com/${objective.repository}.git ${repositoryPath}`,
+      publicCloneCommand(objective, repositoryPath),
       { timeout: Math.min(objective.maxDurationMs, 600_000) },
     );
     const cloned = await sandbox.exec("git rev-parse HEAD", { cwd: repositoryPath });
