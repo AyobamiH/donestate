@@ -36,13 +36,11 @@ old = '''        const result = await coordinator.requestIndependentVerification
         }));
 '''
 new = '''        await coordinator.requestIndependentVerification(ownerLogin);
-        const updated = await coordinator.get(ownerLogin);
         console.log(JSON.stringify({
           message: "maintenance verification retry completed",
           runId: row.run_id,
           repository,
           headSha,
-          state: updated.state,
         }));
 '''
 if old not in registry:
