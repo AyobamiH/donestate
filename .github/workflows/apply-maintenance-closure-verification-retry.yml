@@ -21,7 +21,9 @@ jobs:
         with:
           node-version: 24
       - name: Apply bounded runtime repair
-        run: python .github/apply-maintenance-closure-verification-retry.py
+        run: |
+          python .github/apply-maintenance-closure-verification-retry.py
+          python .github/fix-maintenance-repair-types.py
       - name: Validate root and governance closure
         run: |
           npm ci
