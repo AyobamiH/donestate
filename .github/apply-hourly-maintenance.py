@@ -1,0 +1,68 @@
+from pathlib import Path
+import json
+
+wrangler = Path('apps/mcp-worker/wrangler.jsonc')
+text = wrangler.read_text()
+old = '"crons": ["0 */6 * * *"]'
+new = '"crons": ["0 * * * *"]'
+if old in text:
+    text = text.replace(old, new, 1)
+elif new not in text:
+    raise SystemExit('expected maintenance cron not found')
+wrangler.write_text(text)
+
+ledger_path = Path('governance/project-ledger.json')
+ledger_text = ledger_path.read_text()
+ledger_text = ledger_text.replace('"updatedAt": "2026-09-01"', '"updatedAt": "2026-09-02"', 1)
+
+
+def update_item(source, item_id, replacements):
+    marker = f'"id":"{item_id}"'
+    start = source.index(marker)
+    end = source.index('\n    },', start)
+    block = source[start:end]
+    for old_value, new_value in replacements:
+        if old_value in block:
+            block = block.replace(old_value, new_value, 1)
+        elif new_value not in block:
+            raise SystemExit(f'{item_id}: expected text missing: {old_value}')
+    return source[:start] + block + source[end:]
+
+
+ledger_text = update_item(ledger_text, 'VERIFY-001', [
+    ('"status":"blocked"', '"status":"complete"'),
+    ('"lastUpdated":"2026-09-01"', '"lastUpdated":"2026-09-02"'),
+    ('"nextAction":"Implement and validate the least-privilege authenticated GitHub read lane tracked in AyobamiH/opstruth-chatgpt-plugin#11."', '"nextAction":"Preserve the deployed verifier-owned GitHub App read lane and reopen if authenticated exact-head verification regresses."'),
+    ('"waitCondition":"The latest retry failed closed on GitHub\'s anonymous rate limit; DoneState cannot weaken or replace the independent decision."', '"waitCondition":"None."'),
+    ('"reentryCondition":"Resume when the authenticated verifier lane has exact public source, CI, deployment, and runtime evidence."', '"reentryCondition":"Reopen if production health or a fresh canary shows the authenticated exact-head read lane is unavailable, over-broad, or no longer fail-closed."'),
+    ('"evidenceIds":["E-003","E-012"]', '"evidenceIds":["E-003","E-012","E-016"]'),
+])
+
+ledger_text = update_item(ledger_text, 'VERIFY-006', [
+    ('"lastUpdated":"2026-09-01"', '"lastUpdated":"2026-09-02"'),
+    ('"nextAction":"Review DoneState PR 63, require green exact-head CI, implement the matching OpsTruth response-envelope half against the shared vectors, then merge and deploy each side only under its separate owner authority before running a fresh canary."', '"nextAction":"Run fresh DoneState issue 64 through the complete deployed v2 response contract and record the exact terminal read-back without rewriting historical outcomes."'),
+    ('"waitCondition":"DoneState has a review candidate but neither that candidate nor an OpsTruth counterpart is merged or deployed, so live interoperability remains UNPROVEN."', '"waitCondition":"Both contract halves and the authenticated OpsTruth read lane are deployed; live interoperability remains UNPROVEN until fresh issue 64 completes the exact PR-head round trip."'),
+    ('"evidenceIds":["E-015"]', '"evidenceIds":["E-015","E-016"]'),
+])
+
+ledger_text = update_item(ledger_text, 'VERIFY-004', [
+    ('"lastUpdated":"2026-09-01"', '"lastUpdated":"2026-09-02"'),
+    ('"nextAction":"After VERIFY-006 and the authenticated read lane are deployed, run the shared verified, failed, uncertain, and negative vectors plus one fresh bounded live execution through the complete response contract."', '"nextAction":"Use hourly maintenance discovery to pick up issue 64, open its bounded PR, let exact-head CI settle, then require OpsTruth authenticated re-observation and DoneState terminal read-back."'),
+    ('"waitCondition":"Blocked on VERIFY-001, VERIFY-002, and VERIFY-006; repository code and static vectors are not live interoperability evidence."', '"waitCondition":"The authenticated verifier lane and contract are deployed, but issue 64 has not yet produced the fresh live PR and terminal verification read-back."'),
+    ('"evidenceIds":["E-002","E-003","E-012"]', '"evidenceIds":["E-002","E-003","E-012","E-016"]'),
+])
+
+if '"id":"E-016"' not in ledger_text:
+    story = '''    {
+      "id":"E-016","date":"2026-09-02","identity":"Authenticated OpsTruth production activation and hourly fresh-canary cadence","situation":"The verifier-owned GitHub App secrets were configured and OpsTruth production deployment succeeded, while fresh DoneState issue 64 was eligible for repair but the six-hour maintenance cadence delayed pickup.","verification":"OpsTruth deployment workflow 33571362136 attempt 2 succeeded on commit ad54c1081d952b133c72f32ccf8d23df0ba937b2; Cloudflare Worker version dff0a2d5-fd50-46dc-9c9a-2c0c8674ad2f passed production smoke with 21 read-only tools and selected-repository GitHub App reads. DoneState issue 64 is open with label donestate:repair and a one-file PR-only canary boundary. This change moves the production maintenance cron from every six hours to hourly without widening repair authority.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Deploy the hourly cadence, let maintenance pick up issue 64, and record the resulting PR, CI, OpsTruth response, and DoneState terminal state.","waitCondition":"Issue 64 has not yet produced a fresh canary PR and terminal verification read-back.","staleDate":"2026-09-09"},
+      "outcome":"Authenticated verifier production is proven and the maintenance discovery cadence is being shortened from six hours to one hour; end-to-end live verification remains pending issue 64.","content":"Exact OpsTruth source and deployment subjects, verifier GitHub App production smoke, bounded DoneState canary issue, hourly cron change, and unchanged PR-only authority boundary.","measurement":"One successful OpsTruth deployment attempt, one production Worker version, 115 passing OpsTruth tests, one bounded DoneState canary issue, and one cadence change from 6-hour to hourly are recorded."
+    }'''
+    closing = '\n    }\n  ]\n}\n'
+    pos = ledger_text.rfind(closing)
+    if pos < 0:
+        raise SystemExit('could not locate evidenceStories closing boundary')
+    ledger_text = ledger_text[:pos] + '\n    },\n' + story + '\n  ]\n}\n'
+
+json.loads(ledger_text)
+ledger_path.write_text(ledger_text)
