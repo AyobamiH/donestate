@@ -654,21 +654,22 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
         const selected = repositoryRecord(owner);
         for (const finding of upserted) {
           if (!webhookAutoRepairEligible(selected, finding)) continue;
-          this.ctx.waitUntil(this.startRepair(owner.owner_login, finding.id).then(({ runId }) => {
+          try {
+            const { runId } = await this.startRepair(owner.owner_login, finding.id);
             console.log(JSON.stringify({
               message: "maintenance repair queued from issue webhook",
               repository,
               findingId: finding.id,
               runId,
             }));
-          }).catch((error) => {
+          } catch (error) {
             console.error(JSON.stringify({
               message: "maintenance issue webhook repair did not queue",
               repository,
               findingId: finding.id,
               error: error instanceof Error ? error.message : "unknown repair dispatch error",
             }));
-          }));
+          }
         }
         if (completedWorkflowHead) {
           await this.retryVerificationForCompletedWorkflow(owner.owner_login, repository, completedWorkflowHead);

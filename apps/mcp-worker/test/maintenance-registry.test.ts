@@ -3,6 +3,18 @@ import { describe, expect, it } from "vitest";
 import { webhookAutoRepairEligible, workflowVerificationRetryEligible, type MaintenanceRegistry } from "../src/maintenance-registry";
 import type { MaintenanceFinding, PublicRunRecord, SelectedRepository } from "../src/types";
 
+async function webhookSignature(secret: string, body: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const bytes = new Uint8Array(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(body)));
+  return "sha256=" + [...bytes].map((value) => value.toString(16).padStart(2, "0")).join("");
+}
+
 describe("MaintenanceRegistry", () => {
   it("stores an observe-only repository without silently granting scheduled authority", async () => {
     const registry = env.MAINTENANCE_REGISTRY.getByName("global");
@@ -98,6 +110,73 @@ describe("MaintenanceRegistry", () => {
     expect(webhookAutoRepairEligible(selected, { ...finding, state: "REPAIR_QUEUED", runId: "run" })).toBe(false);
     expect(webhookAutoRepairEligible(selected, { ...finding, repository: "owner/another" })).toBe(false);
   });
+  it("awaits durable queue setup before accepting an eligible issue webhook", async () => {
+    const registry = env.MAINTENANCE_REGISTRY.getByName("await-webhook-dispatch");
+    const webhookSecret = "awaited-webhook-secret";
+    await registry.configureGitHubApp("AyobamiH", {
+      id: 987,
+      slug: "awaited-webhook-app",
+      name: "Awaited Webhook App",
+      htmlUrl: "https://github.com/apps/awaited-webhook-app",
+      pem: "test-private-key",
+      webhookSecret,
+    });
+
+    await runInDurableObject(registry, async (instance: MaintenanceRegistry) => {
+      const state = Reflect.get(instance as unknown as object, "ctx") as DurableObjectState;
+      const now = "2026-09-02T00:00:00.000Z";
+      state.storage.sql.exec(
+        `INSERT INTO selected_repositories (
+          owner_login, repository, default_branch, installation_id, mode, schedule_enabled, auto_repair,
+          required_checks_json, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        "operator", "owner/webhook-repository", "main", 123, "pr_only", 1, 1, JSON.stringify(["CI"]), now, now,
+      );
+
+      let releaseQueue!: () => void;
+      let signalStarted!: () => void;
+      const queueGate = new Promise<void>((resolve) => { releaseQueue = resolve; });
+      const queueStarted = new Promise<void>((resolve) => { signalStarted = resolve; });
+      const originalStartRepair = instance.startRepair.bind(instance);
+      Reflect.set(instance, "startRepair", async () => {
+        signalStarted();
+        await queueGate;
+        return { runId: "test-run-id", finding: {} as MaintenanceFinding };
+      });
+
+      try {
+        const body = JSON.stringify({
+          action: "edited",
+          repository: { full_name: "owner/webhook-repository" },
+          issue: {
+            number: 68,
+            title: "Replacement canary",
+            body: "bounded repair",
+            html_url: "https://github.com/owner/webhook-repository/issues/68",
+            labels: [{ name: "donestate:repair" }],
+          },
+        });
+        const pending = instance.ingestWebhook({
+          signature: await webhookSignature(webhookSecret, body),
+          deliveryId: "awaited-webhook-dispatch-1",
+          eventName: "issues",
+          body,
+        });
+
+        await queueStarted;
+        const beforeRelease = await Promise.race([
+          pending.then(() => "resolved" as const),
+          new Promise<"pending">((resolve) => setTimeout(() => resolve("pending"), 25)),
+        ]);
+        expect(beforeRelease).toBe("pending");
+        releaseQueue();
+        await expect(pending).resolves.toEqual({ accepted: true, duplicate: false });
+      } finally {
+        Reflect.set(instance, "startRepair", originalStartRepair);
+      }
+    });
+  });
+
   it("retries independent verification only for the awaiting run bound to the completed workflow head", () => {
     const headSha = "a".repeat(40);
     const run = {
