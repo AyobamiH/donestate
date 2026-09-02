@@ -1,7 +1,7 @@
 import { env, runInDurableObject } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
-import { workflowVerificationRetryEligible, type MaintenanceRegistry } from "../src/maintenance-registry";
-import type { PublicRunRecord } from "../src/types";
+import { webhookAutoRepairEligible, workflowVerificationRetryEligible, type MaintenanceRegistry } from "../src/maintenance-registry";
+import type { MaintenanceFinding, PublicRunRecord, SelectedRepository } from "../src/types";
 
 describe("MaintenanceRegistry", () => {
   it("stores an observe-only repository without silently granting scheduled authority", async () => {
@@ -56,6 +56,47 @@ describe("MaintenanceRegistry", () => {
     });
     expect(JSON.stringify(result)).not.toContain("private-key-material");
     expect(JSON.stringify(await registry.githubAppStatus())).not.toContain("webhook-secret-material");
+  });
+  it("dispatches issue webhooks only through the selected PR-only automatic-repair policy", () => {
+    const selected: SelectedRepository = {
+      schema: "donestate.selected-repository.v1",
+      ownerLogin: "operator",
+      repository: "owner/repository",
+      defaultBranch: "main",
+      installationId: 123,
+      mode: "pr_only",
+      scheduleEnabled: true,
+      autoRepair: true,
+      requiredCheckNames: ["CI"],
+      createdAt: "2026-09-02T00:00:00.000Z",
+      updatedAt: "2026-09-02T00:00:00.000Z",
+    };
+    const finding: MaintenanceFinding = {
+      schema: "donestate.maintenance-finding.v1",
+      id: "a".repeat(64),
+      ownerLogin: "operator",
+      repository: "owner/repository",
+      source: "github_issue",
+      sourceId: "68",
+      title: "replacement canary",
+      detail: "bounded repair",
+      url: "https://github.com/owner/repository/issues/68",
+      repairEligible: true,
+      state: "OPEN",
+      runId: null,
+      discoveredAt: "2026-09-02T00:00:00.000Z",
+      updatedAt: "2026-09-02T00:00:00.000Z",
+    };
+
+    expect(webhookAutoRepairEligible(selected, finding)).toBe(true);
+    expect(webhookAutoRepairEligible({ ...selected, mode: "observe" }, finding)).toBe(false);
+    expect(webhookAutoRepairEligible({ ...selected, scheduleEnabled: false }, finding)).toBe(false);
+    expect(webhookAutoRepairEligible({ ...selected, autoRepair: false }, finding)).toBe(false);
+    expect(webhookAutoRepairEligible({ ...selected, installationId: null }, finding)).toBe(false);
+    expect(webhookAutoRepairEligible({ ...selected, requiredCheckNames: [] }, finding)).toBe(false);
+    expect(webhookAutoRepairEligible(selected, { ...finding, repairEligible: false })).toBe(false);
+    expect(webhookAutoRepairEligible(selected, { ...finding, state: "REPAIR_QUEUED", runId: "run" })).toBe(false);
+    expect(webhookAutoRepairEligible(selected, { ...finding, repository: "owner/another" })).toBe(false);
   });
   it("retries independent verification only for the awaiting run bound to the completed workflow head", () => {
     const headSha = "a".repeat(40);

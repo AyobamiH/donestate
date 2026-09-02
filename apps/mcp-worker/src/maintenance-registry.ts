@@ -87,6 +87,18 @@ export function workflowVerificationRetryEligible(run: PublicRunRecord, reposito
     && run.branchHeadSha === headSha;
 }
 
+export function webhookAutoRepairEligible(repository: SelectedRepository, finding: MaintenanceFinding): boolean {
+  return repository.mode === "pr_only"
+    && repository.scheduleEnabled
+    && repository.autoRepair
+    && repository.installationId !== null
+    && repository.requiredCheckNames.length > 0
+    && finding.ownerLogin === repository.ownerLogin
+    && finding.repository === repository.repository
+    && finding.repairEligible
+    && finding.state === "OPEN";
+}
+
 function repositoryRecord(row: RepositoryRow): SelectedRepository {
   return {
     schema: "donestate.selected-repository.v1",
@@ -435,8 +447,9 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     return { repository, findings: await this.listFindings(login, repository) };
   }
 
-  private async upsertCandidates(login: string, repository: string, candidates: MaintenanceCandidate[]): Promise<void> {
+  private async upsertCandidates(login: string, repository: string, candidates: MaintenanceCandidate[]): Promise<MaintenanceFinding[]> {
     const now = new Date().toISOString();
+    const upserted: MaintenanceFinding[] = [];
     for (const candidate of candidates) {
       const id = await digest({ schema: "donestate.maintenance-finding-id.v1", login, repository, source: candidate.source, sourceId: candidate.sourceId });
       this.ctx.storage.sql.exec(
@@ -447,7 +460,10 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
         id, login, repository, candidate.source, candidate.sourceId, candidate.title, candidate.detail, candidate.url,
         candidate.repairEligible ? 1 : 0, now, now,
       );
+      const row = this.ctx.storage.sql.exec<FindingRow>("SELECT * FROM findings WHERE id = ?", id).one();
+      upserted.push(findingRecord(row));
     }
+    return upserted;
   }
 
   async listFindings(login: string, repository?: string): Promise<MaintenanceFinding[]> {
@@ -482,6 +498,21 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     const baseHeadSha = await getBranchHead(installation.token, selected.repository, selected.defaultBranch);
     if (!baseHeadSha) throw new Error("selected default branch does not exist");
     const runId = crypto.randomUUID();
+    const claimedAt = new Date().toISOString();
+    this.ctx.storage.sql.exec(
+      "UPDATE findings SET state = 'REPAIR_QUEUED', run_id = ?, updated_at = ? WHERE id = ? AND owner_login = ? AND state = 'OPEN' AND repair_eligible = 1",
+      runId, claimedAt, row.id, login,
+    );
+    const claimed = this.ctx.storage.sql.exec<FindingRow>(
+      "SELECT * FROM findings WHERE id = ? AND owner_login = ?",
+      row.id, login,
+    ).one();
+    if (claimed.run_id !== runId) {
+      if (claimed.state === "REPAIR_QUEUED" && claimed.run_id) {
+        return { finding: findingRecord(claimed), runId: claimed.run_id };
+      }
+      throw new Error("finding is not eligible for autonomous repair");
+    }
     const objective: HostedObjective = {
       schema: "donestate.hosted-objective.v1",
       runId,
@@ -509,11 +540,6 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     const coordinator = this.env.RUN_COORDINATOR.getByName(runId);
     await coordinator.create(objective, installation.token);
     await coordinator.start(login);
-    const now = new Date().toISOString();
-    this.ctx.storage.sql.exec(
-      "UPDATE findings SET state = 'REPAIR_QUEUED', run_id = ?, updated_at = ? WHERE id = ? AND state = 'OPEN'",
-      runId, now, row.id,
-    );
     const updated = this.ctx.storage.sql.exec<FindingRow>("SELECT * FROM findings WHERE id = ?", row.id).one();
     return { finding: findingRecord(updated), runId };
   }
@@ -624,7 +650,26 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
         ? payload.workflow_run!.head_sha!
         : null;
       for (const owner of owners) {
-        await this.upsertCandidates(owner.owner_login, repository, candidates);
+        const upserted = await this.upsertCandidates(owner.owner_login, repository, candidates);
+        const selected = repositoryRecord(owner);
+        for (const finding of upserted) {
+          if (!webhookAutoRepairEligible(selected, finding)) continue;
+          this.ctx.waitUntil(this.startRepair(owner.owner_login, finding.id).then(({ runId }) => {
+            console.log(JSON.stringify({
+              message: "maintenance repair queued from issue webhook",
+              repository,
+              findingId: finding.id,
+              runId,
+            }));
+          }).catch((error) => {
+            console.error(JSON.stringify({
+              message: "maintenance issue webhook repair did not queue",
+              repository,
+              findingId: finding.id,
+              error: error instanceof Error ? error.message : "unknown repair dispatch error",
+            }));
+          }));
+        }
         if (completedWorkflowHead) {
           await this.retryVerificationForCompletedWorkflow(owner.owner_login, repository, completedWorkflowHead);
         }
