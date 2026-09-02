@@ -1,0 +1,52 @@
+name: Apply anonymous clone retry repair
+
+on:
+  push:
+    branches:
+      - repair/retry-anonymous-public-clone
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.event.head_commit.message == 'Run anonymous clone retry repair'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Apply bounded repair
+        run: python3 .github/scripts/apply-anonymous-clone-retry.py
+      - name: Install and render governance state
+        run: |
+          npm ci
+          npm run governance:render
+      - name: Run root gates
+        run: npm run check
+      - name: Run hosted Worker gates
+        working-directory: apps/mcp-worker
+        run: |
+          npm ci
+          npm run check
+      - name: Validate and commit exact repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          git config user.name "DoneState Repair"
+          git config user.email "bot@donestate.dev"
+          git add apps/mcp-worker/src/executor.ts
+          git add apps/mcp-worker/test/executor.test.ts
+          git add governance/project-ledger.json
+          git add docs/PROJECT-STATE.md
+          git rm .github/workflows/apply-anonymous-clone-retry.yml
+          git rm .github/scripts/apply-anonymous-clone-retry.py
+          git diff --cached --check
+          git commit -m "Retry anonymous public clone before failing safe"
+          npm run governance:impact -- origin/main
+          git diff --check origin/main...HEAD
+          git push origin HEAD:repair/retry-anonymous-public-clone
