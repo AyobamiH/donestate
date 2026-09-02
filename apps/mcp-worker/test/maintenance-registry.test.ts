@@ -1,6 +1,6 @@
 import { env, runInDurableObject } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
-import { webhookAutoRepairEligible, workflowVerificationRetryEligible, type MaintenanceRegistry } from "../src/maintenance-registry";
+import { doneStateRunIdFromBranch, verifiedMergedMaintenanceBranchRetirementEligible, webhookAutoRepairEligible, workflowVerificationRetryEligible, type MaintenanceRegistry } from "../src/maintenance-registry";
 import type { MaintenanceFinding, PublicRunRecord, SelectedRepository } from "../src/types";
 
 async function webhookSignature(secret: string, body: string): Promise<string> {
@@ -188,6 +188,46 @@ describe("MaintenanceRegistry", () => {
     expect(workflowVerificationRetryEligible(run, "owner/repository", "b".repeat(40))).toBe(false);
     expect(workflowVerificationRetryEligible({ ...run, state: "VERIFIED" } as PublicRunRecord, "owner/repository", headSha)).toBe(false);
     expect(workflowVerificationRetryEligible(run, "owner/another", headSha)).toBe(false);
+  });
+
+  it("parses only DoneState-owned UUID run branches for retirement", () => {
+    expect(doneStateRunIdFromBranch("donestate/11111111-1111-4111-8111-111111111111")).toBe("11111111-1111-4111-8111-111111111111");
+    expect(doneStateRunIdFromBranch("donestate/not-a-run")).toBeNull();
+    expect(doneStateRunIdFromBranch("feature/11111111-1111-4111-8111-111111111111")).toBeNull();
+    expect(doneStateRunIdFromBranch("main")).toBeNull();
+  });
+
+  it("retires only the exact merged branch of an independently VERIFIED maintenance run", () => {
+    const runId = "11111111-1111-4111-8111-111111111111";
+    const headSha = "a".repeat(40);
+    const run = {
+      id: runId,
+      state: "VERIFIED",
+      branchName: `donestate/${runId}`,
+      branchHeadSha: headSha,
+      pullRequestNumber: 72,
+      objective: { objectiveClass: "maintenance_pr", repository: "owner/repository", baseRef: "main" },
+    } as PublicRunRecord;
+    const subject = {
+      repository: "owner/repository",
+      number: 72,
+      merged: true,
+      state: "closed" as const,
+      headRef: `donestate/${runId}`,
+      headSha,
+      headRepository: "owner/repository",
+      baseRef: "main",
+    };
+
+    expect(verifiedMergedMaintenanceBranchRetirementEligible(run, subject)).toBe(true);
+    expect(verifiedMergedMaintenanceBranchRetirementEligible({ ...run, state: "AWAITING_VERIFICATION" } as PublicRunRecord, subject)).toBe(false);
+    expect(verifiedMergedMaintenanceBranchRetirementEligible({ ...run, state: "FAILED_SAFE" } as PublicRunRecord, subject)).toBe(false);
+    expect(verifiedMergedMaintenanceBranchRetirementEligible(run, { ...subject, merged: false })).toBe(false);
+    expect(verifiedMergedMaintenanceBranchRetirementEligible(run, { ...subject, headRepository: "owner/fork" })).toBe(false);
+    expect(verifiedMergedMaintenanceBranchRetirementEligible(run, { ...subject, headSha: "b".repeat(40) })).toBe(false);
+    expect(verifiedMergedMaintenanceBranchRetirementEligible(run, { ...subject, number: 73 })).toBe(false);
+    expect(verifiedMergedMaintenanceBranchRetirementEligible(run, { ...subject, baseRef: "release" })).toBe(false);
+    expect(verifiedMergedMaintenanceBranchRetirementEligible({ ...run, objective: { ...run.objective, objectiveClass: "operator" } } as PublicRunRecord, subject)).toBe(false);
   });
 
 });

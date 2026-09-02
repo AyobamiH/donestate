@@ -3,7 +3,7 @@ import { digest } from "./canonical";
 import { sealSecret, unsealSecret } from "./crypto";
 import type { DoneStateEnv } from "./environment";
 import { createInstallationToken, repositoryInstallationId, type GitHubAppCredentials } from "./github-app";
-import { discoverMaintenanceCandidates, getBranchHead, type MaintenanceCandidate } from "./github";
+import { deleteBranchRef, discoverMaintenanceCandidates, getBranchHead, getPullRequestLifecycleSubject, type MaintenanceCandidate, type PullRequestLifecycleSubject } from "./github";
 import {
   VERIFICATION_CONTRACT_VERSION,
   type HostedObjective,
@@ -97,6 +97,28 @@ export function webhookAutoRepairEligible(repository: SelectedRepository, findin
     && finding.repository === repository.repository
     && finding.repairEligible
     && finding.state === "OPEN";
+}
+
+export function doneStateRunIdFromBranch(branch: string): string | null {
+  const match = /^donestate\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/.exec(branch);
+  return match?.[1] ?? null;
+}
+
+export function verifiedMergedMaintenanceBranchRetirementEligible(
+  run: PublicRunRecord,
+  subject: PullRequestLifecycleSubject,
+): boolean {
+  return subject.merged
+    && subject.state === "closed"
+    && subject.headRepository === subject.repository
+    && run.state === "VERIFIED"
+    && run.objective.objectiveClass === "maintenance_pr"
+    && run.objective.repository === subject.repository
+    && run.objective.baseRef === subject.baseRef
+    && run.branchName === `donestate/${run.id}`
+    && run.branchName === subject.headRef
+    && run.branchHeadSha === subject.headSha
+    && run.pullRequestNumber === subject.number;
 }
 
 function repositoryRecord(row: RepositoryRow): SelectedRepository {
@@ -575,13 +597,94 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     }
   }
 
-  async scheduledSweep(): Promise<{ repositories: number; findings: number; repairsQueued: number; blocked: string[] }> {
+  private async retireVerifiedMergedMaintenanceBranch(
+    ownerLogin: string,
+    run: PublicRunRecord,
+    subject: PullRequestLifecycleSubject,
+    installationToken?: string,
+  ): Promise<boolean> {
+    if (!verifiedMergedMaintenanceBranchRetirementEligible(run, subject)) return false;
+    const finding = this.ctx.storage.sql.exec<FindingRow>(
+      `SELECT * FROM findings
+       WHERE owner_login = ? AND repository = ? AND run_id = ? AND state = 'REPAIR_QUEUED'
+       LIMIT 1`,
+      ownerLogin, subject.repository, run.id,
+    ).toArray()[0];
+    if (!finding) return false;
+    try {
+      const selected = this.repository(ownerLogin, subject.repository);
+      if (selected.mode !== "pr_only" || !selected.installationId) return false;
+      const token = installationToken
+        ?? (await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only")).token;
+      const deletion = await deleteBranchRef(token, subject.repository, subject.headRef);
+      const now = new Date().toISOString();
+      this.ctx.storage.sql.exec(
+        `UPDATE findings SET state = 'CLOSED', updated_at = ?
+         WHERE owner_login = ? AND repository = ? AND run_id = ? AND state = 'REPAIR_QUEUED'`,
+        now, ownerLogin, subject.repository, run.id,
+      );
+      console.log(JSON.stringify({
+        message: "verified maintenance branch retired",
+        runId: run.id,
+        repository: subject.repository,
+        pullRequestNumber: subject.number,
+        branch: subject.headRef,
+        headSha: subject.headSha,
+        deletion,
+      }));
+      return true;
+    } catch (error) {
+      console.error(JSON.stringify({
+        message: "verified maintenance branch retirement did not complete",
+        runId: run.id,
+        repository: subject.repository,
+        pullRequestNumber: subject.number,
+        branch: subject.headRef,
+        error: error instanceof Error ? error.message : "unknown branch retirement error",
+      }));
+      return false;
+    }
+  }
+
+  private async retireVerifiedMergedMaintenanceBranches(ownerLogin: string, repository: string): Promise<number> {
+    const selected = this.repository(ownerLogin, repository);
+    if (selected.mode !== "pr_only" || !selected.installationId) return 0;
+    const rows = this.ctx.storage.sql.exec<{ run_id: string }>(
+      `SELECT run_id FROM findings
+       WHERE owner_login = ? AND repository = ? AND state = 'REPAIR_QUEUED' AND run_id IS NOT NULL
+       ORDER BY updated_at DESC LIMIT 20`,
+      ownerLogin, repository,
+    ).toArray();
+    if (rows.length === 0) return 0;
+    const installation = await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only");
+    let retired = 0;
+    for (const row of rows) {
+      try {
+        const coordinator = this.env.RUN_COORDINATOR.getByName(row.run_id);
+        const run = await coordinator.get(ownerLogin) as unknown as PublicRunRecord;
+        if (run.state !== "VERIFIED" || run.pullRequestNumber === null) continue;
+        const subject = await getPullRequestLifecycleSubject(installation.token, repository, run.pullRequestNumber);
+        if (await this.retireVerifiedMergedMaintenanceBranch(ownerLogin, run, subject, installation.token)) retired += 1;
+      } catch (error) {
+        console.error(JSON.stringify({
+          message: "maintenance branch retirement reconciliation did not complete",
+          runId: row.run_id,
+          repository,
+          error: error instanceof Error ? error.message : "unknown branch retirement reconciliation error",
+        }));
+      }
+    }
+    return retired;
+  }
+
+  async scheduledSweep(): Promise<{ repositories: number; findings: number; repairsQueued: number; branchesRetired: number; blocked: string[] }> {
     const selected = this.ctx.storage.sql.exec<RepositoryRow>(
       "SELECT * FROM selected_repositories WHERE schedule_enabled = 1 ORDER BY updated_at LIMIT ?",
       MAX_SCHEDULED_REPOSITORIES,
     ).toArray();
     let findings = 0;
     let repairsQueued = 0;
+    let branchesRetired = 0;
     const blocked: string[] = [];
     for (const row of selected) {
       const repository = repositoryRecord(row);
@@ -595,11 +698,12 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
             repairsQueued += 1;
           }
         }
+        branchesRetired += await this.retireVerifiedMergedMaintenanceBranches(repository.ownerLogin, repository.repository);
       } catch (error) {
         blocked.push(`${repository.repository}: ${error instanceof Error ? error.message : "unknown error"}`);
       }
     }
-    return { repositories: selected.length, findings, repairsQueued, blocked };
+    return { repositories: selected.length, findings, repairsQueued, branchesRetired, blocked };
   }
 
   async ingestWebhook(input: { signature: string; deliveryId: string; eventName: string; body: string }): Promise<{ accepted: true; duplicate: boolean }> {
@@ -623,6 +727,13 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       repository?: { full_name?: string };
       issue?: { number?: number; title?: string; body?: string | null; html_url?: string; labels?: Array<{ name?: string }> };
       workflow_run?: { id?: number; conclusion?: string; name?: string; display_title?: string; html_url?: string; head_sha?: string };
+      pull_request?: {
+        number?: number;
+        merged?: boolean;
+        state?: "open" | "closed";
+        head?: { ref?: string; sha?: string; repo?: { full_name?: string } | null };
+        base?: { ref?: string };
+      };
     };
     const repository = payload.repository?.full_name ?? null;
     const now = new Date().toISOString();
@@ -673,6 +784,37 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
         }
         if (completedWorkflowHead) {
           await this.retryVerificationForCompletedWorkflow(owner.owner_login, repository, completedWorkflowHead);
+        }
+        if (input.eventName === "pull_request" && payload.action === "closed" && payload.pull_request?.merged === true
+          && payload.pull_request.number && payload.pull_request.state === "closed"
+          && payload.pull_request.head?.ref && /^[a-f0-9]{40}$/.test(payload.pull_request.head.sha ?? "")
+          && payload.pull_request.base?.ref) {
+          const runId = doneStateRunIdFromBranch(payload.pull_request.head.ref);
+          if (runId) {
+            try {
+              const coordinator = this.env.RUN_COORDINATOR.getByName(runId);
+              const run = await coordinator.get(owner.owner_login) as unknown as PublicRunRecord;
+              const subject: PullRequestLifecycleSubject = {
+                repository,
+                number: payload.pull_request.number,
+                merged: true,
+                state: "closed",
+                headRef: payload.pull_request.head.ref,
+                headSha: payload.pull_request.head.sha!,
+                headRepository: payload.pull_request.head.repo?.full_name ?? null,
+                baseRef: payload.pull_request.base.ref,
+              };
+              await this.retireVerifiedMergedMaintenanceBranch(owner.owner_login, run, subject);
+            } catch (error) {
+              console.error(JSON.stringify({
+                message: "merged pull request branch retirement did not complete",
+                runId,
+                repository,
+                pullRequestNumber: payload.pull_request.number,
+                error: error instanceof Error ? error.message : "unknown merged pull request retirement error",
+              }));
+            }
+          }
         }
       }
     }
