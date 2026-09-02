@@ -58,7 +58,7 @@
     "OPSTRUTH_VERIFIER_FINGERPRINT": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
   },
   "triggers": {
-    "crons": ["0 */6 * * *"]
+    "crons": ["0 * * * *"]
   },
   "observability": {
     "enabled": true,
