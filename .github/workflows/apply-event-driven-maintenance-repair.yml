@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   apply:
-    if: github.event.head_commit.message == 'Apply event-driven maintenance repair'
+    if: github.event.head_commit.message == 'Retry event-driven maintenance repair'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,175 +34,216 @@ jobs:
                   raise SystemExit(f"{label}: expected one match, found {count}")
               return text.replace(old, new, 1)
 
+          def joined(*lines: str) -> str:
+              return "\n".join(lines)
+
           source_path = Path("apps/mcp-worker/src/maintenance-registry.ts")
           source = source_path.read_text()
 
-          source = replace_once(source, '''export function workflowVerificationRetryEligible(run: PublicRunRecord, repository: string, headSha: string): boolean {
-            return run.state === "AWAITING_VERIFICATION"
-              && run.objective.repository === repository
-              && run.branchHeadSha === headSha;
-          }
+          retry_helper = joined(
+              'export function workflowVerificationRetryEligible(run: PublicRunRecord, repository: string, headSha: string): boolean {',
+              '  return run.state === "AWAITING_VERIFICATION"',
+              '    && run.objective.repository === repository',
+              '    && run.branchHeadSha === headSha;',
+              '}',
+          )
+          webhook_helper = joined(
+              'export function webhookAutoRepairEligible(repository: SelectedRepository, finding: MaintenanceFinding): boolean {',
+              '  return repository.mode === "pr_only"',
+              '    && repository.scheduleEnabled',
+              '    && repository.autoRepair',
+              '    && repository.installationId !== null',
+              '    && repository.requiredCheckNames.length > 0',
+              '    && finding.ownerLogin === repository.ownerLogin',
+              '    && finding.repository === repository.repository',
+              '    && finding.repairEligible',
+              '    && finding.state === "OPEN";',
+              '}',
+          )
+          source = replace_once(source, retry_helper, retry_helper + "\n\n" + webhook_helper, "webhook eligibility helper")
 
-          function repositoryRecord(row: RepositoryRow): SelectedRepository {''', '''export function workflowVerificationRetryEligible(run: PublicRunRecord, repository: string, headSha: string): boolean {
-            return run.state === "AWAITING_VERIFICATION"
-              && run.objective.repository === repository
-              && run.branchHeadSha === headSha;
-          }
+          source = replace_once(
+              source,
+              '  private async upsertCandidates(login: string, repository: string, candidates: MaintenanceCandidate[]): Promise<void> {',
+              '  private async upsertCandidates(login: string, repository: string, candidates: MaintenanceCandidate[]): Promise<MaintenanceFinding[]> {',
+              "upsert return type",
+          )
+          source = replace_once(
+              source,
+              joined('    const now = new Date().toISOString();', '    for (const candidate of candidates) {'),
+              joined('    const now = new Date().toISOString();', '    const upserted: MaintenanceFinding[] = [];', '    for (const candidate of candidates) {'),
+              "upsert result accumulator",
+          )
+          source = replace_once(
+              source,
+              joined(
+                  '        candidate.repairEligible ? 1 : 0, now, now,',
+                  '      );',
+                  '    }',
+                  '  }',
+                  '',
+                  '  async listFindings',
+              ),
+              joined(
+                  '        candidate.repairEligible ? 1 : 0, now, now,',
+                  '      );',
+                  '      const row = this.ctx.storage.sql.exec<FindingRow>("SELECT * FROM findings WHERE id = ?", id).one();',
+                  '      upserted.push(findingRecord(row));',
+                  '    }',
+                  '    return upserted;',
+                  '  }',
+                  '',
+                  '  async listFindings',
+              ),
+              "upsert returned findings",
+          )
 
-          export function webhookAutoRepairEligible(repository: SelectedRepository, finding: MaintenanceFinding): boolean {
-            return repository.mode === "pr_only"
-              && repository.scheduleEnabled
-              && repository.autoRepair
-              && repository.installationId !== null
-              && repository.requiredCheckNames.length > 0
-              && finding.ownerLogin === repository.ownerLogin
-              && finding.repository === repository.repository
-              && finding.repairEligible
-              && finding.state === "OPEN";
-          }
+          start_anchor = joined(
+              '    const installation = await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only");',
+              '    const baseHeadSha = await getBranchHead(installation.token, selected.repository, selected.defaultBranch);',
+              '    if (!baseHeadSha) throw new Error("selected default branch does not exist");',
+              '    const runId = crypto.randomUUID();',
+              '    const objective: HostedObjective = {',
+          )
+          start_replacement = joined(
+              '    const installation = await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only");',
+              '    const baseHeadSha = await getBranchHead(installation.token, selected.repository, selected.defaultBranch);',
+              '    if (!baseHeadSha) throw new Error("selected default branch does not exist");',
+              '    const runId = crypto.randomUUID();',
+              '    const claimedAt = new Date().toISOString();',
+              '    this.ctx.storage.sql.exec(',
+              '      "UPDATE findings SET state = \'REPAIR_QUEUED\', run_id = ?, updated_at = ? WHERE id = ? AND owner_login = ? AND state = \'OPEN\' AND repair_eligible = 1",',
+              '      runId, claimedAt, row.id, login,',
+              '    );',
+              '    const claimed = this.ctx.storage.sql.exec<FindingRow>(',
+              '      "SELECT * FROM findings WHERE id = ? AND owner_login = ?",',
+              '      row.id, login,',
+              '    ).one();',
+              '    if (claimed.run_id !== runId) {',
+              '      if (claimed.state === "REPAIR_QUEUED" && claimed.run_id) {',
+              '        return { finding: findingRecord(claimed), runId: claimed.run_id };',
+              '      }',
+              '      throw new Error("finding is not eligible for autonomous repair");',
+              '    }',
+              '    const objective: HostedObjective = {',
+          )
+          source = replace_once(source, start_anchor, start_replacement, "atomic repair claim")
+          source = replace_once(
+              source,
+              joined(
+                  '    await coordinator.create(objective, installation.token);',
+                  '    await coordinator.start(login);',
+                  '    const now = new Date().toISOString();',
+                  '    this.ctx.storage.sql.exec(',
+                  '      "UPDATE findings SET state = \'REPAIR_QUEUED\', run_id = ?, updated_at = ? WHERE id = ? AND state = \'OPEN\'",',
+                  '      runId, now, row.id,',
+                  '    );',
+                  '    const updated = this.ctx.storage.sql.exec<FindingRow>("SELECT * FROM findings WHERE id = ?", row.id).one();',
+              ),
+              joined(
+                  '    await coordinator.create(objective, installation.token);',
+                  '    await coordinator.start(login);',
+                  '    const updated = this.ctx.storage.sql.exec<FindingRow>("SELECT * FROM findings WHERE id = ?", row.id).one();',
+              ),
+              "remove late repair claim",
+          )
 
-          function repositoryRecord(row: RepositoryRow): SelectedRepository {''', "webhook eligibility helper")
-
-          source = replace_once(source, '''  private async upsertCandidates(login: string, repository: string, candidates: MaintenanceCandidate[]): Promise<void> {
-            const now = new Date().toISOString();
-            for (const candidate of candidates) {''', '''  private async upsertCandidates(login: string, repository: string, candidates: MaintenanceCandidate[]): Promise<MaintenanceFinding[]> {
-            const now = new Date().toISOString();
-            const upserted: MaintenanceFinding[] = [];
-            for (const candidate of candidates) {''', "upsert return type")
-
-          source = replace_once(source, '''        candidate.repairEligible ? 1 : 0, now, now,
-              );
-            }
-          }
-
-          async listFindings''', '''        candidate.repairEligible ? 1 : 0, now, now,
-              );
-              const row = this.ctx.storage.sql.exec<FindingRow>("SELECT * FROM findings WHERE id = ?", id).one();
-              upserted.push(findingRecord(row));
-            }
-            return upserted;
-          }
-
-          async listFindings''', "upsert returned findings")
-
-          source = replace_once(source, '''    const installation = await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only");
-            const baseHeadSha = await getBranchHead(installation.token, selected.repository, selected.defaultBranch);
-            if (!baseHeadSha) throw new Error("selected default branch does not exist");
-            const runId = crypto.randomUUID();
-            const objective: HostedObjective = {''', '''    const installation = await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only");
-            const baseHeadSha = await getBranchHead(installation.token, selected.repository, selected.defaultBranch);
-            if (!baseHeadSha) throw new Error("selected default branch does not exist");
-            const runId = crypto.randomUUID();
-            const claimedAt = new Date().toISOString();
-            this.ctx.storage.sql.exec(
-              "UPDATE findings SET state = 'REPAIR_QUEUED', run_id = ?, updated_at = ? WHERE id = ? AND owner_login = ? AND state = 'OPEN' AND repair_eligible = 1",
-              runId, claimedAt, row.id, login,
-            );
-            const claimed = this.ctx.storage.sql.exec<FindingRow>(
-              "SELECT * FROM findings WHERE id = ? AND owner_login = ?",
-              row.id, login,
-            ).one();
-            if (claimed.run_id !== runId) {
-              if (claimed.state === "REPAIR_QUEUED" && claimed.run_id) {
-                return { finding: findingRecord(claimed), runId: claimed.run_id };
-              }
-              throw new Error("finding is not eligible for autonomous repair");
-            }
-            const objective: HostedObjective = {''', "claim before mutating run setup")
-
-          source = replace_once(source, '''    await coordinator.create(objective, installation.token);
-            await coordinator.start(login);
-            const now = new Date().toISOString();
-            this.ctx.storage.sql.exec(
-              "UPDATE findings SET state = 'REPAIR_QUEUED', run_id = ?, updated_at = ? WHERE id = ? AND state = 'OPEN'",
-              runId, now, row.id,
-            );
-            const updated = this.ctx.storage.sql.exec<FindingRow>("SELECT * FROM findings WHERE id = ?", row.id).one();''', '''    await coordinator.create(objective, installation.token);
-            await coordinator.start(login);
-            const updated = this.ctx.storage.sql.exec<FindingRow>("SELECT * FROM findings WHERE id = ?", row.id).one();''', "remove late repair claim")
-
-          source = replace_once(source, '''      for (const owner of owners) {
-                await this.upsertCandidates(owner.owner_login, repository, candidates);
-                if (completedWorkflowHead) {
-                  await this.retryVerificationForCompletedWorkflow(owner.owner_login, repository, completedWorkflowHead);
-                }
-              }''', '''      for (const owner of owners) {
-                const upserted = await this.upsertCandidates(owner.owner_login, repository, candidates);
-                const selected = repositoryRecord(owner);
-                for (const finding of upserted) {
-                  if (!webhookAutoRepairEligible(selected, finding)) continue;
-                  this.ctx.waitUntil(this.startRepair(owner.owner_login, finding.id).then(({ runId }) => {
-                    console.log(JSON.stringify({
-                      message: "maintenance repair queued from issue webhook",
-                      repository,
-                      findingId: finding.id,
-                      runId,
-                    }));
-                  }).catch((error) => {
-                    console.error(JSON.stringify({
-                      message: "maintenance issue webhook repair did not queue",
-                      repository,
-                      findingId: finding.id,
-                      error: error instanceof Error ? error.message : "unknown repair dispatch error",
-                    }));
-                  }));
-                }
-                if (completedWorkflowHead) {
-                  await this.retryVerificationForCompletedWorkflow(owner.owner_login, repository, completedWorkflowHead);
-                }
-              }''', "event-driven repair dispatch")
-
+          webhook_loop = joined(
+              '      for (const owner of owners) {',
+              '        await this.upsertCandidates(owner.owner_login, repository, candidates);',
+              '        if (completedWorkflowHead) {',
+              '          await this.retryVerificationForCompletedWorkflow(owner.owner_login, repository, completedWorkflowHead);',
+              '        }',
+              '      }',
+          )
+          webhook_loop_replacement = joined(
+              '      for (const owner of owners) {',
+              '        const upserted = await this.upsertCandidates(owner.owner_login, repository, candidates);',
+              '        const selected = repositoryRecord(owner);',
+              '        for (const finding of upserted) {',
+              '          if (!webhookAutoRepairEligible(selected, finding)) continue;',
+              '          this.ctx.waitUntil(this.startRepair(owner.owner_login, finding.id).then(({ runId }) => {',
+              '            console.log(JSON.stringify({',
+              '              message: "maintenance repair queued from issue webhook",',
+              '              repository,',
+              '              findingId: finding.id,',
+              '              runId,',
+              '            }));',
+              '          }).catch((error) => {',
+              '            console.error(JSON.stringify({',
+              '              message: "maintenance issue webhook repair did not queue",',
+              '              repository,',
+              '              findingId: finding.id,',
+              '              error: error instanceof Error ? error.message : "unknown repair dispatch error",',
+              '            }));',
+              '          }));',
+              '        }',
+              '        if (completedWorkflowHead) {',
+              '          await this.retryVerificationForCompletedWorkflow(owner.owner_login, repository, completedWorkflowHead);',
+              '        }',
+              '      }',
+          )
+          source = replace_once(source, webhook_loop, webhook_loop_replacement, "event-driven repair dispatch")
           source_path.write_text(source)
 
           test_path = Path("apps/mcp-worker/test/maintenance-registry.test.ts")
           test = test_path.read_text()
-          test = replace_once(test, '''import { workflowVerificationRetryEligible, type MaintenanceRegistry } from "../src/maintenance-registry";
-          import type { PublicRunRecord } from "../src/types";''', '''import { webhookAutoRepairEligible, workflowVerificationRetryEligible, type MaintenanceRegistry } from "../src/maintenance-registry";
-          import type { MaintenanceFinding, PublicRunRecord, SelectedRepository } from "../src/types";''', "test imports")
-
-          test = replace_once(test, '''  it("retries independent verification only for the awaiting run bound to the completed workflow head", () => {''', '''  it("dispatches issue webhooks only through the selected PR-only automatic-repair policy", () => {
-            const selected: SelectedRepository = {
-              schema: "donestate.selected-repository.v1",
-              ownerLogin: "operator",
-              repository: "owner/repository",
-              defaultBranch: "main",
-              installationId: 123,
-              mode: "pr_only",
-              scheduleEnabled: true,
-              autoRepair: true,
-              requiredCheckNames: ["CI"],
-              createdAt: "2026-09-02T00:00:00.000Z",
-              updatedAt: "2026-09-02T00:00:00.000Z",
-            };
-            const finding: MaintenanceFinding = {
-              schema: "donestate.maintenance-finding.v1",
-              id: "a".repeat(64),
-              ownerLogin: "operator",
-              repository: "owner/repository",
-              source: "github_issue",
-              sourceId: "68",
-              title: "replacement canary",
-              detail: "bounded repair",
-              url: "https://github.com/owner/repository/issues/68",
-              repairEligible: true,
-              state: "OPEN",
-              runId: null,
-              discoveredAt: "2026-09-02T00:00:00.000Z",
-              updatedAt: "2026-09-02T00:00:00.000Z",
-            };
-
-            expect(webhookAutoRepairEligible(selected, finding)).toBe(true);
-            expect(webhookAutoRepairEligible({ ...selected, mode: "observe" }, finding)).toBe(false);
-            expect(webhookAutoRepairEligible({ ...selected, scheduleEnabled: false }, finding)).toBe(false);
-            expect(webhookAutoRepairEligible({ ...selected, autoRepair: false }, finding)).toBe(false);
-            expect(webhookAutoRepairEligible({ ...selected, installationId: null }, finding)).toBe(false);
-            expect(webhookAutoRepairEligible({ ...selected, requiredCheckNames: [] }, finding)).toBe(false);
-            expect(webhookAutoRepairEligible(selected, { ...finding, repairEligible: false })).toBe(false);
-            expect(webhookAutoRepairEligible(selected, { ...finding, state: "REPAIR_QUEUED", runId: "run" })).toBe(false);
-            expect(webhookAutoRepairEligible(selected, { ...finding, repository: "owner/another" })).toBe(false);
-          });
-
-          it("retries independent verification only for the awaiting run bound to the completed workflow head", () => {''', "webhook policy regression")
+          test = replace_once(
+              test,
+              'import { workflowVerificationRetryEligible, type MaintenanceRegistry } from "../src/maintenance-registry";\nimport type { PublicRunRecord } from "../src/types";',
+              'import { webhookAutoRepairEligible, workflowVerificationRetryEligible, type MaintenanceRegistry } from "../src/maintenance-registry";\nimport type { MaintenanceFinding, PublicRunRecord, SelectedRepository } from "../src/types";',
+              "test imports",
+          )
+          test_case = joined(
+              '  it("dispatches issue webhooks only through the selected PR-only automatic-repair policy", () => {',
+              '    const selected: SelectedRepository = {',
+              '      schema: "donestate.selected-repository.v1",',
+              '      ownerLogin: "operator",',
+              '      repository: "owner/repository",',
+              '      defaultBranch: "main",',
+              '      installationId: 123,',
+              '      mode: "pr_only",',
+              '      scheduleEnabled: true,',
+              '      autoRepair: true,',
+              '      requiredCheckNames: ["CI"],',
+              '      createdAt: "2026-09-02T00:00:00.000Z",',
+              '      updatedAt: "2026-09-02T00:00:00.000Z",',
+              '    };',
+              '    const finding: MaintenanceFinding = {',
+              '      schema: "donestate.maintenance-finding.v1",',
+              '      id: "a".repeat(64),',
+              '      ownerLogin: "operator",',
+              '      repository: "owner/repository",',
+              '      source: "github_issue",',
+              '      sourceId: "68",',
+              '      title: "replacement canary",',
+              '      detail: "bounded repair",',
+              '      url: "https://github.com/owner/repository/issues/68",',
+              '      repairEligible: true,',
+              '      state: "OPEN",',
+              '      runId: null,',
+              '      discoveredAt: "2026-09-02T00:00:00.000Z",',
+              '      updatedAt: "2026-09-02T00:00:00.000Z",',
+              '    };',
+              '',
+              '    expect(webhookAutoRepairEligible(selected, finding)).toBe(true);',
+              '    expect(webhookAutoRepairEligible({ ...selected, mode: "observe" }, finding)).toBe(false);',
+              '    expect(webhookAutoRepairEligible({ ...selected, scheduleEnabled: false }, finding)).toBe(false);',
+              '    expect(webhookAutoRepairEligible({ ...selected, autoRepair: false }, finding)).toBe(false);',
+              '    expect(webhookAutoRepairEligible({ ...selected, installationId: null }, finding)).toBe(false);',
+              '    expect(webhookAutoRepairEligible({ ...selected, requiredCheckNames: [] }, finding)).toBe(false);',
+              '    expect(webhookAutoRepairEligible(selected, { ...finding, repairEligible: false })).toBe(false);',
+              '    expect(webhookAutoRepairEligible(selected, { ...finding, state: "REPAIR_QUEUED", runId: "run" })).toBe(false);',
+              '    expect(webhookAutoRepairEligible(selected, { ...finding, repository: "owner/another" })).toBe(false);',
+              '  });',
+              '',
+          )
+          test = replace_once(
+              test,
+              '  it("retries independent verification only for the awaiting run bound to the completed workflow head", () => {',
+              test_case + '  it("retries independent verification only for the awaiting run bound to the completed workflow head", () => {',
+              "webhook policy regression",
+          )
           test_path.write_text(test)
 
           ledger_path = Path("governance/project-ledger.json")
