@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, PUBLIC_CLONE_MAX_ATTEMPTS, decodeChangedFiles, implementationPrompt, protectedMaintenancePath, publicCloneCommand } from "../src/executor";
+import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, decodeChangedFiles, implementationPrompt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
 import type { HostedObjective } from "../src/types";
 
 describe("hosted Codex executor contract", () => {
@@ -15,7 +15,7 @@ describe("hosted Codex executor contract", () => {
     expect(CODEX_IMPLEMENT_COMMAND).not.toMatch(/\s-\s*$/);
   });
 
-  it("retries anonymous public clone only within one bounded read-only action", () => {
+  it("keeps every anonymous public clone attempt single-shot and credential-free", () => {
     const objective = {
       baseRef: "main",
       repository: "AyobamiH/donestate",
@@ -23,13 +23,34 @@ describe("hosted Codex executor contract", () => {
     const command = publicCloneCommand(objective, "/workspace/repo");
 
     expect(PUBLIC_CLONE_MAX_ATTEMPTS).toBe(3);
-    expect(command).toContain('while [ "$attempt" -le 3 ]');
-    expect(command).toContain("rm -rf /workspace/repo");
-    expect(command).toContain("git clone --no-tags --single-branch --branch main https://github.com/AyobamiH/donestate.git /workspace/repo");
-    expect(command).toContain('sleep "$((attempt * 2))"');
-    expect(command).toContain('attempt="$((attempt + 1))"');
+    expect(command).toBe("git clone --no-tags --single-branch --branch main https://github.com/AyobamiH/donestate.git /workspace/repo");
+    expect(command).not.toContain("while");
+    expect(command).not.toContain("sleep");
     expect(command).not.toContain("x-access-token");
     expect(command).not.toContain("GITHUB_TOKEN");
+  });
+
+  it("isolates bounded clone retries in fresh sandboxes with deterministic backoff", () => {
+    const runId = "63548914-2b17-4534-8a1c-008ca8c20c93";
+    expect([
+      publicCloneSandboxId(runId, 1),
+      publicCloneSandboxId(runId, 2),
+      publicCloneSandboxId(runId, 3),
+    ]).toEqual([
+      `run-${runId}-clone-1`,
+      `run-${runId}-clone-2`,
+      `run-${runId}-clone-3`,
+    ]);
+    expect(new Set([
+      publicCloneSandboxId(runId, 1),
+      publicCloneSandboxId(runId, 2),
+      publicCloneSandboxId(runId, 3),
+    ]).size).toBe(PUBLIC_CLONE_MAX_ATTEMPTS);
+    expect(PUBLIC_CLONE_RETRY_BASE_DELAY_MS).toBe(2_000);
+    expect(publicCloneRetryDelayMs(1)).toBe(2_000);
+    expect(publicCloneRetryDelayMs(2)).toBe(4_000);
+    expect(() => publicCloneRetryDelayMs(3)).toThrow("only defined before the final attempt");
+    expect(() => publicCloneSandboxId(runId, 4)).toThrow("out of range");
   });
 
   it("counts a complete NUL-delimited changed-file inventory without duplicates", () => {
