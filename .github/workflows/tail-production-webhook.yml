@@ -10,14 +10,14 @@ permissions:
 
 jobs:
   tail:
-    if: github.event.head_commit.message == 'Tail successor canary queue'
+    if: github.event.head_commit.message == 'Tail bounded clone retry canary'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Tail production Worker for 180 seconds
+      - name: Tail production Worker for 240 seconds
         working-directory: apps/mcp-worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -26,7 +26,7 @@ jobs:
         run: |
           set -uo pipefail
           status=0
-          timeout 180s npx --yes wrangler@4.127.0 tail --format json || status=$?
+          timeout 240s npx --yes wrangler@4.127.0 tail --format json || status=$?
           if [ "$status" -ne 0 ] && [ "$status" -ne 124 ]; then
             exit "$status"
           fi
