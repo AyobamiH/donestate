@@ -1,0 +1,52 @@
+name: Apply maintenance closure verification retry
+
+on:
+  push:
+    branches:
+      - repair/maintenance-closure-verification-retry
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: repair/maintenance-closure-verification-retry
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Apply bounded runtime repair
+        run: python .github/apply-maintenance-closure-verification-retry.py
+      - name: Validate root and governance closure
+        run: |
+          npm ci
+          npm run governance:render
+          npm run check
+          git diff --check
+      - name: Validate hosted Worker
+        working-directory: apps/mcp-worker
+        run: |
+          npm ci
+          npm run check
+      - name: Commit intended repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            apps/mcp-worker/src/executor.ts \
+            apps/mcp-worker/src/maintenance-registry.ts \
+            apps/mcp-worker/test/executor.test.ts \
+            apps/mcp-worker/test/maintenance-registry.test.ts \
+            governance/project-ledger.json \
+            docs/PROJECT-STATE.md
+          git diff --cached --check
+          git commit -m "Repair autonomous maintenance closure and verification retry"
+          npm run governance:impact -- origin/main
+          git push origin HEAD:repair/maintenance-closure-verification-retry
