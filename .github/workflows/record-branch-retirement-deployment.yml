@@ -1,0 +1,44 @@
+name: Record branch retirement deployment evidence
+
+on:
+  push:
+    branches:
+      - docs/record-branch-retirement-deployment-20260902
+
+permissions:
+  contents: write
+
+jobs:
+  record:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: docs/record-branch-retirement-deployment-20260902
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Update exact branch retirement evidence
+        run: python .github/record-branch-retirement-deployment.py
+      - name: Render and validate governance state
+        run: |
+          npm ci
+          npm run governance:render
+          npm run check
+          git diff --check
+      - name: Commit only lasting governance evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add governance/project-ledger.json docs/PROJECT-STATE.md
+          git rm \
+            .github/record-branch-retirement-deployment.py \
+            .github/workflows/record-branch-retirement-deployment.yml
+          git diff --cached --check
+          git commit -m "Record deployed branch retirement lifecycle"
+          npm run governance:impact -- origin/main
+          git push origin HEAD:docs/record-branch-retirement-deployment-20260902
