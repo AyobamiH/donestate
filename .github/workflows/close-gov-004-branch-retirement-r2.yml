@@ -1,0 +1,86 @@
+name: Close GOV-004 branch retirement lifecycle r2
+
+on:
+  push:
+    branches:
+      - docs/close-gov-004-branch-retirement-r2
+
+permissions:
+  contents: write
+
+jobs:
+  close:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: docs/close-gov-004-branch-retirement-r2
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Apply minimal provider read-back closure
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('governance/project-ledger.json')
+          text = path.read_text()
+
+          old_item = '''      "id":"GOV-004","title":"Retire completed work branches without deleting evidence","stream":"governance","status":"blocked","owner":"Repository owner","lastUpdated":"2026-09-02","staleDate":"2026-09-16",
+      "nextAction":"Enable GitHub Automatically delete head branches for AyobamiH/donestate and AyobamiH/opstruth-chatgpt-plugin, then record authenticated provider read-back showing delete_branch_on_merge=true for both repositories.","waitCondition":"The bounded DoneState verified-run retirement runtime is merged and deployed and the branch backlog is reconciled, but both repository APIs still report delete_branch_on_merge=false; this remaining repository-admin setting requires owner authority.","reentryCondition":"Close only when exact merged VERIFIED donestate/<run-id> branches retire automatically, historical/unmerged/unverified evidence branches remain resolvable, and both repositories report ordinary post-merge branch deletion enabled.","dependencies":["GOV-001"],"evidenceIds":["E-021"]'''
+          new_item = '''      "id":"GOV-004","title":"Retire completed work branches without deleting evidence","stream":"governance","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-09-02","staleDate":"2026-12-01",
+      "nextAction":"Preserve automatic ordinary head-branch deletion in DoneState and OpsTruth, and preserve DoneState runtime retirement only for exact merged VERIFIED maintenance-run branches.","waitCondition":"None.","reentryCondition":"Reopen if either repository reports delete_branch_on_merge=false, merged ordinary branches begin accumulating, or DoneState deletes an unverified, unmerged, foreign, historical, or otherwise ineligible evidence branch.","dependencies":["GOV-001"],"evidenceIds":["E-021"]'''
+          if old_item not in text:
+              raise SystemExit('GOV-004 anchor missing')
+          text = text.replace(old_item, new_item, 1)
+
+          old_verification_tail = 'Final branch read-back shows OpsTruth at main only; DoneState retains main, two explicitly preserved asset branches, seven historical donestate/<run-id> evidence branches, and one recent parallel diagnostic branch. Raw repository APIs still report delete_branch_on_merge=false for both repositories.'
+          new_verification_tail = 'Final branch read-back shows OpsTruth at main only; DoneState retains main, two explicitly preserved asset branches, seven historical donestate/<run-id> evidence branches, and one recent parallel diagnostic branch. Final authenticated repository-owner read-back on 2026-09-02 reports delete_branch_on_merge=true for both AyobamiH/donestate and AyobamiH/opstruth-chatgpt-plugin.'
+          if old_verification_tail not in text:
+              raise SystemExit('E-021 verification anchor missing')
+          text = text.replace(old_verification_tail, new_verification_tail, 1)
+
+          old_accountability = '      "accountability":{"owner":"Repository owner","status":"blocked","nextAction":"Enable GitHub Automatically delete head branches in both repositories and record provider read-back showing delete_branch_on_merge=true.","waitCondition":"Runtime branch retirement is live, but ordinary GitHub merged-head cleanup remains disabled in both repository settings.","staleDate":"2026-09-16"},'
+          new_accountability = '      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Preserve the bounded runtime retirement contract and GitHub ordinary post-merge deletion settings; reopen on drift.","waitCondition":"None.","staleDate":"2026-12-01"},'
+          if old_accountability not in text:
+              raise SystemExit('E-021 accountability anchor missing')
+          text = text.replace(old_accountability, new_accountability, 1)
+
+          old_outcome = '      "outcome":"DoneState now retires only its exact merged independently VERIFIED maintenance run branches, while failed, uncertain, closed-unmerged, historical and foreign evidence is preserved. OpsTruth branch clutter is reduced to main only; ordinary GitHub head-branch cleanup awaits one owner-side setting in each repository.",'
+          new_outcome = '      "outcome":"Branch backlog is reconciled, bounded DoneState VERIFIED+merged run-branch retirement is deployed, both repositories automatically delete ordinary merged head branches, and retained DoneState branches remain intentional evidence or explicitly preserved assets/diagnostics.",'
+          if old_outcome not in text:
+              raise SystemExit('E-021 outcome anchor missing')
+          text = text.replace(old_outcome, new_outcome, 1)
+
+          old_measurement = '      "measurement":"OpsTruth reduced from eighteen branches to one; DoneState reduced from dozens of branches to eleven intentional or active refs; one six-file lifecycle PR merged; 112 Worker tests passed in deployment; one Worker version was published; two repository settings remain false pending owner action."'
+          new_measurement = '      "measurement":"OpsTruth reduced from eighteen branches to one; DoneState reduced from dozens of branches to eleven intentional or active refs; one six-file lifecycle PR merged; 112 Worker tests passed in deployment; one Worker version was published; both repository APIs now report delete_branch_on_merge=true."'
+          if old_measurement not in text:
+              raise SystemExit('E-021 measurement anchor missing')
+          text = text.replace(old_measurement, new_measurement, 1)
+
+          path.write_text(text)
+          PY
+      - name: Render and validate governance state
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run governance:render
+          npm run check
+          git diff --check
+      - name: Commit only lasting governance closure
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add governance/project-ledger.json docs/PROJECT-STATE.md
+          git rm .github/workflows/close-gov-004-branch-retirement-r2.yml
+          git diff --cached --check
+          git commit -m "Close branch retirement lifecycle governance"
+          npm run governance:impact -- origin/main
+          git push origin HEAD:docs/close-gov-004-branch-retirement-r2
