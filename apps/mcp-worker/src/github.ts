@@ -113,6 +113,59 @@ export interface PullRequestResult {
   headSha: string;
 }
 
+export interface PullRequestLifecycleSubject {
+  repository: string;
+  number: number;
+  merged: boolean;
+  state: "open" | "closed";
+  headRef: string;
+  headSha: string;
+  headRepository: string | null;
+  baseRef: string;
+}
+
+export async function getPullRequestLifecycleSubject(
+  token: string,
+  repository: string,
+  pullRequestNumber: number,
+): Promise<PullRequestLifecycleSubject> {
+  const pull = await githubRequest<{
+    number: number;
+    merged: boolean;
+    state: "open" | "closed";
+    head: { ref: string; sha: string; repo: { full_name: string } | null };
+    base: { ref: string };
+  }>(token, `/repos/${repository}/pulls/${pullRequestNumber}`);
+  return {
+    repository,
+    number: pull.number,
+    merged: pull.merged === true,
+    state: pull.state,
+    headRef: pull.head.ref,
+    headSha: pull.head.sha,
+    headRepository: pull.head.repo?.full_name ?? null,
+    baseRef: pull.base.ref,
+  };
+}
+
+export async function deleteBranchRef(
+  token: string,
+  repository: string,
+  branch: string,
+): Promise<"deleted" | "already_absent"> {
+  try {
+    await githubRequest<void>(
+      token,
+      `/repos/${repository}/git/refs/heads/${encodeURIComponent(branch)}`,
+      { method: "DELETE" },
+    );
+    return "deleted";
+  } catch (error) {
+    if (error instanceof GitHubError && error.status === 404) return "already_absent";
+    throw error;
+  }
+}
+
 export async function findOpenPullRequest(
   token: string,
   repository: string,
