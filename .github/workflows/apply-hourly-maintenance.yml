@@ -2,15 +2,16 @@ name: Apply hourly maintenance cadence
 
 on:
   push:
-    branches: [ops/hourly-maintenance-canary]
-  workflow_dispatch:
+    branches:
+      - "ops/hourly-maintenance-canary"
+  workflow_dispatch: {}
 
 permissions:
   contents: write
 
 jobs:
   apply:
-    if: github.actor != 'github-actions[bot]'
+    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
