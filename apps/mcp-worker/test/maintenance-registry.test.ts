@@ -1,6 +1,7 @@
 import { env, runInDurableObject } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
-import type { MaintenanceRegistry } from "../src/maintenance-registry";
+import { workflowVerificationRetryEligible, type MaintenanceRegistry } from "../src/maintenance-registry";
+import type { PublicRunRecord } from "../src/types";
 
 describe("MaintenanceRegistry", () => {
   it("stores an observe-only repository without silently granting scheduled authority", async () => {
@@ -56,4 +57,17 @@ describe("MaintenanceRegistry", () => {
     expect(JSON.stringify(result)).not.toContain("private-key-material");
     expect(JSON.stringify(await registry.githubAppStatus())).not.toContain("webhook-secret-material");
   });
+  it("retries independent verification only for the awaiting run bound to the completed workflow head", () => {
+    const headSha = "a".repeat(40);
+    const run = {
+      state: "AWAITING_VERIFICATION",
+      branchHeadSha: headSha,
+      objective: { repository: "owner/repository" },
+    } as PublicRunRecord;
+    expect(workflowVerificationRetryEligible(run, "owner/repository", headSha)).toBe(true);
+    expect(workflowVerificationRetryEligible(run, "owner/repository", "b".repeat(40))).toBe(false);
+    expect(workflowVerificationRetryEligible({ ...run, state: "VERIFIED" } as PublicRunRecord, "owner/repository", headSha)).toBe(false);
+    expect(workflowVerificationRetryEligible(run, "owner/another", headSha)).toBe(false);
+  });
+
 });
