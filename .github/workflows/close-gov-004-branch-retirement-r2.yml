@@ -56,11 +56,11 @@ jobs:
               raise SystemExit('E-021 outcome anchor missing')
           text = text.replace(old_outcome, new_outcome, 1)
 
-          old_measurement = '      "measurement":"OpsTruth reduced from eighteen branches to one; DoneState reduced from dozens of branches to eleven intentional or active refs; one six-file lifecycle PR merged; 112 Worker tests passed in deployment; one Worker version was published; two repository settings remain false pending owner action."'
-          new_measurement = '      "measurement":"OpsTruth reduced from eighteen branches to one; DoneState reduced from dozens of branches to eleven intentional or active refs; one six-file lifecycle PR merged; 112 Worker tests passed in deployment; one Worker version was published; both repository APIs now report delete_branch_on_merge=true."'
-          if old_measurement not in text:
+          old_measurement_tail = 'two repository settings remain false pending owner action.'
+          new_measurement_tail = 'both repository APIs now report delete_branch_on_merge=true.'
+          if old_measurement_tail not in text:
               raise SystemExit('E-021 measurement anchor missing')
-          text = text.replace(old_measurement, new_measurement, 1)
+          text = text.replace(old_measurement_tail, new_measurement_tail, 1)
 
           path.write_text(text)
           PY
