@@ -1,4 +1,4 @@
-name: Inspect detached-receipt canary 101 control plane
+name: Inspect alarm-sliced canary 103 control plane
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Inspect detached-receipt canary 101 control plane'
+    if: github.event.head_commit.message == 'Inspect alarm-sliced canary 103 control plane'
     runs-on: ubuntu-latest
     steps:
       - name: Query bounded production control signals
@@ -27,8 +27,8 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-101-control-plane",
-              timeframe: {from: 1788427410000, to: 1788430500000},
+              queryId: "donestate-canary-103-control-plane",
+              timeframe: {from: 1788440040000, to: 1788441300000},
               view: "events",
               limit: 500,
               parameters: {
@@ -52,12 +52,17 @@ jobs:
             }]}' "$response"
           }
           for needle in \
-            "files.readFile" \
-            "runtime connection was closing" \
-            "session_disposed" \
+            "maintenance repair queued from issue webhook" \
+            "git clone --no-tags" \
+            "Using rpc transport" \
+            "nohup /bin/sh" \
+            "codex --ask-for-approval" \
             "implementation-" \
-            "codex" \
-            "timeout" \
-            "sandbox cleanup failed"; do
+            "receipt" \
+            "DoneState run stopped" \
+            "publication_started" \
+            "pull request" \
+            "automatic independent verification did not complete" \
+            "maintenance verification retry completed"; do
             query_logs "$needle"
           done
