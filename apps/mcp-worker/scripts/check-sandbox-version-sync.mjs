@@ -3,6 +3,7 @@ import fs from "node:fs";
 const packageJson = JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const packageLock = JSON.parse(fs.readFileSync(new URL("../package-lock.json", import.meta.url), "utf8"));
 const dockerfile = fs.readFileSync(new URL("../Dockerfile", import.meta.url), "utf8");
+const wranglerConfig = fs.readFileSync(new URL("../wrangler.jsonc", import.meta.url), "utf8");
 
 const sdkVersion = packageJson.dependencies?.["@cloudflare/sandbox"];
 if (typeof sdkVersion !== "string" || !/^\d+\.\d+\.\d+$/.test(sdkVersion)) {
@@ -19,4 +20,8 @@ const imageVersion = match[1];
 if (imageVersion !== sdkVersion) {
   throw new Error(`Cloudflare Sandbox SDK/image mismatch: sdk=${sdkVersion} image=${imageVersion}`);
 }
-console.log(`Cloudflare Sandbox versions aligned at ${sdkVersion}`);
+const transportMatch = wranglerConfig.match(/"SANDBOX_TRANSPORT"\s*:\s*"([^"]+)"/);
+if (!transportMatch || transportMatch[1] !== "rpc") {
+  throw new Error(`Cloudflare Sandbox transport must be pinned to rpc; found ${transportMatch?.[1] ?? "unset"}`);
+}
+console.log(`Cloudflare Sandbox versions aligned at ${sdkVersion}; transport=rpc`);
