@@ -61,6 +61,20 @@ jobs:
           if count != 1:
               raise SystemExit(f'generated reconciliation call context count={count}')
           p.write_text(text)
+
+          test = Path('apps/mcp-worker/test/executor.test.ts')
+          test_text = test.read_text()
+          test_text = test_text.replace('import fs from "node:fs";\n', '', 1)
+          source_assertion = '''    const source = fs.readFileSync(new URL("../src/executor.ts", import.meta.url), "utf8");
+              expect(source.match(/sandbox\\.startProcess\\(/g)).toHaveLength(1);
+              expect(source).toContain("autoCleanup: false");
+              expect(source).toContain("await sandbox.getProcess(processId)");
+              expect(source).toContain('state: "AMBIGUOUS"');
+'''
+          if source_assertion not in test_text:
+              raise SystemExit('test-only source assertion context drift')
+          test_text = test_text.replace(source_assertion, '', 1)
+          test.write_text(test_text)
           PY
       - name: Render governance state
         run: |
