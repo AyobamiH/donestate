@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "npm run types && tsc --noEmit",
-    "check": "npm run build && npm test",
+    "check": "npm run sandbox:version-check && npm run build && npm test",
     "deploy:check": "wrangler deploy --dry-run",
     "deploy:development:check": "wrangler deploy --config wrangler.development.jsonc --dry-run",
     "deploy:development": "wrangler deploy --config wrangler.development.jsonc",
@@ -13,10 +13,11 @@
     "deploy:dry": "wrangler deploy --dry-run",
     "dev": "wrangler dev --port 8788",
     "test": "vitest run",
-    "types": "wrangler types worker-configuration.d.ts"
+    "types": "wrangler types worker-configuration.d.ts",
+    "sandbox:version-check": "node scripts/check-sandbox-version-sync.mjs"
   },
   "dependencies": {
-    "@cloudflare/sandbox": "^0.12.9",
+    "@cloudflare/sandbox": "0.12.9",
     "@cloudflare/workers-oauth-provider": "^0.10.3",
     "@modelcontextprotocol/server": "2.0.0",
     "agents": "^0.22.0",
