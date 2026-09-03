@@ -4,1265 +4,304 @@
   "updatedAt": "2026-09-03",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
-    {
-      "id": "R0",
-      "title": "Restore self-documenting governance",
-      "workItemIds": [
-        "GOV-001",
-        "GOV-003",
-        "GOV-004"
-      ],
-      "exitCriterion": "The ledger, generated state, PR template, change-impact gate, stale-state check, reviewable main-governance design, and bounded branch-retirement lifecycle are merged and green; provider ruleset and ordinary merged-branch auto-deletion remain separately evidenced owner settings."
-    },
-    {
-      "id": "R1",
-      "title": "Keep Marketplace channel truth current",
-      "workItemIds": [
-        "MKT-001",
-        "MKT-002",
-        "MKT-003",
-        "OPS-001",
-        "LEGAL-001"
-      ],
-      "exitCriterion": "Public wording matches live provider state, lifecycle events are monotonic and tested, and operating decisions are documented."
-    },
-    {
-      "id": "R2",
-      "title": "Synchronize Proof & State",
-      "workItemIds": [
-        "GOV-002"
-      ],
-      "exitCriterion": "Proof & State points to exact DoneState commits and external review states."
-    },
-    {
-      "id": "R3",
-      "title": "Separate Marketplace development from production",
-      "workItemIds": [
-        "MKT-004"
-      ],
-      "exitCriterion": "A separate development OAuth App and draft listing can test lifecycle events without changing either production app."
-    },
-    {
-      "id": "R4",
-      "title": "Prepare for the first external customer",
-      "workItemIds": [
-        "CUST-001",
-        "CUST-002",
-        "OPS-002",
-        "GTM-001"
-      ],
-      "exitCriterion": "Customers can inspect and delete their state, operators can detect failures, and useful outcomes are measured."
-    },
-    {
-      "id": "R5",
-      "title": "Close independent-verification proof gaps",
-      "workItemIds": [
-        "VERIFY-001",
-        "VERIFY-002",
-        "VERIFY-003",
-        "VERIFY-006",
-        "VERIFY-004",
-        "AGENTPROOF-001"
-      ],
-      "exitCriterion": "OpsTruth restores an authenticated exact-head read lane, both products enforce one versioned verification response contract, and synthetic plus live cross-product loops have exact evidence."
-    },
-    {
-      "id": "R6",
-      "title": "Release and grow only through explicit gates",
-      "workItemIds": [
-        "RELEASE-001",
-        "MKT-005",
-        "MKT-006",
-        "MKT-007",
-        "PRIVATE-001",
-        "ENGINE-001",
-        "ENGINE-002",
-        "ENGINE-003",
-        "VERIFY-005",
-        "AUTH-001",
-        "FLEET-001",
-        "ADAPTER-001",
-        "OPENAI-001",
-        "UPSTREAM-001",
-        "SKILLS-001"
-      ],
-      "exitCriterion": "Each capability advances only when its authority, evidence, demand, and release conditions are satisfied; fleet authority remains last."
-    }
+    {"id":"R0","title":"Restore self-documenting governance","workItemIds":["GOV-001","GOV-003","GOV-004"],"exitCriterion":"The ledger, generated state, PR template, change-impact gate, stale-state check, reviewable main-governance design, and bounded branch-retirement lifecycle are merged and green; provider ruleset and ordinary merged-branch auto-deletion remain separately evidenced owner settings."},
+    {"id":"R1","title":"Keep Marketplace channel truth current","workItemIds":["MKT-001","MKT-002","MKT-003","OPS-001","LEGAL-001"],"exitCriterion":"Public wording matches live provider state, lifecycle events are monotonic and tested, and operating decisions are documented."},
+    {"id":"R2","title":"Synchronize Proof & State","workItemIds":["GOV-002"],"exitCriterion":"Proof & State points to exact DoneState commits and external review states."},
+    {"id":"R3","title":"Separate Marketplace development from production","workItemIds":["MKT-004"],"exitCriterion":"A separate development OAuth App and draft listing can test lifecycle events without changing either production app."},
+    {"id":"R4","title":"Prepare for the first external customer","workItemIds":["CUST-001","CUST-002","OPS-002","GTM-001"],"exitCriterion":"Customers can inspect and delete their state, operators can detect failures, and useful outcomes are measured."},
+    {"id":"R5","title":"Close independent-verification proof gaps","workItemIds":["VERIFY-001","VERIFY-002","VERIFY-003","VERIFY-006","VERIFY-004","AGENTPROOF-001"],"exitCriterion":"OpsTruth restores an authenticated exact-head read lane, both products enforce one versioned verification response contract, and synthetic plus live cross-product loops have exact evidence."},
+    {"id":"R6","title":"Release and grow only through explicit gates","workItemIds":["RELEASE-001","MKT-005","MKT-006","MKT-007","PRIVATE-001","ENGINE-001","ENGINE-002","ENGINE-003","VERIFY-005","AUTH-001","FLEET-001","ADAPTER-001","OPENAI-001","UPSTREAM-001","SKILLS-001"],"exitCriterion":"Each capability advances only when its authority, evidence, demand, and release conditions are satisfied; fleet authority remains last."}
   ],
   "workItems": [
     {
-      "id": "GOV-001",
-      "title": "Enforce the Evidence Story Bank and documentation closure",
-      "stream": "governance",
-      "status": "complete",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-09-01",
-      "staleDate": "2026-12-01",
-      "nextAction": "Keep consequential changes coupled to the canonical ledger, generated state, governance impact check, and exact post-merge evidence.",
-      "waitCondition": "None.",
-      "reentryCondition": "Reopen if the default branch becomes red because a consequential change bypasses the ledger or generated state.",
-      "dependencies": [],
-      "evidenceIds": [
-        "E-004",
-        "E-006",
-        "E-012",
-        "E-014"
-      ]
+      "id":"GOV-001","title":"Enforce the Evidence Story Bank and documentation closure","stream":"governance","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-09-01","staleDate":"2026-12-01",
+      "nextAction":"Keep consequential changes coupled to the canonical ledger, generated state, governance impact check, and exact post-merge evidence.","waitCondition":"None.","reentryCondition":"Reopen if the default branch becomes red because a consequential change bypasses the ledger or generated state.","dependencies":[],"evidenceIds":["E-004","E-006","E-012","E-014"]
     },
     {
-      "id": "GOV-003",
-      "title": "Activate reviewed main-branch governance",
-      "stream": "governance",
-      "status": "blocked",
-      "owner": "Repository owner",
-      "lastUpdated": "2026-09-01",
-      "staleDate": "2026-09-08",
-      "nextAction": "Name a second trusted human reviewer, record the qualifying review-access model, obtain explicit owner approval, activate the checked-in main-only ruleset, and record a separate authenticated provider read-back plus a test pull request.",
-      "waitCondition": "PR 58 and PR 62 are merged and exact main CI is green, but GitHub still reports main as UNPROTECTED; no second trusted human reviewer is named and no provider settings action is authorized.",
-      "reentryCondition": "Resume after the reviewer accepts review-only authority and the owner accepts the provider capability boundary; close only when an exact ruleset ID, active enforcement, effective branch rules, and a test pull request are recorded.",
-      "dependencies": [
-        "GOV-001"
-      ],
-      "evidenceIds": [
-        "E-012",
-        "E-014"
-      ]
+      "id":"GOV-003","title":"Activate reviewed main-branch governance","stream":"governance","status":"blocked","owner":"Repository owner","lastUpdated":"2026-09-01","staleDate":"2026-09-08",
+      "nextAction":"Name a second trusted human reviewer, record the qualifying review-access model, obtain explicit owner approval, activate the checked-in main-only ruleset, and record a separate authenticated provider read-back plus a test pull request.","waitCondition":"PR 58 and PR 62 are merged and exact main CI is green, but GitHub still reports main as UNPROTECTED; no second trusted human reviewer is named and no provider settings action is authorized.","reentryCondition":"Resume after the reviewer accepts review-only authority and the owner accepts the provider capability boundary; close only when an exact ruleset ID, active enforcement, effective branch rules, and a test pull request are recorded.","dependencies":["GOV-001"],"evidenceIds":["E-012","E-014"]
     },
     {
-      "id": "GOV-004",
-      "title": "Retire completed work branches without deleting evidence",
-      "stream": "governance",
-      "status": "complete",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-09-02",
-      "staleDate": "2026-12-01",
-      "nextAction": "Preserve automatic ordinary head-branch deletion in DoneState and OpsTruth, and preserve DoneState runtime retirement only for exact merged VERIFIED maintenance-run branches.",
-      "waitCondition": "None.",
-      "reentryCondition": "Reopen if either repository reports delete_branch_on_merge=false, merged ordinary branches begin accumulating, or DoneState deletes an unverified, unmerged, foreign, historical, or otherwise ineligible evidence branch.",
-      "dependencies": [
-        "GOV-001"
-      ],
-      "evidenceIds": [
-        "E-021"
-      ]
+      "id":"GOV-004","title":"Retire completed work branches without deleting evidence","stream":"governance","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-09-02","staleDate":"2026-12-01",
+      "nextAction":"Preserve automatic ordinary head-branch deletion in DoneState and OpsTruth, and preserve DoneState runtime retirement only for exact merged VERIFIED maintenance-run branches.","waitCondition":"None.","reentryCondition":"Reopen if either repository reports delete_branch_on_merge=false, merged ordinary branches begin accumulating, or DoneState deletes an unverified, unmerged, foreign, historical, or otherwise ineligible evidence branch.","dependencies":["GOV-001"],"evidenceIds":["E-021"]
     },
     {
-      "id": "MKT-001",
-      "title": "Remove reviewer-facing preview and submission contradictions",
-      "stream": "marketplace",
-      "status": "complete",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-09-01",
-      "staleDate": "2026-12-01",
-      "nextAction": "Keep GitHub Marketplace submission and publication state, OpenAI review state, and downstream activation evidence separate; let documentation closure reject preview-as-public claims.",
-      "waitCondition": "None.",
-      "reentryCondition": "Reopen if a reviewer-facing document contradicts the live external state.",
-      "dependencies": [
-        "GOV-001"
-      ],
-      "evidenceIds": [
-        "E-001",
-        "E-004",
-        "E-007",
-        "E-013"
-      ]
+      "id":"MKT-001","title":"Remove reviewer-facing preview and submission contradictions","stream":"marketplace","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-09-01","staleDate":"2026-12-01",
+      "nextAction":"Keep GitHub Marketplace submission and publication state, OpenAI review state, and downstream activation evidence separate; let documentation closure reject preview-as-public claims.","waitCondition":"None.","reentryCondition":"Reopen if a reviewer-facing document contradicts the live external state.","dependencies":["GOV-001"],"evidenceIds":["E-001","E-004","E-007","E-013"]
     },
     {
-      "id": "MKT-002",
-      "title": "Reject stale Marketplace lifecycle events",
-      "stream": "marketplace",
-      "status": "complete",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-12-01",
-      "nextAction": "Preserve the atomic effectiveAt predicate and monitor real lifecycle evidence.",
-      "waitCondition": "None.",
-      "reentryCondition": "Reopen if a newer entitlement can be overwritten by an older event.",
-      "dependencies": [
-        "GOV-001"
-      ],
-      "evidenceIds": [
-        "E-004",
-        "E-007"
-      ]
+      "id":"MKT-002","title":"Reject stale Marketplace lifecycle events","stream":"marketplace","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
+      "nextAction":"Preserve the atomic effectiveAt predicate and monitor real lifecycle evidence.","waitCondition":"None.","reentryCondition":"Reopen if a newer entitlement can be overwritten by an older event.","dependencies":["GOV-001"],"evidenceIds":["E-004","E-007"]
     },
     {
-      "id": "MKT-003",
-      "title": "Cover every Marketplace plan transition",
-      "stream": "marketplace",
-      "status": "complete",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-12-01",
-      "nextAction": "Keep all five actions, duplicates, and out-of-order delivery in the required Worker suite.",
-      "waitCondition": "None.",
-      "reentryCondition": "Reopen when GitHub adds or changes a lifecycle contract.",
-      "dependencies": [
-        "GOV-001"
-      ],
-      "evidenceIds": [
-        "E-001",
-        "E-004",
-        "E-007"
-      ]
+      "id":"MKT-003","title":"Cover every Marketplace plan transition","stream":"marketplace","status":"complete","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
+      "nextAction":"Keep all five actions, duplicates, and out-of-order delivery in the required Worker suite.","waitCondition":"None.","reentryCondition":"Reopen when GitHub adds or changes a lifecycle contract.","dependencies":["GOV-001"],"evidenceIds":["E-001","E-004","E-007"]
     },
     {
-      "id": "OPS-001",
-      "title": "Publish the production incident and support runbook",
-      "stream": "operations",
-      "status": "complete",
-      "owner": "Publisher owner",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-12-01",
-      "nextAction": "Exercise the runbook during the first incident drill or real incident and record the evidence story.",
-      "waitCondition": "None.",
-      "reentryCondition": "Reopen if notification, support, recovery, or post-incident ownership becomes incomplete.",
-      "dependencies": [
-        "GOV-001"
-      ],
-      "evidenceIds": [
-        "E-004",
-        "E-007"
-      ]
+      "id":"OPS-001","title":"Publish the production incident and support runbook","stream":"operations","status":"complete","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
+      "nextAction":"Exercise the runbook during the first incident drill or real incident and record the evidence story.","waitCondition":"None.","reentryCondition":"Reopen if notification, support, recovery, or post-incident ownership becomes incomplete.","dependencies":["GOV-001"],"evidenceIds":["E-004","E-007"]
     },
     {
-      "id": "LEGAL-001",
-      "title": "Complete public operator contact and jurisdiction decisions",
-      "stream": "legal",
-      "status": "blocked",
-      "owner": "Publisher owner",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-06",
-      "nextAction": "Choose public support/privacy aliases, record a legitimate service address, complete the ICO fee self-assessment, and record offered territories.",
-      "waitCondition": "Requires real publisher decisions; private contact data must not be invented or copied into the repository.",
-      "reentryCondition": "Resume when those decisions are available.",
-      "dependencies": [
-        "GOV-001"
-      ],
-      "evidenceIds": [
-        "E-004"
-      ]
+      "id":"LEGAL-001","title":"Complete public operator contact and jurisdiction decisions","stream":"legal","status":"blocked","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-06",
+      "nextAction":"Choose public support/privacy aliases, record a legitimate service address, complete the ICO fee self-assessment, and record offered territories.","waitCondition":"Requires real publisher decisions; private contact data must not be invented or copied into the repository.","reentryCondition":"Resume when those decisions are available.","dependencies":["GOV-001"],"evidenceIds":["E-004"]
     },
     {
-      "id": "GOV-002",
-      "title": "Synchronize Proof & State governance records",
-      "stream": "governance",
-      "status": "active",
-      "owner": "Proof & State maintainers",
-      "lastUpdated": "2026-09-01",
-      "staleDate": "2026-09-08",
-      "nextAction": "Use the open Proof & State reconciliation stack to record Proof & State merge 2ad721357993a92dfc4d26b2b3ea4a9239ab95d6, the final publishing-disabled canary, DoneState main 32f045850c8d9f04f60b38fa9ced6ea83c377dc9 with green CI 33520196979, and the pending DoneState Marketplace submission.",
-      "waitCondition": "The Proof & State portfolio ledger still pins stale product, deployment, and channel subjects; a local or PR-only repair is not portfolio closure.",
-      "reentryCondition": "Close only after the exact Proof & State repair merge and post-merge governance run are recorded in both ledgers.",
-      "dependencies": [
-        "GOV-001",
-        "MKT-001",
-        "MKT-002",
-        "MKT-003",
-        "OPS-001"
-      ],
-      "evidenceIds": [
-        "E-001",
-        "E-004",
-        "E-008",
-        "E-012",
-        "E-013"
-      ]
+      "id":"GOV-002","title":"Synchronize Proof & State governance records","stream":"governance","status":"active","owner":"Proof & State maintainers","lastUpdated":"2026-09-01","staleDate":"2026-09-08",
+      "nextAction":"Use the open Proof & State reconciliation stack to record Proof & State merge 2ad721357993a92dfc4d26b2b3ea4a9239ab95d6, the final publishing-disabled canary, DoneState main 32f045850c8d9f04f60b38fa9ced6ea83c377dc9 with green CI 33520196979, and the pending DoneState Marketplace submission.","waitCondition":"The Proof & State portfolio ledger still pins stale product, deployment, and channel subjects; a local or PR-only repair is not portfolio closure.","reentryCondition":"Close only after the exact Proof & State repair merge and post-merge governance run are recorded in both ledgers.","dependencies":["GOV-001","MKT-001","MKT-002","MKT-003","OPS-001"],"evidenceIds":["E-001","E-004","E-008","E-012","E-013"]
     },
     {
-      "id": "MKT-004",
-      "title": "Create a separate Marketplace development app and listing",
-      "stream": "marketplace",
-      "status": "active",
-      "owner": "Publisher owner",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-12",
-      "nextAction": "Exercise changed, pending_change, and pending_change_cancelled through the owner-only draft listing and capture their non-personal receipts without touching production listing state.",
-      "waitCondition": "Purchase and cancellation are proven under E-009 and E-011; the remaining three live transition results have not been exercised.",
-      "reentryCondition": "Resume through authenticated development-listing controls; keep the draft private and do not alter either production app configuration.",
-      "dependencies": [
-        "GOV-002"
-      ],
-      "evidenceIds": [
-        "E-001",
-        "E-008",
-        "E-009",
-        "E-010",
-        "E-011"
-      ]
+      "id":"MKT-004","title":"Create a separate Marketplace development app and listing","stream":"marketplace","status":"active","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-12",
+      "nextAction":"Exercise changed, pending_change, and pending_change_cancelled through the owner-only draft listing and capture their non-personal receipts without touching production listing state.","waitCondition":"Purchase and cancellation are proven under E-009 and E-011; the remaining three live transition results have not been exercised.","reentryCondition":"Resume through authenticated development-listing controls; keep the draft private and do not alter either production app configuration.","dependencies":["GOV-002"],"evidenceIds":["E-001","E-008","E-009","E-010","E-011"]
     },
     {
-      "id": "CUST-001",
-      "title": "Add customer account and plan visibility",
-      "stream": "customer-readiness",
-      "status": "planned",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-18",
-      "nextAction": "Expose identity, entitlement status, plan, effective time, and support path.",
-      "waitCondition": "Lifecycle state must first be monotonic and contract-tested.",
-      "reentryCondition": "Begin after MKT-002 and MKT-003.",
-      "dependencies": [
-        "MKT-002",
-        "MKT-003"
-      ],
-      "evidenceIds": []
+      "id":"CUST-001","title":"Add customer account and plan visibility","stream":"customer-readiness","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-18",
+      "nextAction":"Expose identity, entitlement status, plan, effective time, and support path.","waitCondition":"Lifecycle state must first be monotonic and contract-tested.","reentryCondition":"Begin after MKT-002 and MKT-003.","dependencies":["MKT-002","MKT-003"],"evidenceIds":[]
     },
     {
-      "id": "CUST-002",
-      "title": "Add whole-account and entitlement deletion",
-      "stream": "customer-readiness",
-      "status": "planned",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-18",
-      "nextAction": "Implement authenticated self-service deletion with a non-personal auditable tombstone.",
-      "waitCondition": "Deletion semantics and PRIVACY.md retention wording must agree.",
-      "reentryCondition": "Begin after MKT-002 and LEGAL-001.",
-      "dependencies": [
-        "MKT-002",
-        "LEGAL-001"
-      ],
-      "evidenceIds": []
+      "id":"CUST-002","title":"Add whole-account and entitlement deletion","stream":"customer-readiness","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-18",
+      "nextAction":"Implement authenticated self-service deletion with a non-personal auditable tombstone.","waitCondition":"Deletion semantics and PRIVACY.md retention wording must agree.","reentryCondition":"Begin after MKT-002 and LEGAL-001.","dependencies":["MKT-002","LEGAL-001"],"evidenceIds":[]
     },
     {
-      "id": "OPS-002",
-      "title": "Detect and escalate Marketplace webhook failures",
-      "stream": "operations",
-      "status": "planned",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-18",
-      "nextAction": "Add bounded retry visibility, dead-letter evidence, operator alerts, and escalation instructions.",
-      "waitCondition": "Incident ownership must be declared in OPS-001.",
-      "reentryCondition": "Begin after OPS-001 and MKT-003.",
-      "dependencies": [
-        "OPS-001",
-        "MKT-003"
-      ],
-      "evidenceIds": []
+      "id":"OPS-002","title":"Detect and escalate Marketplace webhook failures","stream":"operations","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-18",
+      "nextAction":"Add bounded retry visibility, dead-letter evidence, operator alerts, and escalation instructions.","waitCondition":"Incident ownership must be declared in OPS-001.","reentryCondition":"Begin after OPS-001 and MKT-003.","dependencies":["OPS-001","MKT-003"],"evidenceIds":[]
     },
     {
-      "id": "GTM-001",
-      "title": "Instrument the useful-result funnel",
-      "stream": "go-to-market",
-      "status": "planned",
-      "owner": "Proof & State maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-25",
-      "nextAction": "Measure non-founder activation, run started, PR opened, verifier decision, repeat use, support load, and conversion without unnecessary personal data.",
-      "waitCondition": "Account and deletion semantics must be stable.",
-      "reentryCondition": "Begin before the first external-customer cohort.",
-      "dependencies": [
-        "CUST-001",
-        "CUST-002"
-      ],
-      "evidenceIds": []
+      "id":"GTM-001","title":"Instrument the useful-result funnel","stream":"go-to-market","status":"planned","owner":"Proof & State maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-25",
+      "nextAction":"Measure non-founder activation, run started, PR opened, verifier decision, repeat use, support load, and conversion without unnecessary personal data.","waitCondition":"Account and deletion semantics must be stable.","reentryCondition":"Begin before the first external-customer cohort.","dependencies":["CUST-001","CUST-002"],"evidenceIds":[]
     },
     {
-      "id": "VERIFY-001",
-      "title": "Restore the OpsTruth authenticated exact-head verification lane",
-      "stream": "verification",
-      "status": "complete",
-      "owner": "OpsTruth maintainers",
-      "lastUpdated": "2026-09-02",
-      "staleDate": "2026-09-08",
-      "nextAction": "Preserve the deployed verifier-owned GitHub App read lane and reopen if authenticated exact-head verification regresses.",
-      "waitCondition": "None.",
-      "reentryCondition": "Reopen if production health or a fresh canary shows the authenticated exact-head read lane is unavailable, over-broad, or no longer fail-closed.",
-      "dependencies": [],
-      "evidenceIds": [
-        "E-003",
-        "E-012",
-        "E-016"
-      ]
+      "id":"VERIFY-001","title":"Restore the OpsTruth authenticated exact-head verification lane","stream":"verification","status":"complete","owner":"OpsTruth maintainers","lastUpdated":"2026-09-02","staleDate":"2026-09-08",
+      "nextAction":"Preserve the deployed verifier-owned GitHub App read lane and reopen if authenticated exact-head verification regresses.","waitCondition":"None.","reentryCondition":"Reopen if production health or a fresh canary shows the authenticated exact-head read lane is unavailable, over-broad, or no longer fail-closed.","dependencies":[],"evidenceIds":["E-003","E-012","E-016"]
     },
     {
-      "id": "VERIFY-002",
-      "title": "Independently decide the maintenance canary",
-      "stream": "verification",
-      "status": "blocked",
-      "owner": "OpsTruth maintainers",
-      "lastUpdated": "2026-09-01",
-      "staleDate": "2026-09-09",
-      "nextAction": "After VERIFY-001, re-evaluate run b4242932-0bc1-4876-a202-634d9c12d72a against PR 22 head ffec48e6c5abd9cef840ab591896613769d3e779 and record the exact signed result.",
-      "waitCondition": "PR 22 was later owner-merged as 4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a, but the run remains AWAITING_VERIFICATION and the merge is not verifier evidence.",
-      "reentryCondition": "Resume after the authenticated verifier read lane is proven.",
-      "dependencies": [
-        "VERIFY-001"
-      ],
-      "evidenceIds": [
-        "E-003",
-        "E-012"
-      ]
+      "id":"VERIFY-002","title":"Independently decide the maintenance canary","stream":"verification","status":"blocked","owner":"OpsTruth maintainers","lastUpdated":"2026-09-01","staleDate":"2026-09-09",
+      "nextAction":"After VERIFY-001, re-evaluate run b4242932-0bc1-4876-a202-634d9c12d72a against PR 22 head ffec48e6c5abd9cef840ab591896613769d3e779 and record the exact signed result.","waitCondition":"PR 22 was later owner-merged as 4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a, but the run remains AWAITING_VERIFICATION and the merge is not verifier evidence.","reentryCondition":"Resume after the authenticated verifier read lane is proven.","dependencies":["VERIFY-001"],"evidenceIds":["E-003","E-012"]
     },
     {
-      "id": "VERIFY-003",
-      "title": "Validate the exact installable plugin archive",
-      "stream": "verification",
-      "status": "planned",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-12",
-      "nextAction": "Build the exact archive, validate manifests and skills, scan secrets, and record digest plus CI.",
-      "waitCondition": "Repository validation alone is not archive validation.",
-      "reentryCondition": "Begin after R1.",
-      "dependencies": [
-        "MKT-001",
-        "MKT-002",
-        "MKT-003"
-      ],
-      "evidenceIds": []
+      "id":"VERIFY-003","title":"Validate the exact installable plugin archive","stream":"verification","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-12",
+      "nextAction":"Build the exact archive, validate manifests and skills, scan secrets, and record digest plus CI.","waitCondition":"Repository validation alone is not archive validation.","reentryCondition":"Begin after R1.","dependencies":["MKT-001","MKT-002","MKT-003"],"evidenceIds":[]
     },
     {
-      "id": "VERIFY-006",
-      "title": "Enforce the versioned DoneState-to-OpsTruth response contract",
-      "stream": "verification",
-      "status": "active",
-      "owner": "DoneState and OpsTruth contract maintainers",
-      "lastUpdated": "2026-09-03",
-      "staleDate": "2026-09-10",
-      "nextAction": "Replace the post-PR100 in-alarm receipt loop with alarm-sliced execution: keep the exact detached Codex launch and atomic receipt, persist a non-secret execution checkpoint bound to the implementation intent, perform one read-only receipt reconciliation per alarm, yield after each bounded action, preserve the sandbox and user credential lease across safe yields, keep every non-resumable unsettled mutation fail-closed, then deploy and run one fresh PR-only canary through exact-head CI and OpsTruth v2.",
-      "waitCondition": "PR 100 merged as b4febe960fc7e71d48049e3a758256c1b61841ef; exact-head CI 33738177238, post-merge CI 33738273567 and deployment 33738273580 passed. Production Worker f89f842c-2f74-43a6-8f3e-ed90411e6964 runs container sha256:da8f52ef1570de5ace6c6d336ad29b92b7a5a5a8ecb9b0e336707a98fff5e9c2 with Sandbox 0.12.9 and Codex 0.150.1. Documentation re-assessment found the deployed code still awaits receipt completion inside RunCoordinator.alarm(), while hosted objectives default to 1800000 ms and can request 7200000 ms. Cloudflare Durable Object alarms have a 15-minute wall-time and at-least-once retry semantics, so a valid long implementation or combined validation slice could still be terminated and then misclassified by generic RUNNING-action recovery. A fresh canary must wait for this orchestration mismatch to be removed.",
-      "reentryCondition": "Close only after both products consume the same manifest and vectors, exact deployed versions pass a fresh replay-safe round trip, and historical run outcomes remain unchanged.",
-      "dependencies": [],
-      "evidenceIds": [
-        "E-015",
-        "E-016",
-        "E-017",
-        "E-018",
-        "E-019",
-        "E-020",
-        "E-022",
-        "E-023",
-        "E-024",
-        "E-025",
-        "E-026",
-        "E-027",
-        "E-028",
-        "E-029",
-        "E-030"
-      ]
+      "id":"VERIFY-006","title":"Enforce the versioned DoneState-to-OpsTruth response contract","stream":"verification","status":"active","owner":"DoneState and OpsTruth contract maintainers","lastUpdated":"2026-09-03","staleDate":"2026-09-10",
+      "nextAction":"Replace the post-PR100 in-alarm receipt loop with alarm-sliced execution: keep the exact detached Codex launch and atomic receipt, persist a non-secret execution checkpoint bound to the implementation intent, perform one read-only receipt reconciliation per alarm, yield after each bounded action, preserve the sandbox and user credential lease across safe yields, keep every non-resumable unsettled mutation fail-closed, then deploy and run one fresh PR-only canary through exact-head CI and OpsTruth v2.","waitCondition":"PR 100 merged as b4febe960fc7e71d48049e3a758256c1b61841ef; exact-head CI 33738177238, post-merge CI 33738273567 and deployment 33738273580 passed. Production Worker f89f842c-2f74-43a6-8f3e-ed90411e6964 runs container sha256:da8f52ef1570de5ace6c6d336ad29b92b7a5a5a8ecb9b0e336707a98fff5e9c2 with Sandbox 0.12.9 and Codex 0.150.1. Documentation re-assessment found the deployed code still awaits receipt completion inside RunCoordinator.alarm(), while hosted objectives default to 1800000 ms and can request 7200000 ms. Cloudflare Durable Object alarms have a 15-minute wall-time and at-least-once retry semantics, so a valid long implementation or combined validation slice could still be terminated and then misclassified by generic RUNNING-action recovery. A fresh canary must wait for this orchestration mismatch to be removed.","reentryCondition":"Close only after both products consume the same manifest and vectors, exact deployed versions pass a fresh replay-safe round trip, and historical run outcomes remain unchanged.","dependencies":[],"evidenceIds":["E-015","E-016","E-017","E-018","E-019","E-020","E-022","E-023","E-024","E-025","E-026","E-027","E-028","E-029","E-030"]
     },
     {
-      "id": "VERIFY-004",
-      "title": "Prove synthetic and live DoneState-to-OpsTruth loops",
-      "stream": "verification",
-      "status": "blocked",
-      "owner": "DoneState and OpsTruth maintainers",
-      "lastUpdated": "2026-09-03",
-      "staleDate": "2026-09-10",
-      "nextAction": "After the alarm-sliced execution repair is reviewed and deployed, launch exactly one fresh PR-only maintenance canary from the new production Worker and require the complete branch/PR, exact-head core (22), core (24) and hosted-plugin checks, strict OpsTruth v2 response, and truthful DoneState VERIFIED read-back without merging the canary PR.",
-      "waitCondition": "Issue 98 is terminal AMBIGUOUS_EFFECT evidence and must not be retried. PR 100 fixed the long Sandbox RPC but production still executes the receipt wait and multiple bounded actions inside a Durable Object alarm whose documented wall-time is 15 minutes, shorter than the 30-minute maintenance objective budget. The next canary waits for the alarm-sliced checkpoint repair and exact deployment evidence.",
-      "reentryCondition": "Resume after the versioned contract and authenticated verifier lane are deployed on exact reviewed commits.",
-      "dependencies": [
-        "VERIFY-001",
-        "VERIFY-002",
-        "VERIFY-003",
-        "VERIFY-006"
-      ],
-      "evidenceIds": [
-        "E-002",
-        "E-003",
-        "E-012",
-        "E-016",
-        "E-017",
-        "E-018",
-        "E-019",
-        "E-020",
-        "E-022",
-        "E-023",
-        "E-024",
-        "E-025",
-        "E-026",
-        "E-027",
-        "E-028",
-        "E-029",
-        "E-030"
-      ]
+      "id":"VERIFY-004","title":"Prove synthetic and live DoneState-to-OpsTruth loops","stream":"verification","status":"blocked","owner":"DoneState and OpsTruth maintainers","lastUpdated":"2026-09-03","staleDate":"2026-09-10",
+      "nextAction":"After the alarm-sliced execution repair is reviewed and deployed, launch exactly one fresh PR-only maintenance canary from the new production Worker and require the complete branch/PR, exact-head core (22), core (24) and hosted-plugin checks, strict OpsTruth v2 response, and truthful DoneState VERIFIED read-back without merging the canary PR.","waitCondition":"Issue 98 is terminal AMBIGUOUS_EFFECT evidence and must not be retried. PR 100 fixed the long Sandbox RPC but production still executes the receipt wait and multiple bounded actions inside a Durable Object alarm whose documented wall-time is 15 minutes, shorter than the 30-minute maintenance objective budget. The next canary waits for the alarm-sliced checkpoint repair and exact deployment evidence.","reentryCondition":"Resume after the versioned contract and authenticated verifier lane are deployed on exact reviewed commits.","dependencies":["VERIFY-001","VERIFY-002","VERIFY-003","VERIFY-006"],"evidenceIds":["E-002","E-003","E-012","E-016","E-017","E-018","E-019","E-020","E-022","E-023","E-024","E-025","E-026","E-027","E-028","E-029","E-030"]
     },
     {
-      "id": "AGENTPROOF-001",
-      "title": "Complete AgentProof consequence-receipt integration",
-      "stream": "verification",
-      "status": "planned",
-      "owner": "DoneState and AgentProof maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-25",
-      "nextAction": "Define the receipt boundary, add the repository-patch adapter, and prove receipts never become completion authority.",
-      "waitCondition": "The DoneState-to-OpsTruth loop must be proven first.",
-      "reentryCondition": "Begin after VERIFY-004.",
-      "dependencies": [
-        "VERIFY-004"
-      ],
-      "evidenceIds": []
+      "id":"AGENTPROOF-001","title":"Complete AgentProof consequence-receipt integration","stream":"verification","status":"planned","owner":"DoneState and AgentProof maintainers","lastUpdated":"2026-08-30","staleDate":"2026-09-25",
+      "nextAction":"Define the receipt boundary, add the repository-patch adapter, and prove receipts never become completion authority.","waitCondition":"The DoneState-to-OpsTruth loop must be proven first.","reentryCondition":"Begin after VERIFY-004.","dependencies":["VERIFY-004"],"evidenceIds":[]
     },
     {
-      "id": "RELEASE-001",
-      "title": "Gate DoneState 0.2 release and publication",
-      "stream": "release",
-      "status": "deferred",
-      "owner": "Publisher owner",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-01",
-      "nextAction": "Run check, pack audit, secret scan, and exact asset verification before seeking publication authority.",
-      "waitCondition": "No autonomous merge, deploy, release, or package publication is authorised.",
-      "reentryCondition": "Resume after VERIFY-003 and VERIFY-004 plus explicit publication authority.",
-      "dependencies": [
-        "VERIFY-003",
-        "VERIFY-004"
-      ],
-      "evidenceIds": []
+      "id":"RELEASE-001","title":"Gate DoneState 0.2 release and publication","stream":"release","status":"deferred","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-10-01",
+      "nextAction":"Run check, pack audit, secret scan, and exact asset verification before seeking publication authority.","waitCondition":"No autonomous merge, deploy, release, or package publication is authorised.","reentryCondition":"Resume after VERIFY-003 and VERIFY-004 plus explicit publication authority.","dependencies":["VERIFY-003","VERIFY-004"],"evidenceIds":[]
     },
     {
-      "id": "MKT-005",
-      "title": "Evaluate paid Marketplace plans",
-      "stream": "marketplace",
-      "status": "deferred",
-      "owner": "Publisher owner",
-      "lastUpdated": "2026-09-01",
-      "staleDate": "2026-10-15",
-      "nextAction": "Choose flat-rate Pro, per-seat organisation, trial, or continued free access from observed usage and cost.",
-      "waitCondition": "Keep the free public-repository plan while the listing remains pending and activation evidence is absent.",
-      "reentryCondition": "Resume after publication, real usage, organisation ownership, publisher eligibility, and the applicable user threshold.",
-      "dependencies": [
-        "GTM-001"
-      ],
-      "evidenceIds": [
-        "E-001",
-        "E-013"
-      ]
+      "id":"MKT-005","title":"Evaluate paid Marketplace plans","stream":"marketplace","status":"deferred","owner":"Publisher owner","lastUpdated":"2026-09-01","staleDate":"2026-10-15",
+      "nextAction":"Choose flat-rate Pro, per-seat organisation, trial, or continued free access from observed usage and cost.","waitCondition":"Keep the free public-repository plan while the listing remains pending and activation evidence is absent.","reentryCondition":"Resume after publication, real usage, organisation ownership, publisher eligibility, and the applicable user threshold.","dependencies":["GTM-001"],"evidenceIds":["E-001","E-013"]
     },
     {
-      "id": "MKT-006",
-      "title": "Establish Marketplace listing and transaction review",
-      "stream": "marketplace",
-      "status": "deferred",
-      "owner": "Publisher owner",
-      "lastUpdated": "2026-09-01",
-      "staleDate": "2026-10-15",
-      "nextAction": "Review Marketplace Insights, transactions, cancellations, support incidents, and entitlement reconciliation after publication without treating preview display counts as activation.",
-      "waitCondition": "The submission is Pending for publish and explicitly unpublished; the owner preview's displayed count of 1 is not public install or transaction evidence.",
-      "reentryCondition": "Resume when GitHub reports publication or the first real production transaction appears.",
-      "dependencies": [
-        "MKT-004"
-      ],
-      "evidenceIds": [
-        "E-001",
-        "E-013"
-      ]
+      "id":"MKT-006","title":"Establish Marketplace listing and transaction review","stream":"marketplace","status":"deferred","owner":"Publisher owner","lastUpdated":"2026-09-01","staleDate":"2026-10-15",
+      "nextAction":"Review Marketplace Insights, transactions, cancellations, support incidents, and entitlement reconciliation after publication without treating preview display counts as activation.","waitCondition":"The submission is Pending for publish and explicitly unpublished; the owner preview's displayed count of 1 is not public install or transaction evidence.","reentryCondition":"Resume when GitHub reports publication or the first real production transaction appears.","dependencies":["MKT-004"],"evidenceIds":["E-001","E-013"]
     },
     {
-      "id": "MKT-007",
-      "title": "Design a separate public customer GitHub App",
-      "stream": "marketplace",
-      "status": "deferred",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-09-01",
-      "staleDate": "2026-11-01",
-      "nextAction": "Design fine-grained repository selection and short-lived customer tokens without reusing the private App.",
-      "waitCondition": "The OAuth path remains the submitted candidate; migration during review without customer evidence adds risk.",
-      "reentryCondition": "Resume after publication when customer evidence shows OAuth scope or rate limits are constraints.",
-      "dependencies": [
-        "GTM-001"
-      ],
-      "evidenceIds": [
-        "E-001",
-        "E-013"
-      ]
+      "id":"MKT-007","title":"Design a separate public customer GitHub App","stream":"marketplace","status":"deferred","owner":"DoneState maintainers","lastUpdated":"2026-09-01","staleDate":"2026-11-01",
+      "nextAction":"Design fine-grained repository selection and short-lived customer tokens without reusing the private App.","waitCondition":"The OAuth path remains the submitted candidate; migration during review without customer evidence adds risk.","reentryCondition":"Resume after publication when customer evidence shows OAuth scope or rate limits are constraints.","dependencies":["GTM-001"],"evidenceIds":["E-001","E-013"]
     },
     {
-      "id": "PRIVATE-001",
-      "title": "Support private repositories safely",
-      "stream": "product",
-      "status": "deferred",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-11-15",
-      "nextAction": "Specify customer-controlled App permissions, confidentiality, retention, deletion, and reviewer fixtures.",
-      "waitCondition": "Public onboarding and deletion must be proven first.",
-      "reentryCondition": "Resume when demand is recorded and MKT-007 plus CUST-002 are complete.",
-      "dependencies": [
-        "MKT-007",
-        "CUST-002"
-      ],
-      "evidenceIds": []
+      "id":"PRIVATE-001","title":"Support private repositories safely","stream":"product","status":"deferred","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-11-15",
+      "nextAction":"Specify customer-controlled App permissions, confidentiality, retention, deletion, and reviewer fixtures.","waitCondition":"Public onboarding and deletion must be proven first.","reentryCondition":"Resume when demand is recorded and MKT-007 plus CUST-002 are complete.","dependencies":["MKT-007","CUST-002"],"evidenceIds":[]
     },
     {
-      "id": "ENGINE-001",
-      "title": "Implement exact-head merge queue",
-      "stream": "execution-engine",
-      "status": "deferred",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-11-15",
-      "nextAction": "Specify separately authorised merge with exact-head, independent-verification, and ambiguous-effect controls.",
-      "waitCondition": "Merge authority remains denied in the current product promise.",
-      "reentryCondition": "Resume only with explicit authority and customer evidence.",
-      "dependencies": [
-        "VERIFY-004"
-      ],
-      "evidenceIds": []
+      "id":"ENGINE-001","title":"Implement exact-head merge queue","stream":"execution-engine","status":"deferred","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-11-15",
+      "nextAction":"Specify separately authorised merge with exact-head, independent-verification, and ambiguous-effect controls.","waitCondition":"Merge authority remains denied in the current product promise.","reentryCondition":"Resume only with explicit authority and customer evidence.","dependencies":["VERIFY-004"],"evidenceIds":[]
     },
     {
-      "id": "ENGINE-002",
-      "title": "Add Pi and OpenClaw session adapters",
-      "stream": "execution-engine",
-      "status": "planned",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-20",
-      "nextAction": "Define adapters that preserve deterministic authority and evidence ownership.",
-      "waitCondition": "Core review and verification gaps take priority.",
-      "reentryCondition": "Begin after VERIFY-004 and release gates are ready.",
-      "dependencies": [
-        "VERIFY-004"
-      ],
-      "evidenceIds": []
+      "id":"ENGINE-002","title":"Add Pi and OpenClaw session adapters","stream":"execution-engine","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-10-20",
+      "nextAction":"Define adapters that preserve deterministic authority and evidence ownership.","waitCondition":"Core review and verification gaps take priority.","reentryCondition":"Begin after VERIFY-004 and release gates are ready.","dependencies":["VERIFY-004"],"evidenceIds":[]
     },
     {
-      "id": "ENGINE-003",
-      "title": "Add queue, backpressure, priority, and global drift controls",
-      "stream": "execution-engine",
-      "status": "planned",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-20",
-      "nextAction": "Implement deduplication, repository leases, admission backpressure, priority lanes, then broader drift reconciliation.",
-      "waitCondition": "Single-repository customer and verifier loops must be proven first.",
-      "reentryCondition": "Begin after GTM-001 and VERIFY-004.",
-      "dependencies": [
-        "GTM-001",
-        "VERIFY-004"
-      ],
-      "evidenceIds": []
+      "id":"ENGINE-003","title":"Add queue, backpressure, priority, and global drift controls","stream":"execution-engine","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-10-20",
+      "nextAction":"Implement deduplication, repository leases, admission backpressure, priority lanes, then broader drift reconciliation.","waitCondition":"Single-repository customer and verifier loops must be proven first.","reentryCondition":"Begin after GTM-001 and VERIFY-004.","dependencies":["GTM-001","VERIFY-004"],"evidenceIds":[]
     },
     {
-      "id": "VERIFY-005",
-      "title": "Add managed verifier keys and external anchoring",
-      "stream": "verification",
-      "status": "deferred",
-      "owner": "Proof & State maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-11-30",
-      "nextAction": "Design key lifecycle, revocation, trust registry, and anchoring without letting DoneState mint verification authority.",
-      "waitCondition": "The pinned-key path must be proven live first.",
-      "reentryCondition": "Resume when multiple verifiers or customers require managed trust.",
-      "dependencies": [
-        "VERIFY-004",
-        "GTM-001"
-      ],
-      "evidenceIds": []
+      "id":"VERIFY-005","title":"Add managed verifier keys and external anchoring","stream":"verification","status":"deferred","owner":"Proof & State maintainers","lastUpdated":"2026-08-30","staleDate":"2026-11-30",
+      "nextAction":"Design key lifecycle, revocation, trust registry, and anchoring without letting DoneState mint verification authority.","waitCondition":"The pinned-key path must be proven live first.","reentryCondition":"Resume when multiple verifiers or customers require managed trust.","dependencies":["VERIFY-004","GTM-001"],"evidenceIds":[]
     },
     {
-      "id": "AUTH-001",
-      "title": "Preserve deployment and publication authority gates",
-      "stream": "governance",
-      "status": "deferred",
-      "owner": "Publisher owner",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-12-01",
-      "nextAction": "Define separate deploy, release, and publication envelopes before adding any autonomous path.",
-      "waitCondition": "No current authority permits autonomous deployment or publication.",
-      "reentryCondition": "Resume after an explicit consequence-boundary decision and rollback evidence.",
-      "dependencies": [
-        "RELEASE-001"
-      ],
-      "evidenceIds": []
+      "id":"AUTH-001","title":"Preserve deployment and publication authority gates","stream":"governance","status":"deferred","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-12-01",
+      "nextAction":"Define separate deploy, release, and publication envelopes before adding any autonomous path.","waitCondition":"No current authority permits autonomous deployment or publication.","reentryCondition":"Resume after an explicit consequence-boundary decision and rollback evidence.","dependencies":["RELEASE-001"],"evidenceIds":[]
     },
     {
-      "id": "FLEET-001",
-      "title": "Add multi-repository and fleet governance last",
-      "stream": "product",
-      "status": "deferred",
-      "owner": "Proof & State maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2027-01-15",
-      "nextAction": "Specify policy inheritance, isolation, observability, and controlled rollout after single-repository gates.",
-      "waitCondition": "The product invariant requires fleet authority to remain last.",
-      "reentryCondition": "Resume after private repositories, queue controls, verifier keys, and customer value are proven.",
-      "dependencies": [
-        "PRIVATE-001",
-        "ENGINE-003",
-        "VERIFY-005"
-      ],
-      "evidenceIds": []
+      "id":"FLEET-001","title":"Add multi-repository and fleet governance last","stream":"product","status":"deferred","owner":"Proof & State maintainers","lastUpdated":"2026-08-30","staleDate":"2027-01-15",
+      "nextAction":"Specify policy inheritance, isolation, observability, and controlled rollout after single-repository gates.","waitCondition":"The product invariant requires fleet authority to remain last.","reentryCondition":"Resume after private repositories, queue controls, verifier keys, and customer value are proven.","dependencies":["PRIVATE-001","ENGINE-003","VERIFY-005"],"evidenceIds":[]
     },
     {
-      "id": "ADAPTER-001",
-      "title": "Keep CrabBox and ClawPatch evidence-gated",
-      "stream": "execution-engine",
-      "status": "deferred",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2027-01-15",
-      "nextAction": "Record an unmet requirement before selecting either adapter.",
-      "waitCondition": "No evidence currently justifies either adapter.",
-      "reentryCondition": "Resume only with a named requirement and comparative proof.",
-      "dependencies": [
-        "GTM-001"
-      ],
-      "evidenceIds": []
+      "id":"ADAPTER-001","title":"Keep CrabBox and ClawPatch evidence-gated","stream":"execution-engine","status":"deferred","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2027-01-15",
+      "nextAction":"Record an unmet requirement before selecting either adapter.","waitCondition":"No evidence currently justifies either adapter.","reentryCondition":"Resume only with a named requirement and comparative proof.","dependencies":["GTM-001"],"evidenceIds":[]
     },
     {
-      "id": "OPENAI-001",
-      "title": "Close the OpenAI review and legacy transport",
-      "stream": "distribution",
-      "status": "blocked",
-      "owner": "Publisher owner",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-15",
-      "nextAction": "Record the version 0.2.0 decision, then retire workers.dev callback/transport only when review no longer needs them.",
-      "waitCondition": "OpenAI version 0.2.0 remains in Review.",
-      "reentryCondition": "Resume when OpenAI sends a decision.",
-      "dependencies": [],
-      "evidenceIds": [
-        "E-005"
-      ]
+      "id":"OPENAI-001","title":"Close the OpenAI review and legacy transport","stream":"distribution","status":"blocked","owner":"Publisher owner","lastUpdated":"2026-08-30","staleDate":"2026-09-15",
+      "nextAction":"Record the version 0.2.0 decision, then retire workers.dev callback/transport only when review no longer needs them.","waitCondition":"OpenAI version 0.2.0 remains in Review.","reentryCondition":"Resume when OpenAI sends a decision.","dependencies":[],"evidenceIds":["E-005"]
     },
     {
-      "id": "UPSTREAM-001",
-      "title": "Decide the upstream Codex OAuth reliability contribution",
-      "stream": "ecosystem",
-      "status": "deferred",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-11-01",
-      "nextAction": "Produce a reproducer, confirm upstream behavior, and contribute only if the defect remains.",
-      "waitCondition": "No AyobamiH pull request records this work in openai/codex.",
-      "reentryCondition": "Resume after Marketplace and verification recovery close.",
-      "dependencies": [
-        "VERIFY-004"
-      ],
-      "evidenceIds": []
+      "id":"UPSTREAM-001","title":"Decide the upstream Codex OAuth reliability contribution","stream":"ecosystem","status":"deferred","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-11-01",
+      "nextAction":"Produce a reproducer, confirm upstream behavior, and contribute only if the defect remains.","waitCondition":"No AyobamiH pull request records this work in openai/codex.","reentryCondition":"Resume after Marketplace and verification recovery close.","dependencies":["VERIFY-004"],"evidenceIds":[]
     },
     {
-      "id": "SKILLS-001",
-      "title": "Extract reusable DoneState skills to ai-prompts",
-      "stream": "ecosystem",
-      "status": "planned",
-      "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-15",
-      "nextAction": "Select stable product-agnostic instructions, remove transient evidence, and open a tracked ai-prompts PR.",
-      "waitCondition": "No matching branch or PR exists in AyobamiH/ai-prompts.",
-      "reentryCondition": "Begin after VERIFY-003.",
-      "dependencies": [
-        "VERIFY-003"
-      ],
-      "evidenceIds": []
+      "id":"SKILLS-001","title":"Extract reusable DoneState skills to ai-prompts","stream":"ecosystem","status":"planned","owner":"DoneState maintainers","lastUpdated":"2026-08-30","staleDate":"2026-10-15",
+      "nextAction":"Select stable product-agnostic instructions, remove transient evidence, and open a tracked ai-prompts PR.","waitCondition":"No matching branch or PR exists in AyobamiH/ai-prompts.","reentryCondition":"Begin after VERIFY-003.","dependencies":["VERIFY-003"],"evidenceIds":[]
     }
   ],
   "evidenceStories": [
     {
-      "id": "E-001",
-      "date": "2026-08-30",
-      "identity": "DoneState Marketplace listing attached to OAuth App 3822030",
-      "situation": "The free public-repository listing completed prerequisites and was submitted for GitHub review.",
-      "verification": "GitHub displayed Thank you for your submission, Pending for publish, and under review; PR 45 merged as 37e049b9d6b6749c2085562ac84f433e40e404e4 and exact post-merge CI passed all three required jobs.",
-      "accountability": {
-        "owner": "Publisher owner",
-        "status": "blocked",
-        "nextAction": "Respond to reviewer feedback and record every state transition.",
-        "waitCondition": "GitHub reviewer decision or request.",
-        "staleDate": "2026-09-15"
-      },
-      "outcome": "The listing is under review, not approved or published.",
-      "content": "Listing copy, legal policies, media, demo, and signed lifecycle webhook.",
-      "measurement": "One signed GitHub ping returned HTTP 200; no live purchased or cancelled event has been observed."
+      "id":"E-001","date":"2026-08-30","identity":"DoneState Marketplace listing attached to OAuth App 3822030","situation":"The free public-repository listing completed prerequisites and was submitted for GitHub review.","verification":"GitHub displayed Thank you for your submission, Pending for publish, and under review; PR 45 merged as 37e049b9d6b6749c2085562ac84f433e40e404e4 and exact post-merge CI passed all three required jobs.",
+      "accountability":{"owner":"Publisher owner","status":"blocked","nextAction":"Respond to reviewer feedback and record every state transition.","waitCondition":"GitHub reviewer decision or request.","staleDate":"2026-09-15"},
+      "outcome":"The listing is under review, not approved or published.","content":"Listing copy, legal policies, media, demo, and signed lifecycle webhook.","measurement":"One signed GitHub ping returned HTTP 200; no live purchased or cancelled event has been observed."
     },
     {
-      "id": "E-002",
-      "date": "2026-08-30",
-      "identity": "Historical hosted canary 631d8a08-d337-4bae-bd18-b55c31f48a8b",
-      "situation": "The hosted path needed evidence beyond repository and deployment state.",
-      "verification": "The historical run reached VERIFIED against source 179e02c1a99dab780cabe09c4f5882e7e492ad18 and workflow 33210941821.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Keep as historical baseline and use a fresh canary for maintenance claims.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
-      },
-      "outcome": "The older public-repository path has one complete canary.",
-      "content": "OAuth, encrypted user-funded key, isolated execution, exact-head publication, reconciliation, and OpsTruth v2 attestation.",
-      "measurement": "One historical run reached VERIFIED; it does not prove the current maintenance path."
+      "id":"E-002","date":"2026-08-30","identity":"Historical hosted canary 631d8a08-d337-4bae-bd18-b55c31f48a8b","situation":"The hosted path needed evidence beyond repository and deployment state.","verification":"The historical run reached VERIFIED against source 179e02c1a99dab780cabe09c4f5882e7e492ad18 and workflow 33210941821.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Keep as historical baseline and use a fresh canary for maintenance claims.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"The older public-repository path has one complete canary.","content":"OAuth, encrypted user-funded key, isolated execution, exact-head publication, reconciliation, and OpsTruth v2 attestation.","measurement":"One historical run reached VERIFIED; it does not prove the current maintenance path."
     },
     {
-      "id": "E-003",
-      "date": "2026-09-01",
-      "identity": "Maintenance canary b4242932-0bc1-4876-a202-634d9c12d72a",
-      "situation": "The private selected-repository App opened DoneState PR 22 at ffec48e6c5abd9cef840ab591896613769d3e779 under a one-file PR-only authority envelope that prohibited DoneState from merging it. The owner later merged the pull request as 4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a; that separate owner action did not retroactively widen the canary authority.",
-      "verification": "PR workflow 33260424569 passed all three required jobs. Earlier OpsTruth attempts returned signed uncertain decisions, and the latest retry failed closed on GitHub's anonymous rate limit. AyobamiH/opstruth-chatgpt-plugin#11 tracks the authenticated read-lane blocker. No publicly evidenced signed terminal decision has been accepted.",
-      "accountability": {
-        "owner": "OpsTruth maintainers",
-        "status": "blocked",
-        "nextAction": "Prove the issue 11 authenticated read lane and independently re-evaluate the exact canary head.",
-        "waitCondition": "A least-privilege verifier path with exact source, CI, deployment, runtime, and signed-result evidence.",
-        "staleDate": "2026-09-09"
-      },
-      "outcome": "PR 22 is owner-merged, while the canary run remains AWAITING_VERIFICATION.",
-      "content": "Historical one-file PR-only authorization, exact PR head and checks, separate owner merge, failed-closed retry, and an explicit independent-verification blocker.",
-      "measurement": "Three PR-head checks passed; one owner merge occurred; zero sound terminal verifier decisions were accepted."
+      "id":"E-003","date":"2026-09-01","identity":"Maintenance canary b4242932-0bc1-4876-a202-634d9c12d72a","situation":"The private selected-repository App opened DoneState PR 22 at ffec48e6c5abd9cef840ab591896613769d3e779 under a one-file PR-only authority envelope that prohibited DoneState from merging it. The owner later merged the pull request as 4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a; that separate owner action did not retroactively widen the canary authority.","verification":"PR workflow 33260424569 passed all three required jobs. Earlier OpsTruth attempts returned signed uncertain decisions, and the latest retry failed closed on GitHub's anonymous rate limit. AyobamiH/opstruth-chatgpt-plugin#11 tracks the authenticated read-lane blocker. No publicly evidenced signed terminal decision has been accepted.",
+      "accountability":{"owner":"OpsTruth maintainers","status":"blocked","nextAction":"Prove the issue 11 authenticated read lane and independently re-evaluate the exact canary head.","waitCondition":"A least-privilege verifier path with exact source, CI, deployment, runtime, and signed-result evidence.","staleDate":"2026-09-09"},
+      "outcome":"PR 22 is owner-merged, while the canary run remains AWAITING_VERIFICATION.","content":"Historical one-file PR-only authorization, exact PR head and checks, separate owner merge, failed-closed retry, and an explicit independent-verification blocker.","measurement":"Three PR-head checks passed; one owner merge occurred; zero sound terminal verifier decisions were accepted."
     },
     {
-      "id": "E-004",
-      "date": "2026-08-30",
-      "identity": "Cross-documentation drift audit",
-      "situation": "Marketplace actions advanced faster than DoneState and Proof & State records.",
-      "verification": "Inspection found contradictory preview, pending-setup, and draft-not-submitted claims after GitHub accepted the review request.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Keep both repository gates green and reopen this audit if exact cross-project state drifts.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
-      },
-      "outcome": "The governance-system defect was corrected with canonical ledgers, generated state, change-impact gates, and exact cross-project synchronization.",
-      "content": "Recovered backlog, statuses, owners, actions, wait/re-entry conditions, stale dates, and evidence.",
-      "measurement": "DoneState PR 46 and Proof & State PR 8 merged; both post-merge governance paths passed."
+      "id":"E-004","date":"2026-08-30","identity":"Cross-documentation drift audit","situation":"Marketplace actions advanced faster than DoneState and Proof & State records.","verification":"Inspection found contradictory preview, pending-setup, and draft-not-submitted claims after GitHub accepted the review request.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Keep both repository gates green and reopen this audit if exact cross-project state drifts.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"The governance-system defect was corrected with canonical ledgers, generated state, change-impact gates, and exact cross-project synchronization.","content":"Recovered backlog, statuses, owners, actions, wait/re-entry conditions, stale dates, and evidence.","measurement":"DoneState PR 46 and Proof & State PR 8 merged; both post-merge governance paths passed."
     },
     {
-      "id": "E-005",
-      "date": "2026-08-30",
-      "identity": "DoneState OpenAI directory version 0.2.0",
-      "situation": "The plugin was submitted under AYOBAMI JOHN HAASTRUP.",
-      "verification": "The status page reported Review after submission materials and reviewer access were saved.",
-      "accountability": {
-        "owner": "Publisher owner",
-        "status": "blocked",
-        "nextAction": "Record the decision and retire legacy transport when safe.",
-        "waitCondition": "OpenAI reviewer decision.",
-        "staleDate": "2026-09-15"
-      },
-      "outcome": "Version 0.2.0 is in review, not approved or published.",
-      "content": "MCP submission, media, prompts, cases, annotations, challenge route, and read-only reviewer account.",
-      "measurement": "One version submitted; zero approval or publication decisions recorded."
+      "id":"E-005","date":"2026-08-30","identity":"DoneState OpenAI directory version 0.2.0","situation":"The plugin was submitted under AYOBAMI JOHN HAASTRUP.","verification":"The status page reported Review after submission materials and reviewer access were saved.",
+      "accountability":{"owner":"Publisher owner","status":"blocked","nextAction":"Record the decision and retire legacy transport when safe.","waitCondition":"OpenAI reviewer decision.","staleDate":"2026-09-15"},
+      "outcome":"Version 0.2.0 is in review, not approved or published.","content":"MCP submission, media, prompts, cases, annotations, challenge route, and read-only reviewer account.","measurement":"One version submitted; zero approval or publication decisions recorded."
     },
     {
-      "id": "E-006",
-      "date": "2026-08-30",
-      "identity": "Self-documenting governance merge",
-      "situation": "Marketplace submission exposed that external actions could outpace several manual project documents.",
-      "verification": "DoneState PR 46 merged as 364cf86e48cc9715c149867cbe0a5f5ac3899753 from exact tree 843bf3dce837010993d31f96d2c59ee15ac604c6; PR workflow 33329584126 and post-merge workflow 33329629870 passed core 22, core 24, and hosted-plugin, including the governance impact step.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Use the ledger and generated state for every consequential change.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
-      },
-      "outcome": "The recovered backlog has one canonical source, generated human view, CI change-impact gate, PR template, and scheduled freshness check.",
-      "content": "Seven recovery stages, thirty-two work items, required accountability fields, evidence stories, stale-date enforcement, and separate-state language.",
-      "measurement": "One governance PR merged; two exact CI runs passed; one negative stale-date test failed as designed."
+      "id":"E-006","date":"2026-08-30","identity":"Self-documenting governance merge","situation":"Marketplace submission exposed that external actions could outpace several manual project documents.","verification":"DoneState PR 46 merged as 364cf86e48cc9715c149867cbe0a5f5ac3899753 from exact tree 843bf3dce837010993d31f96d2c59ee15ac604c6; PR workflow 33329584126 and post-merge workflow 33329629870 passed core 22, core 24, and hosted-plugin, including the governance impact step.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Use the ledger and generated state for every consequential change.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"The recovered backlog has one canonical source, generated human view, CI change-impact gate, PR template, and scheduled freshness check.","content":"Seven recovery stages, thirty-two work items, required accountability fields, evidence stories, stale-date enforcement, and separate-state language.","measurement":"One governance PR merged; two exact CI runs passed; one negative stale-date test failed as designed."
     },
     {
-      "id": "E-007",
-      "date": "2026-08-30",
-      "identity": "Marketplace review-hardening deployment",
-      "situation": "The submitted listing needed monotonic lifecycle state, full transition tests, accurate public language, and an operational incident process.",
-      "verification": "DoneState PR 47 merged as ac54dcaa2df2b4211814a076036cc2b3f3ace8a6 from exact tree aacf05144ff0edf2d460f6b9702a4454a35809ab; PR workflow 33330031280 and post-merge workflow 33330067769 passed all three jobs; deployment 33330067776 published Cloudflare version c3c3dd14-512d-4ee5-a25a-f44914c00654; live probes returned root HTTP 200 and webhook GET HTTP 405.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Monitor real Marketplace lifecycle evidence and keep LEGAL-001 visible.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
-      },
-      "outcome": "Reviewer-facing state is aligned, incident response is published, and stale Marketplace events cannot roll entitlement state backward.",
-      "content": "Atomic effectiveAt guard, five lifecycle actions, duplicates, out-of-order delivery, 80 Worker tests, documentation closure, and incident/support runbook.",
-      "measurement": "One hardening PR merged; three CI runs passed across PR and post-merge lanes; one deployment passed; two live read-only probes matched expected routing."
+      "id":"E-007","date":"2026-08-30","identity":"Marketplace review-hardening deployment","situation":"The submitted listing needed monotonic lifecycle state, full transition tests, accurate public language, and an operational incident process.","verification":"DoneState PR 47 merged as ac54dcaa2df2b4211814a076036cc2b3f3ace8a6 from exact tree aacf05144ff0edf2d460f6b9702a4454a35809ab; PR workflow 33330031280 and post-merge workflow 33330067769 passed all three jobs; deployment 33330067776 published Cloudflare version c3c3dd14-512d-4ee5-a25a-f44914c00654; live probes returned root HTTP 200 and webhook GET HTTP 405.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Monitor real Marketplace lifecycle evidence and keep LEGAL-001 visible.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"Reviewer-facing state is aligned, incident response is published, and stale Marketplace events cannot roll entitlement state backward.","content":"Atomic effectiveAt guard, five lifecycle actions, duplicates, out-of-order delivery, 80 Worker tests, documentation closure, and incident/support runbook.","measurement":"One hardening PR merged; three CI runs passed across PR and post-merge lanes; one deployment passed; two live read-only probes matched expected routing."
     },
     {
-      "id": "E-008",
-      "date": "2026-08-30",
-      "identity": "Proof & State self-documenting portfolio synchronization",
-      "situation": "The portfolio registry and roadmap needed exact DoneState subjects and an automated closure rule after Marketplace work had outpaced manual records.",
-      "verification": "Proof & State PR 8 merged as 911949934fc9c6cb40cd24ffa4d594aa5ca0d44a from exact tree ccaf4931ac1c9dfa4fa3b8882b37c1b1e3f0cc85; PR workflow 33330727848 and post-merge Governance workflow 33330807325 passed generated-state and governance-impact checks. The portfolio ledger pins DoneState at b8caff89d3be82f3367e3a3ba039f0ce264045df.",
-      "accountability": {
-        "owner": "Proof & State maintainers",
-        "status": "complete",
-        "nextAction": "Update exact subjects in the same change as each later portfolio transition.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
-      },
-      "outcome": "Proof & State now generates portfolio state from a canonical ledger and rejects consequential changes that omit governance updates.",
-      "content": "Product registry, status, roadmap, evidence index, exact DoneState source pointer, recovered gaps, PR template, weekly freshness check, and change-impact gate.",
-      "measurement": "One synchronization PR merged; two exact workflow runs passed; one DoneState source ledger pinned."
+      "id":"E-008","date":"2026-08-30","identity":"Proof & State self-documenting portfolio synchronization","situation":"The portfolio registry and roadmap needed exact DoneState subjects and an automated closure rule after Marketplace work had outpaced manual records.","verification":"Proof & State PR 8 merged as 911949934fc9c6cb40cd24ffa4d594aa5ca0d44a from exact tree ccaf4931ac1c9dfa4fa3b8882b37c1b1e3f0cc85; PR workflow 33330727848 and post-merge Governance workflow 33330807325 passed generated-state and governance-impact checks. The portfolio ledger pins DoneState at b8caff89d3be82f3367e3a3ba039f0ce264045df.",
+      "accountability":{"owner":"Proof & State maintainers","status":"complete","nextAction":"Update exact subjects in the same change as each later portfolio transition.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"Proof & State now generates portfolio state from a canonical ledger and rejects consequential changes that omit governance updates.","content":"Product registry, status, roadmap, evidence index, exact DoneState source pointer, recovered gaps, PR template, weekly freshness check, and change-impact gate.","measurement":"One synchronization PR merged; two exact workflow runs passed; one DoneState source ledger pinned."
     },
     {
-      "id": "E-009",
-      "date": "2026-08-30",
-      "identity": "DoneState Marketplace development OAuth App 3826463 and draft listing donestate-marketplace-development",
-      "situation": "Real Marketplace lifecycle testing needed a runtime, state, credentials, app and listing separated from the submitted production listing and the private maintenance GitHub App.",
-      "verification": "DoneState PR 49 merged as 34145185aa8703fd60d76049ce4e87475a78c132 from exact tree d6ae69a4d3b2a62407475316aa20df46ab7907a6. Post-merge CI 33331882626 passed all three jobs. Production deployment 33331882611 published version 7b4fa2fa-201f-4bd9-8746-4d911cb8d9d4. Development run 33331882593 attempt 2 validated the three development repository-secret inputs and published donestate-mcp-development version be499906-19d4-4340-a968-e62aa5dc28d7. GitHub accepted signed ping 13cd1ca8-a4b8-11f1-888d-aba6875c1ba2 and purchased delivery 90c3e110-a4b8-11f1-8357-8b375ae56683 for OAuth App 3826463 and draft listing donestate-marketplace-development. Cancellation delivery 90b920c0-a4ba-11f1-852b-f37103c46ff2 originally returned HTTP 503 during the E-010 credential-target incident; after E-011 deployed, one controlled redelivery returned HTTP 202 with currentState CANCELLED and currentEffectiveAt 2026-08-30T00:00:00.000Z. Evidence PR 51 merged as ecf2cb753ee9ccaaa0fe63ffb301d2633978cbe3 from tree c788d790f920bd8bbb568a9502587f2980039b57; PR CI 33337319451 and post-merge CI 33337369603 passed. E-010 separately records discovery and recovery of the secret-upload target defect.",
-      "accountability": {
-        "owner": "Publisher owner",
-        "status": "active",
-        "nextAction": "Complete live changed, pending_change, and pending_change_cancelled coverage.",
-        "waitCondition": "Three live transition results remain; purchase and cancellation are recorded.",
-        "staleDate": "2026-09-12"
-      },
-      "outcome": "The separate development app and owner-only draft listing have exact ping, purchase, and accepted cancellation evidence; credential isolation is recovered under E-010, while the remaining live transitions keep the lifecycle exit criterion open.",
-      "content": "Development-only runtime and state, OAuth App and draft listing identities, credential names, zero-cost Development Test plan, route allowlist, exact ping, purchase, accepted cancellation receipt, and explicit remaining proof gaps.",
-      "measurement": "One ping, one purchased delivery, and one cancellation delivery with final CANCELLED state are recorded; recovered runtime isolation passes live probes; changed and pending-change results remain unrecorded."
+      "id":"E-009","date":"2026-08-30","identity":"DoneState Marketplace development OAuth App 3826463 and draft listing donestate-marketplace-development","situation":"Real Marketplace lifecycle testing needed a runtime, state, credentials, app and listing separated from the submitted production listing and the private maintenance GitHub App.","verification":"DoneState PR 49 merged as 34145185aa8703fd60d76049ce4e87475a78c132 from exact tree d6ae69a4d3b2a62407475316aa20df46ab7907a6. Post-merge CI 33331882626 passed all three jobs. Production deployment 33331882611 published version 7b4fa2fa-201f-4bd9-8746-4d911cb8d9d4. Development run 33331882593 attempt 2 validated the three development repository-secret inputs and published donestate-mcp-development version be499906-19d4-4340-a968-e62aa5dc28d7. GitHub accepted signed ping 13cd1ca8-a4b8-11f1-888d-aba6875c1ba2 and purchased delivery 90c3e110-a4b8-11f1-8357-8b375ae56683 for OAuth App 3826463 and draft listing donestate-marketplace-development. Cancellation delivery 90b920c0-a4ba-11f1-852b-f37103c46ff2 originally returned HTTP 503 during the E-010 credential-target incident; after E-011 deployed, one controlled redelivery returned HTTP 202 with currentState CANCELLED and currentEffectiveAt 2026-08-30T00:00:00.000Z. Evidence PR 51 merged as ecf2cb753ee9ccaaa0fe63ffb301d2633978cbe3 from tree c788d790f920bd8bbb568a9502587f2980039b57; PR CI 33337319451 and post-merge CI 33337369603 passed. E-010 separately records discovery and recovery of the secret-upload target defect.",
+      "accountability":{"owner":"Publisher owner","status":"active","nextAction":"Complete live changed, pending_change, and pending_change_cancelled coverage.","waitCondition":"Three live transition results remain; purchase and cancellation are recorded.","staleDate":"2026-09-12"},
+      "outcome":"The separate development app and owner-only draft listing have exact ping, purchase, and accepted cancellation evidence; credential isolation is recovered under E-010, while the remaining live transitions keep the lifecycle exit criterion open.","content":"Development-only runtime and state, OAuth App and draft listing identities, credential names, zero-cost Development Test plan, route allowlist, exact ping, purchase, accepted cancellation receipt, and explicit remaining proof gaps.","measurement":"One ping, one purchased delivery, and one cancellation delivery with final CANCELLED state are recorded; recovered runtime isolation passes live probes; changed and pending-change results remain unrecorded."
     },
     {
-      "id": "E-010",
-      "date": "2026-08-30",
-      "identity": "Marketplace development secret-target isolation incident",
-      "situation": "The first development deployment succeeded at the runtime layer, but the action's generic secret uploader resolved the production Worker name instead of the development config name.",
-      "verification": "Development run 33331882593 attempt 2 logged secret processing for Worker donestate-mcp before deploying donestate-mcp-development. Read-only probes at 2026-08-30T21:42Z returned root HTTP 200, /mcp HTTP 404, and unsigned POST /webhooks/github-marketplace HTTP 503. Recovery PR 52 merged as f10fabc7501e8ed86b5136c465f00a3560d62f7a from exact tree 83299fb9d55c7f2487a644d932eaf1b9d10c35ea; PR CI 33337515371 and post-merge CI 33337554919 passed all three jobs. Development run 33337554945, job 99327095747, explicitly processed secrets for donestate-mcp-development, deployed version 69e76740-b9b6-48ea-a979-34e04acbc47b, and passed root 200, MCP 404, unsigned-webhook 401, and OAuth-start 302 assertions. Production run 33337555133, job 99327096294, restored the production secret set to donestate-mcp and deployed version fd8fe1b0-81bd-4ba6-aa84-b288ea9bc583. Independent follow-up probes returned development 200/404/401 and production root 200 plus unsigned-webhook 401.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Keep development deployments explicit and preserve target-name plus live-route assertions.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
-      },
-      "outcome": "Development credentials now target only the development Worker, production credentials were independently restored, and the temporary automatic recovery trigger was removed.",
-      "content": "Explicit development secret bulk target, target-name inventory check, independent production restoration, manual-only steady-state deployment, and live root, MCP, unsigned-webhook, and OAuth-start probes.",
-      "measurement": "One incident found and recovered; three CI jobs, two deployments, four development assertions, three direct development probes, and two direct production probes passed."
+      "id":"E-010","date":"2026-08-30","identity":"Marketplace development secret-target isolation incident","situation":"The first development deployment succeeded at the runtime layer, but the action's generic secret uploader resolved the production Worker name instead of the development config name.","verification":"Development run 33331882593 attempt 2 logged secret processing for Worker donestate-mcp before deploying donestate-mcp-development. Read-only probes at 2026-08-30T21:42Z returned root HTTP 200, /mcp HTTP 404, and unsigned POST /webhooks/github-marketplace HTTP 503. Recovery PR 52 merged as f10fabc7501e8ed86b5136c465f00a3560d62f7a from exact tree 83299fb9d55c7f2487a644d932eaf1b9d10c35ea; PR CI 33337515371 and post-merge CI 33337554919 passed all three jobs. Development run 33337554945, job 99327095747, explicitly processed secrets for donestate-mcp-development, deployed version 69e76740-b9b6-48ea-a979-34e04acbc47b, and passed root 200, MCP 404, unsigned-webhook 401, and OAuth-start 302 assertions. Production run 33337555133, job 99327096294, restored the production secret set to donestate-mcp and deployed version fd8fe1b0-81bd-4ba6-aa84-b288ea9bc583. Independent follow-up probes returned development 200/404/401 and production root 200 plus unsigned-webhook 401.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Keep development deployments explicit and preserve target-name plus live-route assertions.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"Development credentials now target only the development Worker, production credentials were independently restored, and the temporary automatic recovery trigger was removed.","content":"Explicit development secret bulk target, target-name inventory check, independent production restoration, manual-only steady-state deployment, and live root, MCP, unsigned-webhook, and OAuth-start probes.","measurement":"One incident found and recovered; three CI jobs, two deployments, four development assertions, three direct development probes, and two direct production probes passed."
     },
     {
-      "id": "E-011",
-      "date": "2026-08-30",
-      "identity": "Privacy-minimal Marketplace lifecycle response receipt",
-      "situation": "GitHub delivery IDs alone did not expose the resulting isolated entitlement, while a public diagnostics endpoint or additional evidence credential would widen the development surface.",
-      "verification": "PR 55 merged as 1d6f2144d2fd84b9f241834dabc6ba50466b7555 after PR CI 33339529661 passed all three jobs. Post-merge CI 33339639434 passed separately. Production deployment 33339639417 published version 774f0298-062f-4442-96d4-e2d52d7b1f94. Manual development run 33339800955, job 99333252695, passed 98 Worker tests, the development dry run, explicit secret targeting, deployment version b09b3849-eab3-4be4-a405-b61449e4801b, and four route assertions. GitHub cancellation redelivery 90b920c0-a4ba-11f1-852b-f37103c46ff2 returned HTTP 202 in 1.14 seconds at 2026-08-30T22:43:17Z with schema donestate.marketplace-webhook-receipt.v1, action cancelled, duplicate false, stale false, currentState CANCELLED, and currentEffectiveAt 2026-08-30T00:00:00.000Z; the response contained no account or plan identity.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve the versioned privacy boundary and use the same receipt contract for the three remaining development transitions.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
-      },
-      "outcome": "Signed Marketplace lifecycle ingestion now returns a deterministic non-personal evidence contract without adding a public state reader or reusing a secret.",
-      "content": "Versioned response schema, truthful duplicate semantics, current entitlement state, privacy exclusions, transition tests, separate deployment evidence, and one live cancellation receipt.",
-      "measurement": "One response contract, one privacy test, 98 passing Worker tests, two successful three-job CI runs, two successful deployments, four development route assertions, and one live HTTP 202 cancellation receipt are recorded."
+      "id":"E-011","date":"2026-08-30","identity":"Privacy-minimal Marketplace lifecycle response receipt","situation":"GitHub delivery IDs alone did not expose the resulting isolated entitlement, while a public diagnostics endpoint or additional evidence credential would widen the development surface.","verification":"PR 55 merged as 1d6f2144d2fd84b9f241834dabc6ba50466b7555 after PR CI 33339529661 passed all three jobs. Post-merge CI 33339639434 passed separately. Production deployment 33339639417 published version 774f0298-062f-4442-96d4-e2d52d7b1f94. Manual development run 33339800955, job 99333252695, passed 98 Worker tests, the development dry run, explicit secret targeting, deployment version b09b3849-eab3-4be4-a405-b61449e4801b, and four route assertions. GitHub cancellation redelivery 90b920c0-a4ba-11f1-852b-f37103c46ff2 returned HTTP 202 in 1.14 seconds at 2026-08-30T22:43:17Z with schema donestate.marketplace-webhook-receipt.v1, action cancelled, duplicate false, stale false, currentState CANCELLED, and currentEffectiveAt 2026-08-30T00:00:00.000Z; the response contained no account or plan identity.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Preserve the versioned privacy boundary and use the same receipt contract for the three remaining development transitions.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"Signed Marketplace lifecycle ingestion now returns a deterministic non-personal evidence contract without adding a public state reader or reusing a secret.","content":"Versioned response schema, truthful duplicate semantics, current entitlement state, privacy exclusions, transition tests, separate deployment evidence, and one live cancellation receipt.","measurement":"One response contract, one privacy test, 98 passing Worker tests, two successful three-job CI runs, two successful deployments, four development route assertions, and one live HTTP 202 cancellation receipt are recorded."
     },
     {
-      "id": "E-012",
-      "date": "2026-09-01",
-      "identity": "Maintenance-canary merge governance incident and recovery",
-      "situation": "PR 22 changed docs/MAINTENANCE-CANARY.md without changing the canonical project ledger, and the owner merged it after the PR-only canary checks had passed.",
-      "verification": "Historical workflow 33474288066 failed core (22) exactly as recorded. The truth repair then merged in PR 58 as 044bf9886737ac12d8a0f8adaeb97d5cce6b80ee with successful post-merge CI 33489837532. The governance proposal later merged in PR 62 as 32f045850c8d9f04f60b38fa9ced6ea83c377dc9, and post-merge CI 33520196979 passed hosted-plugin, core (22), and core (24). The historical maintenance run remains AWAITING_VERIFICATION; recovery of repository governance does not manufacture verifier success.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve the historical red run and keep governance impact coupled to every consequential change.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
-      },
-      "outcome": "The default branch recovered to green exact-main CI while the original canary verifier outcome remains truthfully unproven.",
-      "content": "Historical failure, exact repair and governance merge commits, two green post-merge CI runs, preserved PR-only authority, and unchanged verifier history.",
-      "measurement": "One historical red workflow, two later owner merges with green post-merge CI, three successful required jobs at current main, and zero rewritten verifier decisions are recorded."
+      "id":"E-012","date":"2026-09-01","identity":"Maintenance-canary merge governance incident and recovery","situation":"PR 22 changed docs/MAINTENANCE-CANARY.md without changing the canonical project ledger, and the owner merged it after the PR-only canary checks had passed.","verification":"Historical workflow 33474288066 failed core (22) exactly as recorded. The truth repair then merged in PR 58 as 044bf9886737ac12d8a0f8adaeb97d5cce6b80ee with successful post-merge CI 33489837532. The governance proposal later merged in PR 62 as 32f045850c8d9f04f60b38fa9ced6ea83c377dc9, and post-merge CI 33520196979 passed hosted-plugin, core (22), and core (24). The historical maintenance run remains AWAITING_VERIFICATION; recovery of repository governance does not manufacture verifier success.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Preserve the historical red run and keep governance impact coupled to every consequential change.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"The default branch recovered to green exact-main CI while the original canary verifier outcome remains truthfully unproven.","content":"Historical failure, exact repair and governance merge commits, two green post-merge CI runs, preserved PR-only authority, and unchanged verifier history.","measurement":"One historical red workflow, two later owner merges with green post-merge CI, three successful required jobs at current main, and zero rewritten verifier decisions are recorded."
     },
     {
-      "id": "E-013",
-      "date": "2026-09-01",
-      "identity": "DoneState GitHub Marketplace submission remains Pending for publish",
-      "situation": "E-001 records the 30 August submission and review state. The owner-authenticated preview looked like a public listing, so stronger provider-boundary evidence was required before making a publication or discoverability claim.",
-      "verification": "On 1 September 2026, the sudo-authenticated page at https://github.com/marketplace/donestate/edit showed Overview status Pending for publish, offered a Withdraw request action, and stated: This listing has not been published to Marketplace. This listing is a draft and has not yet been published on GitHub Marketplace. The owner-authenticated preview at https://github.com/marketplace/donestate displayed DoneState, provider AyobamiH, Add, Install it for free, a $0 Public repositories plan, and 1 install. An unauthenticated exact Marketplace search returned no result. The authenticated page at https://github.com/marketplace/manage listed both production and development listings, which is owner inventory rather than public evidence. Separately, https://platform.openai.com/plugins still displayed DoneState 0.2.0 as Review.",
-      "accountability": {
-        "owner": "Publisher owner",
-        "status": "blocked",
-        "nextAction": "Wait for a GitHub review decision, respond to any provider feedback, and record an unauthenticated listing read-back before claiming publication or discoverability.",
-        "waitCondition": "The submission is Pending for publish and explicitly unpublished; owner preview content, authenticated inventory, and the displayed 1 install do not establish public availability, webhook delivery, entitlement state, OAuth completion, repository selection, execution, billing, retention, or user outcome.",
-        "staleDate": "2026-09-15"
-      },
-      "outcome": "The production submission remains SUBMITTED / IN_REVIEW, Pending for publish, draft, and unpublished. The owner preview shows the listing content and a displayed count of 1, not public discoverability or a public install. OpenAI version 0.2.0 separately remains in Review.",
-      "content": "Authenticated submission status, draft and unpublished notice, Withdraw request control, owner-preview identity and content, unauthenticated search result, authenticated listing inventory, separate OpenAI review state, and explicit proof gaps.",
-      "measurement": "One authenticated edit-state read-back, one owner preview, one authenticated inventory, and one unauthenticated exact search were assessed; the preview displayed 1 install, while public listing availability was not evidenced."
+      "id":"E-013","date":"2026-09-01","identity":"DoneState GitHub Marketplace submission remains Pending for publish","situation":"E-001 records the 30 August submission and review state. The owner-authenticated preview looked like a public listing, so stronger provider-boundary evidence was required before making a publication or discoverability claim.","verification":"On 1 September 2026, the sudo-authenticated page at https://github.com/marketplace/donestate/edit showed Overview status Pending for publish, offered a Withdraw request action, and stated: This listing has not been published to Marketplace. This listing is a draft and has not yet been published on GitHub Marketplace. The owner-authenticated preview at https://github.com/marketplace/donestate displayed DoneState, provider AyobamiH, Add, Install it for free, a $0 Public repositories plan, and 1 install. An unauthenticated exact Marketplace search returned no result. The authenticated page at https://github.com/marketplace/manage listed both production and development listings, which is owner inventory rather than public evidence. Separately, https://platform.openai.com/plugins still displayed DoneState 0.2.0 as Review.",
+      "accountability":{"owner":"Publisher owner","status":"blocked","nextAction":"Wait for a GitHub review decision, respond to any provider feedback, and record an unauthenticated listing read-back before claiming publication or discoverability.","waitCondition":"The submission is Pending for publish and explicitly unpublished; owner preview content, authenticated inventory, and the displayed 1 install do not establish public availability, webhook delivery, entitlement state, OAuth completion, repository selection, execution, billing, retention, or user outcome.","staleDate":"2026-09-15"},
+      "outcome":"The production submission remains SUBMITTED / IN_REVIEW, Pending for publish, draft, and unpublished. The owner preview shows the listing content and a displayed count of 1, not public discoverability or a public install. OpenAI version 0.2.0 separately remains in Review.","content":"Authenticated submission status, draft and unpublished notice, Withdraw request control, owner-preview identity and content, unauthenticated search result, authenticated listing inventory, separate OpenAI review state, and explicit proof gaps.","measurement":"One authenticated edit-state read-back, one owner preview, one authenticated inventory, and one unauthenticated exact search were assessed; the preview displayed 1 install, while public listing availability was not evidenced."
     },
     {
-      "id": "E-014",
-      "date": "2026-09-01",
-      "identity": "DoneState main governance proposal merged but provider enforcement remains unapplied",
-      "situation": "Issue 60 required an enforceable main-only governance design without granting the review lane authority to alter GitHub settings or invent an independent reviewer.",
-      "verification": "PR 62 merged the disabled proposal as current main 32f045850c8d9f04f60b38fa9ced6ea83c377dc9. Exact post-merge CI 33520196979 passed hosted-plugin, core (22), and core (24). A fresh GitHub branch read-back on 1 September 2026 still reports protected=false and required-status enforcement=off. The proposal therefore exists in-repository but is not active provider protection.",
-      "accountability": {
-        "owner": "Repository owner",
-        "status": "blocked",
-        "nextAction": "Name a second trusted human reviewer, accept the qualifying provider access model, explicitly approve activation of the checked-in proposal, then record the exact ruleset and test-PR read-back.",
-        "waitCondition": "Main remains UNPROTECTED, no second trusted human reviewer is named, and no provider settings action is authorized by the review-only implementation.",
-        "staleDate": "2026-09-08"
-      },
-      "outcome": "The governance design and tests are merged and current main is green, while provider enforcement remains truthfully BLOCKED_OWNER_ACTION rather than implied by repository configuration.",
-      "content": "Current main identity, green post-merge CI, disabled ruleset proposal, CODEOWNERS surface, provider protected=false read-back, human-review boundary, and activation gates.",
-      "measurement": "One current main commit, one green three-job post-merge workflow, one provider protected=false read-back, zero named independent reviewers, zero active ruleset IDs, and zero provider settings changes are recorded."
+      "id":"E-014","date":"2026-09-01","identity":"DoneState main governance proposal merged but provider enforcement remains unapplied","situation":"Issue 60 required an enforceable main-only governance design without granting the review lane authority to alter GitHub settings or invent an independent reviewer.","verification":"PR 62 merged the disabled proposal as current main 32f045850c8d9f04f60b38fa9ced6ea83c377dc9. Exact post-merge CI 33520196979 passed hosted-plugin, core (22), and core (24). A fresh GitHub branch read-back on 1 September 2026 still reports protected=false and required-status enforcement=off. The proposal therefore exists in-repository but is not active provider protection.",
+      "accountability":{"owner":"Repository owner","status":"blocked","nextAction":"Name a second trusted human reviewer, accept the qualifying provider access model, explicitly approve activation of the checked-in proposal, then record the exact ruleset and test-PR read-back.","waitCondition":"Main remains UNPROTECTED, no second trusted human reviewer is named, and no provider settings action is authorized by the review-only implementation.","staleDate":"2026-09-08"},
+      "outcome":"The governance design and tests are merged and current main is green, while provider enforcement remains truthfully BLOCKED_OWNER_ACTION rather than implied by repository configuration.","content":"Current main identity, green post-merge CI, disabled ruleset proposal, CODEOWNERS surface, provider protected=false read-back, human-review boundary, and activation gates.","measurement":"One current main commit, one green three-job post-merge workflow, one provider protected=false read-back, zero named independent reviewers, zero active ruleset IDs, and zero provider settings changes are recorded."
     },
     {
-      "id": "E-015",
-      "date": "2026-09-01",
-      "identity": "Versioned DoneState-to-OpsTruth response contract candidate",
-      "situation": "Issue 59 identified that new hosted verification accepted attestation-only input, discarded the full OpsTruth report, lacked bounded age and replay enforcement, and the local adapter mislabeled verifier uncertainty as an ambiguous mutation effect.",
-      "verification": "The PR 63 candidate introduces contract version donestate.verification-contract.v2, strict report and response schemas, full report-plus-attestation retention, report digest and decision coherence checks, exact sealed subject and requirement coverage, 15-minute maximum age, five-minute future skew, objective-pinned Ed25519 trust, a revocation denylist, durable one-time nonce/handoff claims, verified/failed/uncertain vectors, negative mutations, and a root-state regression keeping uncertainty at AWAITING_VERIFICATION. Local root and Worker gates must pass again on the final PR head; no deployment or live verifier round trip is claimed by this evidence.",
-      "accountability": {
-        "owner": "DoneState and OpsTruth contract maintainers",
-        "status": "active",
-        "nextAction": "Land the review-only DoneState candidate after exact-head CI, implement the matching read-only OpsTruth response envelope against the same vectors, then run a fresh authenticated canary after separate reviewed deployments.",
-        "waitCondition": "Neither contract half is proven live yet; OpsTruth must not self-certify its own contract change and DoneState has no merge or deployment authority in this work item.",
-        "staleDate": "2026-09-15"
-      },
-      "outcome": "The false-evidence boundary is encoded as a review candidate rather than left as prose; live interoperability remains UNPROVEN until both independently reviewed sides are deployed and exercised.",
-      "content": "Version manifest, schemas, full response validation, trust lifecycle, replay storage, uncertainty semantics, shared compatibility vectors, adversarial tests, and explicit legacy adapter boundary.",
-      "measurement": "Three positive decision vectors, at least eight negative mutations, one durable replay table, one new complete-response tool, and root plus hosted regression gates are defined without changing historical outcomes."
+      "id":"E-015","date":"2026-09-01","identity":"Versioned DoneState-to-OpsTruth response contract candidate","situation":"Issue 59 identified that new hosted verification accepted attestation-only input, discarded the full OpsTruth report, lacked bounded age and replay enforcement, and the local adapter mislabeled verifier uncertainty as an ambiguous mutation effect.","verification":"The PR 63 candidate introduces contract version donestate.verification-contract.v2, strict report and response schemas, full report-plus-attestation retention, report digest and decision coherence checks, exact sealed subject and requirement coverage, 15-minute maximum age, five-minute future skew, objective-pinned Ed25519 trust, a revocation denylist, durable one-time nonce/handoff claims, verified/failed/uncertain vectors, negative mutations, and a root-state regression keeping uncertainty at AWAITING_VERIFICATION. Local root and Worker gates must pass again on the final PR head; no deployment or live verifier round trip is claimed by this evidence.",
+      "accountability":{"owner":"DoneState and OpsTruth contract maintainers","status":"active","nextAction":"Land the review-only DoneState candidate after exact-head CI, implement the matching read-only OpsTruth response envelope against the same vectors, then run a fresh authenticated canary after separate reviewed deployments.","waitCondition":"Neither contract half is proven live yet; OpsTruth must not self-certify its own contract change and DoneState has no merge or deployment authority in this work item.","staleDate":"2026-09-15"},
+      "outcome":"The false-evidence boundary is encoded as a review candidate rather than left as prose; live interoperability remains UNPROVEN until both independently reviewed sides are deployed and exercised.","content":"Version manifest, schemas, full response validation, trust lifecycle, replay storage, uncertainty semantics, shared compatibility vectors, adversarial tests, and explicit legacy adapter boundary.","measurement":"Three positive decision vectors, at least eight negative mutations, one durable replay table, one new complete-response tool, and root plus hosted regression gates are defined without changing historical outcomes."
     },
     {
-      "id": "E-016",
-      "date": "2026-09-02",
-      "identity": "Authenticated OpsTruth production activation and hourly fresh-canary cadence",
-      "situation": "The verifier-owned GitHub App secrets were configured and OpsTruth production deployment succeeded, while fresh DoneState issue 64 was eligible for repair but the six-hour maintenance cadence delayed pickup.",
-      "verification": "OpsTruth deployment workflow 33571362136 attempt 2 succeeded on commit ad54c1081d952b133c72f32ccf8d23df0ba937b2; Cloudflare Worker version dff0a2d5-fd50-46dc-9c9a-2c0c8674ad2f passed production smoke with 21 read-only tools and selected-repository GitHub App reads. DoneState issue 64 is open with label donestate:repair and a one-file PR-only canary boundary. This change moves the production maintenance cron from every six hours to hourly without widening repair authority.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Deploy the hourly cadence, let maintenance pick up issue 64, and record the resulting PR, CI, OpsTruth response, and DoneState terminal state.",
-        "waitCondition": "Issue 64 has not yet produced a fresh canary PR and terminal verification read-back.",
-        "staleDate": "2026-09-09"
-      },
-      "outcome": "Authenticated verifier production is proven and the maintenance discovery cadence is being shortened from six hours to one hour; end-to-end live verification remains pending issue 64.",
-      "content": "Exact OpsTruth source and deployment subjects, verifier GitHub App production smoke, bounded DoneState canary issue, hourly cron change, and unchanged PR-only authority boundary.",
-      "measurement": "One successful OpsTruth deployment attempt, one production Worker version, 115 passing OpsTruth tests, one bounded DoneState canary issue, and one cadence change from 6-hour to hourly are recorded."
+      "id":"E-016","date":"2026-09-02","identity":"Authenticated OpsTruth production activation and hourly fresh-canary cadence","situation":"The verifier-owned GitHub App secrets were configured and OpsTruth production deployment succeeded, while fresh DoneState issue 64 was eligible for repair but the six-hour maintenance cadence delayed pickup.","verification":"OpsTruth deployment workflow 33571362136 attempt 2 succeeded on commit ad54c1081d952b133c72f32ccf8d23df0ba937b2; Cloudflare Worker version dff0a2d5-fd50-46dc-9c9a-2c0c8674ad2f passed production smoke with 21 read-only tools and selected-repository GitHub App reads. DoneState issue 64 is open with label donestate:repair and a one-file PR-only canary boundary. This change moves the production maintenance cron from every six hours to hourly without widening repair authority.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Deploy the hourly cadence, let maintenance pick up issue 64, and record the resulting PR, CI, OpsTruth response, and DoneState terminal state.","waitCondition":"Issue 64 has not yet produced a fresh canary PR and terminal verification read-back.","staleDate":"2026-09-09"},
+      "outcome":"Authenticated verifier production is proven and the maintenance discovery cadence is being shortened from six hours to one hour; end-to-end live verification remains pending issue 64.","content":"Exact OpsTruth source and deployment subjects, verifier GitHub App production smoke, bounded DoneState canary issue, hourly cron change, and unchanged PR-only authority boundary.","measurement":"One successful OpsTruth deployment attempt, one production Worker version, 115 passing OpsTruth tests, one bounded DoneState canary issue, and one cadence change from 6-hour to hourly are recorded."
     },
     {
-      "id": "E-017",
-      "date": "2026-09-02",
-      "identity": "Fresh verifier-contract canary exposed autonomous governance-closure and verification-retry gaps",
-      "situation": "After OpsTruth authenticated production activation and hourly DoneState maintenance deployment, issue 64 launched fresh run 5ba4e808-21d1-4937-b1ba-ee5b5d63bade. The run executed Codex and repository validation, published branch donestate/5ba4e808-21d1-4937-b1ba-ee5b5d63bade and opened PR 66 at head eb04f8a980a4bb4d844d7eac939265ca7880e2be with exactly one requested documentation file.",
-      "verification": "PR 66 hosted-plugin and core (24) passed, while core (22) failed only at governance:impact because docs/VERIFICATION-CONTRACT-V2-CANARY.md changed without governance/project-ledger.json and generated docs/PROJECT-STATE.md. Code inspection also confirmed RunCoordinator invokes OpsTruth once immediately after publication but no workflow_run path retries an AWAITING_VERIFICATION exact head after CI completes. The temporary every-minute Cloudflare diagnostic trigger used to force one sweep was removed; production remains hourly.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Teach maintenance execution that repository governance closure outranks conflicting untrusted issue limits, fail governance impact before publication, wire completed workflow exact-head verification retry, deploy, and run a replacement sealed canary.",
-        "waitCondition": "PR 66 is intentionally unmerged evidence of the defects; terminal live interoperability remains unproven until the repaired runtime completes a replacement canary.",
-        "staleDate": "2026-09-09"
-      },
-      "outcome": "The live canary prevented a false success claim and converted two hidden autonomy gaps into exact reproducible repair work without changing historical canaries.",
-      "content": "Fresh run and PR identities, one-file branch evidence, exact CI failure layer, runtime retry-code inspection, temporary scheduler diagnostic provenance, and a bounded repair plan.",
-      "measurement": "One fresh autonomous run executed and published, one PR opened with one file, two CI jobs passed, one deterministic governance gate failed as designed, and two runtime autonomy defects were isolated before merge."
+      "id":"E-017","date":"2026-09-02","identity":"Fresh verifier-contract canary exposed autonomous governance-closure and verification-retry gaps","situation":"After OpsTruth authenticated production activation and hourly DoneState maintenance deployment, issue 64 launched fresh run 5ba4e808-21d1-4937-b1ba-ee5b5d63bade. The run executed Codex and repository validation, published branch donestate/5ba4e808-21d1-4937-b1ba-ee5b5d63bade and opened PR 66 at head eb04f8a980a4bb4d844d7eac939265ca7880e2be with exactly one requested documentation file.","verification":"PR 66 hosted-plugin and core (24) passed, while core (22) failed only at governance:impact because docs/VERIFICATION-CONTRACT-V2-CANARY.md changed without governance/project-ledger.json and generated docs/PROJECT-STATE.md. Code inspection also confirmed RunCoordinator invokes OpsTruth once immediately after publication but no workflow_run path retries an AWAITING_VERIFICATION exact head after CI completes. The temporary every-minute Cloudflare diagnostic trigger used to force one sweep was removed; production remains hourly.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Teach maintenance execution that repository governance closure outranks conflicting untrusted issue limits, fail governance impact before publication, wire completed workflow exact-head verification retry, deploy, and run a replacement sealed canary.","waitCondition":"PR 66 is intentionally unmerged evidence of the defects; terminal live interoperability remains unproven until the repaired runtime completes a replacement canary.","staleDate":"2026-09-09"},
+      "outcome":"The live canary prevented a false success claim and converted two hidden autonomy gaps into exact reproducible repair work without changing historical canaries.","content":"Fresh run and PR identities, one-file branch evidence, exact CI failure layer, runtime retry-code inspection, temporary scheduler diagnostic provenance, and a bounded repair plan.","measurement":"One fresh autonomous run executed and published, one PR opened with one file, two CI jobs passed, one deterministic governance gate failed as designed, and two runtime autonomy defects were isolated before merge."
     },
     {
-      "id": "E-018",
-      "date": "2026-09-02",
-      "identity": "Replacement canary isolated scheduled-delivery dependency",
-      "situation": "Runtime repair PR 67 merged as 92359483968226509d55dc10bf51bc8a3ef3a920 and deployed as Worker 8dd79328-6681-4fb0-8969-0d8b09f30f8e with the canonical hourly trigger. Replacement issue 68 opened at 09:14 UTC with donestate:repair and remained the only new eligible maintenance issue, but no new run branch or pull request appeared through at least eight expected hourly windows.",
-      "verification": "Cloudflare deployment workflow 33612599617 succeeded and its Wrangler output recorded schedule 0 * * * *. GitHub shows issue 68 open and eligible, zero open DoneState pull requests, and no new DoneState run branch after the repaired deployment. Earlier issue 64 required a temporary provider minute trigger before its run was picked up. Source inspection at 92359483968226509d55dc10bf51bc8a3ef3a920 shows signed issue webhooks upsert eligible findings but only scheduledSweep invokes startRepair, making scheduled-event delivery a single point of liveness failure. OpsTruth remains deployed at b25734e9919832854027e8c22b6212b822563f9f / Worker 084fa621-7bbd-4360-b210-a4caeebc8ee0.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Add idempotent event-driven repair dispatch after a valid signed eligible issue webhook, retain hourly scheduledSweep as reconciliation, deploy the repair, then edit issue 68 once to trigger the live replacement canary.",
-        "waitCondition": "The replacement canary has not started because the configured hourly provider event is not delivering the required sweep reliably; do not claim live interoperability until issue 68 produces a new terminally verified run.",
-        "staleDate": "2026-09-09"
-      },
-      "outcome": "The remaining liveness dependency is isolated at the orchestration trigger rather than the verifier contract, GitHub discovery, CI, or PR-only authority layer. Event-driven dispatch restores webhook-first operation while preserving periodic reconciliation and the independent-verifier boundary.",
-      "content": "Exact DoneState deployment and schedule evidence, replacement issue state, absence of a new run or PR, source-level webhook-versus-sweep ownership, idempotent dispatch design, and unchanged PR-only verification authority.",
-      "measurement": "At least eight expected hourly windows passed with one eligible replacement issue and zero resulting runs or pull requests; the repair adds one event-driven dispatch path, one atomic pre-mutation finding claim, and one policy regression while retaining the hourly fallback."
+    "id":"E-018","date":"2026-09-02","identity":"Replacement canary isolated scheduled-delivery dependency","situation":"Runtime repair PR 67 merged as 92359483968226509d55dc10bf51bc8a3ef3a920 and deployed as Worker 8dd79328-6681-4fb0-8969-0d8b09f30f8e with the canonical hourly trigger. Replacement issue 68 opened at 09:14 UTC with donestate:repair and remained the only new eligible maintenance issue, but no new run branch or pull request appeared through at least eight expected hourly windows.","verification":"Cloudflare deployment workflow 33612599617 succeeded and its Wrangler output recorded schedule 0 * * * *. GitHub shows issue 68 open and eligible, zero open DoneState pull requests, and no new DoneState run branch after the repaired deployment. Earlier issue 64 required a temporary provider minute trigger before its run was picked up. Source inspection at 92359483968226509d55dc10bf51bc8a3ef3a920 shows signed issue webhooks upsert eligible findings but only scheduledSweep invokes startRepair, making scheduled-event delivery a single point of liveness failure. OpsTruth remains deployed at b25734e9919832854027e8c22b6212b822563f9f / Worker 084fa621-7bbd-4360-b210-a4caeebc8ee0.",
+    "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Add idempotent event-driven repair dispatch after a valid signed eligible issue webhook, retain hourly scheduledSweep as reconciliation, deploy the repair, then edit issue 68 once to trigger the live replacement canary.","waitCondition":"The replacement canary has not started because the configured hourly provider event is not delivering the required sweep reliably; do not claim live interoperability until issue 68 produces a new terminally verified run.","staleDate":"2026-09-09"},
+    "outcome":"The remaining liveness dependency is isolated at the orchestration trigger rather than the verifier contract, GitHub discovery, CI, or PR-only authority layer. Event-driven dispatch restores webhook-first operation while preserving periodic reconciliation and the independent-verifier boundary.","content":"Exact DoneState deployment and schedule evidence, replacement issue state, absence of a new run or PR, source-level webhook-versus-sweep ownership, idempotent dispatch design, and unchanged PR-only verification authority.","measurement":"At least eight expected hourly windows passed with one eligible replacement issue and zero resulting runs or pull requests; the repair adds one event-driven dispatch path, one atomic pre-mutation finding claim, and one policy regression while retaining the hourly fallback."
+  },
+    {
+      "id":"E-019","date":"2026-09-02","identity":"Signed issue webhook delivery proved; detached durable queue handoff remained unproven","situation":"PR 69 moved eligible maintenance dispatch onto the signed GitHub issue webhook path and deployed exact DoneState commit 8291a284c7e32cb1f665336848feb8681d91ec63 as Worker 0b2a3141-478b-4f07-8d0a-225f10b532e7. Replacement canary issue 68 was edited twice after deployment but no new DoneState run branch or pull request became visible.","verification":"A live Cloudflare production tail captured GitHub Hookshot POST delivery ce1711a0-a6f6-11f1-834a-7d754a519743 to https://donestate.proofandstate.com/webhooks/github with x-github-event=issues, target App 4761698, SHA-256 signature, exact script version 0b2a3141-478b-4f07-8d0a-225f10b532e7 and HTTP 202. The corresponding MaintenanceRegistry ingestWebhook Durable Object RPC completed outcome=ok with no exception. A three-minute follow-up tail observed no queued execution event, and bounded Workers Observability queries for queue success, queue failure, run stop and automatic verifier failure returned zero matching events for the diagnostic window. Source inspection shows the queue setup was detached through DurableObjectState.waitUntil while RunCoordinator.start itself only transitions to QUEUED and sets an alarm before returning.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Preserve the awaited queue-setup regression and reopen only if a signed eligible issue webhook can again return before durable QUEUED intent exists.","waitCondition":"None. Issue 71 on Worker 99fae5c5-d54a-4d1f-a952-2d524dc00268 proved RunCoordinator.create and start completed and both duplicate issue deliveries logged the same run ID before webhook acceptance.","staleDate":"2026-09-09"},
+      "outcome":"The remaining liveness uncertainty is narrowed from provider webhook delivery to the asynchronous queue handoff inside the MaintenanceRegistry Durable Object. The repair can make webhook acceptance mean the durable QUEUED intent exists without waiting for Codex execution itself.","content":"Exact DoneState source and Worker identities, GitHub Hookshot delivery metadata, HTTP 202 and ingestWebhook success, absence of queue/run evidence, source-level detached dispatch, and the bounded awaited-queue repair boundary.","measurement":"Two issue edits, one live GitHub webhook captured end to end, one successful ingestWebhook Durable Object RPC, zero new canary branches or PRs, four bounded observability searches with zero matching queue/stop/verifier events, and one queue-only awaited handoff proposed."
     },
     {
-      "id": "E-019",
-      "date": "2026-09-02",
-      "identity": "Signed issue webhook delivery proved; detached durable queue handoff remained unproven",
-      "situation": "PR 69 moved eligible maintenance dispatch onto the signed GitHub issue webhook path and deployed exact DoneState commit 8291a284c7e32cb1f665336848feb8681d91ec63 as Worker 0b2a3141-478b-4f07-8d0a-225f10b532e7. Replacement canary issue 68 was edited twice after deployment but no new DoneState run branch or pull request became visible.",
-      "verification": "A live Cloudflare production tail captured GitHub Hookshot POST delivery ce1711a0-a6f6-11f1-834a-7d754a519743 to https://donestate.proofandstate.com/webhooks/github with x-github-event=issues, target App 4761698, SHA-256 signature, exact script version 0b2a3141-478b-4f07-8d0a-225f10b532e7 and HTTP 202. The corresponding MaintenanceRegistry ingestWebhook Durable Object RPC completed outcome=ok with no exception. A three-minute follow-up tail observed no queued execution event, and bounded Workers Observability queries for queue success, queue failure, run stop and automatic verifier failure returned zero matching events for the diagnostic window. Source inspection shows the queue setup was detached through DurableObjectState.waitUntil while RunCoordinator.start itself only transitions to QUEUED and sets an alarm before returning.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve the awaited queue-setup regression and reopen only if a signed eligible issue webhook can again return before durable QUEUED intent exists.",
-        "waitCondition": "None. Issue 71 on Worker 99fae5c5-d54a-4d1f-a952-2d524dc00268 proved RunCoordinator.create and start completed and both duplicate issue deliveries logged the same run ID before webhook acceptance.",
-        "staleDate": "2026-09-09"
-      },
-      "outcome": "The remaining liveness uncertainty is narrowed from provider webhook delivery to the asynchronous queue handoff inside the MaintenanceRegistry Durable Object. The repair can make webhook acceptance mean the durable QUEUED intent exists without waiting for Codex execution itself.",
-      "content": "Exact DoneState source and Worker identities, GitHub Hookshot delivery metadata, HTTP 202 and ingestWebhook success, absence of queue/run evidence, source-level detached dispatch, and the bounded awaited-queue repair boundary.",
-      "measurement": "Two issue edits, one live GitHub webhook captured end to end, one successful ingestWebhook Durable Object RPC, zero new canary branches or PRs, four bounded observability searches with zero matching queue/stop/verifier events, and one queue-only awaited handoff proposed."
+      "id":"E-020","date":"2026-09-02","identity":"Awaited-queue canary proved liveness and exposed single-attempt anonymous clone fragility","situation":"PR 70 merged as fa2da63a8e8657ecbe8eae87f6afbdd408278c8d and deployed as Worker 99fae5c5-d54a-4d1f-a952-2d524dc00268 so eligible issue webhook acceptance awaits durable queue setup. Fresh issue 71 was created with donestate:repair while a production tail was attached.","verification":"GitHub Hookshot delivered the issue event to the exact Worker and HTTP 202 followed successful MaintenanceRegistry ingestion. The registry logged the same finding ID and run ID 91125856-325d-4cf9-8479-9f3e2e94e0ea for duplicate issue deliveries, while RunCoordinator create and start both completed, proving idempotent durable queueing. The alarm entered the sandbox, then anonymous command `git clone --no-tags --single-branch --branch main https://github.com/AyobamiH/donestate.git /workspace/repo` returned exit code 128. DoneState logged `state=FAILED_SAFE` and `clone failed with exit code 128`; no donestate/91125856-... branch or pull request was created. Earlier run 5ba4e808-21d1-4937-b1ba-ee5b5d63bade reached branch/PR publication through the same anonymous public materialization design, so the failure is not evidence that the repository requires credentialed clone.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Retry the anonymous public clone up to three times inside the same durable read-only clone action with bounded backoff and sandbox-directory cleanup, keep credentials out of clone, deploy under normal review, and use a fresh successor canary.","waitCondition":"Issue 71 is terminal FAILED_SAFE before any repository mutation. Do not retry that run; prove the bounded read-only retry with a new run after deployment.","staleDate":"2026-09-09"},
+      "outcome":"Scheduler, signed webhook delivery, duplicate convergence, durable queue setup and alarm execution are now proven live. The next blocker is isolated to resilience of the pre-mutation anonymous clone operation.","content":"Exact DoneState source and Worker, issue/finding/run identities, GitHub Hookshot delivery, duplicate queue convergence, RunCoordinator create/start, sandbox clone command and exit code, terminal FAILED_SAFE state, and historical successful anonymous materialization evidence.","measurement":"One fresh issue, two duplicate-convergent webhook deliveries, one run ID, two successful RunCoordinator queue RPCs, one sandbox alarm, one clone exit 128, zero branches or PRs, and zero repository mutations."
     },
     {
-      "id": "E-020",
-      "date": "2026-09-02",
-      "identity": "Awaited-queue canary proved liveness and exposed single-attempt anonymous clone fragility",
-      "situation": "PR 70 merged as fa2da63a8e8657ecbe8eae87f6afbdd408278c8d and deployed as Worker 99fae5c5-d54a-4d1f-a952-2d524dc00268 so eligible issue webhook acceptance awaits durable queue setup. Fresh issue 71 was created with donestate:repair while a production tail was attached.",
-      "verification": "GitHub Hookshot delivered the issue event to the exact Worker and HTTP 202 followed successful MaintenanceRegistry ingestion. The registry logged the same finding ID and run ID 91125856-325d-4cf9-8479-9f3e2e94e0ea for duplicate issue deliveries, while RunCoordinator create and start both completed, proving idempotent durable queueing. The alarm entered the sandbox, then anonymous command `git clone --no-tags --single-branch --branch main https://github.com/AyobamiH/donestate.git /workspace/repo` returned exit code 128. DoneState logged `state=FAILED_SAFE` and `clone failed with exit code 128`; no donestate/91125856-... branch or pull request was created. Earlier run 5ba4e808-21d1-4937-b1ba-ee5b5d63bade reached branch/PR publication through the same anonymous public materialization design, so the failure is not evidence that the repository requires credentialed clone.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Retry the anonymous public clone up to three times inside the same durable read-only clone action with bounded backoff and sandbox-directory cleanup, keep credentials out of clone, deploy under normal review, and use a fresh successor canary.",
-        "waitCondition": "Issue 71 is terminal FAILED_SAFE before any repository mutation. Do not retry that run; prove the bounded read-only retry with a new run after deployment.",
-        "staleDate": "2026-09-09"
-      },
-      "outcome": "Scheduler, signed webhook delivery, duplicate convergence, durable queue setup and alarm execution are now proven live. The next blocker is isolated to resilience of the pre-mutation anonymous clone operation.",
-      "content": "Exact DoneState source and Worker, issue/finding/run identities, GitHub Hookshot delivery, duplicate queue convergence, RunCoordinator create/start, sandbox clone command and exit code, terminal FAILED_SAFE state, and historical successful anonymous materialization evidence.",
-      "measurement": "One fresh issue, two duplicate-convergent webhook deliveries, one run ID, two successful RunCoordinator queue RPCs, one sandbox alarm, one clone exit 128, zero branches or PRs, and zero repository mutations."
+      "id":"E-021","date":"2026-09-02","identity":"Branch backlog reconciled and verified-run retirement lifecycle deployed","situation":"DoneState and OpsTruth accumulated merged, superseded and diagnostic branches because both repositories reported delete_branch_on_merge=false and DoneState intentionally lacked arbitrary destructive authority. The visible branch surface made completed work look unresolved and allowed operational debris to compound.","verification":"Conservative one-shot cleanup run 33666714383 succeeded in AyobamiH/donestate and run 33666737621 succeeded in AyobamiH/opstruth-chatgpt-plugin. Final stale-ref cleanup removed superseded OpsTruth precursors and the redundant DoneState ref while preserving historical donestate/<run-id> evidence and explicitly preserved asset branches. PR 74 then merged the bounded retirement runtime as 9bc2adb6fc0796079832ef2b83af3272c806175b after exact PR CI 33668917242 passed core 22, core 24 and hosted-plugin. Post-merge CI 33669086381 ended fully green after one Node 24 rerun confirmed an unrelated lease-timing flake. Deployment 33669086131 succeeded with 112 hosted Worker tests and published DoneState Worker 3e72a7ff-3886-4e63-86a6-af214cc47601 on the hourly schedule. Cleanup run 33669412824 then retired both branch-retirement development refs and its own helper branch. Final branch read-back shows OpsTruth at main only; DoneState retains main, two explicitly preserved asset branches, seven historical donestate/<run-id> evidence branches, and one recent parallel diagnostic branch. Final authenticated repository-owner read-back on 2026-09-02 reports delete_branch_on_merge=true for both AyobamiH/donestate and AyobamiH/opstruth-chatgpt-plugin.",
+      "accountability":{"owner":"DoneState maintainers","status":"complete","nextAction":"Preserve the bounded runtime retirement contract and GitHub ordinary post-merge deletion settings; reopen on drift.","waitCondition":"None.","staleDate":"2026-12-01"},
+      "outcome":"Branch backlog is reconciled, bounded DoneState VERIFIED+merged run-branch retirement is deployed, both repositories automatically delete ordinary merged head branches, and retained DoneState branches remain intentional evidence or explicitly preserved assets/diagnostics.","content":"Exact cleanup runs, PR and merge subjects, green CI, Cloudflare Worker deployment, final branch inventories, strict retirement eligibility, and remaining provider-admin settings.","measurement":"OpsTruth reduced from eighteen branches to one; DoneState reduced from dozens of branches to eleven intentional or active refs; one six-file lifecycle PR merged; 112 Worker tests passed in deployment; one Worker version was published; both repository APIs now report delete_branch_on_merge=true."
     },
     {
-      "id": "E-021",
-      "date": "2026-09-02",
-      "identity": "Branch backlog reconciled and verified-run retirement lifecycle deployed",
-      "situation": "DoneState and OpsTruth accumulated merged, superseded and diagnostic branches because both repositories reported delete_branch_on_merge=false and DoneState intentionally lacked arbitrary destructive authority. The visible branch surface made completed work look unresolved and allowed operational debris to compound.",
-      "verification": "Conservative one-shot cleanup run 33666714383 succeeded in AyobamiH/donestate and run 33666737621 succeeded in AyobamiH/opstruth-chatgpt-plugin. Final stale-ref cleanup removed superseded OpsTruth precursors and the redundant DoneState ref while preserving historical donestate/<run-id> evidence and explicitly preserved asset branches. PR 74 then merged the bounded retirement runtime as 9bc2adb6fc0796079832ef2b83af3272c806175b after exact PR CI 33668917242 passed core 22, core 24 and hosted-plugin. Post-merge CI 33669086381 ended fully green after one Node 24 rerun confirmed an unrelated lease-timing flake. Deployment 33669086131 succeeded with 112 hosted Worker tests and published DoneState Worker 3e72a7ff-3886-4e63-86a6-af214cc47601 on the hourly schedule. Cleanup run 33669412824 then retired both branch-retirement development refs and its own helper branch. Final branch read-back shows OpsTruth at main only; DoneState retains main, two explicitly preserved asset branches, seven historical donestate/<run-id> evidence branches, and one recent parallel diagnostic branch. Final authenticated repository-owner read-back on 2026-09-02 reports delete_branch_on_merge=true for both AyobamiH/donestate and AyobamiH/opstruth-chatgpt-plugin.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve the bounded runtime retirement contract and GitHub ordinary post-merge deletion settings; reopen on drift.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
-      },
-      "outcome": "Branch backlog is reconciled, bounded DoneState VERIFIED+merged run-branch retirement is deployed, both repositories automatically delete ordinary merged head branches, and retained DoneState branches remain intentional evidence or explicitly preserved assets/diagnostics.",
-      "content": "Exact cleanup runs, PR and merge subjects, green CI, Cloudflare Worker deployment, final branch inventories, strict retirement eligibility, and remaining provider-admin settings.",
-      "measurement": "OpsTruth reduced from eighteen branches to one; DoneState reduced from dozens of branches to eleven intentional or active refs; one six-file lifecycle PR merged; 112 Worker tests passed in deployment; one Worker version was published; both repository APIs now report delete_branch_on_merge=true."
+      "id":"E-022","date":"2026-09-02","identity":"Bounded clone canary exposed shell-session retry collapse","situation":"Issue 73 launched fresh run 63548914-2b17-4534-8a1c-008ca8c20c93 through the repaired awaited webhook queue on DoneState Worker 5b78978a-cb53-489c-b7e6-1028d8238073. The run reached RunCoordinator alarm execution but produced no publication branch or pull request.","verification":"Production Workers observability shows the Sandbox clone command was a shell while loop intended to attempt the anonymous public clone three times with 2s and 4s backoff. The first clone failure terminated the Cloudflare Sandbox shell session with exit code 1 and the runtime reported that the session was dead and could not execute further commands. RunCoordinator then emitted DoneState run stopped before publication. No OpsTruth verification attempt occurred because there was no published exact head. The failure is pre-mutation and credentials remained absent from the anonymous clone command.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Move clone retry ownership into deterministic TypeScript orchestration, give each attempt a fresh Sandbox identity, settle the one durable clone action only on first success or final exhaustion, preserve bounded 2s/4s backoff and credential-free cloning, deploy, then run a fresh successor canary.","waitCondition":"Issue 73 is terminal failure evidence and must not be retried or rewritten. Live DoneState-to-OpsTruth interoperability remains unproven until a new run survives repository materialization and reaches exact-head verification.","staleDate":"2026-09-09"},
+      "outcome":"The retry policy itself was sound but was placed at the wrong execution layer. A failed Sandbox exec can terminate its session, so retries that must survive that failure require fresh sandbox identities controlled by deterministic orchestration rather than an in-session shell loop.","content":"Exact issue and run identity, deployed Worker subject, RunCoordinator alarm execution, anonymous clone shell command, session-death error, absence of branch/PR and verifier activity, and fresh-sandbox retry design.","measurement":"One fresh canary run queued, one first-attempt sandbox shell death observed, zero second or third attempts executed inside that dead session, zero publication branches, zero pull requests, and one deterministic fresh-sandbox-per-attempt repair defined."
     },
     {
-      "id": "E-022",
-      "date": "2026-09-02",
-      "identity": "Bounded clone canary exposed shell-session retry collapse",
-      "situation": "Issue 73 launched fresh run 63548914-2b17-4534-8a1c-008ca8c20c93 through the repaired awaited webhook queue on DoneState Worker 5b78978a-cb53-489c-b7e6-1028d8238073. The run reached RunCoordinator alarm execution but produced no publication branch or pull request.",
-      "verification": "Production Workers observability shows the Sandbox clone command was a shell while loop intended to attempt the anonymous public clone three times with 2s and 4s backoff. The first clone failure terminated the Cloudflare Sandbox shell session with exit code 1 and the runtime reported that the session was dead and could not execute further commands. RunCoordinator then emitted DoneState run stopped before publication. No OpsTruth verification attempt occurred because there was no published exact head. The failure is pre-mutation and credentials remained absent from the anonymous clone command.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Move clone retry ownership into deterministic TypeScript orchestration, give each attempt a fresh Sandbox identity, settle the one durable clone action only on first success or final exhaustion, preserve bounded 2s/4s backoff and credential-free cloning, deploy, then run a fresh successor canary.",
-        "waitCondition": "Issue 73 is terminal failure evidence and must not be retried or rewritten. Live DoneState-to-OpsTruth interoperability remains unproven until a new run survives repository materialization and reaches exact-head verification.",
-        "staleDate": "2026-09-09"
-      },
-      "outcome": "The retry policy itself was sound but was placed at the wrong execution layer. A failed Sandbox exec can terminate its session, so retries that must survive that failure require fresh sandbox identities controlled by deterministic orchestration rather than an in-session shell loop.",
-      "content": "Exact issue and run identity, deployed Worker subject, RunCoordinator alarm execution, anonymous clone shell command, session-death error, absence of branch/PR and verifier activity, and fresh-sandbox retry design.",
-      "measurement": "One fresh canary run queued, one first-attempt sandbox shell death observed, zero second or third attempts executed inside that dead session, zero publication branches, zero pull requests, and one deterministic fresh-sandbox-per-attempt repair defined."
-    },
-    {
-      "id": "E-023",
-      "date": "2026-09-03",
-      "identity": "Historical Sandbox implementation 500s traced to an unsupported SDK/image pairing before retry changes",
-      "situation": "Fresh canary issue 79 reached the implementation step on DoneState Worker adebd0c4-77c3-4ed0-9135-cd1003345258 but produced no branch or pull request. Production observability recorded Sandbox.exec HTTP 500 after 194792 ms while running the unchanged Codex 0.150.1 implementation command.",
-      "verification": "Historical comparison disproved a recent-regression theory: run 5ba4e808 completed the same Codex command in 158578 ms and published PR 66; earlier maintenance sequences also contain implementation HTTP 500 failures followed by successful successor runs. The Dockerfile has used cloudflare/sandbox:0.7.0 since the hosted control plane was introduced while the Worker lockfile resolves @cloudflare/sandbox 0.12.9. The current runtime also logs Using http transport. This change corrects only the documented SDK/image mismatch and adds a deterministic version-sync gate; Codex version, command, HTTP transport, OpsTruth, scheduler, webhook and retry semantics remain unchanged.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Review and deploy exact Sandbox SDK/image 0.12.9 alignment, confirm the deployed container image and version-sync gate, then launch a fresh canary without changing Codex or transport.",
-        "waitCondition": "Do not add Codex retries or switch HTTP to RPC in the same experiment. Preserve issue 79 as terminal pre-publication failure evidence.",
-        "staleDate": "2026-09-10"
-      },
-      "outcome": "The implementation HTTP 500 is no longer being treated as proof of an OpenAI/Codex API failure. The first corrective layer is the objectively unsupported Cloudflare Sandbox package/image mismatch, isolated as one variable.",
-      "content": "Exact successful and failed production command timings, historical HTTP 500/successor PR pattern, Worker and container versions, package-lock SDK version, Docker image version, and the one-variable correction boundary.",
-      "measurement": "One successful comparable Codex exec at 158578 ms, one failed comparable exec at 194792 ms, at least two older HTTP 500 predecessor failures with successful successor PRs, SDK 0.12.9 versus image 0.7.0 mismatch found, and zero Codex/transport/retry changes in this correction."
-    },
-    {
-      "id": "E-024",
-      "date": "2026-09-03",
-      "identity": "Aligned Sandbox canary falsified version mismatch as sole cause and isolated deprecated HTTP transport",
-      "situation": "PR 80 merged as 1c2d7cb00bc7dca82a62e2c35307cd127c1ca645 and deployed Worker d67aa16a-914c-4e9a-940f-c06358e34f1b with @cloudflare/sandbox 0.12.9 and docker.io/cloudflare/sandbox:0.12.9. Fresh issue 81 then exercised the unchanged Codex 0.150.1 implementation path with HTTP transport intentionally unchanged.",
-      "verification": "Deployment 33710162469 passed 113 Worker tests, printed Cloudflare Sandbox versions aligned at 0.12.9, and built the container from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe. Issue 81 queued on that exact Worker, anonymous clone succeeded, production observability logged Using http transport, and the unchanged Codex command failed at Sandbox.exec with HTTP 500 after 133625 ms. No branch, PR or OpsTruth call occurred. This falsifies the SDK/image mismatch as the sole cause while leaving deprecated HTTP transport as the next isolated common layer.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Switch only SANDBOX_TRANSPORT from the deprecated HTTP default to rpc on the aligned 0.12.9 stack, add a deterministic transport guard, deploy under normal review, and launch a fresh successor canary with Codex and retry semantics unchanged.",
-        "waitCondition": "Issue 81 is terminal pre-publication evidence and must not be retried or rewritten. Do not combine the RPC migration with Codex upgrades, retries, timeout changes or verifier changes.",
-        "staleDate": "2026-09-10"
-      },
-      "outcome": "Version alignment was necessary but not sufficient. The next experiment is now correctly isolated at the Sandbox transport layer rather than the Codex execution policy.",
-      "content": "Exact aligned Worker deployment, container base digest, issue 81 clone success, HTTP transport log, 133625 ms Sandbox.exec 500, no publication and no verifier activity, plus Cloudflare staged RPC migration boundary.",
-      "measurement": "One aligned production deployment, one fresh canary, one successful anonymous clone, one HTTP transport selection, one Sandbox.exec 500 at 133625 ms, zero branches, zero PRs, zero OpsTruth calls, and zero Codex/retry changes."
-    },
-    {
-      "id": "E-025",
-      "date": "2026-09-03",
-      "identity": "RPC canary removed HTTP 500 and exposed active Sandbox lifecycle shutdown",
-      "situation": "PR 82 merged as 4c4964f2e5ee91c8b4315ec00eeaf70475443b08 and deployed Worker 2e70de5c-cc10-4bc4-858b-42cb6ba37c35 with exact Sandbox 0.12.9 alignment and SANDBOX_TRANSPORT=rpc. Fresh issue 83 exercised the unchanged Codex 0.150.1 implementation command.",
-      "verification": "Post-merge CI 33711766653 passed all three jobs and deployment 33711766651 passed 113 Worker tests with transport=rpc. Production observability for issue 83 recorded RPC transport and zero HTTP selections, successful anonymous materialization, then Sandbox.exec failed after 69498 ms with 'Sandbox operation commands.execute was interrupted while the runtime connection was closing'. The earlier HTTP 500 signature was absent. DoneState passes objective.maxDurationMs=1800000 to the implementation exec, so the stop is not the configured command timeout. Executor inspection shows the active Sandbox has sleepAfter=15m but no keepAlive, while the SDK exposes keepAlive specifically to prevent automatic sleep during long-running work and DoneState already destroys activeSandbox in finally.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Enable keepAlive for the bounded Sandbox runtime used by clone/implementation while preserving deterministic destroy cleanup, keep RPC, Codex 0.150.1, command, timeout and retry semantics unchanged, deploy under normal review, and launch a fresh successor canary.",
-        "waitCondition": "Issue 83 is terminal pre-publication evidence and must not be retried or rewritten. Do not combine keepAlive with Codex upgrades, generic implementation retries, timeout changes or verifier changes.",
-        "staleDate": "2026-09-10"
-      },
-      "outcome": "RPC fixed the deprecated HTTP transport failure signature but did not complete the loop. The current failure is now isolated to Sandbox runtime lifecycle during a long active implementation command.",
-      "content": "Exact PR 82 merge/deploy subjects, RPC selection, clone success, 69498 ms runtime-closing interruption, absence of HTTP 500/publication/verifier activity, explicit 30-minute DoneState implementation timeout, missing keepAlive configuration, and existing deterministic Sandbox destroy cleanup.",
-      "measurement": "One RPC production deployment, one fresh canary, zero HTTP transport selections, one successful materialization, one runtime-closing implementation interruption at 69498 ms, zero HTTP 500s, zero branches, zero PRs, zero OpsTruth calls, and zero Codex/retry/timeout changes."
-    },
-    {
-      "id": "E-026",
-      "date": "2026-09-03",
-      "identity": "keepAlive canary ruled out inactivity alone and isolated persistent default-session risk",
-      "situation": "PR 84 merged as 71a1188a0313ff29ddd1cb265acd53f8edc6922d and deployed Worker a645a23e-f5cf-47b6-8d7b-8c58fb78159a with Sandbox 0.12.9, RPC transport and keepAlive true while Codex 0.150.1, command, timeout and retry semantics remained unchanged. Fresh issue 85 produced exactly one finding and one run d295908a-633e-4201-8465-881dd8bffa2d.",
-      "verification": "Clone attempt 1 failed with exit 128 and bounded fresh-sandbox attempt 2 succeeded. Production then ran the unchanged Codex implementation command through RPC with keepAlive enabled, but Sandbox.exec failed after 23486 ms with Sandbox operation commands.execute was interrupted while the runtime connection was closing. No HTTP 500 occurred, no validation or publication began, no branch or PR was created and OpsTruth was never invoked. Cloudflare Sandbox 0.12.9 source defaults enableDefaultSession to true unless callers explicitly disable it; current Cloudflare migration guidance recommends enableDefaultSession false for implicit operations. Upstream sandbox-sdk issues 864/865 reproduce the same OperationInterruptedError/session_disposed family and identify stale default-session identity across container generations as a defect. The 0.12.9 changelog contains no release note for that generation repair.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Set enableDefaultSession false in the existing bounded Sandbox runtime options, preserve 0.12.9, RPC, keepAlive and deterministic destroy cleanup, keep Codex and retry semantics unchanged, deploy under normal review, then launch a fresh successor canary.",
-        "waitCondition": "Issue 85 is terminal pre-publication evidence and must not be retried, reopened, reset or rewritten. Do not add Codex retries or change transport/version/timeouts in the same experiment.",
-        "staleDate": "2026-09-10"
-      },
-      "outcome": "keepAlive is retained as valid lifecycle hardening but is not sufficient. The next isolated layer removes reliance on the persistent default session implicated by current Cloudflare guidance and upstream session-generation failure evidence.",
-      "content": "Exact issue/finding/run identities, deployed Worker and Sandbox subjects, clone-attempt outcomes, RPC+keepAlive Codex interruption at 23486 ms, absence of publication/verifier activity, 0.12.9 default-session behavior and upstream session_disposed evidence.",
-      "measurement": "One fresh canary, one finding, one run, two clone attempts with one successful materialization, one RPC Codex interruption at 23486 ms, zero HTTP 500s, zero branches, zero PRs, zero OpsTruth calls and one isolated default-session correction defined."
-    },
-    {
-      "id": "E-027",
-      "date": "2026-09-03",
-      "identity": "Sessionless canary proved Codex completion and isolated post-process Sandbox control continuity",
-      "situation": "PR 93 merged as 96b3f03607e443093a2cd50383a58843a41c674e; post-merge CI 33714799219 and deployment 33714799178 passed, publishing Worker 2347c12b-9919-4202-8f85-c14b57f26f82 with Sandbox 0.12.9, RPC transport, keepAlive true and enableDefaultSession false while Codex 0.150.1, its command, timeout and retry semantics remained unchanged. Fresh issue 94 exercised one new consequence-disabled maintenance canary.",
-      "verification": "Production observability recorded the unchanged Codex implementation command completing successfully after 168383 ms. The immediately following read-only git rev-parse HEAD failed after 142 ms with Sandbox operation commands.execute was interrupted while the runtime connection was closing. RunCoordinator stopped before validation. No branch, pull request or OpsTruth call was produced. This proves sessionless execution materially fixed the original long Codex execution boundary while sequential control-channel continuity after the completed process remains unreliable.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Move only the long implementation call from blocking Sandbox.exec to one deterministic startProcess identity, reconcile that identity with bounded read-only observation, never relaunch Codex ambiguously, preserve sessionless 0.12.9 + RPC + keepAlive and deterministic destroy cleanup, deploy after normal review, then launch one fresh successor canary.",
-        "waitCondition": "Issue 94 is terminal pre-publication evidence and must not be retried, reopened, reset or rewritten. Do not add blind Codex retries or change Sandbox version, transport, keepAlive, sessionless mode, Codex version, command, timeout, publication authority or verifier in the same experiment.",
-        "staleDate": "2026-09-10"
-      },
-      "outcome": "The Codex implementation problem is materially fixed; the remaining blocker is the control plane immediately after a successful long process. The next isolated layer makes the implementation effect durable and reconcilable by process identity without granting a second launch.",
-      "content": "Exact PR 93 merge, CI, deployment, Worker and Sandbox subjects; issue 94 outcome; 168383 ms successful Codex completion; 142 ms failed post-Codex read-only command; absence of validation, publication and verifier activity; and the bounded single-launch process-reconciliation design.",
-      "measurement": "One sessionless production canary, one successful Codex implementation at 168383 ms, one failed sequential read-only control command at 142 ms, zero validations started, zero branches, zero pull requests, zero OpsTruth calls and zero Codex retries."
-    },
-    {
-      "id": "E-028",
-      "date": "2026-09-03",
-      "identity": "Process-identity canary exposed Sandbox 0.12.9 terminal-process observability loss",
-      "situation": "PR 95 merged as ce16418f4176906fcf7d3243058bab474631f2fc after exact-head CI 33725650144 passed; post-merge CI 33725840767 and deployment 33725840849 then passed on the aligned Sandbox 0.12.9 RPC + keepAlive + enableDefaultSession false stack. Fresh issue 96 was durably admitted as exactly one maintenance run 0e3fc377-6ff7-47ba-8cdf-df0a226a7a85.",
-      "verification": "The signed issue webhook created finding 87023d1e62b0fb2e058b2a8a38a3023a13bfc15f24e78471fbee301e9bb48b14 and queued run 0e3fc377-6ff7-47ba-8cdf-df0a226a7a85. Clone attempt 2 succeeded. The implement action durably recorded one acknowledged deterministic process ID donestate-implement-0e3fc377-6ff7-47ba-8cdf-df0a226a7a85, then settled AMBIGUOUS with reason process_identity_disappeared; the run entered AMBIGUOUS_EFFECT at 2026-09-03T07:05:31.877Z. No validation, branch, pull request, verification snapshot or OpsTruth decision followed. Cloudflare Sandbox 0.12.9 ProcessStore removes terminal records from memory after attempting file persistence and explicitly permits process history loss when that write fails, so process identity is not a durable completion oracle for DoneState. The next isolated repair returns to the sessionless foreground exec that issue 94 proved can complete, wraps the unchanged inner Codex command with an atomic terminal receipt outside /workspace/repo, removes receipt secrets from the child environment before Codex starts, and reacquires the same Sandbox ID for bounded read-only receipt and repository-head reconciliation.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Review the foreground terminal-receipt and same-Sandbox reacquisition repair, preserve the aligned 0.12.9 RPC + keepAlive + sessionless runtime and unchanged Codex inner command, deploy normally, then launch one fresh successor canary.",
-        "waitCondition": "Issue 96 and run 0e3fc377-6ff7-47ba-8cdf-df0a226a7a85 are terminal ambiguity evidence and must not be retried, reset or rewritten. Missing or mismatched receipt must remain AMBIGUOUS_EFFECT and must never authorize a second Codex launch.",
-        "staleDate": "2026-09-10"
-      },
-      "outcome": "The background-process idea removed blind retry but did not provide durable terminal identity in Sandbox 0.12.9. The next repair moves effect reconciliation to a DoneState-owned terminal receipt while retaining fail-closed ambiguity when the Sandbox filesystem disappears.",
-      "content": "PR 95 merge and CI/deployment subjects, issue 96 finding/run identity, successful clone attempt, acknowledged process identity, process_identity_disappeared settlement, terminal AMBIGUOUS_EFFECT state, absence of publication/verifier activity, Cloudflare 0.12.9 process-store semantics, and the bounded receipt/reacquisition design.",
-      "measurement": "One fresh issue webhook, one run, two clone attempts with one successful materialization, exactly one acknowledged implementation launch, one process-identity disappearance, zero validations, zero branches, zero pull requests, zero OpsTruth calls, and zero Codex relaunches."
-    },
-    {
-      "id": "E-029",
-      "date": "2026-09-03",
-      "identity": "Terminal-receipt canary exposed a reconciliation window shorter than the proven Codex runtime",
-      "situation": "PR 97 merged as cb1951df4e9d9b684757f5e425ffcefbc42b85b9 and deployed Worker 504a5e23-4e5f-4eac-b80e-979f23fa0ec7 with Sandbox 0.12.9, RPC, keepAlive and sessionless execution. Fresh issue 98 queued on that exact runtime and materialized the repository successfully.",
-      "verification": "Production observability shows anonymous clone success in 1347 ms, RPC transport, then the terminal-receipt wrapper itself remained one long Sandbox commands.execute call and was interrupted while the runtime connection was closing after 111428 ms. RunCoordinator stopped as AMBIGUOUS_EFFECT roughly 5681 ms later. No validation, branch, PR or OpsTruth call occurred. The code at cb1951df allows only three receipt/control attempts with 500 ms and 1000 ms linear backoff, while issue 94 already proved the unchanged Codex 0.150.1 path can complete successfully after 168383 ms. Therefore the receipt oracle was sound but its reconciliation window was structurally shorter than a known-valid implementation runtime.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Launch the same receipt wrapper exactly once through a short detached nohup handoff, enforce the existing implementation duration inside the wrapper, and poll the receipt plus repository continuity read-only until that configured deadline plus a small terminal-write grace. Never relaunch Codex after the durable implementation intent, even if launch acknowledgement is ambiguous.",
-        "waitCondition": "Issue 98 is terminal AMBIGUOUS_EFFECT evidence and must not be retried or rewritten. Do not change Sandbox version, transport, lifecycle, Codex version/arguments, verifier or authority in the same repair.",
-        "staleDate": "2026-09-10"
-      },
-      "outcome": "The terminal receipt remains the correct completion authority, but it must decouple DoneState from a long-lived Sandbox RPC and its reconciliation window must cover the configured implementation lifetime rather than three immediate retries.",
-      "content": "Exact issue 98 deployed subject, clone and RPC evidence, 111428 ms foreground-wrapper interruption, AMBIGUOUS_EFFECT stop timing, absence of publication/verifier activity, three-attempt reconciliation constants, and the earlier 168383 ms successful Codex comparison.",
-      "measurement": "One fresh canary, one successful clone, one long receipt-wrapper RPC interruption at 111428 ms, one AMBIGUOUS_EFFECT stop about 5.7 seconds later, zero validation starts, zero branches, zero PRs, zero OpsTruth calls, and one detached single-launch deadline-bound reconciliation repair defined."
-    },
-    {
-      "id": "E-030",
-      "date": "2026-09-03",
-      "identity": "PR100 deployment exposed a Durable Object alarm lifetime mismatch",
-      "situation": "The detached terminal-receipt repair removed the known long Sandbox RPC dependency, but documentation re-assessment compared the deployed orchestration with Cloudflare Durable Object alarm limits before launching its successor canary.",
-      "verification": "PR 100 merged as b4febe960fc7e71d48049e3a758256c1b61841ef after exact-head CI 33738177238; post-merge CI 33738273567 and deployment 33738273580 passed. The deployment published Worker f89f842c-2f74-43a6-8f3e-ed90411e6964 and container sha256:da8f52ef1570de5ace6c6d336ad29b92b7a5a5a8ecb9b0e336707a98fff5e9c2 with Sandbox 0.12.9 and Codex 0.150.1. Source inspection shows RunCoordinator.alarm directly awaits executeObjective, whose detached implementation still polls until maxDurationMs plus receipt grace and whose Node validation could run multiple long commands in the same alarm. Hosted maintenance defaults to 1800000 ms and the public objective contract permits 7200000 ms. Cloudflare documents a 15-minute alarm-handler wall-time and at-least-once alarm retries.",
-      "accountability": {
-        "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Make execution alarm-sliced with one durable implementation checkpoint, short per-alarm actions, safe same-run resumption, credential/sandbox retention across yields, and no replay of ambiguous generic mutations; then review, deploy and run one fresh canary.",
-        "waitCondition": "Fresh canary is blocked until the deployed execution model no longer depends on one alarm invocation surviving longer than the platform wall-time.",
-        "staleDate": "2026-09-10"
-      },
-      "outcome": "PR100 remains valid evidence for the detached receipt layer, but it is not yet sufficient proof of the advertised autonomous duration contract.",
-      "content": "Exact PR100 source/CI/deployment/runtime subjects, Cloudflare alarm semantics, coordinator recovery behavior, objective duration limits, credential lease behavior, and the alarm-sliced repair boundary.",
-      "measurement": "One deployed detached-receipt repair is green; one platform-lifetime mismatch was found before a successor canary; zero historical canaries were retried or rewritten."
+      "id":"E-023","date":"2026-09-03","identity":"Historical Sandbox implementation 500s traced to an unsupported SDK/image pairing before retry changes","situation":"Fresh canary issue 79 reached the implementation step on DoneState Worker adebd0c4-77c3-4ed0-9135-cd1003345258 but produced no branch or pull request. Production observability recorded Sandbox.exec HTTP 500 after 194792 ms while running the unchanged Codex 0.150.1 implementation command.","verification":"Historical comparison disproved a recent-regression theory: run 5ba4e808 completed the same Codex command in 158578 ms and published PR 66; earlier maintenance sequences also contain implementation HTTP 500 failures followed by successful successor runs. The Dockerfile has used cloudflare/sandbox:0.7.0 since the hosted control plane was introduced while the Worker lockfile resolves @cloudflare/sandbox 0.12.9. The current runtime also logs Using http transport. This change corrects only the documented SDK/image mismatch and adds a deterministic version-sync gate; Codex version, command, HTTP transport, OpsTruth, scheduler, webhook and retry semantics remain unchanged.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Review and deploy exact Sandbox SDK/image 0.12.9 alignment, confirm the deployed container image and version-sync gate, then launch a fresh canary without changing Codex or transport.","waitCondition":"Do not add Codex retries or switch HTTP to RPC in the same experiment. Preserve issue 79 as terminal pre-publication failure evidence.","staleDate":"2026-09-10"},
+      "outcome":"The implementation HTTP 500 is no longer being treated as proof of an OpenAI/Codex API failure. The first corrective layer is the objectively unsupported Cloudflare Sandbox package/image mismatch, isolated as one variable.","content":"Exact successful and failed production command timings, historical HTTP 500/successor PR pattern, Worker and container versions, package-lock SDK version, Docker image version, and the one-variable correction boundary.","measurement":"One successful comparable Codex exec at 158578 ms, one failed comparable exec at 194792 ms, at least two older HTTP 500 predecessor failures with successful successor PRs, SDK 0.12.9 versus image 0.7.0 mismatch found, and zero Codex/transport/retry changes in this correction."
+    }    ,{
+      "id":"E-024","date":"2026-09-03","identity":"Aligned Sandbox canary falsified version mismatch as sole cause and isolated deprecated HTTP transport","situation":"PR 80 merged as 1c2d7cb00bc7dca82a62e2c35307cd127c1ca645 and deployed Worker d67aa16a-914c-4e9a-940f-c06358e34f1b with @cloudflare/sandbox 0.12.9 and docker.io/cloudflare/sandbox:0.12.9. Fresh issue 81 then exercised the unchanged Codex 0.150.1 implementation path with HTTP transport intentionally unchanged.","verification":"Deployment 33710162469 passed 113 Worker tests, printed Cloudflare Sandbox versions aligned at 0.12.9, and built the container from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe. Issue 81 queued on that exact Worker, anonymous clone succeeded, production observability logged Using http transport, and the unchanged Codex command failed at Sandbox.exec with HTTP 500 after 133625 ms. No branch, PR or OpsTruth call occurred. This falsifies the SDK/image mismatch as the sole cause while leaving deprecated HTTP transport as the next isolated common layer.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Switch only SANDBOX_TRANSPORT from the deprecated HTTP default to rpc on the aligned 0.12.9 stack, add a deterministic transport guard, deploy under normal review, and launch a fresh successor canary with Codex and retry semantics unchanged.","waitCondition":"Issue 81 is terminal pre-publication evidence and must not be retried or rewritten. Do not combine the RPC migration with Codex upgrades, retries, timeout changes or verifier changes.","staleDate":"2026-09-10"},
+      "outcome":"Version alignment was necessary but not sufficient. The next experiment is now correctly isolated at the Sandbox transport layer rather than the Codex execution policy.","content":"Exact aligned Worker deployment, container base digest, issue 81 clone success, HTTP transport log, 133625 ms Sandbox.exec 500, no publication and no verifier activity, plus Cloudflare staged RPC migration boundary.","measurement":"One aligned production deployment, one fresh canary, one successful anonymous clone, one HTTP transport selection, one Sandbox.exec 500 at 133625 ms, zero branches, zero PRs, zero OpsTruth calls, and zero Codex/retry changes."
+    }    ,{
+      "id":"E-025","date":"2026-09-03","identity":"RPC canary removed HTTP 500 and exposed active Sandbox lifecycle shutdown","situation":"PR 82 merged as 4c4964f2e5ee91c8b4315ec00eeaf70475443b08 and deployed Worker 2e70de5c-cc10-4bc4-858b-42cb6ba37c35 with exact Sandbox 0.12.9 alignment and SANDBOX_TRANSPORT=rpc. Fresh issue 83 exercised the unchanged Codex 0.150.1 implementation command.","verification":"Post-merge CI 33711766653 passed all three jobs and deployment 33711766651 passed 113 Worker tests with transport=rpc. Production observability for issue 83 recorded RPC transport and zero HTTP selections, successful anonymous materialization, then Sandbox.exec failed after 69498 ms with 'Sandbox operation commands.execute was interrupted while the runtime connection was closing'. The earlier HTTP 500 signature was absent. DoneState passes objective.maxDurationMs=1800000 to the implementation exec, so the stop is not the configured command timeout. Executor inspection shows the active Sandbox has sleepAfter=15m but no keepAlive, while the SDK exposes keepAlive specifically to prevent automatic sleep during long-running work and DoneState already destroys activeSandbox in finally.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Enable keepAlive for the bounded Sandbox runtime used by clone/implementation while preserving deterministic destroy cleanup, keep RPC, Codex 0.150.1, command, timeout and retry semantics unchanged, deploy under normal review, and launch a fresh successor canary.","waitCondition":"Issue 83 is terminal pre-publication evidence and must not be retried or rewritten. Do not combine keepAlive with Codex upgrades, generic implementation retries, timeout changes or verifier changes.","staleDate":"2026-09-10"},
+      "outcome":"RPC fixed the deprecated HTTP transport failure signature but did not complete the loop. The current failure is now isolated to Sandbox runtime lifecycle during a long active implementation command.","content":"Exact PR 82 merge/deploy subjects, RPC selection, clone success, 69498 ms runtime-closing interruption, absence of HTTP 500/publication/verifier activity, explicit 30-minute DoneState implementation timeout, missing keepAlive configuration, and existing deterministic Sandbox destroy cleanup.","measurement":"One RPC production deployment, one fresh canary, zero HTTP transport selections, one successful materialization, one runtime-closing implementation interruption at 69498 ms, zero HTTP 500s, zero branches, zero PRs, zero OpsTruth calls, and zero Codex/retry/timeout changes."
+    }
+    ,{
+      "id":"E-026","date":"2026-09-03","identity":"keepAlive canary ruled out inactivity alone and isolated persistent default-session risk","situation":"PR 84 merged as 71a1188a0313ff29ddd1cb265acd53f8edc6922d and deployed Worker a645a23e-f5cf-47b6-8d7b-8c58fb78159a with Sandbox 0.12.9, RPC transport and keepAlive true while Codex 0.150.1, command, timeout and retry semantics remained unchanged. Fresh issue 85 produced exactly one finding and one run d295908a-633e-4201-8465-881dd8bffa2d.","verification":"Clone attempt 1 failed with exit 128 and bounded fresh-sandbox attempt 2 succeeded. Production then ran the unchanged Codex implementation command through RPC with keepAlive enabled, but Sandbox.exec failed after 23486 ms with Sandbox operation commands.execute was interrupted while the runtime connection was closing. No HTTP 500 occurred, no validation or publication began, no branch or PR was created and OpsTruth was never invoked. Cloudflare Sandbox 0.12.9 source defaults enableDefaultSession to true unless callers explicitly disable it; current Cloudflare migration guidance recommends enableDefaultSession false for implicit operations. Upstream sandbox-sdk issues 864/865 reproduce the same OperationInterruptedError/session_disposed family and identify stale default-session identity across container generations as a defect. The 0.12.9 changelog contains no release note for that generation repair.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Set enableDefaultSession false in the existing bounded Sandbox runtime options, preserve 0.12.9, RPC, keepAlive and deterministic destroy cleanup, keep Codex and retry semantics unchanged, deploy under normal review, then launch a fresh successor canary.","waitCondition":"Issue 85 is terminal pre-publication evidence and must not be retried, reopened, reset or rewritten. Do not add Codex retries or change transport/version/timeouts in the same experiment.","staleDate":"2026-09-10"},
+      "outcome":"keepAlive is retained as valid lifecycle hardening but is not sufficient. The next isolated layer removes reliance on the persistent default session implicated by current Cloudflare guidance and upstream session-generation failure evidence.","content":"Exact issue/finding/run identities, deployed Worker and Sandbox subjects, clone-attempt outcomes, RPC+keepAlive Codex interruption at 23486 ms, absence of publication/verifier activity, 0.12.9 default-session behavior and upstream session_disposed evidence.","measurement":"One fresh canary, one finding, one run, two clone attempts with one successful materialization, one RPC Codex interruption at 23486 ms, zero HTTP 500s, zero branches, zero PRs, zero OpsTruth calls and one isolated default-session correction defined."
+    }
+    ,{
+      "id":"E-027","date":"2026-09-03","identity":"Sessionless canary proved Codex completion and isolated post-process Sandbox control continuity","situation":"PR 93 merged as 96b3f03607e443093a2cd50383a58843a41c674e; post-merge CI 33714799219 and deployment 33714799178 passed, publishing Worker 2347c12b-9919-4202-8f85-c14b57f26f82 with Sandbox 0.12.9, RPC transport, keepAlive true and enableDefaultSession false while Codex 0.150.1, its command, timeout and retry semantics remained unchanged. Fresh issue 94 exercised one new consequence-disabled maintenance canary.","verification":"Production observability recorded the unchanged Codex implementation command completing successfully after 168383 ms. The immediately following read-only git rev-parse HEAD failed after 142 ms with Sandbox operation commands.execute was interrupted while the runtime connection was closing. RunCoordinator stopped before validation. No branch, pull request or OpsTruth call was produced. This proves sessionless execution materially fixed the original long Codex execution boundary while sequential control-channel continuity after the completed process remains unreliable.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Move only the long implementation call from blocking Sandbox.exec to one deterministic startProcess identity, reconcile that identity with bounded read-only observation, never relaunch Codex ambiguously, preserve sessionless 0.12.9 + RPC + keepAlive and deterministic destroy cleanup, deploy after normal review, then launch one fresh successor canary.","waitCondition":"Issue 94 is terminal pre-publication evidence and must not be retried, reopened, reset or rewritten. Do not add blind Codex retries or change Sandbox version, transport, keepAlive, sessionless mode, Codex version, command, timeout, publication authority or verifier in the same experiment.","staleDate":"2026-09-10"},
+      "outcome":"The Codex implementation problem is materially fixed; the remaining blocker is the control plane immediately after a successful long process. The next isolated layer makes the implementation effect durable and reconcilable by process identity without granting a second launch.","content":"Exact PR 93 merge, CI, deployment, Worker and Sandbox subjects; issue 94 outcome; 168383 ms successful Codex completion; 142 ms failed post-Codex read-only command; absence of validation, publication and verifier activity; and the bounded single-launch process-reconciliation design.","measurement":"One sessionless production canary, one successful Codex implementation at 168383 ms, one failed sequential read-only control command at 142 ms, zero validations started, zero branches, zero pull requests, zero OpsTruth calls and zero Codex retries."
+    }
+    ,{
+      "id":"E-028","date":"2026-09-03","identity":"Process-identity canary exposed Sandbox 0.12.9 terminal-process observability loss","situation":"PR 95 merged as ce16418f4176906fcf7d3243058bab474631f2fc after exact-head CI 33725650144 passed; post-merge CI 33725840767 and deployment 33725840849 then passed on the aligned Sandbox 0.12.9 RPC + keepAlive + enableDefaultSession false stack. Fresh issue 96 was durably admitted as exactly one maintenance run 0e3fc377-6ff7-47ba-8cdf-df0a226a7a85.","verification":"The signed issue webhook created finding 87023d1e62b0fb2e058b2a8a38a3023a13bfc15f24e78471fbee301e9bb48b14 and queued run 0e3fc377-6ff7-47ba-8cdf-df0a226a7a85. Clone attempt 2 succeeded. The implement action durably recorded one acknowledged deterministic process ID donestate-implement-0e3fc377-6ff7-47ba-8cdf-df0a226a7a85, then settled AMBIGUOUS with reason process_identity_disappeared; the run entered AMBIGUOUS_EFFECT at 2026-09-03T07:05:31.877Z. No validation, branch, pull request, verification snapshot or OpsTruth decision followed. Cloudflare Sandbox 0.12.9 ProcessStore removes terminal records from memory after attempting file persistence and explicitly permits process history loss when that write fails, so process identity is not a durable completion oracle for DoneState. The next isolated repair returns to the sessionless foreground exec that issue 94 proved can complete, wraps the unchanged inner Codex command with an atomic terminal receipt outside /workspace/repo, removes receipt secrets from the child environment before Codex starts, and reacquires the same Sandbox ID for bounded read-only receipt and repository-head reconciliation.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Review the foreground terminal-receipt and same-Sandbox reacquisition repair, preserve the aligned 0.12.9 RPC + keepAlive + sessionless runtime and unchanged Codex inner command, deploy normally, then launch one fresh successor canary.","waitCondition":"Issue 96 and run 0e3fc377-6ff7-47ba-8cdf-df0a226a7a85 are terminal ambiguity evidence and must not be retried, reset or rewritten. Missing or mismatched receipt must remain AMBIGUOUS_EFFECT and must never authorize a second Codex launch.","staleDate":"2026-09-10"},
+      "outcome":"The background-process idea removed blind retry but did not provide durable terminal identity in Sandbox 0.12.9. The next repair moves effect reconciliation to a DoneState-owned terminal receipt while retaining fail-closed ambiguity when the Sandbox filesystem disappears.","content":"PR 95 merge and CI/deployment subjects, issue 96 finding/run identity, successful clone attempt, acknowledged process identity, process_identity_disappeared settlement, terminal AMBIGUOUS_EFFECT state, absence of publication/verifier activity, Cloudflare 0.12.9 process-store semantics, and the bounded receipt/reacquisition design.","measurement":"One fresh issue webhook, one run, two clone attempts with one successful materialization, exactly one acknowledged implementation launch, one process-identity disappearance, zero validations, zero branches, zero pull requests, zero OpsTruth calls, and zero Codex relaunches."
+    }
+    ,{
+    "id":"E-029","date":"2026-09-03","identity":"Terminal-receipt canary exposed a reconciliation window shorter than the proven Codex runtime","situation":"PR 97 merged as cb1951df4e9d9b684757f5e425ffcefbc42b85b9 and deployed Worker 504a5e23-4e5f-4eac-b80e-979f23fa0ec7 with Sandbox 0.12.9, RPC, keepAlive and sessionless execution. Fresh issue 98 queued on that exact runtime and materialized the repository successfully.","verification":"Production observability shows anonymous clone success in 1347 ms, RPC transport, then the terminal-receipt wrapper itself remained one long Sandbox commands.execute call and was interrupted while the runtime connection was closing after 111428 ms. RunCoordinator stopped as AMBIGUOUS_EFFECT roughly 5681 ms later. No validation, branch, PR or OpsTruth call occurred. The code at cb1951df allows only three receipt/control attempts with 500 ms and 1000 ms linear backoff, while issue 94 already proved the unchanged Codex 0.150.1 path can complete successfully after 168383 ms. Therefore the receipt oracle was sound but its reconciliation window was structurally shorter than a known-valid implementation runtime.",
+    "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Launch the same receipt wrapper exactly once through a short detached nohup handoff, enforce the existing implementation duration inside the wrapper, and poll the receipt plus repository continuity read-only until that configured deadline plus a small terminal-write grace. Never relaunch Codex after the durable implementation intent, even if launch acknowledgement is ambiguous.","waitCondition":"Issue 98 is terminal AMBIGUOUS_EFFECT evidence and must not be retried or rewritten. Do not change Sandbox version, transport, lifecycle, Codex version/arguments, verifier or authority in the same repair.","staleDate":"2026-09-10"},
+    "outcome":"The terminal receipt remains the correct completion authority, but it must decouple DoneState from a long-lived Sandbox RPC and its reconciliation window must cover the configured implementation lifetime rather than three immediate retries.","content":"Exact issue 98 deployed subject, clone and RPC evidence, 111428 ms foreground-wrapper interruption, AMBIGUOUS_EFFECT stop timing, absence of publication/verifier activity, three-attempt reconciliation constants, and the earlier 168383 ms successful Codex comparison.","measurement":"One fresh canary, one successful clone, one long receipt-wrapper RPC interruption at 111428 ms, one AMBIGUOUS_EFFECT stop about 5.7 seconds later, zero validation starts, zero branches, zero PRs, zero OpsTruth calls, and one detached single-launch deadline-bound reconciliation repair defined."
+  }
+    ,{
+      "id":"E-030","date":"2026-09-03","identity":"PR100 deployment exposed a Durable Object alarm lifetime mismatch","situation":"The detached terminal-receipt repair removed the known long Sandbox RPC dependency, but documentation re-assessment compared the deployed orchestration with Cloudflare Durable Object alarm limits before launching its successor canary.","verification":"PR 100 merged as b4febe960fc7e71d48049e3a758256c1b61841ef after exact-head CI 33738177238; post-merge CI 33738273567 and deployment 33738273580 passed. The deployment published Worker f89f842c-2f74-43a6-8f3e-ed90411e6964 and container sha256:da8f52ef1570de5ace6c6d336ad29b92b7a5a5a8ecb9b0e336707a98fff5e9c2 with Sandbox 0.12.9 and Codex 0.150.1. Source inspection shows RunCoordinator.alarm directly awaits executeObjective, whose detached implementation still polls until maxDurationMs plus receipt grace and whose Node validation could run multiple long commands in the same alarm. Hosted maintenance defaults to 1800000 ms and the public objective contract permits 7200000 ms. Cloudflare documents a 15-minute alarm-handler wall-time and at-least-once alarm retries.",
+      "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Make execution alarm-sliced with one durable implementation checkpoint, short per-alarm actions, safe same-run resumption, credential/sandbox retention across yields, and no replay of ambiguous generic mutations; then review, deploy and run one fresh canary.","waitCondition":"Fresh canary is blocked until the deployed execution model no longer depends on one alarm invocation surviving longer than the platform wall-time.","staleDate":"2026-09-10"},
+      "outcome":"PR100 remains valid evidence for the detached receipt layer, but it is not yet sufficient proof of the advertised autonomous duration contract.","content":"Exact PR100 source/CI/deployment/runtime subjects, Cloudflare alarm semantics, coordinator recovery behavior, objective duration limits, credential lease behavior, and the alarm-sliced repair boundary.","measurement":"One deployed detached-receipt repair is green; one platform-lifetime mismatch was found before a successor canary; zero historical canaries were retried or rewritten."
     }
   ]
 }
