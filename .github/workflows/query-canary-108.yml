@@ -9,7 +9,7 @@ jobs:
     if: github.event.head_commit.message == 'Inspect canary 108 queue identity'
     runs-on: ubuntu-latest
     steps:
-      - name: Query compact canary state signals
+      - name: Query exact canary process signals
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -18,7 +18,7 @@ jobs:
           set -euo pipefail
           query() {
             local needle="$1" response="$RUNNER_TEMP/response.json"
-            jq -n --arg needle "$needle" '{queryId:"canary-108-compact",timeframe:{from:1788460200000,to:1788462600000},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[{key:"$metadata.service",operation:"eq",type:"string",value:"donestate-mcp"}],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
+            jq -n --arg needle "$needle" '{queryId:"canary-108-exact-process",timeframe:{from:1788460200000,to:1788462600000},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
             curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' --data-binary @"$RUNNER_TEMP/request.json" > "$response"
             jq -c --arg needle "$needle" '
               def scalar_pairs:
@@ -30,17 +30,15 @@ jobs:
                 signals: [
                   ((.result.events.events // []) | to_entries[]) as $entry
                   | ($entry.value | scalar_pairs)
-                  | select(.path | test("message|run|issue|state|status|receipt|branch|pull|implement|verif|attest|error|time|id|objective|action|event"; "i"))
-                  | select((.value | tostring | length) < 800)
+                  | select(.path | test("message|run|issue|state|status|receipt|branch|pull|implement|verif|attest|error|time|id|objective|action|event|command|process|service|script|session|container"; "i"))
+                  | select((.value | tostring | length) < 1200)
                   | {event: $entry.key, path: .path, value: .value}
-                ][0:250]
+                ][0:300]
               }' "$response"
           }
-          query "maintenance repair queued from issue webhook"
-          query "run_queued"
-          query "RunCoordinator"
-          query "implementation"
-          query "receipt"
-          query "publication"
-          query "verification"
-          query "OpsTruth"
+          query "a0ae892d-1aeb-4f72-bd8b-f82bf94e6022"
+          query "donestate-implement-a0ae892d-1aeb-4f72-bd8b-f82bf94e6022"
+          query "implementation-a0ae892d-1aeb-4f72-bd8b-f82bf94e6022"
+          query "setsid -f"
+          query "codex --ask-for-approval never"
+          query "implementation_terminal_receipt_unavailable_before_deadline"
