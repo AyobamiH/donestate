@@ -83,14 +83,16 @@ jobs:
                   out.append(line)
           path.write_text('\n'.join(out) + '\n')
           PY
-      - name: Inspect generated executor around prior compiler failures
+      - name: Inspect generated continuation blocks
         if: always()
         shell: bash
         run: |
-          echo '--- executor 300-335 ---'
-          nl -ba apps/mcp-worker/src/executor.ts | sed -n '300,335p'
-          echo '--- coordinator alarm/checkpoint area ---'
-          grep -n -E 'execution_checkpoint|ExecutionCheckpoint|alarm\(|resumeAtMs|setAlarm' apps/mcp-worker/src/coordinator.ts | head -120 || true
+          echo '--- executor tail ---'
+          tail -n 120 apps/mcp-worker/src/executor.ts
+          echo '--- coordinator alarm through runRow ---'
+          nl -ba apps/mcp-worker/src/coordinator.ts | sed -n '430,650p'
+          echo '--- checkpoint helper names ---'
+          grep -n -E 'startImplementationAction|updateExecutionCheckpoint|settleImplementationAction|executionCheckpoint|clearExecutionCheckpoint|cleanupExecutionContext|destroyExecutionSandbox' apps/mcp-worker/src/{executor,coordinator}.ts || true
       - name: Install root dependencies
         run: npm ci
       - name: Render governance state
