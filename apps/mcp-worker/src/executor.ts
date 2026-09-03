@@ -34,7 +34,7 @@ export const CODEX_IMPLEMENT_COMMAND = "codex --ask-for-approval never --config 
 export const CHANGED_FILES_COMMAND = "{ git diff --name-only -z HEAD; git ls-files --others --exclude-standard -z; } | base64 -w0";
 export const PUBLIC_CLONE_MAX_ATTEMPTS = 3;
 export const PUBLIC_CLONE_RETRY_BASE_DELAY_MS = 2_000;
-export const SANDBOX_RUNTIME_OPTIONS = { sleepAfter: "15m", keepAlive: true } as const;
+export const SANDBOX_RUNTIME_OPTIONS = { sleepAfter: "15m", keepAlive: true, enableDefaultSession: false } as const;
 
 export function publicCloneCommand(objective: Pick<HostedObjective, "baseRef" | "repository">, repositoryPath: string): string {
   return `git clone --no-tags --single-branch --branch ${objective.baseRef} https://github.com/${objective.repository}.git ${repositoryPath}`;

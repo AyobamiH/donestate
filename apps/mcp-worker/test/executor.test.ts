@@ -53,8 +53,8 @@ describe("hosted Codex executor contract", () => {
     expect(() => publicCloneSandboxId(runId, 4)).toThrow("out of range");
   });
 
-  it("keeps long-running implementation sandboxes alive until deterministic cleanup", () => {
-    expect(SANDBOX_RUNTIME_OPTIONS).toEqual({ sleepAfter: "15m", keepAlive: true });
+  it("keeps long-running implementation sandboxes alive without a persistent default session", () => {
+    expect(SANDBOX_RUNTIME_OPTIONS).toEqual({ sleepAfter: "15m", keepAlive: true, enableDefaultSession: false });
   });
 
   it("counts a complete NUL-delimited changed-file inventory without duplicates", () => {
