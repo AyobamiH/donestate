@@ -1,12 +1,12 @@
 {
   "name": "donestate",
   "version": "0.2.0",
-  "description": "Proof & State's authorised execution control plane for bounded repository work, with independent OpsTruth verification.",
+  "description": "Governed autonomous coding with durable execution and independent verification handoff.",
   "author": {
-    "name": "Proof & State",
-    "url": "https://proofandstate.com"
+    "name": "AyobamiH",
+    "url": "https://github.com/AyobamiH"
   },
-  "homepage": "https://proofandstate.com/donestate",
+  "homepage": "https://github.com/AyobamiH/donestate",
   "repository": "https://github.com/AyobamiH/donestate",
   "license": "Apache-2.0",
   "keywords": ["autonomous-coding", "developer-tools", "github", "mcp", "verification"],
@@ -14,18 +14,18 @@
   "apps": "./.app.json",
   "interface": {
     "displayName": "DoneState",
-    "shortDescription": "Authorised execution with independent verification.",
-    "longDescription": "DoneState is Proof & State's authorised execution control plane for bounded repository work. Describe an outcome, explicitly grant one consequence envelope, and let DoneState run, validate and publish only within that authority. OpsTruth is the independent read-only verification plane; DoneState never treats its own execution evidence as proof.",
-    "developerName": "Proof & State",
+    "shortDescription": "Governed autonomous coding with proof handoff.",
+    "longDescription": "Describe a repository outcome in prose, approve one bounded consequence envelope, and let DoneState run, validate and publish the change in an isolated durable workflow. DoneState stops at independent verification and never treats its own completion claim as proof.",
+    "developerName": "AyobamiH",
     "category": "Productivity",
     "capabilities": ["Interactive", "Write"],
-    "websiteURL": "https://proofandstate.com/donestate",
+    "websiteURL": "https://github.com/AyobamiH/donestate",
     "privacyPolicyURL": "https://github.com/AyobamiH/donestate/blob/main/docs/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/AyobamiH/donestate/blob/main/docs/TERMS.md",
     "defaultPrompt": [
-      "Implement this issue within my approved authority and open a PR for independent verification.",
+      "Implement this issue and open a verified PR.",
       "Run this repository objective autonomously.",
-      "Maintain this selected repository with PR-only repairs and independent verification.",
+      "Maintain this selected repository with verified PR-only repairs.",
       "Show me the state of my DoneState run."
     ],
     "brandColor": "#2563EB"
