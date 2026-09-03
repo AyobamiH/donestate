@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Trace RPC Sandbox canary 83'
+    if: github.event.head_commit.message == 'Recheck RPC Sandbox canary 83'
     runs-on: ubuntu-latest
     steps:
       - name: Query bounded production signals
@@ -27,7 +27,7 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-83-rpc",
+              queryId: "donestate-canary-83-rpc-recheck",
               timeframe: {from: 1788406650000, to: 1788408600000},
               view: "events",
               limit: 200,
@@ -61,6 +61,8 @@ jobs:
             "HTTP error! status: 500" \
             "DoneState run stopped" \
             "publication_started" \
-            "automatic independent verification did not complete"; do
+            "pull request" \
+            "automatic independent verification did not complete" \
+            "maintenance verification retry completed"; do
             query_logs "$needle"
           done
