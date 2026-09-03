@@ -57,7 +57,7 @@ export function implementationReceiptCommand(): string {
     CODEX_IMPLEMENT_COMMAND,
     'exit_code=$?',
     'set -e',
-    'tmp_path="${receipt_path}.tmp.$"',
+    'tmp_path="${receipt_path}.tmp.$$"',
     "printf '%s\\t%s\\t%s\\t%s\\t%s\\n' \"$receipt_schema\" \"$receipt_run_id\" \"$receipt_command_digest\" \"$exit_code\" \"$receipt_nonce\" > \"$tmp_path\"",
     'mv "$tmp_path" "$receipt_path"',
     'exit "$exit_code"',
@@ -76,10 +76,10 @@ export function parseImplementationReceipt(value: string): ImplementationReceipt
   const parts = value.trim().split("\t");
   if (parts.length !== 5) throw new Error("implementation receipt field count is invalid");
   const schema = parts[0]!;
-const runId = parts[1]!;
-const commandDigest = parts[2]!;
-const exitCodeText = parts[3]!;
-const nonce = parts[4]!;
+  const runId = parts[1]!;
+  const commandDigest = parts[2]!;
+  const exitCodeText = parts[3]!;
+  const nonce = parts[4]!;
   if (schema !== IMPLEMENTATION_RECEIPT_SCHEMA) throw new Error("implementation receipt schema is invalid");
   if (!/^[0-9a-f-]{36}$/.test(runId)) throw new Error("implementation receipt run id is invalid");
   if (!/^[a-f0-9]{64}$/.test(commandDigest)) throw new Error("implementation receipt command digest is invalid");

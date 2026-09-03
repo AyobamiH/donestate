@@ -68,6 +68,7 @@ describe("hosted Codex executor contract", () => {
     expect(receiptPath.startsWith("/workspace/repo/")).toBe(false);
     expect(wrapper.split(CODEX_IMPLEMENT_COMMAND)).toHaveLength(2);
     expect(wrapper).toContain("unset DONESTATE_RECEIPT_NONCE");
+    expect(wrapper).toContain('tmp_path="${receipt_path}.tmp.$$"');
     expect(wrapper).toContain('mv "$tmp_path" "$receipt_path"');
     expect(wrapper).not.toContain("startProcess");
   });
