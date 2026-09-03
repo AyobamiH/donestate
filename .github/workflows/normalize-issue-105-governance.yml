@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   normalize:
-    if: github.event.head_commit.message == 'Prepare issue 105 governance closure'
+    if: github.event.head_commit.message == 'Run issue 105 governance closure'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -184,7 +184,15 @@ jobs:
           PY
       - name: Render generated project state
         run: npm run governance:render
-      - name: Validate exact review tree
+      - name: Seal generated governance candidate locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Ayobami Haastrup'
+          git config user.email '47716486+AyobamiH@users.noreply.github.com'
+          git add governance/project-ledger.json docs/PROJECT-STATE.md
+          git commit -m 'Materialize issue 105 governance closure'
+      - name: Validate sealed review tree
         shell: bash
         run: |
           set -euo pipefail
@@ -203,12 +211,9 @@ jobs:
             apps/mcp-worker/test/executor.test.ts \
             docs/PROJECT-STATE.md \
             governance/project-ledger.json | sort -u)
-          actual=$( { git diff --name-only 8b073250bfd01e8fca14755209a673ae42f5f5f0; git ls-files --others --exclude-standard; } | sed '/^$/d' | grep -v '^.github/workflows/normalize-issue-105-governance.yml$' | sort -u )
+          actual=$( { git diff --name-only 8b073250bfd01e8fca14755209a673ae42f5f5f0; git ls-files --others --exclude-standard; } | sed '/^$/d' | sort -u )
           test "$actual" = "$expected"
-          git diff --check
-          git config user.name 'Ayobami Haastrup'
-          git config user.email '47716486+AyobamiH@users.noreply.github.com'
-          git add apps/mcp-worker/src/executor.ts apps/mcp-worker/test/executor.test.ts docs/PROJECT-STATE.md governance/project-ledger.json
+          git diff --check 8b073250bfd01e8fca14755209a673ae42f5f5f0
           git add -u .github/workflows/normalize-issue-105-governance.yml
-          git commit -m 'Close issue 105 governance evidence'
+          git commit -m 'Finalize issue 105 governance closure'
           git push origin HEAD:repair/detach-start-process-session
