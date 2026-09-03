@@ -35,6 +35,13 @@ export const CHANGED_FILES_COMMAND = "{ git diff --name-only -z HEAD; git ls-fil
 export const PUBLIC_CLONE_MAX_ATTEMPTS = 3;
 export const PUBLIC_CLONE_RETRY_BASE_DELAY_MS = 2_000;
 export const SANDBOX_RUNTIME_OPTIONS = { sleepAfter: "15m", keepAlive: true, enableDefaultSession: false } as const;
+export const IMPLEMENTATION_PROCESS_START_ATTEMPTS = 1;
+export const IMPLEMENTATION_PROCESS_POLL_MS = 2_000;
+export const IMPLEMENTATION_PROCESS_RECONCILE_ATTEMPTS = 3;
+
+export function implementationProcessId(runId: string): string {
+  return `donestate-implement-${runId}`;
+}
 
 export function publicCloneCommand(objective: Pick<HostedObjective, "baseRef" | "repository">, repositoryPath: string): string {
   return `git clone --no-tags --single-branch --branch ${objective.baseRef} https://github.com/${objective.repository}.git ${repositoryPath}`;
@@ -358,6 +365,178 @@ function pullRequestBody(objective: HostedObjective): string {
   ].join("\n");
 }
 
+const IMPLEMENTATION_TERMINAL_STATUSES = new Set(["completed", "failed", "killed", "error"]);
+
+function waitForImplementationPoll(delayMs = IMPLEMENTATION_PROCESS_POLL_MS): Promise<void> {
+  return new Promise<void>((resolve) => setTimeout(resolve, delayMs));
+}
+
+async function reconcileImplementationProcess(
+  sandbox: Sandbox,
+  journal: ExecutionJournal,
+  objective: HostedObjective,
+  repositoryGovernanceRequired: boolean,
+  openaiApiKey: string,
+  githubToken: string,
+): Promise<Record<string, unknown>> {
+  const id = "implement";
+  const authority: AuthorityClass = "local_write";
+  if (!objective.authorities.includes(authority)) throw new RunFailure("BLOCKED_AUTHORITY", `${authority} authority is required for ${id}`);
+  if (journal.cancelled()) throw new RunFailure("FAILED_SAFE", "objective was cancelled before the next action");
+
+  const processId = implementationProcessId(objective.runId);
+  const previousResult = await journal.startAction(id, authority, {
+    schema: "donestate.action-intent.v1",
+    idempotencyKey: actionIdempotency(objective.runId, id),
+    commandDigest: await digest(CODEX_IMPLEMENT_COMMAND),
+    processId,
+    executionMode: "single_launch_reconcilable_process_v1",
+    startAttempts: IMPLEMENTATION_PROCESS_START_ATTEMPTS,
+  });
+  if (previousResult) return previousResult;
+
+  let launchAcknowledged = false;
+  let launchError: string | null = null;
+  try {
+    const process = await sandbox.startProcess(CODEX_IMPLEMENT_COMMAND, {
+      cwd: "/workspace/repo",
+      env: {
+        HOME: "/workspace/home",
+        CODEX_API_KEY: openaiApiKey,
+        DONESTATE_OBJECTIVE: implementationPrompt(objective, repositoryGovernanceRequired),
+      },
+      timeout: objective.maxDurationMs,
+      processId,
+      autoCleanup: false,
+    });
+    if (process.id !== processId) {
+      const result = { processId, observedProcessId: process.id, reason: "process_identity_mismatch" };
+      await journal.settleAction(id, { state: "AMBIGUOUS", result });
+      throw new RunFailure("AMBIGUOUS_EFFECT", "implementation process identity did not match the durable intent", result);
+    }
+    launchAcknowledged = true;
+  } catch (error) {
+    if (error instanceof RunFailure) throw error;
+    launchError = redact(
+      error instanceof Error ? error.message : "implementation process launch acknowledgement was lost",
+      [openaiApiKey, githubToken],
+    );
+  }
+
+  const deadline = Date.now() + objective.maxDurationMs + 30_000;
+  let observedProcess = launchAcknowledged;
+  let consecutiveReadFailures = 0;
+  let missingReads = 0;
+
+  while (Date.now() < deadline) {
+    let process: Awaited<ReturnType<Sandbox["getProcess"]>>;
+    try {
+      process = await sandbox.getProcess(processId);
+      consecutiveReadFailures = 0;
+    } catch (error) {
+      consecutiveReadFailures += 1;
+      if (consecutiveReadFailures >= IMPLEMENTATION_PROCESS_RECONCILE_ATTEMPTS) {
+        const detail = redact(
+          error instanceof Error ? error.message : "implementation process could not be re-observed",
+          [openaiApiKey, githubToken],
+        );
+        const result = { processId, reason: "process_observation_unavailable", error: detail, launchAcknowledged, launchError };
+        await journal.settleAction(id, { state: "AMBIGUOUS", result });
+        throw new RunFailure(
+          "AMBIGUOUS_EFFECT",
+          "implementation process could not be reconciled after an admitted control interruption",
+          result,
+        );
+      }
+      await waitForImplementationPoll(500 * consecutiveReadFailures);
+      continue;
+    }
+
+    if (!process) {
+      missingReads += 1;
+      if (observedProcess || missingReads >= IMPLEMENTATION_PROCESS_RECONCILE_ATTEMPTS) {
+        const result = {
+          processId,
+          reason: observedProcess ? "process_identity_disappeared" : "launch_acknowledgement_lost_process_not_observable",
+          launchAcknowledged,
+          launchError,
+        };
+        await journal.settleAction(id, { state: "AMBIGUOUS", result });
+        throw new RunFailure("AMBIGUOUS_EFFECT", "implementation process identity could not be reconciled", result);
+      }
+      await waitForImplementationPoll(500 * missingReads);
+      continue;
+    }
+
+    observedProcess = true;
+    missingReads = 0;
+    if (!IMPLEMENTATION_TERMINAL_STATUSES.has(process.status)) {
+      await waitForImplementationPoll();
+      continue;
+    }
+
+    let stdout = { text: "", truncated: false };
+    let stderr = { text: "", truncated: false };
+    let logsAvailable = true;
+    let logError: string | null = null;
+    try {
+      const logs = await process.getLogs();
+      stdout = boundedOutput(redact(logs.stdout, [openaiApiKey, githubToken]));
+      stderr = boundedOutput(redact(logs.stderr, [openaiApiKey, githubToken]));
+    } catch (error) {
+      logsAvailable = false;
+      logError = redact(
+        error instanceof Error ? error.message : "implementation logs could not be read",
+        [openaiApiKey, githubToken],
+      );
+    }
+
+    const exitCode = typeof process.exitCode === "number"
+      ? process.exitCode
+      : process.status === "completed" ? 0 : -1;
+    const success = process.status === "completed" && exitCode === 0;
+    const result = {
+      success,
+      exitCode,
+      stdout: stdout.text,
+      stderr: stderr.text,
+      truncated: stdout.truncated || stderr.truncated,
+      processId,
+      processStatus: process.status,
+      launchAcknowledged,
+      launchError,
+      logsAvailable,
+      logError,
+    };
+    await journal.settleAction(id, { state: success ? "SUCCEEDED" : "FAILED", result });
+    if (!success) {
+      throw new RunFailure("FAILED_SAFE", `implement process ended in ${process.status} with exit code ${exitCode}`, result);
+    }
+    return result;
+  }
+
+  let process: Awaited<ReturnType<Sandbox["getProcess"]>> = null;
+  try {
+    process = await sandbox.getProcess(processId);
+  } catch {
+    // The process effect is already admitted. Missing observation must remain ambiguous rather than relaunching it.
+  }
+  if (process && !IMPLEMENTATION_TERMINAL_STATUSES.has(process.status)) {
+    try {
+      await process.kill("SIGTERM");
+    } catch {
+      // Best-effort bounded cleanup only.
+    }
+    const result = { processId, processStatus: process.status, reason: "implementation_process_timeout" };
+    await journal.settleAction(id, { state: "FAILED", result });
+    throw new RunFailure("FAILED_SAFE", "implementation process exceeded the objective duration", result);
+  }
+
+  const result = { processId, reason: "implementation_process_terminal_state_unavailable", launchAcknowledged, launchError };
+  await journal.settleAction(id, { state: "AMBIGUOUS", result });
+  throw new RunFailure("AMBIGUOUS_EFFECT", "implementation process terminal state could not be reconciled", result);
+}
+
 export async function executeObjective(
   env: DoneStateEnv,
   objective: HostedObjective,
@@ -384,20 +563,13 @@ export async function executeObjective(
     await journal.transition("EXECUTING", "harness_started");
     const repositoryGovernanceRequired = objective.objectiveClass === "maintenance_pr"
       && await hasPackageScript(sandbox, repositoryPath, "governance:impact");
-    const prompt = implementationPrompt(objective, repositoryGovernanceRequired);
-    await runAction(
+    await reconcileImplementationProcess(
       sandbox,
       journal,
       objective,
-      "implement",
-      "local_write",
-      CODEX_IMPLEMENT_COMMAND,
-      {
-        cwd: repositoryPath,
-        env: { HOME: "/workspace/home", CODEX_API_KEY: openaiApiKey, DONESTATE_OBJECTIVE: prompt },
-        timeout: objective.maxDurationMs,
-      },
-      [openaiApiKey, githubToken],
+      repositoryGovernanceRequired,
+      openaiApiKey,
+      githubToken,
     );
     const harnessHead = await sandbox.exec("git rev-parse HEAD", { cwd: repositoryPath });
     if (!harnessHead.success || harnessHead.stdout.trim() !== objective.baseHeadSha) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, implementationPrompt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
+import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, IMPLEMENTATION_PROCESS_RECONCILE_ATTEMPTS, IMPLEMENTATION_PROCESS_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, implementationProcessId, implementationPrompt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
 import type { HostedObjective } from "../src/types";
 
 describe("hosted Codex executor contract", () => {
@@ -55,6 +55,13 @@ describe("hosted Codex executor contract", () => {
 
   it("keeps long-running implementation sandboxes alive without a persistent default session", () => {
     expect(SANDBOX_RUNTIME_OPTIONS).toEqual({ sleepAfter: "15m", keepAlive: true, enableDefaultSession: false });
+  });
+
+  it("launches Codex once under a deterministic reconcilable process identity", () => {
+    const runId = "post-codex-control-canary";
+    expect(IMPLEMENTATION_PROCESS_START_ATTEMPTS).toBe(1);
+    expect(IMPLEMENTATION_PROCESS_RECONCILE_ATTEMPTS).toBe(3);
+    expect(implementationProcessId(runId)).toBe(`donestate-implement-${runId}`);
   });
 
   it("counts a complete NUL-delimited changed-file inventory without duplicates", () => {
