@@ -1,34 +1,123 @@
-name: Inspect canary 108 queue identity
+name: Build tracked-waiter receipt repair
 on:
   push:
     branches: [ops/diagnose-canary-108]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  query:
-    if: github.event.head_commit.message == 'Inspect canary 108 queue identity'
+  build-repair:
+    if: github.event.head_commit.message == 'Build tracked-waiter receipt repair'
     runs-on: ubuntu-latest
     steps:
-      - name: Inspect exact process exit and control-file evidence
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - uses: actions/checkout@v4
+        with:
+          ref: repair/wait-detached-receipt-worker
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply isolated repair and governance closure
         shell: bash
         run: |
           set -euo pipefail
-          query() {
-            local from="$1" to="$2" needle="$3" response="$RUNNER_TEMP/response.json"
-            jq -n --argjson from "$from" --argjson to "$to" --arg needle "$needle" '{queryId:"canary-process-exit-control",timeframe:{from:$from,to:$to},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
-            curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' --data-binary @"$RUNNER_TEMP/request.json" > "$response"
-            jq -c --arg needle "$needle" '{needle:$needle,count:(.result.events.count // 0),events:[(.result.events.events // [])[] | {source:(.source | {event,command,pid,processId,commandId,sessionId,exitCode,errorMessage,timestamp}),metadata:(.["$metadata"] | {message,error}),container:(.["$containers"] | {deploymentId,placementId,applicationId,processId,container})}][0:50]}' "$response"
-          }
-          FROM105=1788443000000
-          TO105=1788450000000
-          FROM108=1788460200000
-          TO108=1788462600000
-          query "$FROM105" "$TO105" "donestate-implement-70310be5-5abe-413f-9643-f9e8e2425cc2"
-          query "$FROM105" "$TO105" "implementation-70310be5-5abe-413f-9643-f9e8e2425cc2.sh"
-          query "$FROM105" "$TO105" "implementation-70310be5-5abe-413f-9643-f9e8e2425cc2.log"
-          query "$FROM108" "$TO108" "donestate-implement-a0ae892d-1aeb-4f72-bd8b-f82bf94e6022"
-          query "$FROM108" "$TO108" "implementation-a0ae892d-1aeb-4f72-bd8b-f82bf94e6022.sh"
-          query "$FROM108" "$TO108" "implementation-a0ae892d-1aeb-4f72-bd8b-f82bf94e6022.log"
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+
+          executor = Path('apps/mcp-worker/src/executor.ts')
+          text = executor.read_text()
+          old_command = 'setsid -f /bin/sh \\"$DONESTATE_RECEIPT_SCRIPT_PATH\\" > \\"$DONESTATE_RECEIPT_LOG_PATH\\" 2>&1'
+          new_command = 'setsid -f -w /bin/sh \\"$DONESTATE_RECEIPT_SCRIPT_PATH\\" > \\"$DONESTATE_RECEIPT_LOG_PATH\\" 2>&1'
+          if text.count(old_command) != 1:
+              raise SystemExit(f'expected one executor launch command, found {text.count(old_command)}')
+          text = text.replace(old_command, new_command)
+          old_mode = 'single_start_process_setsid_terminal_receipt_alarm_resumable_v5'
+          new_mode = 'single_start_process_setsid_wait_terminal_receipt_alarm_resumable_v6'
+          if text.count(old_mode) != 1:
+              raise SystemExit(f'expected one execution mode, found {text.count(old_mode)}')
+          text = text.replace(old_mode, new_mode)
+          executor.write_text(text)
+
+          test = Path('apps/mcp-worker/test/executor.test.ts')
+          text = test.read_text()
+          old_expect = "    expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).toBe('setsid -f /bin/sh \\\"$DONESTATE_RECEIPT_SCRIPT_PATH\\\" > \\\"$DONESTATE_RECEIPT_LOG_PATH\\\" 2>&1');"
+          new_expect = "    expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).toBe('setsid -f -w /bin/sh \\\"$DONESTATE_RECEIPT_SCRIPT_PATH\\\" > \\\"$DONESTATE_RECEIPT_LOG_PATH\\\" 2>&1');\n    expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).toContain('setsid -f -w');"
+          if text.count(old_expect) != 1:
+              raise SystemExit(f'expected one test launch assertion, found {text.count(old_expect)}')
+          text = text.replace(old_expect, new_expect)
+          test.write_text(text)
+
+          ledger_path = Path('governance/project-ledger.json')
+          ledger = json.loads(ledger_path.read_text())
+          ledger['updatedAt'] = '2026-09-03'
+          by_id = {item['id']: item for item in ledger['workItems']}
+          verify6 = by_id['VERIFY-006']
+          verify6['nextAction'] = ('Review the tracked-waiter startProcess repair on repair/wait-detached-receipt-worker. '
+              'Require exact-head core (22), core (24), hosted-plugin and governance impact success; if reviewed and green, merge and deploy it, then launch exactly one fresh PR-only maintenance canary. '
+              'Preserve the terminal receipt as the sole implementation completion authority, exactly one startProcess launch, Sandbox 0.12.9, RPC, keepAlive, sessionless execution, Codex 0.150.1, PR-only canary publication and OpsTruth v2.')
+          verify6['waitCondition'] = ('Issue 108 / run a0ae892d-1aeb-4f72-bd8b-f82bf94e6022 is immutable terminal AMBIGUOUS_EFFECT. '
+              'The deployed setsid -f launcher was acknowledged once; Cloudflare telemetry recorded process.start followed by process.exit exitCode 0 after about 174 ms, while no matching terminal receipt or implementation log was present at the deadline, no Codex command was observed, and no validation, publication or OpsTruth verification followed. '
+              'Issue 105 remains separate immutable AMBIGUOUS_EFFECT evidence. The next repair combines the independent session with a tracked waiter using setsid -f -w; this is an isolated hypothesis and is not success until a fresh successor reaches terminal VERIFIED.')
+          if 'E-034' not in verify6['evidenceIds']:
+              verify6['evidenceIds'].append('E-034')
+
+          verify4 = by_id['VERIFY-004']
+          verify4['nextAction'] = ('After the tracked-waiter repair is exact-head green, reviewed, merged and deployed, create exactly one fresh PR-only maintenance canary. '
+              'Require one durable run, exactly one implementation launch, a verified terminal receipt, validation, one donestate/<run-id> branch and pull request, exact-head core (22), core (24) and hosted-plugin checks, a complete OpsTruth v2 response, and truthful DoneState VERIFIED read-back while leaving the canary PR unmerged.')
+          verify4['waitCondition'] = ('Issues 105 and 108 and their runs are immutable terminal AMBIGUOUS_EFFECT evidence and cannot be reused or relaunched. '
+              'Issue 108 disproved setsid -f alone as sufficient for the receipt worker: its tracked launcher exited 0 in about 174 ms but produced no durable receipt, log, Codex evidence, branch, PR or verifier subject. '
+              'A fresh successor is blocked only until the tracked-waiter repair is reviewed, merged and deployed. No AWAITING_VERIFICATION, uncertain result, branch creation, PR creation or CI success is the end-to-end success condition.')
+          if 'E-034' not in verify4['evidenceIds']:
+              verify4['evidenceIds'].append('E-034')
+
+          if any(e['id'] == 'E-034' for e in ledger['evidenceStories']):
+              raise SystemExit('E-034 already exists')
+          ledger['evidenceStories'].append({
+              'id': 'E-034',
+              'date': '2026-09-03',
+              'identity': 'Issue 108 setsid canary preserved; tracked-waiter receipt repair isolated',
+              'situation': ('Fresh successor issue 108 tested the deployed setsid -f startProcess receipt launch after PR 107. '
+                  'The required end-to-end chain did not reach publication, so OpsTruth never had a canary PR to verify.'),
+              'verification': ('DoneState production converged duplicate issue deliveries on run a0ae892d-1aeb-4f72-bd8b-f82bf94e6022 and stopped it terminal AMBIGUOUS_EFFECT. '
+                  'Read-only Cloudflare telemetry captured the single process ID donestate-implement-a0ae892d-1aeb-4f72-bd8b-f82bf94e6022: process.start at 2026-09-03T18:31:29.365Z, process.exit exitCode 0 at 2026-09-03T18:31:29.491Z, and command.stream exitCode 0 at 2026-09-03T18:31:29.495Z. '
+                  'At the deadline both /workspace/.donestate-control/implementation-a0ae892d-1aeb-4f72-bd8b-f82bf94e6022.receipt and .log were absent, no Codex command matched telemetry, and no validation, branch, pull request or verifier activity followed. '
+                  'Diagnostic workflow 33796337929 job 100784808192 captured the exact provider process and file evidence; issue 108 is preserved and will not be retried.'),
+              'accountability': {
+                  'owner': 'DoneState maintainers',
+                  'status': 'active',
+                  'nextAction': ('Review, merge and deploy only the isolated tracked-waiter repair after exact-head CI, then launch one fresh successor canary and require terminal VERIFIED with its PR unmerged.'),
+                  'waitCondition': ('The tracked-waiter repair is not yet reviewed, merged or deployed; issue 108 cannot be reused.'),
+                  'staleDate': '2026-09-10'
+              },
+              'outcome': ('Issue 108 is immutable terminal AMBIGUOUS_EFFECT evidence. setsid -f alone is not sufficient for DoneState receipt durability; the next bounded repair keeps an independent session child while retaining a tracked waiter with setsid -f -w.'),
+              'content': ('Exact run identity, one launch, provider process start/exit, missing terminal receipt and log, absent Codex evidence, no publication, and the bounded tracked-waiter repair hypothesis.'),
+              'measurement': ('One fresh run; one acknowledged startProcess launch; one tracked launcher exitCode 0 after about 174 ms; zero terminal receipts, zero implementation logs, zero observed Codex starts, zero canary branches/PRs and zero OpsTruth decisions.')
+          })
+          ledger_path.write_text(json.dumps(ledger, indent=2) + '\n')
+          PY
+          npm run governance:render
+          git diff --check
+          git diff -- apps/mcp-worker/src/executor.ts apps/mcp-worker/test/executor.test.ts governance/project-ledger.json docs/PROJECT-STATE.md
+      - name: Install and validate root
+        run: |
+          npm ci
+          npm run governance:check
+          npm run governance:impact -- 65c8856b58e1c451673a561c8e920a93e77af721
+          npm run check
+      - name: Install and validate Worker
+        working-directory: apps/mcp-worker
+        run: |
+          npm ci
+          npm run check
+      - name: Commit reviewed repair candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git status --short
+          git config user.name 'Ayobami Haastrup'
+          git config user.email '47716486+AyobamiH@users.noreply.github.com'
+          git add apps/mcp-worker/src/executor.ts apps/mcp-worker/test/executor.test.ts governance/project-ledger.json docs/PROJECT-STATE.md
+          test "$(git diff --cached --name-only | wc -l)" -eq 4
+          git commit -m 'Keep detached receipt worker tracked'
+          git push origin HEAD:repair/wait-detached-receipt-worker
