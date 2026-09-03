@@ -27,8 +27,8 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-105",
-              timeframe: {from: 1788440000000, to: 1788450000000},
+              queryId: "donestate-canary-105-b",
+              timeframe: {from: 1788443000000, to: 1788450000000},
               view: "events",
               limit: 500,
               parameters: {
@@ -54,7 +54,10 @@ jobs:
           for needle in \
             "maintenance repair queued from issue webhook" \
             "git clone --no-tags" \
+            "Using rpc transport" \
             "startProcess" \
+            "sandbox.startProcess" \
+            "process.start" \
             "donestate.implementation-receipt.v1" \
             "implementation_terminal_receipt" \
             "DoneState run stopped" \
