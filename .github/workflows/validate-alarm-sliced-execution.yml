@@ -62,12 +62,33 @@ jobs:
           node --check scripts/tmp-alarm-sliced-execution.mjs
       - name: Apply alarm-sliced execution repair
         run: node scripts/tmp-alarm-sliced-execution.mjs
+      - name: Normalize generated executor interpolation artifacts
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('apps/mcp-worker/src/executor.ts')
+          lines = path.read_text().splitlines()
+          out = []
+          for line in lines:
+              stripped = line.strip()
+              indent = line[:len(line)-len(line.lstrip())]
+              if stripped.startswith('if (!objective.authorities.includes(authority)) throw new RunFailure("BLOCKED_AUTHORITY",'):
+                  out.append(indent + 'if (!objective.authorities.includes(authority)) throw new RunFailure("BLOCKED_AUTHORITY", authority + " authority is required for " + id);')
+              elif stripped.startswith('throw new RunFailure("BLOCKED_CAPABILITY",') and 'could not execute' in stripped:
+                  out.append(indent + 'throw new RunFailure("BLOCKED_CAPABILITY", id + " could not execute", { error: redact(message, secrets) });')
+              elif stripped.startswith('if (!raw.success) throw new RunFailure("FAILED_SAFE",'):
+                  out.append(indent + 'if (!raw.success) throw new RunFailure("FAILED_SAFE", id + " failed with exit code " + raw.exitCode, result);')
+              else:
+                  out.append(line)
+          path.write_text('\n'.join(out) + '\n')
+          PY
       - name: Inspect generated executor around prior compiler failures
         if: always()
         shell: bash
         run: |
-          echo '--- executor 290-460 ---'
-          nl -ba apps/mcp-worker/src/executor.ts | sed -n '290,460p'
+          echo '--- executor 300-335 ---'
+          nl -ba apps/mcp-worker/src/executor.ts | sed -n '300,335p'
           echo '--- coordinator alarm/checkpoint area ---'
           grep -n -E 'execution_checkpoint|ExecutionCheckpoint|alarm\(|resumeAtMs|setAlarm' apps/mcp-worker/src/coordinator.ts | head -120 || true
       - name: Install root dependencies
