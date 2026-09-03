@@ -1,4 +1,4 @@
-name: Recheck detached-receipt canary 101
+name: Recheck detached-receipt canary 101 again
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Recheck detached-receipt canary 101'
+    if: github.event.head_commit.message == 'Recheck detached-receipt canary 101 again'
     runs-on: ubuntu-latest
     steps:
       - name: Query bounded production signals
@@ -27,15 +27,15 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-101-recheck",
+              queryId: "donestate-canary-101-recheck-2",
               timeframe: {from: 1788427410000, to: 1788430500000},
               view: "events",
-              limit: 400,
+              limit: 500,
               parameters: {
                 datasets: [],
                 filterCombination: "and",
                 filters: [{key: "$metadata.service", operation: "eq", type: "string", value: "donestate-mcp"}],
-                limit: 250,
+                limit: 300,
                 needle: {value: $needle, isRegex: false, matchCase: false}
               }
             }' > "$request"
@@ -54,6 +54,7 @@ jobs:
           }
           for needle in \
             "nohup /bin/sh" \
+            "implementation terminal receipt" \
             "AMBIGUOUS_EFFECT" \
             "FAILED_SAFE" \
             "BLOCKED_CAPABILITY" \
