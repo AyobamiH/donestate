@@ -1,4 +1,4 @@
-name: Inspect canary 114 verification handoff
+name: Inspect canary 114 after OpsTruth repair
 on:
   push:
     branches: [ops/diagnose-canary-114]
@@ -8,7 +8,7 @@ jobs:
   query:
     runs-on: ubuntu-latest
     steps:
-      - name: Query canary 114 exact verification handoff
+      - name: Query canary 114 after OpsTruth repair
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -16,30 +16,30 @@ jobs:
         run: |
           set -euo pipefail
           now=$(date +%s000)
-          from=1788469950000
+          from=1788471000000
           query() {
             local needle="$1" response="$RUNNER_TEMP/response.json"
-            jq -n --arg needle "$needle" --argjson from "$from" --argjson to "$now" '{queryId:"canary-114-verification",timeframe:{from:$from,to:$to},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
+            jq -n --arg needle "$needle" --argjson from "$from" --argjson to "$now" '{queryId:"canary-114-after-opstruth-repair",timeframe:{from:$from,to:$to},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
             curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' --data-binary @"$RUNNER_TEMP/request.json" > "$response"
             jq -c --arg needle "$needle" '
               def scalar_pairs: paths(scalars) as $p | {path: ($p | map(tostring) | join(".")), value: getpath($p)};
               {needle:$needle,count:(.result.events.count // 0),signals:[
                 ((.result.events.events // []) | to_entries[]) as $entry
                 | ($entry.value | scalar_pairs)
-                | select(.path | test("message|run|state|status|branch|pull|verif|attest|contract|report|decision|error|time|id|action|event|sha|head|url|response";"i"))
+                | select(.path | test("message|run|state|status|branch|pull|verif|attest|contract|report|decision|error|time|id|action|event|sha|head|url|response|version";"i"))
                 | select((.value|tostring|length) < 5000)
                 | {event:$entry.key,path:.path,value:.value}
-              ][0:1400]}' "$response"
+              ][0:1600]}' "$response"
           }
-          query "41f1ae3b0fed670e64bd99f1bcb1aea9c9e7e869"
-          query "33806832575"
-          query "AWAITING_VERIFICATION"
-          query "donestate.verification-contract.v2"
-          query "contractVersion"
-          query "verification report"
-          query "attestation"
-          query "mcp.opstruth.io"
-          query "independent_verification_response_recorded"
           query "c4a07fa6-90b2-4597-a4c6-eae66de5a3e8"
+          query "41f1ae3b0fed670e64bd99f1bcb1aea9c9e7e869"
+          query "AWAITING_VERIFICATION"
+          query "independent_verification_response_recorded"
+          query "verification report subject does not match the sealed repository"
+          query "mcp.opstruth.io"
+          query "eef00ca4f242cf99d6b39e8c37ae4b84970a86e4"
+          query "70759864-063a-465d-a664-b5ee2224507e"
+          query "contractVersion"
+          query "attestation"
           query "VERIFIED"
           query "DoneState run stopped"
