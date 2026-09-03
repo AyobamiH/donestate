@@ -27,25 +27,27 @@ jobs:
 
           executor = Path('apps/mcp-worker/src/executor.ts')
           text = executor.read_text()
-          old_command = 'setsid -f /bin/sh \\"$DONESTATE_RECEIPT_SCRIPT_PATH\\" > \\"$DONESTATE_RECEIPT_LOG_PATH\\" 2>&1'
-          new_command = 'setsid -f -w /bin/sh \\"$DONESTATE_RECEIPT_SCRIPT_PATH\\" > \\"$DONESTATE_RECEIPT_LOG_PATH\\" 2>&1'
-          if text.count(old_command) != 1:
-              raise SystemExit(f'expected one executor launch command, found {text.count(old_command)}')
-          text = text.replace(old_command, new_command)
+          launch_token = 'setsid -f /bin/sh'
+          if text.count(launch_token) != 1:
+              raise SystemExit(f'expected one executor launch token, found {text.count(launch_token)}')
+          text = text.replace(launch_token, 'setsid -f -w /bin/sh', 1)
           old_mode = 'single_start_process_setsid_terminal_receipt_alarm_resumable_v5'
           new_mode = 'single_start_process_setsid_wait_terminal_receipt_alarm_resumable_v6'
           if text.count(old_mode) != 1:
               raise SystemExit(f'expected one execution mode, found {text.count(old_mode)}')
-          text = text.replace(old_mode, new_mode)
+          text = text.replace(old_mode, new_mode, 1)
           executor.write_text(text)
 
           test = Path('apps/mcp-worker/test/executor.test.ts')
           text = test.read_text()
-          old_expect = "    expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).toBe('setsid -f /bin/sh \\\"$DONESTATE_RECEIPT_SCRIPT_PATH\\\" > \\\"$DONESTATE_RECEIPT_LOG_PATH\\\" 2>&1');"
-          new_expect = "    expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).toBe('setsid -f -w /bin/sh \\\"$DONESTATE_RECEIPT_SCRIPT_PATH\\\" > \\\"$DONESTATE_RECEIPT_LOG_PATH\\\" 2>&1');\n    expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).toContain('setsid -f -w');"
-          if text.count(old_expect) != 1:
-              raise SystemExit(f'expected one test launch assertion, found {text.count(old_expect)}')
-          text = text.replace(old_expect, new_expect)
+          if text.count(launch_token) != 1:
+              raise SystemExit(f'expected one test launch token, found {text.count(launch_token)}')
+          text = text.replace(launch_token, 'setsid -f -w /bin/sh', 1)
+          assertion = "    expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).toContain('setsid -f -w');\n"
+          anchor = '    expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).not.toContain("nohup");\n'
+          if text.count(anchor) != 1:
+              raise SystemExit('expected one nohup assertion anchor')
+          text = text.replace(anchor, assertion + anchor, 1)
           test.write_text(text)
 
           ledger_path = Path('governance/project-ledger.json')
@@ -86,13 +88,13 @@ jobs:
               'accountability': {
                   'owner': 'DoneState maintainers',
                   'status': 'active',
-                  'nextAction': ('Review, merge and deploy only the isolated tracked-waiter repair after exact-head CI, then launch one fresh successor canary and require terminal VERIFIED with its PR unmerged.'),
-                  'waitCondition': ('The tracked-waiter repair is not yet reviewed, merged or deployed; issue 108 cannot be reused.'),
+                  'nextAction': 'Review, merge and deploy only the isolated tracked-waiter repair after exact-head CI, then launch one fresh successor canary and require terminal VERIFIED with its PR unmerged.',
+                  'waitCondition': 'The tracked-waiter repair is not yet reviewed, merged or deployed; issue 108 cannot be reused.',
                   'staleDate': '2026-09-10'
               },
-              'outcome': ('Issue 108 is immutable terminal AMBIGUOUS_EFFECT evidence. setsid -f alone is not sufficient for DoneState receipt durability; the next bounded repair keeps an independent session child while retaining a tracked waiter with setsid -f -w.'),
-              'content': ('Exact run identity, one launch, provider process start/exit, missing terminal receipt and log, absent Codex evidence, no publication, and the bounded tracked-waiter repair hypothesis.'),
-              'measurement': ('One fresh run; one acknowledged startProcess launch; one tracked launcher exitCode 0 after about 174 ms; zero terminal receipts, zero implementation logs, zero observed Codex starts, zero canary branches/PRs and zero OpsTruth decisions.')
+              'outcome': 'Issue 108 is immutable terminal AMBIGUOUS_EFFECT evidence. setsid -f alone is not sufficient for DoneState receipt durability; the next bounded repair keeps an independent session child while retaining a tracked waiter with setsid -f -w.',
+              'content': 'Exact run identity, one launch, provider process start/exit, missing terminal receipt and log, absent Codex evidence, no publication, and the bounded tracked-waiter repair hypothesis.',
+              'measurement': 'One fresh run; one acknowledged startProcess launch; one tracked launcher exitCode 0 after about 174 ms; zero terminal receipts, zero implementation logs, zero observed Codex starts, zero canary branches/PRs and zero OpsTruth decisions.'
           })
           ledger_path.write_text(json.dumps(ledger, indent=2) + '\n')
           PY
