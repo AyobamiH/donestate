@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, decodeChangedFiles, implementationPrompt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
+import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, implementationPrompt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
 import type { HostedObjective } from "../src/types";
 
 describe("hosted Codex executor contract", () => {
@@ -51,6 +51,10 @@ describe("hosted Codex executor contract", () => {
     expect(publicCloneRetryDelayMs(2)).toBe(4_000);
     expect(() => publicCloneRetryDelayMs(3)).toThrow("only defined before the final attempt");
     expect(() => publicCloneSandboxId(runId, 4)).toThrow("out of range");
+  });
+
+  it("keeps long-running implementation sandboxes alive until deterministic cleanup", () => {
+    expect(SANDBOX_RUNTIME_OPTIONS).toEqual({ sleepAfter: "15m", keepAlive: true });
   });
 
   it("counts a complete NUL-delimited changed-file inventory without duplicates", () => {
