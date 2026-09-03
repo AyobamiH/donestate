@@ -5,6 +5,8 @@ description: Use when a DoneState run awaits independent verification or a user 
 
 # Verify a DoneState objective
 
+DoneState is Proof & State's authorised execution control plane. OpsTruth is the independent read-only verification plane. Keep that trust boundary intact: DoneState, its coding harness and its plugin never certify their own execution evidence.
+
 First call `get_objective`. If the configured automatic OpsTruth request already produced a terminal state, report it without resubmitting. If the run remains `AWAITING_VERIFICATION`, call `request_opstruth_verification` for the exact run ID. Use the manual handoff sequence below only when the configured bridge is unavailable.
 
 For a manual sequence, call `create_verification_handoff` for the exact run ID. Preserve its handoff digest, verification nonce, execution snapshot digest, exact base and head commits, acceptance criteria, verification requirements, action intent/result digests and event-chain head without alteration.
