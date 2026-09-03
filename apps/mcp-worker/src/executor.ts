@@ -504,7 +504,7 @@ async function selectedValidation(objective: HostedObjective, sandbox: Sandbox):
     await hasFile(sandbox, "/workspace/repo/pyproject.toml") || await hasFile(sandbox, "/workspace/repo/pytest.ini")
   ))) return [{ id: "validate-python", command: "python -m pytest" }];
   if (objective.validationProfile === "rust" || (objective.validationProfile === "auto" && await hasFile(sandbox, "/workspace/repo/Cargo.toml"))) {
-    return [{ id: "validate-rust", command: "cargo test ./..." }];
+    return [{ id: "validate-rust", command: "cargo test" }];
   }
   if (objective.validationProfile === "go" || (objective.validationProfile === "auto" && await hasFile(sandbox, "/workspace/repo/go.mod"))) {
     return [{ id: "validate-go", command: "go test ./..." }];
