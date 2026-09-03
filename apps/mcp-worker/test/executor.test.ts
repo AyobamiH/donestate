@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, IMPLEMENTATION_PROCESS_RECONCILE_ATTEMPTS, IMPLEMENTATION_PROCESS_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, implementationProcessId, implementationPrompt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
+import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS, IMPLEMENTATION_RECEIPT_SCHEMA, IMPLEMENTATION_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, implementationPrompt, implementationReceiptCommand, implementationReceiptPath, parseImplementationReceipt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
 import type { HostedObjective } from "../src/types";
 
 describe("hosted Codex executor contract", () => {
@@ -57,11 +57,32 @@ describe("hosted Codex executor contract", () => {
     expect(SANDBOX_RUNTIME_OPTIONS).toEqual({ sleepAfter: "15m", keepAlive: true, enableDefaultSession: false });
   });
 
-  it("launches Codex once under a deterministic reconcilable process identity", () => {
-    const runId = "post-codex-control-canary";
-    expect(IMPLEMENTATION_PROCESS_START_ATTEMPTS).toBe(1);
-    expect(IMPLEMENTATION_PROCESS_RECONCILE_ATTEMPTS).toBe(3);
-    expect(implementationProcessId(runId)).toBe(`donestate-implement-${runId}`);
+  it("launches Codex once inside a terminal-receipt wrapper outside the repository", () => {
+    const runId = "0e3fc377-6ff7-47ba-8cdf-df0a226a7a85";
+    const receiptPath = implementationReceiptPath(runId);
+    const wrapper = implementationReceiptCommand();
+
+    expect(IMPLEMENTATION_START_ATTEMPTS).toBe(1);
+    expect(IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS).toBe(3);
+    expect(receiptPath).toBe(`/workspace/.donestate-control/implementation-${runId}.receipt`);
+    expect(receiptPath.startsWith("/workspace/repo/")).toBe(false);
+    expect(wrapper.split(CODEX_IMPLEMENT_COMMAND)).toHaveLength(2);
+    expect(wrapper).toContain("unset DONESTATE_RECEIPT_NONCE");
+    expect(wrapper).toContain('tmp_path="${receipt_path}.tmp.$$"');
+    expect(wrapper).toContain('mv "$tmp_path" "$receipt_path"');
+    expect(wrapper).not.toContain("startProcess");
+  });
+
+  it("parses only the exact implementation terminal receipt contract", () => {
+    const runId = "0e3fc377-6ff7-47ba-8cdf-df0a226a7a85";
+    const commandDigest = "a".repeat(64);
+    const nonce = "b".repeat(32);
+    expect(parseImplementationReceipt(
+      `${IMPLEMENTATION_RECEIPT_SCHEMA}\t${runId}\t${commandDigest}\t0\t${nonce}\n`,
+    )).toEqual({ schema: IMPLEMENTATION_RECEIPT_SCHEMA, runId, commandDigest, exitCode: 0, nonce });
+    expect(() => parseImplementationReceipt(
+      `${IMPLEMENTATION_RECEIPT_SCHEMA}\t${runId}\t${commandDigest}\t256\t${nonce}`,
+    )).toThrow("out of range");
   });
 
   it("counts a complete NUL-delimited changed-file inventory without duplicates", () => {
