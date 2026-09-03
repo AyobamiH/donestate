@@ -1,0 +1,55 @@
+name: Normalize Sandbox governance diff
+
+on:
+  push:
+    branches:
+      - repair/align-cloudflare-sandbox-0.12.9
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    if: github.event.head_commit.message == 'Normalize Sandbox governance diff'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Restore minimal ledger shape
+        run: node scripts/tmp-normalize-sandbox-ledger.mjs
+      - name: Regenerate project state
+        run: |
+          npm ci
+          npm run governance:render
+      - name: Validate review surface
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/normalize-sandbox-ledger.yml scripts/tmp-normalize-sandbox-ledger.mjs
+          expected=$(cat <<'EOF'
+          apps/mcp-worker/Dockerfile
+          apps/mcp-worker/package-lock.json
+          apps/mcp-worker/package.json
+          apps/mcp-worker/scripts/check-sandbox-version-sync.mjs
+          docs/PROJECT-STATE.md
+          governance/project-ledger.json
+          EOF
+          )
+          actual=$({ git diff --name-only 9f0058975321b6f9b9075aee48cae9840cae39b6; git ls-files --others --exclude-standard; } | sed '/^$/d' | sort -u)
+          expected=$(printf '%s\n' "$expected" | sed 's/^          //' | sed '/^$/d' | sort -u)
+          test "$actual" = "$expected"
+          git config user.name 'Ayobami Haastrup'
+          git config user.email '47716486+AyobamiH@users.noreply.github.com'
+          git add governance/project-ledger.json docs/PROJECT-STATE.md
+          git add -u .github/workflows/normalize-sandbox-ledger.yml scripts/tmp-normalize-sandbox-ledger.mjs
+          git diff --cached --check
+          git commit -m 'Keep Sandbox governance evidence reviewable'
+      - name: Governance validation
+        run: |
+          npm run docs:check
+          npm run governance:impact -- 9f0058975321b6f9b9075aee48cae9840cae39b6
+      - name: Push normalized review head
+        run: git push origin HEAD
