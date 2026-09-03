@@ -1,4 +1,4 @@
-name: Recheck detached-receipt canary 101 again
+name: Inspect detached-receipt canary 101 control plane
 
 on:
   push:
@@ -10,10 +10,10 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Recheck detached-receipt canary 101 again'
+    if: github.event.head_commit.message == 'Inspect detached-receipt canary 101 control plane'
     runs-on: ubuntu-latest
     steps:
-      - name: Query bounded production signals
+      - name: Query bounded production control signals
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -27,7 +27,7 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-101-recheck-2",
+              queryId: "donestate-canary-101-control-plane",
               timeframe: {from: 1788427410000, to: 1788430500000},
               view: "events",
               limit: 500,
@@ -47,22 +47,17 @@ jobs:
             echo "=== $needle ==="
             jq '{count: .result.events.count, events: [(.result.events.events // [])[] | {
               timestamp,
-              runId, findingId, state, detail, reason, failureKind, actionId,
               metadata: ((.["$metadata"] // {}) | {message, error, level, origin, service}),
               workers: ((.["$workers"] // {}) | {eventType, outcome, entrypoint, durableObjectId, scriptVersion, traceId})
             }]}' "$response"
           }
           for needle in \
-            "nohup /bin/sh" \
-            "implementation terminal receipt" \
-            "AMBIGUOUS_EFFECT" \
-            "FAILED_SAFE" \
-            "BLOCKED_CAPABILITY" \
-            "validation_started" \
-            "publication_started" \
-            "git push origin" \
-            "automatic independent verification" \
-            "maintenance verification retry completed" \
-            "DoneState run stopped"; do
+            "files.readFile" \
+            "runtime connection was closing" \
+            "session_disposed" \
+            "implementation-" \
+            "codex" \
+            "timeout" \
+            "sandbox cleanup failed"; do
             query_logs "$needle"
           done
