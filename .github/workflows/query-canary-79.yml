@@ -1,4 +1,4 @@
-name: Inspect alarm-sliced canary 103 raw runtime events
+name: Inspect canary 103 Sandbox configuration ordering
 
 on:
   push:
@@ -10,35 +10,36 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Inspect alarm-sliced canary 103 raw runtime events'
+    if: github.event.head_commit.message == 'Inspect canary 103 Sandbox configuration ordering'
     runs-on: ubuntu-latest
     steps:
-      - name: Query raw bounded runtime events
+      - name: Query bounded configuration signals
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         shell: bash
         run: |
           set -euo pipefail
-          query_events() {
-            local name="$1"
-            local filter_key="$2"
-            local filter_value="$3"
-            local request="$RUNNER_TEMP/request-$name.json"
-            local response="$RUNNER_TEMP/response-$name.json"
-            jq -n --arg key "$filter_key" --arg value "$filter_value" --arg qid "donestate-canary-103-$name" '{
-              queryId: $qid,
-              timeframe: {from: 1788440040000, to: 1788441600000},
+          query_logs() {
+            local needle="$1"
+            local slug request response
+            slug=$(printf '%s' "$needle" | tr ' /:!' '_____' | tr -cd '[:alnum:]_-')
+            request="$RUNNER_TEMP/request-$slug.json"
+            response="$RUNNER_TEMP/response-$slug.json"
+            jq -n --arg needle "$needle" '{
+              queryId: "donestate-canary-103-config-order",
+              timeframe: {from: 1788440040000, to: 1788440200000},
               view: "events",
-              limit: 1000,
+              limit: 500,
               parameters: {
                 datasets: [],
                 filterCombination: "and",
                 filters: [
                   {key: "$metadata.service", operation: "eq", type: "string", value: "donestate-mcp"},
-                  {key: $key, operation: "eq", type: "string", value: $value}
+                  {key: "$workers.durableObjectId", operation: "eq", type: "string", value: "68cab69aaa11d8b8727dd4eeea876c9dcabe2ca367943627bb0cde9e89f6653e"}
                 ],
-                limit: 500
+                limit: 300,
+                needle: {value: $needle, isRegex: false, matchCase: false}
               }
             }' > "$request"
             curl -fsS -X POST \
@@ -46,12 +47,20 @@ jobs:
               -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
               -H 'Content-Type: application/json' \
               --data-binary @"$request" > "$response"
-            echo "=== $name ==="
+            echo "=== $needle ==="
             jq '{count: .result.events.count, events: [(.result.events.events // [])[] | {
               timestamp,
               metadata: ((.["$metadata"] // {}) | {message, error, level, origin, service}),
               workers: ((.["$workers"] // {}) | {eventType, outcome, entrypoint, durableObjectId, scriptVersion, traceId})
             }]}' "$response"
           }
-          query_events coordinator '$workers.entrypoint' 'RunCoordinator'
-          query_events sandbox '$workers.durableObjectId' '68cab69aaa11d8b8727dd4eeea876c9dcabe2ca367943627bb0cde9e89f6653e'
+          for needle in \
+            "configure" \
+            "setKeepAlive" \
+            "setSleepAfter" \
+            "Using rpc transport" \
+            "git clone --no-tags" \
+            "nohup /bin/sh" \
+            "Container cleaned up successfully"; do
+            query_logs "$needle"
+          done
