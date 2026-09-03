@@ -1,0 +1,269 @@
+name: Validate startProcess receipt repair
+
+on:
+  push:
+    branches:
+      - repair/start-process-terminal-receipt
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    if: github.event.head_commit.message == 'Run startProcess receipt repair validation'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: repair/start-process-terminal-receipt
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply supported background launch correction
+        env:
+          BASE_SHA: 419b24a1cd4249c880b520660cb99f65f0b055db
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          executor = Path('apps/mcp-worker/src/executor.ts')
+          text = executor.read_text()
+          old = '''export const IMPLEMENTATION_RECEIPT_GRACE_MS = 15_000;
+          export const IMPLEMENTATION_LAUNCH_TIMEOUT_MS = 30_000;
+          export const HOSTED_ALARM_COMMAND_TIMEOUT_MS = 10 * 60_000;
+          export const EXECUTION_ALARM_YIELD_MS = 1_000;
+          export const IMPLEMENTATION_DETACHED_LAUNCH_COMMAND = 'nohup /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH" > "$DONESTATE_RECEIPT_LOG_PATH" 2>&1 < /dev/null &';
+          export const IMPLEMENTATION_RECEIPT_SCHEMA = "donestate.implementation-receipt.v1";'''
+          new = '''export const IMPLEMENTATION_RECEIPT_GRACE_MS = 15_000;
+          export const HOSTED_ALARM_COMMAND_TIMEOUT_MS = 10 * 60_000;
+          export const EXECUTION_ALARM_YIELD_MS = 1_000;
+          export const IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND = '/bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH" > "$DONESTATE_RECEIPT_LOG_PATH" 2>&1';
+          export const IMPLEMENTATION_RECEIPT_SCHEMA = "donestate.implementation-receipt.v1";
+
+          export function implementationProcessId(runId: string): string {
+            return `donestate-implement-${runId}`;
+          }'''
+          if text.count(old) != 1:
+              raise SystemExit('implementation constants context drifted')
+          text = text.replace(old, new)
+
+          old = '''    executionMode: "single_detached_exec_terminal_receipt_alarm_resumable_v3",
+              startAttempts: IMPLEMENTATION_START_ATTEMPTS,
+              launchCommandDigest: await digest(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND),'''
+          new = '''    executionMode: "single_start_process_terminal_receipt_alarm_resumable_v4",
+              startAttempts: IMPLEMENTATION_START_ATTEMPTS,
+              processId: implementationProcessId(objective.runId),
+              launchCommandDigest: await digest(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND),'''
+          if text.count(old) != 1:
+              raise SystemExit('implementation intent context drifted')
+          text = text.replace(old, new)
+
+          old = '''  let launchRaw: Awaited<ReturnType<Sandbox["exec"]>> | null = null;
+            let launchError: string | null = null;
+            try {
+              launchRaw = await sandbox.exec(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND, {
+                cwd: "/workspace/repo",
+                env: {
+                  HOME: "/workspace/home",
+                  CODEX_API_KEY: openaiApiKey,
+                  DONESTATE_OBJECTIVE: implementationPrompt(objective, repositoryGovernanceRequired),
+                  DONESTATE_RECEIPT_NONCE: receiptNonce,
+                  DONESTATE_RECEIPT_PATH: receiptPath,
+                  DONESTATE_RECEIPT_SCHEMA: IMPLEMENTATION_RECEIPT_SCHEMA,
+                  DONESTATE_RECEIPT_RUN_ID: objective.runId,
+                  DONESTATE_RECEIPT_COMMAND_DIGEST: commandDigest,
+                  DONESTATE_RECEIPT_SCRIPT_PATH: receiptScriptPath,
+                  DONESTATE_RECEIPT_LOG_PATH: receiptLogPath,
+                  DONESTATE_IMPLEMENTATION_TIMEOUT_SECONDS: String(Math.max(1, Math.ceil(objective.maxDurationMs / 1_000))),
+                },
+                timeout: IMPLEMENTATION_LAUNCH_TIMEOUT_MS,
+              });
+              if (!launchRaw.success) {
+                launchError = boundedOutput(redact(launchRaw.stderr || `detached implementation launch exited ${launchRaw.exitCode}`, [openaiApiKey, githubToken]), 4_000).text;
+              }
+            } catch (error) {
+              launchError = boundedOutput(redact(error instanceof Error ? error.message : "implementation detached launch acknowledgement was interrupted", [openaiApiKey, githubToken]), 4_000).text;
+            }
+            checkpoint = {
+              ...checkpoint,
+              launchAcknowledged: launchRaw?.success ?? null,
+              launchError,
+            };'''
+          new = '''  const processId = implementationProcessId(objective.runId);
+            let launchAcknowledged: boolean | null = null;
+            let launchError: string | null = null;
+            try {
+              const process = await sandbox.startProcess(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND, {
+                cwd: "/workspace/repo",
+                env: {
+                  HOME: "/workspace/home",
+                  CODEX_API_KEY: openaiApiKey,
+                  DONESTATE_OBJECTIVE: implementationPrompt(objective, repositoryGovernanceRequired),
+                  DONESTATE_RECEIPT_NONCE: receiptNonce,
+                  DONESTATE_RECEIPT_PATH: receiptPath,
+                  DONESTATE_RECEIPT_SCHEMA: IMPLEMENTATION_RECEIPT_SCHEMA,
+                  DONESTATE_RECEIPT_RUN_ID: objective.runId,
+                  DONESTATE_RECEIPT_COMMAND_DIGEST: commandDigest,
+                  DONESTATE_RECEIPT_SCRIPT_PATH: receiptScriptPath,
+                  DONESTATE_RECEIPT_LOG_PATH: receiptLogPath,
+                  DONESTATE_IMPLEMENTATION_TIMEOUT_SECONDS: String(Math.max(1, Math.ceil(objective.maxDurationMs / 1_000))),
+                },
+                processId,
+              });
+              launchAcknowledged = true;
+              if (process.id !== processId) {
+                launchError = boundedOutput(`implementation process identity mismatch: expected ${processId}, observed ${process.id}`, 4_000).text;
+              }
+            } catch (error) {
+              launchError = boundedOutput(redact(error instanceof Error ? error.message : "implementation background process launch acknowledgement was interrupted", [openaiApiKey, githubToken]), 4_000).text;
+            }
+            checkpoint = {
+              ...checkpoint,
+              launchAcknowledged,
+              launchError,
+            };'''
+          if text.count(old) != 1:
+              raise SystemExit('implementation launch block context drifted')
+          text = text.replace(old, new)
+          executor.write_text(text)
+
+          test = Path('apps/mcp-worker/test/executor.test.ts')
+          text = test.read_text()
+          text = text.replace('IMPLEMENTATION_DETACHED_LAUNCH_COMMAND, ', 'IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND, ')
+          text = text.replace('implementationPrompt, implementationReceiptCommand,', 'implementationProcessId, implementationPrompt, implementationReceiptCommand,')
+          old = '''  it("launches Codex exactly once through a short detached handoff and reconciles only by terminal receipt", () => {
+              const runId = "0e3fc377-6ff7-47ba-8cdf-df0a226a7a85";
+              const receiptPath = implementationReceiptPath(runId);
+              const scriptPath = implementationReceiptScriptPath(runId);
+              const logPath = implementationReceiptLogPath(runId);
+              const wrapper = implementationReceiptCommand();
+
+              expect(IMPLEMENTATION_START_ATTEMPTS).toBe(1);
+              expect(IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS).toBe(5_000);
+              expect(IMPLEMENTATION_RECEIPT_GRACE_MS).toBe(15_000);
+              expect(receiptPath).toBe(`/workspace/.donestate-control/implementation-${runId}.receipt`);
+              expect(scriptPath).toBe(`/workspace/.donestate-control/implementation-${runId}.sh`);
+              expect(logPath).toBe(`/workspace/.donestate-control/implementation-${runId}.log`);
+              expect(receiptPath.startsWith("/workspace/repo/")).toBe(false);
+              expect(wrapper.split(CODEX_IMPLEMENT_COMMAND)).toHaveLength(2);
+              expect(wrapper).toContain('timeout --signal=TERM --kill-after=5s "${receipt_timeout_seconds}s"');
+              expect(wrapper).toContain("unset DONESTATE_RECEIPT_NONCE");
+              expect(wrapper).toContain('tmp_path="${receipt_path}.tmp.$$"');
+              expect(wrapper).toContain('mv "$tmp_path" "$receipt_path"');
+              expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).toContain('nohup /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH"');
+              expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).toContain('&');
+              expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).not.toContain(CODEX_IMPLEMENT_COMMAND);
+              expect(wrapper).not.toContain("startProcess");
+            });'''
+          new = '''  it("launches Codex exactly once with the Sandbox background-process primitive and reconciles only by terminal receipt", () => {
+              const runId = "0e3fc377-6ff7-47ba-8cdf-df0a226a7a85";
+              const receiptPath = implementationReceiptPath(runId);
+              const scriptPath = implementationReceiptScriptPath(runId);
+              const logPath = implementationReceiptLogPath(runId);
+              const wrapper = implementationReceiptCommand();
+
+              expect(IMPLEMENTATION_START_ATTEMPTS).toBe(1);
+              expect(IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS).toBe(5_000);
+              expect(IMPLEMENTATION_RECEIPT_GRACE_MS).toBe(15_000);
+              expect(receiptPath).toBe(`/workspace/.donestate-control/implementation-${runId}.receipt`);
+              expect(scriptPath).toBe(`/workspace/.donestate-control/implementation-${runId}.sh`);
+              expect(logPath).toBe(`/workspace/.donestate-control/implementation-${runId}.log`);
+              expect(implementationProcessId(runId)).toBe(`donestate-implement-${runId}`);
+              expect(receiptPath.startsWith("/workspace/repo/")).toBe(false);
+              expect(wrapper.split(CODEX_IMPLEMENT_COMMAND)).toHaveLength(2);
+              expect(wrapper).toContain('timeout --signal=TERM --kill-after=5s "${receipt_timeout_seconds}s"');
+              expect(wrapper).toContain("unset DONESTATE_RECEIPT_NONCE");
+              expect(wrapper).toContain('tmp_path="${receipt_path}.tmp.$$"');
+              expect(wrapper).toContain('mv "$tmp_path" "$receipt_path"');
+              expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).toContain('/bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH"');
+              expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).not.toContain("nohup");
+              expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND.trim().endsWith("&")).toBe(false);
+              expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).not.toContain(CODEX_IMPLEMENT_COMMAND);
+              expect(wrapper).not.toContain("startProcess");
+            });'''
+          if text.count(old) != 1:
+              raise SystemExit('executor launch regression context drifted')
+          text = text.replace(old, new)
+          test.write_text(text)
+
+          ledger = Path('governance/project-ledger.json')
+          text = ledger.read_text()
+          old = '''      "nextAction":"Replace the post-PR100 in-alarm receipt loop with alarm-sliced execution: keep the exact detached Codex launch and atomic receipt, persist a non-secret execution checkpoint bound to the implementation intent, perform one read-only receipt reconciliation per alarm, yield after each bounded action, preserve the sandbox and user credential lease across safe yields, keep every non-resumable unsettled mutation fail-closed, then deploy and run one fresh PR-only canary through exact-head CI and OpsTruth v2.","waitCondition":"PR 100 merged as b4febe960fc7e71d48049e3a758256c1b61841ef; exact-head CI 33738177238, post-merge CI 33738273567 and deployment 33738273580 passed. Production Worker f89f842c-2f74-43a6-8f3e-ed90411e6964 runs container sha256:da8f52ef1570de5ace6c6d336ad29b92b7a5a5a8ecb9b0e336707a98fff5e9c2 with Sandbox 0.12.9 and Codex 0.150.1. Documentation re-assessment found the deployed code still awaits receipt completion inside RunCoordinator.alarm(), while hosted objectives default to 1800000 ms and can request 7200000 ms. Cloudflare Durable Object alarms have a 15-minute wall-time and at-least-once retry semantics, so a valid long implementation or combined validation slice could still be terminated and then misclassified by generic RUNNING-action recovery. A fresh canary must wait for this orchestration mismatch to be removed.","reentryCondition":"Close only after both products consume the same manifest and vectors, exact deployed versions pass a fresh replay-safe round trip, and historical run outcomes remain unchanged.","dependencies":[],"evidenceIds":["E-015","E-016","E-017","E-018","E-019","E-020","E-022","E-023","E-024","E-025","E-026","E-027","E-028","E-029","E-030"]'''
+          new = '''      "nextAction":"Replace only the shell-detach-inside-exec implementation launch with one Cloudflare Sandbox startProcess launch while keeping the existing DoneState-owned atomic terminal receipt and alarm-sliced reconciliation as the sole completion authority; preserve Sandbox 0.12.9, RPC, keepAlive, sessionless execution, Codex 0.150.1, command, wrapper timeout, PR-only authority and OpsTruth unchanged, deploy normally, then run one fresh successor canary.","waitCondition":"PR 102 merged as 419b24a1cd4249c880b520660cb99f65f0b055db and deployed Worker c39ac211-963b-4835-b157-3fe6df88480a. Fresh issue 103 proved the alarm-sliced coordinator itself stays healthy through the full 30-minute implementation budget, but the one short `nohup ... &` launch admitted through sandbox.exec never produced the sealed terminal receipt; at 2026-09-03T13:25:31.891Z the run stopped fail-closed because the implementation effect could not be reconciled before the configured deadline, with zero validation, publication, PR or OpsTruth activity. Cloudflare documents startProcess as the background-process primitive. Historical issue 96 rejected only the Sandbox process record as completion truth; the new design keeps the receipt as the sole completion oracle and never calls getProcess to decide success.","reentryCondition":"Close only after both products consume the same manifest and vectors, exact deployed versions pass a fresh replay-safe round trip, and historical run outcomes remain unchanged.","dependencies":[],"evidenceIds":["E-015","E-016","E-017","E-018","E-019","E-020","E-022","E-023","E-024","E-025","E-026","E-027","E-028","E-029","E-030","E-031"]'''
+          if text.count(old) != 1:
+              raise SystemExit('VERIFY-006 ledger context drifted')
+          text = text.replace(old, new)
+
+          old = '''      "nextAction":"After the alarm-sliced execution repair is reviewed and deployed, launch exactly one fresh PR-only maintenance canary from the new production Worker and require the complete branch/PR, exact-head core (22), core (24) and hosted-plugin checks, strict OpsTruth v2 response, and truthful DoneState VERIFIED read-back without merging the canary PR.","waitCondition":"Issue 98 is terminal AMBIGUOUS_EFFECT evidence and must not be retried. PR 100 fixed the long Sandbox RPC but production still executes the receipt wait and multiple bounded actions inside a Durable Object alarm whose documented wall-time is 15 minutes, shorter than the 30-minute maintenance objective budget. The next canary waits for the alarm-sliced checkpoint repair and exact deployment evidence.","reentryCondition":"Resume after the versioned contract and authenticated verifier lane are deployed on exact reviewed commits.","dependencies":["VERIFY-001","VERIFY-002","VERIFY-003","VERIFY-006"],"evidenceIds":["E-002","E-003","E-012","E-016","E-017","E-018","E-019","E-020","E-022","E-023","E-024","E-025","E-026","E-027","E-028","E-029","E-030"]'''
+          new = '''      "nextAction":"After the supported startProcess-plus-terminal-receipt launch repair is reviewed and deployed, launch exactly one fresh PR-only maintenance canary and require implementation receipt success, validation, one branch/PR, exact-head core (22), core (24) and hosted-plugin checks, strict OpsTruth v2 response, and truthful DoneState VERIFIED read-back without merging the canary PR.","waitCondition":"Issue 103 is terminal AMBIGUOUS_EFFECT evidence: alarm slicing worked for the full objective window, but the shell-detached child launched via foreground exec never produced its terminal receipt. The successor canary must wait for the isolated supported background-process launch correction; receipt/checkpoint semantics, Codex workload, Sandbox runtime, publication authority and verifier stay unchanged so the result is attributable.","reentryCondition":"Resume after the versioned contract and authenticated verifier lane are deployed on exact reviewed commits.","dependencies":["VERIFY-001","VERIFY-002","VERIFY-003","VERIFY-006"],"evidenceIds":["E-002","E-003","E-012","E-016","E-017","E-018","E-019","E-020","E-022","E-023","E-024","E-025","E-026","E-027","E-028","E-029","E-030","E-031"]'''
+          if text.count(old) != 1:
+              raise SystemExit('VERIFY-004 ledger context drifted')
+          text = text.replace(old, new)
+
+          evidence = '''    ,{
+              "id":"E-031","date":"2026-09-03","identity":"Alarm-sliced canary isolated unsupported shell-detach launch from a healthy receipt control loop","situation":"PR 102 merged as 419b24a1cd4249c880b520660cb99f65f0b055db and deployed Worker c39ac211-963b-4835-b157-3fe6df88480a with Sandbox 0.12.9, RPC, keepAlive true, enableDefaultSession false and Codex 0.150.1. Fresh issue 103 exercised the same real PR-only maintenance workload with the v1 terminal receipt and alarm-sliced execution checkpoint.","verification":"Production observability shows repository clone success, RPC selection, exactly one short `sandbox.exec` launch of `nohup /bin/sh $DONESTATE_RECEIPT_SCRIPT_PATH ... &` acknowledged in 166 ms, then repeated successful RunCoordinator alarms at roughly five-second intervals across the full 30-minute implementation budget. No matching terminal receipt ever appeared. At 2026-09-03T13:25:31.891Z RunCoordinator emitted DoneState run stopped on the exact reason `implementation effect could not be reconciled from a terminal receipt before the configured deadline`; zero validation, publication, pull request or OpsTruth activity followed. Cloudflare stable Sandbox guidance distinguishes foreground exec from the background startProcess primitive. Earlier issue 96 proved only that Sandbox process-record identity is not a durable completion oracle; DoneState now owns a stronger atomic receipt and therefore can use startProcess strictly as a one-launch primitive without restoring getProcess-based completion.",
+              "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Launch the existing receipt wrapper exactly once with Sandbox startProcess under deterministic process ID, leave the wrapper timeout and atomic receipt unchanged, reconcile completion only from the receipt across alarms, never call getProcess as completion truth and never relaunch Codex after durable intent, then deploy and run one fresh successor canary.","waitCondition":"Issue 103 is terminal AMBIGUOUS_EFFECT evidence and must not be retried, reopened, reset or rewritten. Do not change Sandbox version, RPC, keepAlive, sessionless mode, Codex version/arguments, receipt schema, objective timeout, publication authority or OpsTruth in the same experiment.","staleDate":"2026-09-10"},
+              "outcome":"Alarm slicing is proven healthy; the remaining implementation liveness defect is narrowed to using a shell-detached child as a background-process substitute inside foreground Sandbox.exec. The next repair uses the provider-supported background launch primitive while retaining DoneState-owned receipt authority.","content":"Exact PR102/main/Worker subjects, issue103 workload and terminal timestamp, successful clone/RPC/one-launch evidence, healthy alarm cadence, absent receipt/publication/verifier evidence, and the startProcess-plus-receipt design boundary.","measurement":"One fresh real canary, one successful materialization, one acknowledged 166 ms shell-detach launch, roughly five-second alarm reconciliation throughout the configured 30-minute window, zero terminal receipts, zero validation starts, zero branches, zero pull requests, zero OpsTruth calls and zero Codex relaunches."
+            }'''
+          marker = '\n  ]\n}'
+          if text.count(marker) != 1:
+              raise SystemExit('ledger evidence tail drifted')
+          text = text.replace(marker, '\n' + evidence + marker)
+          ledger.write_text(text)
+          PY
+      - name: Render governance state
+        run: npm run governance:render
+      - name: Root validation
+        run: |
+          npm ci
+          npm run check
+      - name: Hosted Worker validation
+        working-directory: apps/mcp-worker
+        run: |
+          npm ci
+          npm run check
+      - name: Plugin validation
+        run: node scripts/validate-plugin.mjs
+      - name: Assert launch design invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'sandbox.startProcess(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND' apps/mcp-worker/src/executor.ts
+          ! grep -q 'IMPLEMENTATION_DETACHED_LAUNCH_COMMAND' apps/mcp-worker/src/executor.ts
+          ! grep -q '\.getProcess(' apps/mcp-worker/src/executor.ts
+          grep -q 'single_start_process_terminal_receipt_alarm_resumable_v4' apps/mcp-worker/src/executor.ts
+      - name: Prepare exact review commit
+        env:
+          BASE_SHA: 419b24a1cd4249c880b520660cb99f65f0b055db
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/start-process-receipt-repair.yml
+          git config user.name 'Ayobami Haastrup'
+          git config user.email '47716486+AyobamiH@users.noreply.github.com'
+          git add apps/mcp-worker/src/executor.ts apps/mcp-worker/test/executor.test.ts governance/project-ledger.json docs/PROJECT-STATE.md .github/workflows/start-process-receipt-repair.yml
+          git diff --cached --check
+          git commit -m 'Launch receipt workload with Sandbox startProcess'
+          mapfile -t changed < <(git diff --name-only "$BASE_SHA"...HEAD | sort)
+          printf '%s\n' "${changed[@]}"
+          expected=(
+            apps/mcp-worker/src/executor.ts
+            apps/mcp-worker/test/executor.test.ts
+            docs/PROJECT-STATE.md
+            governance/project-ledger.json
+          )
+          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
+          if [ "${changed[*]}" != "${expected_sorted[*]}" ]; then
+            echo 'unexpected net review diff' >&2
+            exit 1
+          fi
+      - name: Governance impact on exact net commit
+        env:
+          BASE_SHA: 419b24a1cd4249c880b520660cb99f65f0b055db
+        run: npm run governance:impact -- "$BASE_SHA"
+      - name: Push exact review commit
+        run: git push origin HEAD:repair/start-process-terminal-receipt
