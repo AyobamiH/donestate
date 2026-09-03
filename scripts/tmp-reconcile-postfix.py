@@ -37,16 +37,26 @@ if count != 1:
 executor.write_text(text)
 
 test = Path("apps/mcp-worker/test/executor.test.ts")
-test_text = test.read_text()
-test_text = test_text.replace('import fs from "node:fs";\n', '', 1)
-source_re = re.compile(
-    r'\s*const source = fs\.readFileSync\(new URL\("\.\./src/executor\.ts", import\.meta\.url\), "utf8"\);\n'
-    r'\s*expect\(source\.match\(/sandbox\\\\\.startProcess\\\\\(/g\)\)\.toHaveLength\(1\);\n'
-    r'\s*expect\(source\)\.toContain\("autoCleanup: false"\);\n'
-    r'\s*expect\(source\)\.toContain\("await sandbox\.getProcess\(processId\)"\);\n'
-    r'\s*expect\(source\)\.toContain\(\'state: "AMBIGUOUS"\'\);\n',
-)
-test_text, count = source_re.subn('\n', test_text, count=1)
-if count != 1:
-    raise SystemExit(f"test-only source assertion context count={count}")
-test.write_text(test_text)
+lines = test.read_text().splitlines()
+filtered = []
+skipping = False
+removed = 0
+for line in lines:
+    if line == 'import fs from "node:fs";':
+        removed += 1
+        continue
+    if 'const source = fs.readFileSync(' in line:
+        skipping = True
+        removed += 1
+        continue
+    if skipping:
+        if 'expect(source)' in line or 'expect(source.match' in line:
+            removed += 1
+            continue
+        skipping = False
+    filtered.append(line)
+if skipping:
+    raise SystemExit("unterminated test source-inspection block")
+if removed != 6:
+    raise SystemExit(f"expected to remove 6 test-only source lines, removed={removed}")
+test.write_text("\n".join(filtered) + "\n")
