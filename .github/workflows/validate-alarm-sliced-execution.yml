@@ -39,7 +39,8 @@ jobs:
               end = source.index(suffix, content_start)
               content = source[content_start:end]
               name = prefix.split('=')[0].strip()
-              return source[:start] + name + '= ' + json.dumps(content) + ';' + source[end + len(suffix):]
+              following = suffix.split('\n', 1)[1]
+              return source[:start] + name + '= ' + json.dumps(content) + ';\n' + following + source[end + len(suffix):]
 
           def literalize_expression(source, prefix, suffix):
               start = source.index(prefix)
@@ -49,11 +50,8 @@ jobs:
               return source[:start] + prefix[:-1] + json.dumps(content) + suffix[1:] + source[end + len(suffix):]
 
           text = literalize_declaration(text, 'const tail = String.raw`', '`;\nexecutor = executor.slice')
-          text = text.replace(';executor = executor.slice', ';\nexecutor = executor.slice', 1)
           text = literalize_declaration(text, 'const alarmBlock = `', '`;\ncoordinator = coordinator.slice')
-          text = text.replace(';coordinator = coordinator.slice', ';\ncoordinator = coordinator.slice', 1)
           text = literalize_declaration(text, 'const implementationMethods = `', '`;\ncoordinator = coordinator.slice')
-          text = text.replace(';coordinator = coordinator.slice', ';\ncoordinator = coordinator.slice', 1)
           text = literalize_expression(text, 'executor = executor.slice(0, runActionStart) + `', '` + executor.slice(runActionEnd);')
           text = literalize_expression(text, 'executorTest = executorTest.slice(0, executorTestInsert) + `', '` + executorTest.slice(executorTestInsert);')
           text = literalize_expression(text, 'coordinatorTest = coordinatorTest.slice(0, coordinatorTestInsert) + `', '` + coordinatorTest.slice(coordinatorTestInsert);')
@@ -87,12 +85,10 @@ jobs:
         if: always()
         shell: bash
         run: |
-          echo '--- executor tail ---'
-          tail -n 120 apps/mcp-worker/src/executor.ts
-          echo '--- coordinator alarm through runRow ---'
-          nl -ba apps/mcp-worker/src/coordinator.ts | sed -n '430,650p'
-          echo '--- checkpoint helper names ---'
-          grep -n -E 'startImplementationAction|updateExecutionCheckpoint|settleImplementationAction|executionCheckpoint|clearExecutionCheckpoint|cleanupExecutionContext|destroyExecutionSandbox' apps/mcp-worker/src/{executor,coordinator}.ts || true
+          echo '--- executor tail marker ---'
+          grep -n -E 'destroyExecutionSandbox|ExecutionOutcome|status: "deferred"' apps/mcp-worker/src/executor.ts | head -80 || true
+          echo '--- coordinator continuation helpers ---'
+          grep -n -E 'startImplementationAction|updateExecutionCheckpoint|settleImplementationAction|executionCheckpoint|clearExecutionCheckpoint|cleanupExecutionContext|override async alarm' apps/mcp-worker/src/coordinator.ts | head -120 || true
       - name: Install root dependencies
         run: npm ci
       - name: Render governance state
