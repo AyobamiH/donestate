@@ -1,0 +1,68 @@
+name: Validate alarm-sliced execution repair
+
+on:
+  push:
+    branches:
+      - repair/resume-implementation-across-alarms
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    if: github.event.head_commit.message == 'Run alarm-sliced execution repair'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply alarm-sliced execution repair
+        run: node scripts/tmp-alarm-sliced-execution.mjs
+      - name: Install root dependencies
+        run: npm ci
+      - name: Render governance state
+        run: npm run governance:render
+      - name: Root validation
+        run: npm run check
+      - name: Hosted Worker validation
+        working-directory: apps/mcp-worker
+        run: |
+          npm ci
+          npm run check
+      - name: Plugin validation
+        run: node scripts/validate-plugin.mjs
+      - name: Prepare exact review commit
+        env:
+          BASE_SHA: b4febe960fc7e71d48049e3a758256c1b61841ef
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/validate-alarm-sliced-execution.yml scripts/tmp-alarm-sliced-execution.mjs scripts/tmp-alarm-sliced-trigger.txt
+          expected=$(printf '%s\n' \
+            apps/mcp-worker/src/executor.ts \
+            apps/mcp-worker/src/coordinator.ts \
+            apps/mcp-worker/test/executor.test.ts \
+            apps/mcp-worker/test/coordinator.test.ts \
+            docs/PROJECT-STATE.md \
+            governance/project-ledger.json | sort -u)
+          actual=$( { git diff --name-only "$BASE_SHA"; git ls-files --others --exclude-standard; } | sed '/^$/d' | sort -u )
+          if [ "$actual" != "$expected" ]; then
+            echo 'Unexpected exact review surface' >&2
+            echo 'Expected:' >&2; printf '%s\n' "$expected" >&2
+            echo 'Actual:' >&2; printf '%s\n' "$actual" >&2
+            exit 1
+          fi
+          git config user.name 'Ayobami Haastrup'
+          git config user.email '47716486+AyobamiH@users.noreply.github.com'
+          git add apps/mcp-worker/src/executor.ts apps/mcp-worker/src/coordinator.ts apps/mcp-worker/test/executor.test.ts apps/mcp-worker/test/coordinator.test.ts docs/PROJECT-STATE.md governance/project-ledger.json
+          git add -u .github/workflows/validate-alarm-sliced-execution.yml scripts/tmp-alarm-sliced-execution.mjs scripts/tmp-alarm-sliced-trigger.txt
+          git diff --cached --check
+          git commit -m 'Make hosted execution resumable across alarms'
+      - name: Governance impact on exact net commit
+        run: npm run governance:impact -- b4febe960fc7e71d48049e3a758256c1b61841ef
+      - name: Push exact review commit
+        run: git push origin HEAD:repair/resume-implementation-across-alarms
