@@ -23,59 +23,7 @@ jobs:
       - name: Apply bounded process reconciliation patch
         run: |
           node scripts/tmp-reconcile-codex-process.mjs
-          python - <<'PY'
-          from pathlib import Path
-          import re
-
-          p = Path('apps/mcp-worker/src/executor.ts')
-          text = p.read_text()
-
-          old_sig = '  objective: HostedObjective,\n  openaiApiKey: string,\n  githubToken: string,\n): Promise<Record<string, unknown>> {'
-          new_sig = '  objective: HostedObjective,\n  repositoryGovernanceRequired: boolean,\n  openaiApiKey: string,\n  githubToken: string,\n): Promise<Record<string, unknown>> {'
-          if text.count(old_sig) != 1:
-              raise SystemExit(f'reconciliation signature context count={text.count(old_sig)}')
-          text = text.replace(old_sig, new_sig, 1)
-
-          old_prompt = 'DONESTATE_OBJECTIVE: implementationPrompt(objective, objective.objectiveClass === "maintenance_pr")'
-          if text.count(old_prompt) != 1:
-              raise SystemExit(f'implementation prompt context count={text.count(old_prompt)}')
-          text = text.replace(old_prompt, 'DONESTATE_OBJECTIVE: implementationPrompt(objective, repositoryGovernanceRequired)', 1)
-
-          call_re = re.compile(
-              r'await reconcileImplementationProcess\(\s*'
-              r'sandbox\s*,\s*journal\s*,\s*\{\s*'
-              r'\.\.\.objective\s*,\s*'
-              r'objectiveClass:\s*repositoryGovernanceRequired\s*\?\s*"maintenance_pr"\s*:\s*objective\.objectiveClass\s*,?\s*'
-              r'\}\s*,\s*openaiApiKey\s*,\s*githubToken\s*\);',
-              re.S,
-          )
-          replacement = '''await reconcileImplementationProcess(
-              sandbox,
-              journal,
-              objective,
-              repositoryGovernanceRequired,
-              openaiApiKey,
-              githubToken,
-            );'''
-          text, count = call_re.subn(replacement, text, count=1)
-          if count != 1:
-              raise SystemExit(f'generated reconciliation call context count={count}')
-          p.write_text(text)
-
-          test = Path('apps/mcp-worker/test/executor.test.ts')
-          test_text = test.read_text()
-          test_text = test_text.replace('import fs from "node:fs";\n', '', 1)
-          source_assertion = '''    const source = fs.readFileSync(new URL("../src/executor.ts", import.meta.url), "utf8");
-              expect(source.match(/sandbox\\.startProcess\\(/g)).toHaveLength(1);
-              expect(source).toContain("autoCleanup: false");
-              expect(source).toContain("await sandbox.getProcess(processId)");
-              expect(source).toContain('state: "AMBIGUOUS"');
-'''
-          if source_assertion not in test_text:
-              raise SystemExit('test-only source assertion context drift')
-          test_text = test_text.replace(source_assertion, '', 1)
-          test.write_text(test_text)
-          PY
+          python scripts/tmp-reconcile-postfix.py
       - name: Render governance state
         run: |
           npm ci
@@ -91,7 +39,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -f .github/workflows/reconcile-codex-process.yml scripts/tmp-reconcile-codex-process.mjs
+          rm -f .github/workflows/reconcile-codex-process.yml scripts/tmp-reconcile-codex-process.mjs scripts/tmp-reconcile-postfix.py
           expected=$(printf '%s\n' \
             apps/mcp-worker/src/executor.ts \
             apps/mcp-worker/test/executor.test.ts \
@@ -101,6 +49,7 @@ jobs:
             | sed '/^$/d' \
             | grep -v '^.github/workflows/reconcile-codex-process.yml$' \
             | grep -v '^scripts/tmp-reconcile-codex-process.mjs$' \
+            | grep -v '^scripts/tmp-reconcile-postfix.py$' \
             | sort -u )
           if [ "$actual" != "$expected" ]; then
             echo 'Unexpected review surface' >&2
@@ -111,7 +60,7 @@ jobs:
           git config user.name 'Ayobami Haastrup'
           git config user.email '47716486+AyobamiH@users.noreply.github.com'
           git add apps/mcp-worker/src/executor.ts apps/mcp-worker/test/executor.test.ts docs/PROJECT-STATE.md governance/project-ledger.json
-          git add -u .github/workflows/reconcile-codex-process.yml scripts/tmp-reconcile-codex-process.mjs
+          git add -u .github/workflows/reconcile-codex-process.yml scripts/tmp-reconcile-codex-process.mjs scripts/tmp-reconcile-postfix.py
           git diff --cached --check
           git commit -m 'Reconcile Codex implementation by process identity'
       - name: Governance impact on exact net commit
