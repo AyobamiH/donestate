@@ -25,23 +25,31 @@ jobs:
           node scripts/tmp-reconcile-codex-process.mjs
           python - <<'PY'
           from pathlib import Path
+          import re
+
           p = Path('apps/mcp-worker/src/executor.ts')
           text = p.read_text()
-          text = text.replace(
-              '  objective: HostedObjective,\n  openaiApiKey: string,\n  githubToken: string,\n): Promise<Record<string, unknown>> {',
-              '  objective: HostedObjective,\n  repositoryGovernanceRequired: boolean,\n  openaiApiKey: string,\n  githubToken: string,\n): Promise<Record<string, unknown>> {',
-              1,
+
+          old_sig = '  objective: HostedObjective,\n  openaiApiKey: string,\n  githubToken: string,\n): Promise<Record<string, unknown>> {'
+          new_sig = '  objective: HostedObjective,\n  repositoryGovernanceRequired: boolean,\n  openaiApiKey: string,\n  githubToken: string,\n): Promise<Record<string, unknown>> {'
+          if text.count(old_sig) != 1:
+              raise SystemExit(f'reconciliation signature context count={text.count(old_sig)}')
+          text = text.replace(old_sig, new_sig, 1)
+
+          old_prompt = 'DONESTATE_OBJECTIVE: implementationPrompt(objective, objective.objectiveClass === "maintenance_pr")'
+          if text.count(old_prompt) != 1:
+              raise SystemExit(f'implementation prompt context count={text.count(old_prompt)}')
+          text = text.replace(old_prompt, 'DONESTATE_OBJECTIVE: implementationPrompt(objective, repositoryGovernanceRequired)', 1)
+
+          call_re = re.compile(
+              r'await reconcileImplementationProcess\(\s*'
+              r'sandbox\s*,\s*journal\s*,\s*\{\s*'
+              r'\.\.\.objective\s*,\s*'
+              r'objectiveClass:\s*repositoryGovernanceRequired\s*\?\s*"maintenance_pr"\s*:\s*objective\.objectiveClass\s*,?\s*'
+              r'\}\s*,\s*openaiApiKey\s*,\s*githubToken\s*\);',
+              re.S,
           )
-          text = text.replace(
-              'DONESTATE_OBJECTIVE: implementationPrompt(objective, objective.objectiveClass === "maintenance_pr")',
-              'DONESTATE_OBJECTIVE: implementationPrompt(objective, repositoryGovernanceRequired)',
-              1,
-          )
-          old = '''    await reconcileImplementationProcess(sandbox, journal, {
-              ...objective,
-              objectiveClass: repositoryGovernanceRequired ? "maintenance_pr" : objective.objectiveClass,
-            }, openaiApiKey, githubToken);'''
-          new = '''    await reconcileImplementationProcess(
+          replacement = '''await reconcileImplementationProcess(
               sandbox,
               journal,
               objective,
@@ -49,9 +57,9 @@ jobs:
               openaiApiKey,
               githubToken,
             );'''
-          if old not in text:
-              raise SystemExit('generated reconciliation call context drift')
-          text = text.replace(old, new, 1)
+          text, count = call_re.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit(f'generated reconciliation call context count={count}')
           p.write_text(text)
           PY
       - name: Render governance state
