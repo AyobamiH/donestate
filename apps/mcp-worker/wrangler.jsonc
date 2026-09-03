@@ -47,6 +47,7 @@
     { "binding": "OAUTH_KV" }
   ],
   "vars": {
+    "SANDBOX_TRANSPORT": "rpc",
     "USER_DAILY_RUN_LIMIT": "10",
     "PLATFORM_OWNER_LOGIN": "AyobamiH",
     "CANONICAL_ORIGIN": "https://donestate.proofandstate.com",
