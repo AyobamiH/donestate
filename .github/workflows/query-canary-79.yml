@@ -1,4 +1,4 @@
-name: Query aligned Sandbox canary 81
+name: Query RPC Sandbox canary 83
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Recheck aligned Sandbox canary 81'
+    if: github.event.head_commit.message == 'Trace RPC Sandbox canary 83'
     runs-on: ubuntu-latest
     steps:
       - name: Query bounded production signals
@@ -27,8 +27,8 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-81-recheck",
-              timeframe: {from: 1788405120000, to: 1788406800000},
+              queryId: "donestate-canary-83-rpc",
+              timeframe: {from: 1788406650000, to: 1788408600000},
               view: "events",
               limit: 200,
               parameters: {
@@ -54,7 +54,7 @@ jobs:
           for needle in \
             "maintenance repair queued from issue webhook" \
             "git clone --no-tags" \
-            "harness_started" \
+            "Using rpc transport" \
             "Using http transport" \
             "codex --ask-for-approval" \
             "sandbox.exec error" \
