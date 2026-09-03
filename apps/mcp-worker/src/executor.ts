@@ -35,12 +35,59 @@ export const CHANGED_FILES_COMMAND = "{ git diff --name-only -z HEAD; git ls-fil
 export const PUBLIC_CLONE_MAX_ATTEMPTS = 3;
 export const PUBLIC_CLONE_RETRY_BASE_DELAY_MS = 2_000;
 export const SANDBOX_RUNTIME_OPTIONS = { sleepAfter: "15m", keepAlive: true, enableDefaultSession: false } as const;
-export const IMPLEMENTATION_PROCESS_START_ATTEMPTS = 1;
-export const IMPLEMENTATION_PROCESS_POLL_MS = 2_000;
-export const IMPLEMENTATION_PROCESS_RECONCILE_ATTEMPTS = 3;
+export const IMPLEMENTATION_START_ATTEMPTS = 1;
+export const IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS = 3;
+export const IMPLEMENTATION_CONTROL_RETRY_BASE_DELAY_MS = 500;
+export const IMPLEMENTATION_RECEIPT_SCHEMA = "donestate.implementation-receipt.v1";
+export const IMPLEMENTATION_RECEIPT_DIR = "/workspace/.donestate-control";
 
-export function implementationProcessId(runId: string): string {
-  return `donestate-implement-${runId}`;
+export function implementationReceiptPath(runId: string): string {
+  return IMPLEMENTATION_RECEIPT_DIR + "/implementation-" + runId + ".receipt";
+}
+
+export function implementationReceiptCommand(): string {
+  return [
+    'receipt_nonce="$DONESTATE_RECEIPT_NONCE"',
+    'receipt_path="$DONESTATE_RECEIPT_PATH"',
+    'receipt_schema="$DONESTATE_RECEIPT_SCHEMA"',
+    'receipt_run_id="$DONESTATE_RECEIPT_RUN_ID"',
+    'receipt_command_digest="$DONESTATE_RECEIPT_COMMAND_DIGEST"',
+    'unset DONESTATE_RECEIPT_NONCE DONESTATE_RECEIPT_PATH DONESTATE_RECEIPT_SCHEMA DONESTATE_RECEIPT_RUN_ID DONESTATE_RECEIPT_COMMAND_DIGEST',
+    'set +e',
+    CODEX_IMPLEMENT_COMMAND,
+    'exit_code=$?',
+    'set -e',
+    'tmp_path="${receipt_path}.tmp.$"',
+    "printf '%s\\t%s\\t%s\\t%s\\t%s\\n' \"$receipt_schema\" \"$receipt_run_id\" \"$receipt_command_digest\" \"$exit_code\" \"$receipt_nonce\" > \"$tmp_path\"",
+    'mv "$tmp_path" "$receipt_path"',
+    'exit "$exit_code"',
+  ].join("\n");
+}
+
+export interface ImplementationReceipt {
+  schema: typeof IMPLEMENTATION_RECEIPT_SCHEMA;
+  runId: string;
+  commandDigest: string;
+  exitCode: number;
+  nonce: string;
+}
+
+export function parseImplementationReceipt(value: string): ImplementationReceipt {
+  const parts = value.trim().split("\t");
+  if (parts.length !== 5) throw new Error("implementation receipt field count is invalid");
+  const schema = parts[0]!;
+const runId = parts[1]!;
+const commandDigest = parts[2]!;
+const exitCodeText = parts[3]!;
+const nonce = parts[4]!;
+  if (schema !== IMPLEMENTATION_RECEIPT_SCHEMA) throw new Error("implementation receipt schema is invalid");
+  if (!/^[0-9a-f-]{36}$/.test(runId)) throw new Error("implementation receipt run id is invalid");
+  if (!/^[a-f0-9]{64}$/.test(commandDigest)) throw new Error("implementation receipt command digest is invalid");
+  if (!/^(?:0|[1-9][0-9]{0,2})$/.test(exitCodeText)) throw new Error("implementation receipt exit code is invalid");
+  const exitCode = Number(exitCodeText);
+  if (exitCode > 255) throw new Error("implementation receipt exit code is out of range");
+  if (!/^[a-f0-9]{32}$/.test(nonce)) throw new Error("implementation receipt nonce is invalid");
+  return { schema, runId, commandDigest, exitCode, nonce };
 }
 
 export function publicCloneCommand(objective: Pick<HostedObjective, "baseRef" | "repository">, repositoryPath: string): string {
@@ -179,7 +226,7 @@ async function clonePublicRepository(
   journal: ExecutionJournal,
   objective: HostedObjective,
   repositoryPath: string,
-): Promise<Sandbox> {
+): Promise<{ sandbox: Sandbox; sandboxId: string }> {
   const id = "clone";
   const authority: AuthorityClass = "local_read";
   if (!objective.authorities.includes(authority)) throw new RunFailure("BLOCKED_AUTHORITY", `${authority} authority is required for ${id}`);
@@ -198,7 +245,7 @@ async function clonePublicRepository(
     if (previousResult.success !== true || typeof sandboxId !== "string") {
       throw new RunFailure("BLOCKED_SAFETY", "settled clone action cannot restore its successful sandbox subject");
     }
-    return getSandbox(env.Sandbox, sandboxId, SANDBOX_RUNTIME_OPTIONS);
+    return { sandbox: getSandbox(env.Sandbox, sandboxId, SANDBOX_RUNTIME_OPTIONS), sandboxId };
   }
 
   let lastResult: Record<string, unknown> = {
@@ -222,7 +269,7 @@ async function clonePublicRepository(
       };
       if (raw.success) {
         await journal.settleAction(id, { state: "SUCCEEDED", result });
-        return sandbox;
+        return { sandbox, sandboxId };
       }
       lastResult = result;
     } catch (error) {
@@ -365,176 +412,182 @@ function pullRequestBody(objective: HostedObjective): string {
   ].join("\n");
 }
 
-const IMPLEMENTATION_TERMINAL_STATUSES = new Set(["completed", "failed", "killed", "error"]);
-
-function waitForImplementationPoll(delayMs = IMPLEMENTATION_PROCESS_POLL_MS): Promise<void> {
-  return new Promise<void>((resolve) => setTimeout(resolve, delayMs));
+async function waitForImplementationControlRetry(attempt: number): Promise<void> {
+  await new Promise<void>((resolve) => setTimeout(resolve, attempt * IMPLEMENTATION_CONTROL_RETRY_BASE_DELAY_MS));
 }
 
-async function reconcileImplementationProcess(
+async function executeImplementationWithReceipt(
+  env: DoneStateEnv,
   sandbox: Sandbox,
+  sandboxId: string,
   journal: ExecutionJournal,
   objective: HostedObjective,
   repositoryGovernanceRequired: boolean,
   openaiApiKey: string,
   githubToken: string,
-): Promise<Record<string, unknown>> {
+): Promise<Sandbox> {
   const id = "implement";
   const authority: AuthorityClass = "local_write";
-  if (!objective.authorities.includes(authority)) throw new RunFailure("BLOCKED_AUTHORITY", `${authority} authority is required for ${id}`);
+  if (!objective.authorities.includes(authority)) throw new RunFailure("BLOCKED_AUTHORITY", authority + " authority is required for " + id);
   if (journal.cancelled()) throw new RunFailure("FAILED_SAFE", "objective was cancelled before the next action");
 
-  const processId = implementationProcessId(objective.runId);
+  const commandDigest = await digest(CODEX_IMPLEMENT_COMMAND);
+  const receiptNonce = crypto.randomUUID().replaceAll("-", "");
+  const receiptPath = implementationReceiptPath(objective.runId);
   const previousResult = await journal.startAction(id, authority, {
     schema: "donestate.action-intent.v1",
     idempotencyKey: actionIdempotency(objective.runId, id),
-    commandDigest: await digest(CODEX_IMPLEMENT_COMMAND),
-    processId,
-    executionMode: "single_launch_reconcilable_process_v1",
-    startAttempts: IMPLEMENTATION_PROCESS_START_ATTEMPTS,
+    commandDigest,
+    executionMode: "single_foreground_exec_terminal_receipt_v1",
+    startAttempts: IMPLEMENTATION_START_ATTEMPTS,
+    receiptSchema: IMPLEMENTATION_RECEIPT_SCHEMA,
+    receiptPath,
+    receiptNonceDigest: await digest(receiptNonce),
+    sandboxId,
   });
-  if (previousResult) return previousResult;
+  if (previousResult) return getSandbox(env.Sandbox, sandboxId, SANDBOX_RUNTIME_OPTIONS);
 
-  let launchAcknowledged = false;
-  let launchError: string | null = null;
   try {
-    const process = await sandbox.startProcess(CODEX_IMPLEMENT_COMMAND, {
+    await sandbox.mkdir(IMPLEMENTATION_RECEIPT_DIR, { recursive: true });
+  } catch (error) {
+    const detail = redact(error instanceof Error ? error.message : "implementation receipt directory could not be prepared", [openaiApiKey, githubToken]);
+    const result = { reason: "implementation_receipt_directory_unavailable", error: detail, sandboxId };
+    await journal.settleAction(id, { state: "FAILED", result });
+    throw new RunFailure("BLOCKED_CAPABILITY", "implementation receipt directory could not be prepared", result);
+  }
+
+  let raw: Awaited<ReturnType<Sandbox["exec"]>> | null = null;
+  let controlError: string | null = null;
+  try {
+    raw = await sandbox.exec(implementationReceiptCommand(), {
       cwd: "/workspace/repo",
       env: {
         HOME: "/workspace/home",
         CODEX_API_KEY: openaiApiKey,
         DONESTATE_OBJECTIVE: implementationPrompt(objective, repositoryGovernanceRequired),
+        DONESTATE_RECEIPT_NONCE: receiptNonce,
+        DONESTATE_RECEIPT_PATH: receiptPath,
+        DONESTATE_RECEIPT_SCHEMA: IMPLEMENTATION_RECEIPT_SCHEMA,
+        DONESTATE_RECEIPT_RUN_ID: objective.runId,
+        DONESTATE_RECEIPT_COMMAND_DIGEST: commandDigest,
       },
       timeout: objective.maxDurationMs,
-      processId,
-      autoCleanup: false,
     });
-    if (process.id !== processId) {
-      const result = { processId, observedProcessId: process.id, reason: "process_identity_mismatch" };
-      await journal.settleAction(id, { state: "AMBIGUOUS", result });
-      throw new RunFailure("AMBIGUOUS_EFFECT", "implementation process identity did not match the durable intent", result);
-    }
-    launchAcknowledged = true;
   } catch (error) {
-    if (error instanceof RunFailure) throw error;
-    launchError = redact(
-      error instanceof Error ? error.message : "implementation process launch acknowledgement was lost",
-      [openaiApiKey, githubToken],
+    controlError = redact(error instanceof Error ? error.message : "implementation foreground control operation was interrupted", [openaiApiKey, githubToken]);
+  }
+
+  const diagnostics = raw
+    ? resultRecord(raw, [openaiApiKey, githubToken])
+    : { success: false, error: controlError, stdout: "", stderr: "", truncated: false };
+  let verifiedReceipt: ImplementationReceipt | null = null;
+  let lastControlError: string | null = null;
+
+  for (let attempt = 1; attempt <= IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS; attempt += 1) {
+    const reconciled = getSandbox(env.Sandbox, sandboxId, SANDBOX_RUNTIME_OPTIONS);
+    try {
+      const receipt = parseImplementationReceipt((await reconciled.readFile(receiptPath)).content);
+      if (receipt.runId !== objective.runId || receipt.commandDigest !== commandDigest || receipt.nonce !== receiptNonce) {
+        const result = {
+          ...diagnostics,
+          reason: "implementation_receipt_identity_mismatch",
+          sandboxId,
+          receiptSchema: receipt.schema,
+          receiptRunId: receipt.runId,
+          receiptCommandDigest: receipt.commandDigest,
+          receiptNonceMatched: receipt.nonce === receiptNonce,
+          controlError,
+        };
+        await journal.settleAction(id, { state: "AMBIGUOUS", result });
+        throw new RunFailure("AMBIGUOUS_EFFECT", "implementation terminal receipt did not match the durable action intent", result);
+      }
+      verifiedReceipt = receipt;
+      if (receipt.exitCode !== 0) {
+        const result = {
+          ...diagnostics,
+          success: false,
+          exitCode: receipt.exitCode,
+          sandboxId,
+          receiptSchema: receipt.schema,
+          receiptVerified: true,
+          controlError,
+          controlReconcileAttempt: attempt,
+        };
+        await journal.settleAction(id, { state: "FAILED", result });
+        throw new RunFailure("FAILED_SAFE", "implement failed with exit code " + receipt.exitCode, result);
+      }
+
+      const head = await reconciled.exec("git rev-parse HEAD", { cwd: "/workspace/repo" });
+      if (!head.success) throw new Error("post-implementation repository head check failed with exit code " + head.exitCode);
+      const observedHead = head.stdout.trim();
+      const result = {
+        ...diagnostics,
+        success: true,
+        exitCode: 0,
+        sandboxId,
+        receiptSchema: receipt.schema,
+        receiptVerified: true,
+        controlError,
+        controlRecovered: true,
+        controlReconcileAttempt: attempt,
+        postImplementationHead: observedHead,
+      };
+      await journal.settleAction(id, { state: "SUCCEEDED", result });
+      if (observedHead !== objective.baseHeadSha) {
+        throw new RunFailure("BLOCKED_SAFETY", "coding harness changed the repository head directly", {
+          expected: objective.baseHeadSha,
+          actual: observedHead || null,
+        });
+      }
+      return reconciled;
+    } catch (error) {
+      if (error instanceof RunFailure) throw error;
+      lastControlError = redact(
+        error instanceof Error ? error.message : "implementation receipt or repository continuity could not be read",
+        [openaiApiKey, githubToken],
+      );
+      if (attempt < IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS) {
+        await waitForImplementationControlRetry(attempt);
+      }
+    }
+  }
+
+  if (verifiedReceipt) {
+    const result = {
+      ...diagnostics,
+      success: true,
+      exitCode: verifiedReceipt.exitCode,
+      sandboxId,
+      receiptSchema: verifiedReceipt.schema,
+      receiptVerified: true,
+      controlError,
+      controlRecovered: false,
+      reason: "post_implementation_repository_continuity_unavailable",
+      lastControlError,
+    };
+    await journal.settleAction(id, { state: "SUCCEEDED", result });
+    throw new RunFailure(
+      "BLOCKED_CAPABILITY",
+      "implementation completed but the repository control plane could not be re-established",
+      result,
     );
   }
 
-  const deadline = Date.now() + objective.maxDurationMs + 30_000;
-  let observedProcess = launchAcknowledged;
-  let consecutiveReadFailures = 0;
-  let missingReads = 0;
-
-  while (Date.now() < deadline) {
-    let process: Awaited<ReturnType<Sandbox["getProcess"]>>;
-    try {
-      process = await sandbox.getProcess(processId);
-      consecutiveReadFailures = 0;
-    } catch (error) {
-      consecutiveReadFailures += 1;
-      if (consecutiveReadFailures >= IMPLEMENTATION_PROCESS_RECONCILE_ATTEMPTS) {
-        const detail = redact(
-          error instanceof Error ? error.message : "implementation process could not be re-observed",
-          [openaiApiKey, githubToken],
-        );
-        const result = { processId, reason: "process_observation_unavailable", error: detail, launchAcknowledged, launchError };
-        await journal.settleAction(id, { state: "AMBIGUOUS", result });
-        throw new RunFailure(
-          "AMBIGUOUS_EFFECT",
-          "implementation process could not be reconciled after an admitted control interruption",
-          result,
-        );
-      }
-      await waitForImplementationPoll(500 * consecutiveReadFailures);
-      continue;
-    }
-
-    if (!process) {
-      missingReads += 1;
-      if (observedProcess || missingReads >= IMPLEMENTATION_PROCESS_RECONCILE_ATTEMPTS) {
-        const result = {
-          processId,
-          reason: observedProcess ? "process_identity_disappeared" : "launch_acknowledgement_lost_process_not_observable",
-          launchAcknowledged,
-          launchError,
-        };
-        await journal.settleAction(id, { state: "AMBIGUOUS", result });
-        throw new RunFailure("AMBIGUOUS_EFFECT", "implementation process identity could not be reconciled", result);
-      }
-      await waitForImplementationPoll(500 * missingReads);
-      continue;
-    }
-
-    observedProcess = true;
-    missingReads = 0;
-    if (!IMPLEMENTATION_TERMINAL_STATUSES.has(process.status)) {
-      await waitForImplementationPoll();
-      continue;
-    }
-
-    let stdout = { text: "", truncated: false };
-    let stderr = { text: "", truncated: false };
-    let logsAvailable = true;
-    let logError: string | null = null;
-    try {
-      const logs = await process.getLogs();
-      stdout = boundedOutput(redact(logs.stdout, [openaiApiKey, githubToken]));
-      stderr = boundedOutput(redact(logs.stderr, [openaiApiKey, githubToken]));
-    } catch (error) {
-      logsAvailable = false;
-      logError = redact(
-        error instanceof Error ? error.message : "implementation logs could not be read",
-        [openaiApiKey, githubToken],
-      );
-    }
-
-    const exitCode = typeof process.exitCode === "number"
-      ? process.exitCode
-      : process.status === "completed" ? 0 : -1;
-    const success = process.status === "completed" && exitCode === 0;
-    const result = {
-      success,
-      exitCode,
-      stdout: stdout.text,
-      stderr: stderr.text,
-      truncated: stdout.truncated || stderr.truncated,
-      processId,
-      processStatus: process.status,
-      launchAcknowledged,
-      launchError,
-      logsAvailable,
-      logError,
-    };
-    await journal.settleAction(id, { state: success ? "SUCCEEDED" : "FAILED", result });
-    if (!success) {
-      throw new RunFailure("FAILED_SAFE", `implement process ended in ${process.status} with exit code ${exitCode}`, result);
-    }
-    return result;
-  }
-
-  let process: Awaited<ReturnType<Sandbox["getProcess"]>> = null;
-  try {
-    process = await sandbox.getProcess(processId);
-  } catch {
-    // The process effect is already admitted. Missing observation must remain ambiguous rather than relaunching it.
-  }
-  if (process && !IMPLEMENTATION_TERMINAL_STATUSES.has(process.status)) {
-    try {
-      await process.kill("SIGTERM");
-    } catch {
-      // Best-effort bounded cleanup only.
-    }
-    const result = { processId, processStatus: process.status, reason: "implementation_process_timeout" };
-    await journal.settleAction(id, { state: "FAILED", result });
-    throw new RunFailure("FAILED_SAFE", "implementation process exceeded the objective duration", result);
-  }
-
-  const result = { processId, reason: "implementation_process_terminal_state_unavailable", launchAcknowledged, launchError };
+  const result = {
+    ...diagnostics,
+    sandboxId,
+    receiptSchema: IMPLEMENTATION_RECEIPT_SCHEMA,
+    receiptVerified: false,
+    controlError,
+    reason: "implementation_terminal_receipt_unavailable",
+    lastControlError,
+  };
   await journal.settleAction(id, { state: "AMBIGUOUS", result });
-  throw new RunFailure("AMBIGUOUS_EFFECT", "implementation process terminal state could not be reconciled", result);
+  throw new RunFailure(
+    "AMBIGUOUS_EFFECT",
+    "implementation effect could not be reconciled from a terminal receipt",
+    result,
+  );
 }
 
 export async function executeObjective(
@@ -551,7 +604,7 @@ export async function executeObjective(
   let publicationCredentialsTouched = false;
   let activeSandbox: Sandbox | null = null;
   try {
-    const sandbox = await clonePublicRepository(env, journal, objective, repositoryPath);
+    let { sandbox, sandboxId } = await clonePublicRepository(env, journal, objective, repositoryPath);
     activeSandbox = sandbox;
     const cloned = await sandbox.exec("git rev-parse HEAD", { cwd: repositoryPath });
     if (!cloned.success || cloned.stdout.trim() !== objective.baseHeadSha) {
@@ -563,21 +616,17 @@ export async function executeObjective(
     await journal.transition("EXECUTING", "harness_started");
     const repositoryGovernanceRequired = objective.objectiveClass === "maintenance_pr"
       && await hasPackageScript(sandbox, repositoryPath, "governance:impact");
-    await reconcileImplementationProcess(
+    sandbox = await executeImplementationWithReceipt(
+      env,
       sandbox,
+      sandboxId,
       journal,
       objective,
       repositoryGovernanceRequired,
       openaiApiKey,
       githubToken,
     );
-    const harnessHead = await sandbox.exec("git rev-parse HEAD", { cwd: repositoryPath });
-    if (!harnessHead.success || harnessHead.stdout.trim() !== objective.baseHeadSha) {
-      throw new RunFailure("BLOCKED_SAFETY", "coding harness changed the repository head directly", {
-        expected: objective.baseHeadSha,
-        actual: harnessHead.stdout.trim() || null,
-      });
-    }
+    activeSandbox = sandbox;
     await journal.transition("VALIDATING", "validation_started");
     await runAction(sandbox, journal, objective, "diff-check", "test", "git diff --check", { cwd: repositoryPath });
     const validation = await selectedValidation(objective, sandbox);
