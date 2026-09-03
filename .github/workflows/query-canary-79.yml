@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Trace sessionless Sandbox canary 94'
+    if: github.event.head_commit.message == 'Recheck sessionless Sandbox canary 94'
     runs-on: ubuntu-latest
     steps:
       - name: Query bounded production signals
@@ -27,7 +27,7 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-94-sessionless",
+              queryId: "donestate-canary-94-sessionless-recheck",
               timeframe: {from: 1788409500000, to: 1788411600000},
               view: "events",
               limit: 300,
