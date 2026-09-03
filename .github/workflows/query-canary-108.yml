@@ -1,4 +1,4 @@
-name: Inspect canary 110 execution
+name: Inspect canary 112 admission
 on:
   push:
     branches: [ops/diagnose-canary-108]
@@ -6,19 +6,21 @@ permissions:
   contents: read
 jobs:
   query:
-    if: github.event.head_commit.message == 'Inspect canary 110 execution'
+    if: github.event.head_commit.message == 'Inspect canary 112 admission'
     runs-on: ubuntu-latest
     steps:
-      - name: Query exact run and receipt signals
+      - name: Query issue 112 admission signals
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         shell: bash
         run: |
           set -euo pipefail
+          now=$(date +%s000)
+          from=$((now - 900000))
           query() {
             local needle="$1" response="$RUNNER_TEMP/response.json"
-            jq -n --arg needle "$needle" '{queryId:"canary-110-execution",timeframe:{from:1788464370000,to:1788466500000},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
+            jq -n --arg needle "$needle" --argjson from "$from" --argjson to "$now" '{queryId:"canary-112-admission",timeframe:{from:$from,to:$to},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
             curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' --data-binary @"$RUNNER_TEMP/request.json" > "$response"
             jq -c --arg needle "$needle" '
               def scalar_pairs:
@@ -32,8 +34,6 @@ jobs:
                 | {event:$entry.key,path:.path,value:.value}
               ][0:500]}' "$response"
           }
-          query "05aee1b9-9d24-47dd-af4c-701b9ad5c3fc"
-          query "donestate-implement-05aee1b9-9d24-47dd-af4c-701b9ad5c3fc"
-          query "implementation-05aee1b9-9d24-47dd-af4c-701b9ad5c3fc"
-          query "codex --ask-for-approval never"
-          query "implementation receipt"
+          query "maintenance repair queued from issue webhook"
+          query "112"
+          query "quota-unblocked tracked-waiter canary"
