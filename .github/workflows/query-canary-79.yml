@@ -1,4 +1,4 @@
-name: Diagnose terminal-receipt canary 98
+name: Classify terminal-receipt canary 98
 
 on:
   push:
@@ -10,10 +10,10 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Diagnose terminal-receipt canary 98'
+    if: github.event.head_commit.message == 'Classify terminal-receipt canary 98'
     runs-on: ubuntu-latest
     steps:
-      - name: Query bounded production signals
+      - name: Query bounded failure classifications
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -27,15 +27,15 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-98-terminal-receipt",
+              queryId: "donestate-canary-98-classification",
               timeframe: {from: 1788421440000, to: 1788426000000},
               view: "events",
-              limit: 500,
+              limit: 300,
               parameters: {
                 datasets: [],
                 filterCombination: "and",
                 filters: [{key: "$metadata.service", operation: "eq", type: "string", value: "donestate-mcp"}],
-                limit: 300,
+                limit: 200,
                 needle: {value: $needle, isRegex: false, matchCase: false}
               }
             }' > "$request"
@@ -47,24 +47,17 @@ jobs:
             echo "=== $needle ==="
             jq '{count: .result.events.count, events: [(.result.events.events // [])[] | {
               timestamp,
+              runId, findingId, state, detail, reason, failureKind, actionId,
               metadata: ((.["$metadata"] // {}) | {message, error, level, origin, service}),
               workers: ((.["$workers"] // {}) | {eventType, outcome, entrypoint, durableObjectId, scriptVersion, traceId})
             }]}' "$response"
           }
           for needle in \
-            "maintenance repair queued from issue webhook" \
-            "git clone --no-tags" \
-            "Using rpc transport" \
-            "codex --ask-for-approval" \
-            "implementation receipt" \
-            "donestate.implementation-receipt.v1" \
-            "runtime connection was closing" \
-            "DoneState run stopped" \
-            "validation_started" \
-            "publication_started" \
-            "git push origin" \
-            "automatic independent verification did not complete" \
-            "maintenance verification retry completed" \
-            "VERIFIED"; do
+            "AMBIGUOUS_EFFECT" \
+            "implementation terminal receipt" \
+            "receipt could not" \
+            "receipt did not" \
+            "implementation could not" \
+            "DoneState run stopped"; do
             query_logs "$needle"
           done
