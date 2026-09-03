@@ -1,0 +1,460 @@
+name: Validate detached terminal receipt repair
+
+on:
+  push:
+    branches:
+      - repair/detached-terminal-receipt
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    if: github.event.head_commit.message == 'Run detached terminal receipt repair'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: repair/detached-terminal-receipt
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply detached receipt control correction
+        env:
+          BASE_SHA: cb1951df4e9d9b684757f5e425ffcefbc42b85b9
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json, re
+
+          executor = Path('apps/mcp-worker/src/executor.ts')
+          text = executor.read_text()
+          old = '''export const IMPLEMENTATION_START_ATTEMPTS = 1;
+          export const IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS = 3;
+          export const IMPLEMENTATION_CONTROL_RETRY_BASE_DELAY_MS = 500;
+          export const IMPLEMENTATION_RECEIPT_SCHEMA = "donestate.implementation-receipt.v1";
+          export const IMPLEMENTATION_RECEIPT_DIR = "/workspace/.donestate-control";'''
+          new = '''export const IMPLEMENTATION_START_ATTEMPTS = 1;
+          export const IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS = 5_000;
+          export const IMPLEMENTATION_RECEIPT_GRACE_MS = 15_000;
+          export const IMPLEMENTATION_LAUNCH_TIMEOUT_MS = 30_000;
+          export const IMPLEMENTATION_DETACHED_LAUNCH_COMMAND = 'nohup /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH" > "$DONESTATE_RECEIPT_LOG_PATH" 2>&1 < /dev/null &';
+          export const IMPLEMENTATION_RECEIPT_SCHEMA = "donestate.implementation-receipt.v1";
+          export const IMPLEMENTATION_RECEIPT_DIR = "/workspace/.donestate-control";'''
+          if text.count(old) != 1:
+              raise SystemExit('executor constants context drifted')
+          text = text.replace(old, new)
+
+          old = '''export function implementationReceiptPath(runId: string): string {
+            return IMPLEMENTATION_RECEIPT_DIR + "/implementation-" + runId + ".receipt";
+          }
+          
+          export function implementationReceiptCommand(): string {'''
+          new = '''export function implementationReceiptPath(runId: string): string {
+            return IMPLEMENTATION_RECEIPT_DIR + "/implementation-" + runId + ".receipt";
+          }
+          
+          export function implementationReceiptScriptPath(runId: string): string {
+            return IMPLEMENTATION_RECEIPT_DIR + "/implementation-" + runId + ".sh";
+          }
+          
+          export function implementationReceiptLogPath(runId: string): string {
+            return IMPLEMENTATION_RECEIPT_DIR + "/implementation-" + runId + ".log";
+          }
+          
+          export function implementationReceiptDeadlineMs(startedAtMs: number, maxDurationMs: number): number {
+            if (!Number.isFinite(startedAtMs) || startedAtMs < 0) throw new Error("implementation receipt start time is invalid");
+            if (!Number.isFinite(maxDurationMs) || maxDurationMs <= 0) throw new Error("implementation duration is invalid");
+            return startedAtMs + maxDurationMs + IMPLEMENTATION_RECEIPT_GRACE_MS;
+          }
+          
+          export function implementationReceiptPollDelayMs(nowMs: number, deadlineMs: number): number {
+            if (!Number.isFinite(nowMs) || !Number.isFinite(deadlineMs)) throw new Error("implementation receipt poll time is invalid");
+            return Math.max(0, Math.min(IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS, deadlineMs - nowMs));
+          }
+          
+          export function implementationReceiptCommand(): string {'''
+          if text.count(old) != 1:
+              raise SystemExit('receipt path context drifted')
+          text = text.replace(old, new)
+
+          old = '''    'receipt_command_digest="$DONESTATE_RECEIPT_COMMAND_DIGEST"',
+              'unset DONESTATE_RECEIPT_NONCE DONESTATE_RECEIPT_PATH DONESTATE_RECEIPT_SCHEMA DONESTATE_RECEIPT_RUN_ID DONESTATE_RECEIPT_COMMAND_DIGEST',
+              'set +e',
+              CODEX_IMPLEMENT_COMMAND,
+              'exit_code=$?',
+          '''
+          new = '''    'receipt_command_digest="$DONESTATE_RECEIPT_COMMAND_DIGEST"',
+              'receipt_timeout_seconds="$DONESTATE_IMPLEMENTATION_TIMEOUT_SECONDS"',
+              'unset DONESTATE_RECEIPT_NONCE DONESTATE_RECEIPT_PATH DONESTATE_RECEIPT_SCHEMA DONESTATE_RECEIPT_RUN_ID DONESTATE_RECEIPT_COMMAND_DIGEST DONESTATE_IMPLEMENTATION_TIMEOUT_SECONDS DONESTATE_RECEIPT_SCRIPT_PATH DONESTATE_RECEIPT_LOG_PATH',
+              'set +e',
+              'timeout --signal=TERM --kill-after=5s "${receipt_timeout_seconds}s" ' + CODEX_IMPLEMENT_COMMAND,
+              'exit_code=$?',
+          '''
+          if text.count(old) != 1:
+              raise SystemExit('receipt command context drifted')
+          text = text.replace(old, new)
+
+          old = '''async function waitForImplementationControlRetry(attempt: number): Promise<void> {
+            await new Promise<void>((resolve) => setTimeout(resolve, attempt * IMPLEMENTATION_CONTROL_RETRY_BASE_DELAY_MS));
+          }
+          '''
+          new = '''async function waitForImplementationReceiptPoll(nowMs: number, deadlineMs: number): Promise<void> {
+            const delayMs = implementationReceiptPollDelayMs(nowMs, deadlineMs);
+            if (delayMs > 0) await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
+          }
+          '''
+          if text.count(old) != 1:
+              raise SystemExit('implementation wait context drifted')
+          text = text.replace(old, new)
+
+          pattern = re.compile(r'async function executeImplementationWithReceipt\(.*?\n\}\n\nexport async function executeObjective\(', re.S)
+          replacement = r'''async function executeImplementationWithReceipt(
+            env: DoneStateEnv,
+            sandbox: Sandbox,
+            sandboxId: string,
+            journal: ExecutionJournal,
+            objective: HostedObjective,
+            repositoryGovernanceRequired: boolean,
+            openaiApiKey: string,
+            githubToken: string,
+          ): Promise<Sandbox> {
+            const id = "implement";
+            const authority: AuthorityClass = "local_write";
+            if (!objective.authorities.includes(authority)) throw new RunFailure("BLOCKED_AUTHORITY", authority + " authority is required for " + id);
+            if (journal.cancelled()) throw new RunFailure("FAILED_SAFE", "objective was cancelled before the next action");
+          
+            const commandDigest = await digest(CODEX_IMPLEMENT_COMMAND);
+            const receiptNonce = crypto.randomUUID().replaceAll("-", "");
+            const receiptPath = implementationReceiptPath(objective.runId);
+            const receiptScriptPath = implementationReceiptScriptPath(objective.runId);
+            const receiptLogPath = implementationReceiptLogPath(objective.runId);
+            const wrapper = implementationReceiptCommand();
+            const previousResult = await journal.startAction(id, authority, {
+              schema: "donestate.action-intent.v1",
+              idempotencyKey: actionIdempotency(objective.runId, id),
+              commandDigest,
+              executionMode: "single_detached_exec_terminal_receipt_v2",
+              startAttempts: IMPLEMENTATION_START_ATTEMPTS,
+              launchCommandDigest: await digest(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND),
+              wrapperDigest: await digest(wrapper),
+              receiptSchema: IMPLEMENTATION_RECEIPT_SCHEMA,
+              receiptPath,
+              receiptScriptPath,
+              receiptLogPath,
+              receiptNonceDigest: await digest(receiptNonce),
+              sandboxId,
+              implementationTimeoutMs: objective.maxDurationMs,
+            });
+            if (previousResult) return getSandbox(env.Sandbox, sandboxId, SANDBOX_RUNTIME_OPTIONS);
+          
+            try {
+              await sandbox.mkdir(IMPLEMENTATION_RECEIPT_DIR, { recursive: true });
+              await sandbox.writeFile(receiptScriptPath, wrapper);
+            } catch (error) {
+              const detail = redact(error instanceof Error ? error.message : "implementation receipt control files could not be prepared", [openaiApiKey, githubToken]);
+              const result = { reason: "implementation_receipt_control_unavailable", error: detail, sandboxId };
+              await journal.settleAction(id, { state: "FAILED", result });
+              throw new RunFailure("BLOCKED_CAPABILITY", "implementation receipt control files could not be prepared", result);
+            }
+          
+            const startedAtMs = Date.now();
+            const deadlineMs = implementationReceiptDeadlineMs(startedAtMs, objective.maxDurationMs);
+            let launchRaw: Awaited<ReturnType<Sandbox["exec"]>> | null = null;
+            let launchError: string | null = null;
+            try {
+              launchRaw = await sandbox.exec(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND, {
+                cwd: "/workspace/repo",
+                env: {
+                  HOME: "/workspace/home",
+                  CODEX_API_KEY: openaiApiKey,
+                  DONESTATE_OBJECTIVE: implementationPrompt(objective, repositoryGovernanceRequired),
+                  DONESTATE_RECEIPT_NONCE: receiptNonce,
+                  DONESTATE_RECEIPT_PATH: receiptPath,
+                  DONESTATE_RECEIPT_SCHEMA: IMPLEMENTATION_RECEIPT_SCHEMA,
+                  DONESTATE_RECEIPT_RUN_ID: objective.runId,
+                  DONESTATE_RECEIPT_COMMAND_DIGEST: commandDigest,
+                  DONESTATE_RECEIPT_SCRIPT_PATH: receiptScriptPath,
+                  DONESTATE_RECEIPT_LOG_PATH: receiptLogPath,
+                  DONESTATE_IMPLEMENTATION_TIMEOUT_SECONDS: String(Math.max(1, Math.ceil(objective.maxDurationMs / 1_000))),
+                },
+                timeout: IMPLEMENTATION_LAUNCH_TIMEOUT_MS,
+              });
+            } catch (error) {
+              launchError = redact(error instanceof Error ? error.message : "implementation detached launch acknowledgement was interrupted", [openaiApiKey, githubToken]);
+            }
+          
+            const launchDiagnostics = launchRaw
+              ? resultRecord(launchRaw, [openaiApiKey, githubToken])
+              : { success: false, error: launchError, stdout: "", stderr: "", truncated: false };
+            let verifiedReceipt: ImplementationReceipt | null = null;
+            let lastControlError: string | null = null;
+            let receiptPollAttempt = 0;
+          
+            while (Date.now() <= deadlineMs) {
+              receiptPollAttempt += 1;
+              const reconciled = getSandbox(env.Sandbox, sandboxId, SANDBOX_RUNTIME_OPTIONS);
+              try {
+                const receipt = parseImplementationReceipt((await reconciled.readFile(receiptPath)).content);
+                if (receipt.runId !== objective.runId || receipt.commandDigest !== commandDigest || receipt.nonce !== receiptNonce) {
+                  const result = {
+                    ...launchDiagnostics,
+                    reason: "implementation_receipt_identity_mismatch",
+                    sandboxId,
+                    receiptSchema: receipt.schema,
+                    receiptRunId: receipt.runId,
+                    receiptCommandDigest: receipt.commandDigest,
+                    receiptNonceMatched: receipt.nonce === receiptNonce,
+                    launchError,
+                    receiptPollAttempt,
+                  };
+                  await journal.settleAction(id, { state: "AMBIGUOUS", result });
+                  throw new RunFailure("AMBIGUOUS_EFFECT", "implementation terminal receipt did not match the durable action intent", result);
+                }
+                verifiedReceipt = receipt;
+                if (receipt.exitCode !== 0) {
+                  const result = {
+                    ...launchDiagnostics,
+                    success: false,
+                    exitCode: receipt.exitCode,
+                    sandboxId,
+                    receiptSchema: receipt.schema,
+                    receiptVerified: true,
+                    launchError,
+                    receiptPollAttempt,
+                  };
+                  await journal.settleAction(id, { state: "FAILED", result });
+                  throw new RunFailure("FAILED_SAFE", "implement failed with exit code " + receipt.exitCode, result);
+                }
+          
+                const head = await reconciled.exec("git rev-parse HEAD", { cwd: "/workspace/repo", timeout: 30_000 });
+                if (!head.success) throw new Error("post-implementation repository head check failed with exit code " + head.exitCode);
+                const observedHead = head.stdout.trim();
+                const result = {
+                  ...launchDiagnostics,
+                  success: true,
+                  exitCode: 0,
+                  sandboxId,
+                  receiptSchema: receipt.schema,
+                  receiptVerified: true,
+                  launchError,
+                  controlRecovered: true,
+                  receiptPollAttempt,
+                  receiptDeadlineMs: deadlineMs,
+                  postImplementationHead: observedHead,
+                };
+                await journal.settleAction(id, { state: "SUCCEEDED", result });
+                if (observedHead !== objective.baseHeadSha) {
+                  throw new RunFailure("BLOCKED_SAFETY", "coding harness changed the repository head directly", {
+                    expected: objective.baseHeadSha,
+                    actual: observedHead || null,
+                  });
+                }
+                return reconciled;
+              } catch (error) {
+                if (error instanceof RunFailure) throw error;
+                lastControlError = redact(
+                  error instanceof Error ? error.message : "implementation receipt or repository continuity could not be read",
+                  [openaiApiKey, githubToken],
+                );
+              }
+          
+              const nowMs = Date.now();
+              if (nowMs >= deadlineMs) break;
+              await waitForImplementationReceiptPoll(nowMs, deadlineMs);
+            }
+          
+            let implementationLog: Record<string, unknown> | null = null;
+            try {
+              const log = await getSandbox(env.Sandbox, sandboxId, SANDBOX_RUNTIME_OPTIONS).readFile(receiptLogPath);
+              const bounded = boundedOutput(redact(log.content, [openaiApiKey, githubToken]));
+              implementationLog = { text: bounded.text, truncated: bounded.truncated };
+            } catch {
+              implementationLog = null;
+            }
+          
+            if (verifiedReceipt) {
+              const result = {
+                ...launchDiagnostics,
+                success: true,
+                exitCode: verifiedReceipt.exitCode,
+                sandboxId,
+                receiptSchema: verifiedReceipt.schema,
+                receiptVerified: true,
+                launchError,
+                controlRecovered: false,
+                reason: "post_implementation_repository_continuity_unavailable",
+                lastControlError,
+                receiptPollAttempt,
+                receiptDeadlineMs: deadlineMs,
+                implementationLog,
+              };
+              await journal.settleAction(id, { state: "SUCCEEDED", result });
+              throw new RunFailure(
+                "BLOCKED_CAPABILITY",
+                "implementation completed but the repository control plane could not be re-established",
+                result,
+              );
+            }
+          
+            const result = {
+              ...launchDiagnostics,
+              sandboxId,
+              receiptSchema: IMPLEMENTATION_RECEIPT_SCHEMA,
+              receiptVerified: false,
+              launchError,
+              reason: "implementation_terminal_receipt_unavailable_before_deadline",
+              lastControlError,
+              receiptPollAttempt,
+              receiptDeadlineMs: deadlineMs,
+              implementationLog,
+            };
+            await journal.settleAction(id, { state: "AMBIGUOUS", result });
+            throw new RunFailure(
+              "AMBIGUOUS_EFFECT",
+              "implementation effect could not be reconciled from a terminal receipt before the configured deadline",
+              result,
+            );
+          }
+          
+          export async function executeObjective('''
+          text, count = pattern.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit(f'implementation function context drifted: {count}')
+          executor.write_text(text)
+
+          test = Path('apps/mcp-worker/test/executor.test.ts')
+          text = test.read_text()
+          old_import = 'import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS, IMPLEMENTATION_RECEIPT_SCHEMA, IMPLEMENTATION_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, implementationPrompt, implementationReceiptCommand, implementationReceiptPath, parseImplementationReceipt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";'
+          new_import = 'import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, IMPLEMENTATION_DETACHED_LAUNCH_COMMAND, IMPLEMENTATION_RECEIPT_GRACE_MS, IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS, IMPLEMENTATION_RECEIPT_SCHEMA, IMPLEMENTATION_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, implementationPrompt, implementationReceiptCommand, implementationReceiptDeadlineMs, implementationReceiptLogPath, implementationReceiptPath, implementationReceiptPollDelayMs, implementationReceiptScriptPath, parseImplementationReceipt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";'
+          if text.count(old_import) != 1:
+              raise SystemExit('executor test import context drifted')
+          text = text.replace(old_import, new_import)
+          old_test = '''  it("launches Codex once inside a terminal-receipt wrapper outside the repository", () => {
+              const runId = "0e3fc377-6ff7-47ba-8cdf-df0a226a7a85";
+              const receiptPath = implementationReceiptPath(runId);
+              const wrapper = implementationReceiptCommand();
+          
+              expect(IMPLEMENTATION_START_ATTEMPTS).toBe(1);
+              expect(IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS).toBe(3);
+              expect(receiptPath).toBe(`/workspace/.donestate-control/implementation-${runId}.receipt`);
+              expect(receiptPath.startsWith("/workspace/repo/")).toBe(false);
+              expect(wrapper.split(CODEX_IMPLEMENT_COMMAND)).toHaveLength(2);
+              expect(wrapper).toContain("unset DONESTATE_RECEIPT_NONCE");
+              expect(wrapper).toContain('tmp_path="${receipt_path}.tmp.$$"');
+              expect(wrapper).toContain('mv "$tmp_path" "$receipt_path"');
+              expect(wrapper).not.toContain("startProcess");
+            });'''
+          new_test = '''  it("launches Codex exactly once through a short detached handoff and reconciles only by terminal receipt", () => {
+              const runId = "0e3fc377-6ff7-47ba-8cdf-df0a226a7a85";
+              const receiptPath = implementationReceiptPath(runId);
+              const scriptPath = implementationReceiptScriptPath(runId);
+              const logPath = implementationReceiptLogPath(runId);
+              const wrapper = implementationReceiptCommand();
+          
+              expect(IMPLEMENTATION_START_ATTEMPTS).toBe(1);
+              expect(IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS).toBe(5_000);
+              expect(IMPLEMENTATION_RECEIPT_GRACE_MS).toBe(15_000);
+              expect(receiptPath).toBe(`/workspace/.donestate-control/implementation-${runId}.receipt`);
+              expect(scriptPath).toBe(`/workspace/.donestate-control/implementation-${runId}.sh`);
+              expect(logPath).toBe(`/workspace/.donestate-control/implementation-${runId}.log`);
+              expect(receiptPath.startsWith("/workspace/repo/")).toBe(false);
+              expect(wrapper.split(CODEX_IMPLEMENT_COMMAND)).toHaveLength(2);
+              expect(wrapper).toContain('timeout --signal=TERM --kill-after=5s "${receipt_timeout_seconds}s"');
+              expect(wrapper).toContain("unset DONESTATE_RECEIPT_NONCE");
+              expect(wrapper).toContain('tmp_path="${receipt_path}.tmp.$$"');
+              expect(wrapper).toContain('mv "$tmp_path" "$receipt_path"');
+              expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).toContain('nohup /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH"');
+              expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).toContain('&');
+              expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).not.toContain(CODEX_IMPLEMENT_COMMAND);
+              expect(wrapper).not.toContain("startProcess");
+            });
+          
+            it("keeps receipt reconciliation open for the configured implementation deadline", () => {
+              expect(implementationReceiptDeadlineMs(1_000, 180_000)).toBe(196_000);
+              expect(implementationReceiptPollDelayMs(1_000, 20_000)).toBe(5_000);
+              expect(implementationReceiptPollDelayMs(19_500, 20_000)).toBe(500);
+              expect(implementationReceiptPollDelayMs(20_000, 20_000)).toBe(0);
+            });'''
+          if text.count(old_test) != 1:
+              raise SystemExit('executor test receipt block drifted')
+          text = text.replace(old_test, new_test)
+          test.write_text(text)
+
+          ledger = Path('governance/project-ledger.json')
+          text = ledger.read_text()
+          def set_field(item_id, field, value):
+              global text
+              pattern = re.compile(r'("id":"' + re.escape(item_id) + r'".*?"' + re.escape(field) + r'":)"(?:\\.|[^"\\])*"', re.S)
+              encoded = json.dumps(value, ensure_ascii=False)
+              text, count = pattern.subn(lambda m: m.group(1) + encoded, text, count=1)
+              if count != 1:
+                  raise SystemExit(f'ledger field drifted: {item_id}.{field} -> {count}')
+
+          set_field('VERIFY-006', 'nextAction', 'Replace the long foreground Sandbox RPC around Codex with exactly one short detached launch whose completion authority is the existing atomic terminal receipt; poll only read-only receipt and repository continuity until the configured implementation deadline plus terminal-write grace, preserve Sandbox 0.12.9, RPC, keepAlive, sessionless execution, Codex 0.150.1 and no-relaunch semantics, deploy under normal review, then launch one fresh canary.')
+          set_field('VERIFY-006', 'waitCondition', 'Issue 98 on Worker 504a5e23-4e5f-4eac-b80e-979f23fa0ec7 cloned successfully and entered the terminal-receipt wrapper, but the long foreground commands.execute RPC was interrupted after 111428 ms. DoneState then exhausted three short receipt/control attempts and stopped AMBIGUOUS_EFFECT about 5.7 seconds later, before a receipt could plausibly appear; issue 94 previously proved the same Codex path can complete successfully after 168383 ms. The receipt design is retained, but completion must be decoupled from the long RPC and reconciliation must remain open through the configured execution deadline.')
+          set_field('VERIFY-004', 'nextAction', 'After the detached single-launch terminal-receipt repair is reviewed and deployed, run one fresh consequence-disabled canary through implementation, deadline-bound receipt reconciliation, post-Codex control continuity, publication, exact-head CI, OpsTruth v2 response and terminal DoneState read-back.')
+          set_field('VERIFY-004', 'waitCondition', 'Issue 98 is terminal AMBIGUOUS_EFFECT evidence and must not be retried. The next canary must wait for the isolated detached-launch receipt repair; Sandbox version, RPC transport, keepAlive, sessionless execution, Codex version and arguments, PR-only authority and verifier must remain unchanged so the outcome is attributable.')
+          count = text.count('"E-028"]')
+          if count != 2:
+              raise SystemExit(f'expected two E-028 evidence tails, found {count}')
+          text = text.replace('"E-028"]', '"E-028","E-029"]', 2)
+          evidence = '''    ,{
+              "id":"E-029","date":"2026-09-03","identity":"Terminal-receipt canary exposed a reconciliation window shorter than the proven Codex runtime","situation":"PR 97 merged as cb1951df4e9d9b684757f5e425ffcefbc42b85b9 and deployed Worker 504a5e23-4e5f-4eac-b80e-979f23fa0ec7 with Sandbox 0.12.9, RPC, keepAlive and sessionless execution. Fresh issue 98 queued on that exact runtime and materialized the repository successfully.","verification":"Production observability shows anonymous clone success in 1347 ms, RPC transport, then the terminal-receipt wrapper itself remained one long Sandbox commands.execute call and was interrupted while the runtime connection was closing after 111428 ms. RunCoordinator stopped as AMBIGUOUS_EFFECT roughly 5681 ms later. No validation, branch, PR or OpsTruth call occurred. The code at cb1951df allows only three receipt/control attempts with 500 ms and 1000 ms linear backoff, while issue 94 already proved the unchanged Codex 0.150.1 path can complete successfully after 168383 ms. Therefore the receipt oracle was sound but its reconciliation window was structurally shorter than a known-valid implementation runtime.",
+              "accountability":{"owner":"DoneState maintainers","status":"active","nextAction":"Launch the same receipt wrapper exactly once through a short detached nohup handoff, enforce the existing implementation duration inside the wrapper, and poll the receipt plus repository continuity read-only until that configured deadline plus a small terminal-write grace. Never relaunch Codex after the durable implementation intent, even if launch acknowledgement is ambiguous.","waitCondition":"Issue 98 is terminal AMBIGUOUS_EFFECT evidence and must not be retried or rewritten. Do not change Sandbox version, transport, lifecycle, Codex version/arguments, verifier or authority in the same repair.","staleDate":"2026-09-10"},
+              "outcome":"The terminal receipt remains the correct completion authority, but it must decouple DoneState from a long-lived Sandbox RPC and its reconciliation window must cover the configured implementation lifetime rather than three immediate retries.","content":"Exact issue 98 deployed subject, clone and RPC evidence, 111428 ms foreground-wrapper interruption, AMBIGUOUS_EFFECT stop timing, absence of publication/verifier activity, three-attempt reconciliation constants, and the earlier 168383 ms successful Codex comparison.","measurement":"One fresh canary, one successful clone, one long receipt-wrapper RPC interruption at 111428 ms, one AMBIGUOUS_EFFECT stop about 5.7 seconds later, zero validation starts, zero branches, zero PRs, zero OpsTruth calls, and one detached single-launch deadline-bound reconciliation repair defined."
+            }'''
+          marker = '\n  ]\n}'
+          if text.count(marker) != 1:
+              raise SystemExit('ledger evidence tail drifted')
+          text = text.replace(marker, '\n' + evidence + marker)
+          ledger.write_text(text)
+          PY
+      - name: Render governance state
+        run: npm run governance:render
+      - name: Root validation
+        run: |
+          npm ci
+          npm run check
+      - name: Hosted Worker validation
+        working-directory: apps/mcp-worker
+        run: |
+          npm ci
+          npm run check
+      - name: Plugin validation
+        run: node scripts/validate-plugin.mjs
+      - name: Prepare exact review commit
+        env:
+          BASE_SHA: cb1951df4e9d9b684757f5e425ffcefbc42b85b9
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/detached-receipt-repair.yml
+          git config user.name 'Ayobami Haastrup'
+          git config user.email '47716486+AyobamiH@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'Decouple Codex completion from Sandbox RPC'
+          mapfile -t changed < <(git diff --name-only "$BASE_SHA"...HEAD | sort)
+          printf '%s\n' "${changed[@]}"
+          expected=(
+            apps/mcp-worker/src/executor.ts
+            apps/mcp-worker/test/executor.test.ts
+            docs/PROJECT-STATE.md
+            governance/project-ledger.json
+          )
+          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
+          if [ "${changed[*]}" != "${expected_sorted[*]}" ]; then
+            echo 'unexpected net review diff' >&2
+            exit 1
+          fi
+      - name: Governance impact on exact net commit
+        env:
+          BASE_SHA: cb1951df4e9d9b684757f5e425ffcefbc42b85b9
+        run: npm run governance:impact -- "$BASE_SHA"
+      - name: Push exact review commit
+        run: git push origin HEAD:repair/detached-terminal-receipt
