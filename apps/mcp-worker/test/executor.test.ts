@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, EXECUTION_ALARM_YIELD_MS, HOSTED_ALARM_COMMAND_TIMEOUT_MS, IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND, IMPLEMENTATION_RECEIPT_GRACE_MS, IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS, IMPLEMENTATION_RECEIPT_SCHEMA, IMPLEMENTATION_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, executionResumeAtMs, implementationProcessId, implementationPrompt, implementationReceiptCommand, implementationReceiptDeadlineMs, implementationReceiptLogPath, implementationReceiptPath, implementationReceiptPollDelayMs, implementationReceiptScriptPath, parseExecutionCheckpoint, parseImplementationReceipt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
+import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, EXECUTION_ALARM_YIELD_MS, HOSTED_ALARM_COMMAND_TIMEOUT_MS, IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND, IMPLEMENTATION_RECEIPT_GRACE_MS, IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS, IMPLEMENTATION_RECEIPT_SCHEMA, IMPLEMENTATION_START_ATTEMPTS, POST_IMPLEMENTATION_RUNTIME_QUIESCENCE_MS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, executionResumeAtMs, implementationProcessId, implementationPrompt, implementationReceiptCommand, implementationReceiptDeadlineMs, implementationReceiptLogPath, implementationReceiptPath, implementationReceiptPollDelayMs, implementationReceiptScriptPath, parseExecutionCheckpoint, parseImplementationReceipt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
 import type { HostedObjective } from "../src/types";
 
 describe("hosted Codex executor contract", () => {
@@ -143,6 +143,11 @@ describe("hosted Codex executor contract", () => {
     expect(HOSTED_ALARM_COMMAND_TIMEOUT_MS).toBe(600_000);
     expect(EXECUTION_ALARM_YIELD_MS).toBe(1_000);
     expect(executionResumeAtMs(1_000)).toBe(2_000);
+  });
+
+  it("allows the managed implementation connection to quiesce before validation", () => {
+    expect(POST_IMPLEMENTATION_RUNTIME_QUIESCENCE_MS).toBe(30_000);
+    expect(POST_IMPLEMENTATION_RUNTIME_QUIESCENCE_MS).toBeGreaterThan(15_387);
   });
 
   it("persists only hashed receipt identity in the resumable execution checkpoint", () => {
