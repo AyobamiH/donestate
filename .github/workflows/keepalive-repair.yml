@@ -1,0 +1,61 @@
+name: Validate Sandbox keepAlive lifecycle repair
+
+on:
+  push:
+    branches:
+      - repair/sandbox-keepalive-lifecycle
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    if: github.event.head_commit.message == 'Run Sandbox keepAlive repair'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply bounded keepAlive lifecycle correction
+        run: node scripts/tmp-keepalive-repair.mjs
+      - name: Render governance state
+        run: npm ci && npm run governance:render
+      - name: Root validation
+        run: npm run check
+      - name: Hosted Worker validation
+        working-directory: apps/mcp-worker
+        run: npm ci && npm run check
+      - name: Prepare exact review commit
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/keepalive-repair.yml scripts/tmp-keepalive-repair.mjs
+          expected=$(printf '%s\n' \
+            apps/mcp-worker/src/executor.ts \
+            apps/mcp-worker/test/executor.test.ts \
+            docs/PROJECT-STATE.md \
+            governance/project-ledger.json | sort -u)
+          actual=$( { git diff --name-only 4c4964f2e5ee91c8b4315ec00eeaf70475443b08; git ls-files --others --exclude-standard; } \
+            | sed '/^$/d' \
+            | grep -v '^.github/workflows/keepalive-repair.yml$' \
+            | grep -v '^scripts/tmp-keepalive-repair.mjs$' \
+            | sort -u )
+          if [ "$actual" != "$expected" ]; then
+            echo "Unexpected review surface" >&2
+            echo "Expected:" >&2; printf '%s\n' "$expected" >&2
+            echo "Actual:" >&2; printf '%s\n' "$actual" >&2
+            exit 1
+          fi
+          git config user.name 'Ayobami Haastrup'
+          git config user.email '47716486+AyobamiH@users.noreply.github.com'
+          git add apps/mcp-worker/src/executor.ts apps/mcp-worker/test/executor.test.ts docs/PROJECT-STATE.md governance/project-ledger.json
+          git add -u .github/workflows/keepalive-repair.yml scripts/tmp-keepalive-repair.mjs
+          git diff --cached --check
+          git commit -m 'Keep active Sandbox alive during implementation'
+      - name: Governance impact on exact net commit
+        run: npm run governance:impact -- 4c4964f2e5ee91c8b4315ec00eeaf70475443b08
+      - name: Push exact review commit
+        run: git push origin HEAD
