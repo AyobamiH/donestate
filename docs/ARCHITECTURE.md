@@ -2,7 +2,7 @@
 
 ## Control plane
 
-DoneState is a desired-state reconciler for a single repository objective.
+[DoneState](https://proofandstate.com/donestate) is [Proof & State](https://proofandstate.com)'s authorised execution control plane and a desired-state reconciler for a single repository objective.
 
 ```mermaid
 flowchart TD
@@ -56,9 +56,10 @@ SQLite runs in WAL mode with `synchronous=FULL`, foreign keys and a busy timeout
 ## Integration boundaries
 
 - **Harness adapters** execute Codex, Pi, OpenClaw or another configured process.
-- **AgentProof** may authorise and receipt individual consequential transactions.
-- **OpsTruth** independently observes repository and release evidence.
-- **DoneState** reconciles the objective and accepts only a pinned signed attestation for terminal verification.
+- **DoneState** executes only inside an explicitly granted authority envelope, reconciles the objective and accepts only a pinned independent attestation for terminal verification.
+- **OpsTruth** independently observes exact repository and release evidence as a read-only verifier and signs verification decisions without changing the execution snapshot.
+- **AgentProof** records merge, deploy, release and related consequential-action evidence and receipts; those receipts do not become completion authority for DoneState.
+- **Proof & State** owns portfolio governance, contracts, evidence indexes and sequencing while keeping execution, verification and receipts in separate trust domains.
 
 Provider-native GitHub, secret-broker and hosted worker adapters belong outside the core state machine and must obey the same effect and authority contracts.
 
