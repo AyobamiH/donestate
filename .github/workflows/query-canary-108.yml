@@ -1,4 +1,4 @@
-name: Inspect canary 112 post-receipt timeline
+name: Inspect canary 112 npm validation command
 on:
   push:
     branches: [ops/diagnose-canary-108]
@@ -6,35 +6,33 @@ permissions:
   contents: read
 jobs:
   query:
-    if: github.event.head_commit.message == 'Inspect canary 112 post-receipt timeline'
+    if: github.event.head_commit.message == 'Inspect canary 112 npm validation command'
     runs-on: ubuntu-latest
     steps:
-      - name: Query post-receipt command timeline
+      - name: Query npm validation command
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         shell: bash
         run: |
           set -euo pipefail
-          from=1788467130000
+          from=1788467135000
           to=1788467165000
           query() {
             local needle="$1" response="$RUNNER_TEMP/response.json"
-            jq -n --arg needle "$needle" --argjson from "$from" --argjson to "$to" '{queryId:"canary-112-post-receipt-timeline",timeframe:{from:$from,to:$to},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
+            jq -n --arg needle "$needle" --argjson from "$from" --argjson to "$to" '{queryId:"canary-112-npm",timeframe:{from:$from,to:$to},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
             curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' --data-binary @"$RUNNER_TEMP/request.json" > "$response"
             jq -c --arg needle "$needle" '
               def scalar_pairs: paths(scalars) as $p | {path: ($p | map(tostring) | join(".")), value: getpath($p)};
               {needle:$needle,count:(.result.events.count // 0),signals:[
                 ((.result.events.events // []) | to_entries[]) as $entry
                 | ($entry.value | scalar_pairs)
-                | select(.path | test("message|error|time|id|event|command|process|service|session|container|exitCode|stdout|stderr|duration";"i"))
-                | select((.value|tostring|length) < 3200)
+                | select(.path | test("message|error|time|id|event|command|process|service|session|container|exitCode|stdout|stderr|duration|rpcMethod";"i"))
+                | select((.value|tostring|length) < 4000)
                 | {event:$entry.key,path:.path,value:.value}
-              ][0:900]}' "$response"
+              ][0:1000]}' "$response"
           }
-          query "git rev-parse HEAD"
-          query "git diff --check"
-          query "pnpm-lock.yaml"
-          query "package.json"
-          query "corepack"
-          query "session is dead"
+          query "npm ci"
+          query "npm"
+          query "execWithSessionToken"
+          query "process.exit"
