@@ -306,4 +306,63 @@ describe("RunCoordinator", () => {
     });
   });
 
+
+  it("persists the implementation action intent and execution checkpoint in one durable transaction", async () => {
+    const runId = "12121212-1212-4212-8212-121212121212";
+    const stub = env.RUN_COORDINATOR.getByName(runId);
+    await stub.create(objective(runId), "github-test-token");
+    await runInDurableObject(stub, async (instance: RunCoordinator, state) => {
+      state.storage.sql.exec("UPDATE run SET state = 'EXECUTING' WHERE id = ?", runId);
+      const internal = instance as unknown as {
+        startImplementationAction(intent: Record<string, unknown>, draft: Record<string, unknown>): Promise<{ status: string; checkpoint: Record<string, unknown> }>;
+      };
+      const draft = {
+        schema: "donestate.execution-checkpoint.v1",
+        runId,
+        sandboxId: `run-${runId}-clone-1`,
+        objectiveDigest: "1".repeat(64),
+        commandDigest: "2".repeat(64),
+        launchCommandDigest: "3".repeat(64),
+        wrapperDigest: "4".repeat(64),
+        receiptSchema: "donestate.implementation-receipt.v1",
+        receiptPath: `/workspace/.donestate-control/implementation-${runId}.receipt`,
+        receiptScriptPath: `/workspace/.donestate-control/implementation-${runId}.sh`,
+        receiptLogPath: `/workspace/.donestate-control/implementation-${runId}.log`,
+        receiptNonceDigest: "5".repeat(64),
+        implementationTimeoutMs: 60_000,
+        startedAtMs: 1_000,
+        deadlineMs: 76_000,
+        repositoryGovernanceRequired: true,
+        implementationPhase: "pending",
+        launchAcknowledged: null,
+        launchError: null,
+        lastControlError: null,
+        receiptPollAttempt: 0,
+      };
+      const started = await internal.startImplementationAction({ idempotencyKey: `${runId}:implement:v1`, commandDigest: "2".repeat(64) }, draft);
+      expect(started.status).toBe("started");
+      const action = state.storage.sql.exec<{ state: string; intent_digest: string }>("SELECT state, intent_digest FROM actions WHERE id = 'implement'").one();
+      const row = state.storage.sql.exec<{ execution_checkpoint_json: string }>("SELECT execution_checkpoint_json FROM run WHERE id = ?", runId).one();
+      const stored = JSON.parse(row.execution_checkpoint_json) as Record<string, unknown>;
+      expect(action.state).toBe("RUNNING");
+      expect(stored.actionIntentDigest).toBe(action.intent_digest);
+      expect(stored.receiptNonceDigest).toBe("5".repeat(64));
+      expect(row.execution_checkpoint_json).not.toContain("github-test-token");
+    });
+  });
+
+  it("keeps generic unsettled actions non-resumable", async () => {
+    const runId = "13131313-1313-4313-8313-131313131313";
+    const stub = env.RUN_COORDINATOR.getByName(runId);
+    await stub.create(objective(runId), "github-test-token");
+    await runInDurableObject(stub, async (instance: RunCoordinator, state) => {
+      state.storage.sql.exec("UPDATE run SET state = 'VALIDATING' WHERE id = ?", runId);
+      const internal = instance as unknown as {
+        startAction(id: string, authority: "test", intent: Record<string, unknown>): Promise<Record<string, unknown> | null>;
+      };
+      await internal.startAction("validate-node", "test", { idempotencyKey: `${runId}:validate-node:v1` });
+      await expect(internal.startAction("validate-node", "test", { idempotencyKey: `${runId}:validate-node:v1` })).rejects.toMatchObject({ state: "AMBIGUOUS_EFFECT" });
+    });
+  });
+
 });

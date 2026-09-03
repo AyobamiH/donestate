@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, IMPLEMENTATION_DETACHED_LAUNCH_COMMAND, IMPLEMENTATION_RECEIPT_GRACE_MS, IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS, IMPLEMENTATION_RECEIPT_SCHEMA, IMPLEMENTATION_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, implementationPrompt, implementationReceiptCommand, implementationReceiptDeadlineMs, implementationReceiptLogPath, implementationReceiptPath, implementationReceiptPollDelayMs, implementationReceiptScriptPath, parseImplementationReceipt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
+import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, EXECUTION_ALARM_YIELD_MS, HOSTED_ALARM_COMMAND_TIMEOUT_MS, IMPLEMENTATION_DETACHED_LAUNCH_COMMAND, IMPLEMENTATION_RECEIPT_GRACE_MS, IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS, IMPLEMENTATION_RECEIPT_SCHEMA, IMPLEMENTATION_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, executionResumeAtMs, implementationPrompt, implementationReceiptCommand, implementationReceiptDeadlineMs, implementationReceiptLogPath, implementationReceiptPath, implementationReceiptPollDelayMs, implementationReceiptScriptPath, parseExecutionCheckpoint, parseImplementationReceipt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
 import type { HostedObjective } from "../src/types";
 
 describe("hosted Codex executor contract", () => {
@@ -135,4 +135,42 @@ describe("hosted Codex executor contract", () => {
     expect(prompt).toContain("Follow repository-native agent, contributor, governance, and generated-state requirements");
     expect(prompt).toContain("minimum additional ledger/generated-state closure changes");
   });
+
+  it("keeps each alarm slice below the Durable Object alarm wall-time boundary", () => {
+    expect(HOSTED_ALARM_COMMAND_TIMEOUT_MS).toBe(600_000);
+    expect(EXECUTION_ALARM_YIELD_MS).toBe(1_000);
+    expect(executionResumeAtMs(1_000)).toBe(2_000);
+  });
+
+  it("persists only hashed receipt identity in the resumable execution checkpoint", () => {
+    const runId = "0e3fc377-6ff7-47ba-8cdf-df0a226a7a85";
+    const checkpoint = parseExecutionCheckpoint({
+      schema: "donestate.execution-checkpoint.v1",
+      runId,
+      sandboxId: `run-${runId}-clone-2`,
+      objectiveDigest: "1".repeat(64),
+      commandDigest: "2".repeat(64),
+      launchCommandDigest: "3".repeat(64),
+      wrapperDigest: "4".repeat(64),
+      receiptSchema: IMPLEMENTATION_RECEIPT_SCHEMA,
+      receiptPath: implementationReceiptPath(runId),
+      receiptScriptPath: implementationReceiptScriptPath(runId),
+      receiptLogPath: implementationReceiptLogPath(runId),
+      receiptNonceDigest: "5".repeat(64),
+      implementationTimeoutMs: 1_800_000,
+      startedAtMs: 1_000,
+      deadlineMs: 1_816_000,
+      repositoryGovernanceRequired: true,
+      implementationPhase: "pending",
+      launchAcknowledged: null,
+      launchError: null,
+      lastControlError: null,
+      receiptPollAttempt: 0,
+      actionIntentDigest: "6".repeat(64),
+    });
+    expect(checkpoint.receiptNonceDigest).toBe("5".repeat(64));
+    expect(JSON.stringify(checkpoint)).not.toContain("receiptNonce\"");
+    expect(() => parseExecutionCheckpoint({ ...checkpoint, sandboxId: "other-sandbox" })).toThrow("sandbox id");
+  });
+
 });
