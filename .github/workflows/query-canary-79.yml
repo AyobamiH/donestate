@@ -1,4 +1,4 @@
-name: Query canary 79 observability
+name: Query aligned Sandbox canary 81
 
 on:
   push:
@@ -10,10 +10,10 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Compare successful and failed Sandbox windows'
+    if: github.event.head_commit.message == 'Trace aligned Sandbox canary 81'
     runs-on: ubuntu-latest
     steps:
-      - name: Compare bounded production windows
+      - name: Query bounded production signals
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -21,14 +21,14 @@ jobs:
         run: |
           set -euo pipefail
           query_logs() {
-            local label="$1" from="$2" to="$3" needle="$4"
+            local needle="$1"
             local slug request response
-            slug=$(printf '%s-%s' "$label" "$needle" | tr ' /:!' '_____' | tr -cd '[:alnum:]_-')
+            slug=$(printf '%s' "$needle" | tr ' /:!' '_____' | tr -cd '[:alnum:]_-')
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
-            jq -n --arg needle "$needle" --argjson from "$from" --argjson to "$to" '{
-              queryId: "donestate-sandbox-then-now",
-              timeframe: {from: $from, to: $to},
+            jq -n --arg needle "$needle" '{
+              queryId: "donestate-canary-81",
+              timeframe: {from: 1788405120000, to: 1788406800000},
               view: "events",
               limit: 200,
               parameters: {
@@ -44,20 +44,22 @@ jobs:
               -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
               -H 'Content-Type: application/json' \
               --data-binary @"$request" > "$response"
-            echo "=== $label :: $needle ==="
+            echo "=== $needle ==="
             jq '{count: .result.events.count, events: [(.result.events.events // [])[] | {
               timestamp,
               metadata: ((.["$metadata"] // {}) | {message, error, level, type, origin, service}),
               workers: ((.["$workers"] // {}) | {eventType, outcome, entrypoint, durableObjectId, scriptVersion})
             }]}' "$response"
           }
-
-          # #66 successful implementation/publication window.
-          for needle in "version mismatch" "transport" "sandbox.exec error" "HTTP error! status: 500" "codex --ask-for-approval" "DoneState run stopped"; do
-            query_logs success66 1788338400000 1788339900000 "$needle"
-          done
-
-          # #79 failed implementation window.
-          for needle in "version mismatch" "transport" "sandbox.exec error" "HTTP error! status: 500" "codex --ask-for-approval" "DoneState run stopped"; do
-            query_logs failure79 1788379200000 1788380100000 "$needle"
+          for needle in \
+            "maintenance repair queued from issue webhook" \
+            "maintenance issue webhook repair did not queue" \
+            "Using http transport" \
+            "codex --ask-for-approval" \
+            "sandbox.exec error" \
+            "HTTP error! status: 500" \
+            "DoneState run stopped" \
+            "publication_started" \
+            "automatic independent verification did not complete"; do
+            query_logs "$needle"
           done
