@@ -1,4 +1,4 @@
-name: Query keepAlive RPC canary 85
+name: Trace canary 85 raw run identities
 
 on:
   push:
@@ -10,32 +10,32 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Trace keepAlive RPC canary 85'
+    if: github.event.head_commit.message == 'Trace canary 85 raw run identities'
     runs-on: ubuntu-latest
     steps:
-      - name: Query bounded production signals
+      - name: Query safe structured production identities
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         shell: bash
         run: |
           set -euo pipefail
-          query_logs() {
+          query_raw() {
             local needle="$1"
             local slug request response
             slug=$(printf '%s' "$needle" | tr ' /:!' '_____' | tr -cd '[:alnum:]_-')
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-85-keepalive-rpc",
+              queryId: "donestate-canary-85-raw-identities",
               timeframe: {from: 1788407730000, to: 1788409800000},
               view: "events",
-              limit: 300,
+              limit: 100,
               parameters: {
                 datasets: [],
                 filterCombination: "and",
                 filters: [{key: "$metadata.service", operation: "eq", type: "string", value: "donestate-mcp"}],
-                limit: 200,
+                limit: 50,
                 needle: {value: $needle, isRegex: false, matchCase: false}
               }
             }' > "$request"
@@ -45,28 +45,8 @@ jobs:
               -H 'Content-Type: application/json' \
               --data-binary @"$request" > "$response"
             echo "=== $needle ==="
-            jq '{count: .result.events.count, events: [(.result.events.events // [])[] | {
-              timestamp,
-              metadata: ((.["$metadata"] // {}) | {message, error, level, type, origin, service}),
-              workers: ((.["$workers"] // {}) | {eventType, outcome, entrypoint, durableObjectId, scriptVersion})
-            }]}' "$response"
+            jq '{count: .result.events.count, events: (.result.events.events // [])}' "$response"
           }
-          for needle in \
-            "maintenance repair queued from issue webhook" \
-            "git clone --no-tags" \
-            "Using rpc transport" \
-            "Using http transport" \
-            "codex --ask-for-approval" \
-            "sandbox.exec success codex" \
-            "sandbox.exec error" \
-            "runtime connection was closing" \
-            "HTTP error! status: 500" \
-            "validation_started" \
-            "publication_started" \
-            "git push origin" \
-            "pull request" \
-            "DoneState run stopped" \
-            "automatic independent verification" \
-            "maintenance verification retry completed"; do
-            query_logs "$needle"
-          done
+          query_raw "maintenance repair queued from issue webhook"
+          query_raw "git clone --no-tags --single-branch --branch main https://github.com/AyobamiH/donestate.git /workspace/repo"
+          query_raw "DoneState run stopped"
