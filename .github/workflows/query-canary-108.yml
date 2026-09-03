@@ -1,4 +1,4 @@
-name: Inspect canary 110 admission
+name: Inspect canary 110 execution
 on:
   push:
     branches: [ops/diagnose-canary-108]
@@ -6,10 +6,10 @@ permissions:
   contents: read
 jobs:
   query:
-    if: github.event.head_commit.message == 'Inspect canary 110 admission'
+    if: github.event.head_commit.message == 'Inspect canary 110 execution'
     runs-on: ubuntu-latest
     steps:
-      - name: Recover canary 110 run identity
+      - name: Query exact run and receipt signals
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -18,25 +18,22 @@ jobs:
           set -euo pipefail
           query() {
             local needle="$1" response="$RUNNER_TEMP/response.json"
-            jq -n --arg needle "$needle" '{queryId:"canary-110-admission",timeframe:{from:1788464370000,to:1788466200000},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
+            jq -n --arg needle "$needle" '{queryId:"canary-110-execution",timeframe:{from:1788464370000,to:1788466500000},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
             curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' --data-binary @"$RUNNER_TEMP/request.json" > "$response"
             jq -c --arg needle "$needle" '
               def scalar_pairs:
                 paths(scalars) as $p
                 | {path: ($p | map(tostring) | join(".")), value: getpath($p)};
-              {
-                needle:$needle,
-                count:(.result.events.count // 0),
-                signals:[
-                  ((.result.events.events // []) | to_entries[]) as $entry
-                  | ($entry.value | scalar_pairs)
-                  | select(.path | test("message|run|issue|state|status|receipt|branch|pull|implement|verif|error|time|id|objective|action|event|command|process|service|session|container|finding";"i"))
-                  | select((.value|tostring|length) < 1200)
-                  | {event:$entry.key,path:.path,value:.value}
-                ][0:400]
-              }' "$response"
+              {needle:$needle,count:(.result.events.count // 0),signals:[
+                ((.result.events.events // []) | to_entries[]) as $entry
+                | ($entry.value | scalar_pairs)
+                | select(.path | test("message|run|issue|state|status|receipt|branch|pull|implement|verif|attest|error|time|id|objective|action|event|command|process|service|session|container|exitCode";"i"))
+                | select((.value|tostring|length) < 1400)
+                | {event:$entry.key,path:.path,value:.value}
+              ][0:500]}' "$response"
           }
-          query "tracked-waiter receipt canary"
-          query "maintenance repair queued from issue webhook"
-          query "110"
-          query "run_queued"
+          query "05aee1b9-9d24-47dd-af4c-701b9ad5c3fc"
+          query "donestate-implement-05aee1b9-9d24-47dd-af4c-701b9ad5c3fc"
+          query "implementation-05aee1b9-9d24-47dd-af4c-701b9ad5c3fc"
+          query "codex --ask-for-approval never"
+          query "implementation receipt"
