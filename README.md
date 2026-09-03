@@ -1,8 +1,8 @@
 # DoneState
 
-**DoneState completes the work. OpsTruth proves it.**
+**DoneState executes authorised work. OpsTruth independently verifies the evidence.**
 
-DoneState is a durable control plane for autonomous coding work in existing repositories. Give it a prose outcome and a standing authority envelope. It runs a coding harness, executes deterministic validation, survives ordinary restarts, and seals the exact result for an independent verifier.
+[DoneState](https://proofandstate.com/donestate) is [Proof & State](https://proofandstate.com)'s authorised execution control plane for bounded repository work. Give it a prose outcome and an explicit authority envelope. It runs a coding harness within that boundary, executes deterministic validation, survives ordinary restarts, and seals the exact result for independent verification by [OpsTruth](https://opstruth.io), the read-only verification plane.
 
 It is deliberately not another coding model. Codex, Pi, OpenClaw or another process can be the harness. DoneState owns the parts that should not depend on model judgement: admission, authority, budgets, leases, idempotency, state transitions, audit evidence and completion semantics.
 
@@ -115,13 +115,18 @@ A run reaches `VERIFIED` only when all of these are true:
 
 See [Architecture](docs/ARCHITECTURE.md), [Trust model](docs/TRUST-MODEL.md) and [Threat model](docs/THREAT-MODEL.md).
 
-## Product boundaries
+## Brand and product boundaries
+
+- **Proof & State** owns portfolio governance, contracts, evidence indexes and sequencing across the product family.
+- **DoneState** is the authorised execution control plane. It performs only explicitly granted work and never uses its own execution record as independent proof.
+- **OpsTruth** is the independent, read-only verification plane. It observes exact outcomes and signs verification decisions without mutating the target.
+- **AgentProof** is the evidence and receipt layer for merge, deploy, release and related consequential-action evidence. Its receipts do not become DoneState completion authority.
 
 Version 0.1 provides the durable local controller, process-harness adapter, policy enforcement, Git changed-file budget, tamper-evident event chain, recovery semantics, signed verification handoff and CLI. Version 0.2 development adds the hosted public-repository execution slice described above.
 
 The local CLI does not provide a hosted multi-tenant control plane or operating-system sandbox. The production Worker contains an owner-activated GitHub App maintenance slice. The owner later merged canary PR #22 outside DoneState's PR-only authority, but that repository action did not widen the run's authority or prove its result. The run remains `AWAITING_VERIFICATION` until OpsTruth can use the authenticated read lane tracked in `AyobamiH/opstruth-chatgpt-plugin#11` and return a fresh signed terminal decision. DoneState does not enable merge queues, merge/deployment/release execution, managed verifier keys, a general secret broker, or production fleet controls. Its credential vault is limited to each authenticated user's OpenAI execution key. Remote publication remains denied until its authority class is explicitly granted.
 
-AgentProof remains the transaction and signed-receipt layer for consequential actions. OpsTruth remains the independent read-only verifier. DoneState neither duplicates their roles nor treats its own observations as proof.
+DoneState, OpsTruth and AgentProof remain separate trust domains. DoneState neither duplicates their roles nor treats its own observations as proof.
 
 ## Development
 

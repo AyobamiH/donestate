@@ -5,7 +5,7 @@ description: Use when a user wants DoneState to implement, repair, maintain or o
 
 # Run a DoneState objective
 
-Turn prose into one bounded, reviewable execution contract. DoneState performs authorised work. It does not verify its own completion.
+DoneState is Proof & State's authorised execution control plane. OpsTruth is the independent read-only verification plane, and AgentProof remains a separate evidence and receipt layer. Turn prose into one bounded, reviewable execution contract. DoneState performs authorised work. It does not verify its own completion.
 
 ## User-funded execution
 
