@@ -80,7 +80,7 @@ export const IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS = 5_000;
 export const IMPLEMENTATION_RECEIPT_GRACE_MS = 15_000;
 export const HOSTED_ALARM_COMMAND_TIMEOUT_MS = 10 * 60_000;
 export const EXECUTION_ALARM_YIELD_MS = 1_000;
-export const IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND = 'setsid -f /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH" > "$DONESTATE_RECEIPT_LOG_PATH" 2>&1';
+export const IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND = 'setsid -f -w /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH" > "$DONESTATE_RECEIPT_LOG_PATH" 2>&1';
 export const IMPLEMENTATION_RECEIPT_SCHEMA = "donestate.implementation-receipt.v1";
 
 export function implementationProcessId(runId: string): string {
@@ -572,7 +572,7 @@ async function launchImplementationWithReceipt(
     schema: "donestate.action-intent.v1",
     idempotencyKey: actionIdempotency(objective.runId, id),
     commandDigest,
-    executionMode: "single_start_process_setsid_terminal_receipt_alarm_resumable_v5",
+    executionMode: "single_start_process_setsid_wait_terminal_receipt_alarm_resumable_v6",
     startAttempts: IMPLEMENTATION_START_ATTEMPTS,
     processId: implementationProcessId(objective.runId),
     launchCommandDigest: await digest(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND),
