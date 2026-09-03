@@ -20,6 +20,19 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      - name: Correct staging-helper shell interpolation
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/tmp-reconcile-codex-receipt.mjs')
+          text = path.read_text()
+          old = 'tmp_path="${receipt_path}.tmp.$$"'
+          new = 'tmp_path="\\${receipt_path}.tmp.$$"'
+          if text.count(old) != 1:
+              raise SystemExit('receipt path interpolation context drift')
+          path.write_text(text.replace(old, new))
+          PY
       - name: Apply terminal receipt correction
         run: node scripts/tmp-reconcile-codex-receipt.mjs
       - name: Install root dependencies
