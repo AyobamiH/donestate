@@ -77,7 +77,7 @@ describe("hosted Codex executor contract", () => {
     expect(wrapper).toContain("unset DONESTATE_RECEIPT_NONCE");
     expect(wrapper).toContain('tmp_path="${receipt_path}.tmp.$$"');
     expect(wrapper).toContain('mv "$tmp_path" "$receipt_path"');
-    expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).toContain('/bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH"');
+    expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).toBe('setsid -f /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH" > "$DONESTATE_RECEIPT_LOG_PATH" 2>&1');
     expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).not.toContain("nohup");
     expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND.trim().endsWith("&")).toBe(false);
     expect(IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND).not.toContain(CODEX_IMPLEMENT_COMMAND);
