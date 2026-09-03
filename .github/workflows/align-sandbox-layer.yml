@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   repair:
-    if: github.event.head_commit.message == 'Run Sandbox version alignment repair'
+    if: github.event.head_commit.message == 'Retry Sandbox version alignment repair'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -33,11 +33,7 @@ jobs:
         run: |
           npm ci
           npm run check
-      - name: Governance impact
-        env:
-          BASE_SHA: 9f0058975321b6f9b9075aee48cae9840cae39b6
-        run: npm run governance:impact -- "$BASE_SHA"
-      - name: Publish exact review commit
+      - name: Prepare exact local review commit
         run: |
           set -euo pipefail
           rm -f .github/workflows/align-sandbox-layer.yml scripts/tmp-align-sandbox-layer.mjs
@@ -50,7 +46,7 @@ jobs:
           governance/project-ledger.json
           EOF
           )
-          actual=$(git diff --name-only 9f0058975321b6f9b9075aee48cae9840cae39b6...HEAD; git diff --name-only; git ls-files --others --exclude-standard)
+          actual=$(git diff --name-only 9f0058975321b6f9b9075aee48cae9840cae39b6)
           actual=$(printf '%s\n' "$actual" | sed '/^$/d' | sort -u)
           expected=$(printf '%s\n' "$expected" | sed 's/^          //' | sed '/^$/d' | sort -u)
           if [ "$actual" != "$expected" ]; then
@@ -65,4 +61,9 @@ jobs:
           git add -u .github/workflows/align-sandbox-layer.yml scripts/tmp-align-sandbox-layer.mjs
           git diff --cached --check
           git commit -m 'Align Cloudflare Sandbox SDK and image'
-          git push origin HEAD
+      - name: Governance impact on exact net commit
+        env:
+          BASE_SHA: 9f0058975321b6f9b9075aee48cae9840cae39b6
+        run: npm run governance:impact -- "$BASE_SHA"
+      - name: Push exact review commit
+        run: git push origin HEAD
