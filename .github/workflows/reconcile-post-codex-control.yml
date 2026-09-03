@@ -41,7 +41,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -f .github/workflows/reconcile-post-codex-control.yml scripts/tmp-reconcile-post-codex-control.mjs
+          rm -f .github/workflows/reconcile-post-codex-control.yml scripts/tmp-reconcile-post-codex-control.mjs scripts/tmp-reconcile-trigger.txt
           expected=$(printf '%s\n' \
             apps/mcp-worker/src/executor.ts \
             apps/mcp-worker/test/executor.test.ts \
@@ -57,7 +57,7 @@ jobs:
           git config user.name 'Ayobami Haastrup'
           git config user.email '47716486+AyobamiH@users.noreply.github.com'
           git add apps/mcp-worker/src/executor.ts apps/mcp-worker/test/executor.test.ts docs/PROJECT-STATE.md governance/project-ledger.json
-          git add -u .github/workflows/reconcile-post-codex-control.yml scripts/tmp-reconcile-post-codex-control.mjs
+          git add -u .github/workflows/reconcile-post-codex-control.yml scripts/tmp-reconcile-post-codex-control.mjs scripts/tmp-reconcile-trigger.txt
           git diff --cached --check
           git commit -m 'Reconcile Codex implementation by process identity'
       - name: Governance impact on exact net commit
