@@ -1,4 +1,4 @@
-name: Query RPC Sandbox canary 83
+name: Query keepAlive RPC canary 85
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Recheck RPC Sandbox canary 83'
+    if: github.event.head_commit.message == 'Trace keepAlive RPC canary 85'
     runs-on: ubuntu-latest
     steps:
       - name: Query bounded production signals
@@ -27,15 +27,15 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-83-rpc-recheck",
-              timeframe: {from: 1788406650000, to: 1788408600000},
+              queryId: "donestate-canary-85-keepalive-rpc",
+              timeframe: {from: 1788407730000, to: 1788409800000},
               view: "events",
-              limit: 200,
+              limit: 300,
               parameters: {
                 datasets: [],
                 filterCombination: "and",
                 filters: [{key: "$metadata.service", operation: "eq", type: "string", value: "donestate-mcp"}],
-                limit: 100,
+                limit: 200,
                 needle: {value: $needle, isRegex: false, matchCase: false}
               }
             }' > "$request"
@@ -57,12 +57,16 @@ jobs:
             "Using rpc transport" \
             "Using http transport" \
             "codex --ask-for-approval" \
+            "sandbox.exec success codex" \
             "sandbox.exec error" \
+            "runtime connection was closing" \
             "HTTP error! status: 500" \
-            "DoneState run stopped" \
+            "validation_started" \
             "publication_started" \
+            "git push origin" \
             "pull request" \
-            "automatic independent verification did not complete" \
+            "DoneState run stopped" \
+            "automatic independent verification" \
             "maintenance verification retry completed"; do
             query_logs "$needle"
           done
