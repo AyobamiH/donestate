@@ -9,7 +9,7 @@ jobs:
     if: github.event.head_commit.message == 'Inspect canary 108 queue identity'
     runs-on: ubuntu-latest
     steps:
-      - name: Query queue identity signals
+      - name: Query compact canary state signals
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -18,11 +18,29 @@ jobs:
           set -euo pipefail
           query() {
             local needle="$1" response="$RUNNER_TEMP/response.json"
-            jq -n --arg needle "$needle" '{queryId:"canary-108-queue",timeframe:{from:1788460200000,to:1788461400000},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[{key:"$metadata.service",operation:"eq",type:"string",value:"donestate-mcp"}],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
+            jq -n --arg needle "$needle" '{queryId:"canary-108-compact",timeframe:{from:1788460200000,to:1788462600000},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[{key:"$metadata.service",operation:"eq",type:"string",value:"donestate-mcp"}],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
             curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' --data-binary @"$RUNNER_TEMP/request.json" > "$response"
-            echo "=== $needle ==="
-            jq '{count:.result.events.count,events:(.result.events.events // [])}' "$response"
+            jq -c --arg needle "$needle" '
+              def scalar_pairs:
+                paths(scalars) as $p
+                | {path: ($p | map(tostring) | join(".")), value: getpath($p)};
+              {
+                needle: $needle,
+                count: (.result.events.count // 0),
+                signals: [
+                  ((.result.events.events // []) | to_entries[]) as $entry
+                  | ($entry.value | scalar_pairs)
+                  | select(.path | test("message|run|issue|state|status|receipt|branch|pull|implement|verif|attest|error|time|id|objective|action|event"; "i"))
+                  | select((.value | tostring | length) < 800)
+                  | {event: $entry.key, path: .path, value: .value}
+                ][0:250]
+              }' "$response"
           }
           query "maintenance repair queued from issue webhook"
           query "run_queued"
           query "RunCoordinator"
+          query "implementation"
+          query "receipt"
+          query "publication"
+          query "verification"
+          query "OpsTruth"
