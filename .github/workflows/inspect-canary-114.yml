@@ -1,4 +1,4 @@
-name: Inspect canary 114 validation action
+name: Inspect canary 114 alarm continuation
 on:
   push:
     branches: [ops/diagnose-canary-114]
@@ -8,7 +8,7 @@ jobs:
   query:
     runs-on: ubuntu-latest
     steps:
-      - name: Query canary 114 validation action
+      - name: Query canary 114 alarm continuation
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -16,29 +16,27 @@ jobs:
         run: |
           set -euo pipefail
           now=$(date +%s000)
-          from=1788469800000
+          from=1788469790000
           query() {
             local needle="$1" response="$RUNNER_TEMP/response.json"
-            jq -n --arg needle "$needle" --argjson from "$from" --argjson to "$now" '{queryId:"canary-114-validation-action",timeframe:{from:$from,to:$to},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
+            jq -n --arg needle "$needle" --argjson from "$from" --argjson to "$now" '{queryId:"canary-114-alarm-continuation",timeframe:{from:$from,to:$to},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
             curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' --data-binary @"$RUNNER_TEMP/request.json" > "$response"
             jq -c --arg needle "$needle" '
               def scalar_pairs: paths(scalars) as $p | {path: ($p | map(tostring) | join(".")), value: getpath($p)};
               {needle:$needle,count:(.result.events.count // 0),signals:[
                 ((.result.events.events // []) | to_entries[]) as $entry
                 | ($entry.value | scalar_pairs)
-                | select(.path | test("message|run|state|status|branch|pull|verif|attest|contract|report|error|time|id|action|event|command|process|session|exitCode|sha|head|duration";"i"))
-                | select((.value|tostring|length) < 3600)
+                | select(.path | test("message|run|state|status|error|time|id|action|event|command|process|session|exitCode|duration|exception|outcome";"i"))
+                | select((.value|tostring|length) < 4000)
                 | {event:$entry.key,path:.path,value:.value}
-              ][0:1000]}' "$response"
+              ][0:1200]}' "$response"
           }
+          query "npm ci"
           query "validate-node"
           query "npm test"
-          query "create-commit"
-          query "git checkout -b donestate/c4a07fa6-90b2-4597-a4c6-eae66de5a3e8"
-          query "governance-impact"
-          query "publication_started"
-          query "push-branch"
-          query "donestate/c4a07fa6-90b2-4597-a4c6-eae66de5a3e8"
-          query "open-pull-request"
-          query "AWAITING_VERIFICATION"
+          query "alarm"
+          query "RunCoordinator"
+          query "setAlarm"
+          query "Unhandled"
+          query "exception"
           query "DoneState run stopped"
