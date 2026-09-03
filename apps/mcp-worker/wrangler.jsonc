@@ -48,6 +48,7 @@
   ],
   "vars": {
     "SANDBOX_TRANSPORT": "rpc",
+    // Bounded production override after issue #110 failed closed before any Codex launch.
     "USER_DAILY_RUN_LIMIT": "12",
     "PLATFORM_OWNER_LOGIN": "AyobamiH",
     "CANONICAL_ORIGIN": "https://donestate.proofandstate.com",
