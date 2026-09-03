@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Trace aligned Sandbox canary 81'
+    if: github.event.head_commit.message == 'Recheck aligned Sandbox canary 81'
     runs-on: ubuntu-latest
     steps:
       - name: Query bounded production signals
@@ -27,7 +27,7 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-81",
+              queryId: "donestate-canary-81-recheck",
               timeframe: {from: 1788405120000, to: 1788406800000},
               view: "events",
               limit: 200,
@@ -53,7 +53,8 @@ jobs:
           }
           for needle in \
             "maintenance repair queued from issue webhook" \
-            "maintenance issue webhook repair did not queue" \
+            "git clone --no-tags" \
+            "harness_started" \
             "Using http transport" \
             "codex --ask-for-approval" \
             "sandbox.exec error" \
