@@ -1,4 +1,4 @@
-name: Trace sessionless Sandbox canary 94
+name: Diagnose terminal-receipt canary 98
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Recheck sessionless Sandbox canary 94'
+    if: github.event.head_commit.message == 'Diagnose terminal-receipt canary 98'
     runs-on: ubuntu-latest
     steps:
       - name: Query bounded production signals
@@ -27,15 +27,15 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-94-sessionless-recheck",
-              timeframe: {from: 1788409500000, to: 1788411600000},
+              queryId: "donestate-canary-98-terminal-receipt",
+              timeframe: {from: 1788421440000, to: 1788426000000},
               view: "events",
-              limit: 300,
+              limit: 500,
               parameters: {
                 datasets: [],
                 filterCombination: "and",
                 filters: [{key: "$metadata.service", operation: "eq", type: "string", value: "donestate-mcp"}],
-                limit: 200,
+                limit: 300,
                 needle: {value: $needle, isRegex: false, matchCase: false}
               }
             }' > "$request"
@@ -56,15 +56,15 @@ jobs:
             "git clone --no-tags" \
             "Using rpc transport" \
             "codex --ask-for-approval" \
-            "sandbox.exec success codex" \
-            "sandbox.exec error codex" \
+            "implementation receipt" \
+            "donestate.implementation-receipt.v1" \
             "runtime connection was closing" \
-            "session_disposed" \
             "DoneState run stopped" \
             "validation_started" \
             "publication_started" \
             "git push origin" \
+            "automatic independent verification did not complete" \
             "maintenance verification retry completed" \
-            "automatic independent verification did not complete"; do
+            "VERIFIED"; do
             query_logs "$needle"
           done
