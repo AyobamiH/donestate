@@ -22,8 +22,6 @@ jobs:
           node-version: 24
           cache: npm
       - name: Apply bounded sessionless execution correction
-        env:
-          BASE_SHA: 71a1188a0313ff29ddd1cb265acd53f8edc6922d
         shell: bash
         run: |
           set -euo pipefail
@@ -84,7 +82,8 @@ jobs:
         run: |
           npm ci
           npm run check
-          node scripts/validate-plugin.mjs
+      - name: Plugin validation
+        run: node scripts/validate-plugin.mjs
       - name: Prepare exact review commit
         env:
           BASE_SHA: 71a1188a0313ff29ddd1cb265acd53f8edc6922d
