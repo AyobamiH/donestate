@@ -5,6 +5,8 @@ description: Use when a user wants the status, history, cancellation or deletion
 
 # Monitor a DoneState objective
 
+DoneState is Proof & State's authorised execution control plane. OpsTruth is the independent read-only verification plane; DoneState's own run record is execution evidence, not independent proof.
+
 Use `get_objective` with the exact run ID. Report the durable state, published branch or pull request, last safe error, and the action that caused a block or ambiguity.
 
 Treat states precisely:
