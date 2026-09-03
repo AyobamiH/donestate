@@ -1,4 +1,4 @@
-name: Observe detached-receipt canary 101
+name: Recheck detached-receipt canary 101
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Observe detached-receipt canary 101'
+    if: github.event.head_commit.message == 'Recheck detached-receipt canary 101'
     runs-on: ubuntu-latest
     steps:
       - name: Query bounded production signals
@@ -27,7 +27,7 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-101-observation",
+              queryId: "donestate-canary-101-recheck",
               timeframe: {from: 1788427410000, to: 1788430500000},
               view: "events",
               limit: 400,
@@ -53,7 +53,6 @@ jobs:
             }]}' "$response"
           }
           for needle in \
-            "maintenance repair queued from issue webhook" \
             "nohup /bin/sh" \
             "AMBIGUOUS_EFFECT" \
             "FAILED_SAFE" \
@@ -63,7 +62,6 @@ jobs:
             "git push origin" \
             "automatic independent verification" \
             "maintenance verification retry completed" \
-            "VERIFIED" \
             "DoneState run stopped"; do
             query_logs "$needle"
           done
