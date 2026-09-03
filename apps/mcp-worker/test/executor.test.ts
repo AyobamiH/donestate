@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, EXECUTION_ALARM_YIELD_MS, HOSTED_ALARM_COMMAND_TIMEOUT_MS, IMPLEMENTATION_DETACHED_LAUNCH_COMMAND, IMPLEMENTATION_RECEIPT_GRACE_MS, IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS, IMPLEMENTATION_RECEIPT_SCHEMA, IMPLEMENTATION_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, executionResumeAtMs, implementationPrompt, implementationReceiptCommand, implementationReceiptDeadlineMs, implementationReceiptLogPath, implementationReceiptPath, implementationReceiptPollDelayMs, implementationReceiptScriptPath, parseExecutionCheckpoint, parseImplementationReceipt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
+import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, EXECUTION_ALARM_YIELD_MS, HOSTED_ALARM_COMMAND_TIMEOUT_MS, IMPLEMENTATION_BACKGROUND_LAUNCH_COMMAND, IMPLEMENTATION_RECEIPT_GRACE_MS, IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS, IMPLEMENTATION_RECEIPT_SCHEMA, IMPLEMENTATION_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, executionResumeAtMs, implementationProcessId, implementationPrompt, implementationReceiptCommand, implementationReceiptDeadlineMs, implementationReceiptLogPath, implementationReceiptPath, implementationReceiptPollDelayMs, implementationReceiptScriptPath, parseExecutionCheckpoint, parseImplementationReceipt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
 import type { HostedObjective } from "../src/types";
 
 describe("hosted Codex executor contract", () => {
@@ -76,9 +76,11 @@ describe("hosted Codex executor contract", () => {
     expect(wrapper).toContain("unset DONESTATE_RECEIPT_NONCE");
     expect(wrapper).toContain('tmp_path="${receipt_path}.tmp.$$"');
     expect(wrapper).toContain('mv "$tmp_path" "$receipt_path"');
-    expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).toContain('nohup /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH"');
-    expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).toContain('&');
-    expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).not.toContain(CODEX_IMPLEMENT_COMMAND);
+    expect(IMPLEMENTATION_BACKGROUND_LAUNCH_COMMAND).toContain('/bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH"');
+    expect(IMPLEMENTATION_BACKGROUND_LAUNCH_COMMAND).not.toContain("nohup");
+    expect(IMPLEMENTATION_BACKGROUND_LAUNCH_COMMAND.trim().endsWith("&")).toBe(false);
+    expect(IMPLEMENTATION_BACKGROUND_LAUNCH_COMMAND).not.toContain(CODEX_IMPLEMENT_COMMAND);
+    expect(implementationProcessId(runId)).toBe(`donestate-receipt-${runId}`);
     expect(wrapper).not.toContain("startProcess");
   });
 

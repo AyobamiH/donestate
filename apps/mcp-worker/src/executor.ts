@@ -81,7 +81,8 @@ export const IMPLEMENTATION_RECEIPT_GRACE_MS = 15_000;
 export const IMPLEMENTATION_LAUNCH_TIMEOUT_MS = 30_000;
 export const HOSTED_ALARM_COMMAND_TIMEOUT_MS = 10 * 60_000;
 export const EXECUTION_ALARM_YIELD_MS = 1_000;
-export const IMPLEMENTATION_DETACHED_LAUNCH_COMMAND = 'nohup /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH" > "$DONESTATE_RECEIPT_LOG_PATH" 2>&1 < /dev/null &';
+export const IMPLEMENTATION_BACKGROUND_LAUNCH_COMMAND = '/bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH" > "$DONESTATE_RECEIPT_LOG_PATH" 2>&1';
+export function implementationProcessId(runId: string): string { return `donestate-receipt-${runId}`; }
 export const IMPLEMENTATION_RECEIPT_SCHEMA = "donestate.implementation-receipt.v1";
 export const IMPLEMENTATION_RECEIPT_DIR = "/workspace/.donestate-control";
 
@@ -569,9 +570,9 @@ async function launchImplementationWithReceipt(
     schema: "donestate.action-intent.v1",
     idempotencyKey: actionIdempotency(objective.runId, id),
     commandDigest,
-    executionMode: "single_detached_exec_terminal_receipt_alarm_resumable_v3",
+    executionMode: "single_start_process_terminal_receipt_alarm_resumable_v4",
     startAttempts: IMPLEMENTATION_START_ATTEMPTS,
-    launchCommandDigest: await digest(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND),
+    launchCommandDigest: await digest(IMPLEMENTATION_BACKGROUND_LAUNCH_COMMAND),
     wrapperDigest: await digest(wrapper),
     receiptSchema: IMPLEMENTATION_RECEIPT_SCHEMA,
     receiptPath,
@@ -610,10 +611,11 @@ async function launchImplementationWithReceipt(
   }
   let checkpoint = started.checkpoint;
 
-  let launchRaw: Awaited<ReturnType<Sandbox["exec"]>> | null = null;
+  let launchAcknowledged: boolean | null = null;
   let launchError: string | null = null;
   try {
-    launchRaw = await sandbox.exec(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND, {
+    await sandbox.startProcess(IMPLEMENTATION_BACKGROUND_LAUNCH_COMMAND, {
+      processId: implementationProcessId(objective.runId),
       cwd: "/workspace/repo",
       env: {
         HOME: "/workspace/home",
@@ -628,17 +630,14 @@ async function launchImplementationWithReceipt(
         DONESTATE_RECEIPT_LOG_PATH: receiptLogPath,
         DONESTATE_IMPLEMENTATION_TIMEOUT_SECONDS: String(Math.max(1, Math.ceil(objective.maxDurationMs / 1_000))),
       },
-      timeout: IMPLEMENTATION_LAUNCH_TIMEOUT_MS,
     });
-    if (!launchRaw.success) {
-      launchError = boundedOutput(redact(launchRaw.stderr || `detached implementation launch exited ${launchRaw.exitCode}`, [openaiApiKey, githubToken]), 4_000).text;
-    }
+    launchAcknowledged = true;
   } catch (error) {
-    launchError = boundedOutput(redact(error instanceof Error ? error.message : "implementation detached launch acknowledgement was interrupted", [openaiApiKey, githubToken]), 4_000).text;
+    launchError = boundedOutput(redact(error instanceof Error ? error.message : "implementation background launch acknowledgement was interrupted", [openaiApiKey, githubToken]), 4_000).text;
   }
   checkpoint = {
     ...checkpoint,
-    launchAcknowledged: launchRaw?.success ?? null,
+    launchAcknowledged,
     launchError,
   };
   await journal.updateExecutionCheckpoint(checkpoint);
