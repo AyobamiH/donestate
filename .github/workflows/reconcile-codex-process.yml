@@ -1,0 +1,98 @@
+name: Validate Codex process reconciliation repair
+
+on:
+  push:
+    branches:
+      - repair/reconcile-codex-process
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    if: github.event.head_commit.message == 'Run Codex process reconciliation repair'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply bounded process reconciliation patch
+        run: |
+          node scripts/tmp-reconcile-codex-process.mjs
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('apps/mcp-worker/src/executor.ts')
+          text = p.read_text()
+          text = text.replace(
+              '  objective: HostedObjective,\n  openaiApiKey: string,\n  githubToken: string,\n): Promise<Record<string, unknown>> {',
+              '  objective: HostedObjective,\n  repositoryGovernanceRequired: boolean,\n  openaiApiKey: string,\n  githubToken: string,\n): Promise<Record<string, unknown>> {',
+              1,
+          )
+          text = text.replace(
+              'DONESTATE_OBJECTIVE: implementationPrompt(objective, objective.objectiveClass === "maintenance_pr")',
+              'DONESTATE_OBJECTIVE: implementationPrompt(objective, repositoryGovernanceRequired)',
+              1,
+          )
+          old = '''    await reconcileImplementationProcess(sandbox, journal, {
+              ...objective,
+              objectiveClass: repositoryGovernanceRequired ? "maintenance_pr" : objective.objectiveClass,
+            }, openaiApiKey, githubToken);'''
+          new = '''    await reconcileImplementationProcess(
+              sandbox,
+              journal,
+              objective,
+              repositoryGovernanceRequired,
+              openaiApiKey,
+              githubToken,
+            );'''
+          if old not in text:
+              raise SystemExit('generated reconciliation call context drift')
+          text = text.replace(old, new, 1)
+          p.write_text(text)
+          PY
+      - name: Render governance state
+        run: |
+          npm ci
+          npm run governance:render
+      - name: Root validation
+        run: npm run check
+      - name: Hosted Worker validation
+        working-directory: apps/mcp-worker
+        run: |
+          npm ci
+          npm run check
+      - name: Prepare exact review commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/reconcile-codex-process.yml scripts/tmp-reconcile-codex-process.mjs
+          expected=$(printf '%s\n' \
+            apps/mcp-worker/src/executor.ts \
+            apps/mcp-worker/test/executor.test.ts \
+            docs/PROJECT-STATE.md \
+            governance/project-ledger.json | sort -u)
+          actual=$( { git diff --name-only 71a1188a0313ff29ddd1cb265acd53f8edc6922d; git ls-files --others --exclude-standard; } \
+            | sed '/^$/d' \
+            | grep -v '^.github/workflows/reconcile-codex-process.yml$' \
+            | grep -v '^scripts/tmp-reconcile-codex-process.mjs$' \
+            | sort -u )
+          if [ "$actual" != "$expected" ]; then
+            echo 'Unexpected review surface' >&2
+            echo 'Expected:' >&2; printf '%s\n' "$expected" >&2
+            echo 'Actual:' >&2; printf '%s\n' "$actual" >&2
+            exit 1
+          fi
+          git config user.name 'Ayobami Haastrup'
+          git config user.email '47716486+AyobamiH@users.noreply.github.com'
+          git add apps/mcp-worker/src/executor.ts apps/mcp-worker/test/executor.test.ts docs/PROJECT-STATE.md governance/project-ledger.json
+          git add -u .github/workflows/reconcile-codex-process.yml scripts/tmp-reconcile-codex-process.mjs
+          git diff --cached --check
+          git commit -m 'Reconcile Codex implementation by process identity'
+      - name: Governance impact on exact net commit
+        run: npm run governance:impact -- 71a1188a0313ff29ddd1cb265acd53f8edc6922d
+      - name: Push exact review commit
+        run: git push origin HEAD
