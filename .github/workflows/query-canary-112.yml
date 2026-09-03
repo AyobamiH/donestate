@@ -1,6 +1,11 @@
 name: Inspect canary 112 admission
 
 on:
+  push:
+    branches:
+      - ops/diagnose-canary-112
+    paths:
+      - .github/workflows/query-canary-112.yml
   workflow_dispatch:
 
 permissions:
