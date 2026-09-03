@@ -1,4 +1,4 @@
-name: Inspect canary 114 progress
+name: Inspect canary 114 terminal progress
 on:
   push:
     branches: [ops/diagnose-canary-114]
@@ -8,7 +8,7 @@ jobs:
   query:
     runs-on: ubuntu-latest
     steps:
-      - name: Query canary 114 exact run progress
+      - name: Query canary 114 exact terminal progress
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -19,7 +19,7 @@ jobs:
           from=$((now - 1800000))
           query() {
             local needle="$1" response="$RUNNER_TEMP/response.json"
-            jq -n --arg needle "$needle" --argjson from "$from" --argjson to "$now" '{queryId:"canary-114-progress",timeframe:{from:$from,to:$to},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
+            jq -n --arg needle "$needle" --argjson from="$from" --argjson to="$now" '{queryId:"canary-114-terminal-progress",timeframe:{from:$from,to:$to},view:"events",limit:500,parameters:{datasets:[],filterCombination:"and",filters:[],limit:300,needle:{value:$needle,isRegex:false,matchCase:false}}}' > "$RUNNER_TEMP/request.json"
             curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' --data-binary @"$RUNNER_TEMP/request.json" > "$response"
             jq -c --arg needle "$needle" '
               def scalar_pairs: paths(scalars) as $p | {path: ($p | map(tostring) | join(".")), value: getpath($p)};
@@ -27,20 +27,23 @@ jobs:
                 ((.result.events.events // []) | to_entries[]) as $entry
                 | ($entry.value | scalar_pairs)
                 | select(.path | test("message|run|issue|state|status|receipt|branch|pull|implement|verif|attest|contract|report|error|time|id|objective|action|event|command|process|service|session|container|exitCode|sha|head|duration";"i"))
-                | select((.value|tostring|length) < 2600)
+                | select((.value|tostring|length) < 3000)
                 | {event:$entry.key,path:.path,value:.value}
-              ][0:800]}' "$response"
+              ][0:1000]}' "$response"
           }
           query "c4a07fa6-90b2-4597-a4c6-eae66de5a3e8"
           query "donestate-implement-c4a07fa6-90b2-4597-a4c6-eae66de5a3e8"
           query "implementation-c4a07fa6-90b2-4597-a4c6-eae66de5a3e8.receipt"
           query "donestate.implementation-receipt.v1"
+          query "process.exit"
           query "git rev-parse HEAD"
           query "git diff --check"
           query "npm ci"
+          query "npm test"
           query "governance-impact"
           query "donestate/c4a07fa6-90b2-4597-a4c6-eae66de5a3e8"
           query "AWAITING_VERIFICATION"
           query "donestate.verification-contract.v2"
+          query "OpsTruth"
           query "VERIFIED"
           query "DoneState run stopped"
