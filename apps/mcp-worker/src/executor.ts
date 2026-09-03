@@ -80,6 +80,7 @@ export const IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS = 5_000;
 export const IMPLEMENTATION_RECEIPT_GRACE_MS = 15_000;
 export const HOSTED_ALARM_COMMAND_TIMEOUT_MS = 10 * 60_000;
 export const EXECUTION_ALARM_YIELD_MS = 1_000;
+export const POST_IMPLEMENTATION_RUNTIME_QUIESCENCE_MS = 30_000;
 export const IMPLEMENTATION_BACKGROUND_PROCESS_COMMAND = 'setsid -f -w /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH" > "$DONESTATE_RECEIPT_LOG_PATH" 2>&1';
 export const IMPLEMENTATION_RECEIPT_SCHEMA = "donestate.implementation-receipt.v1";
 
@@ -865,7 +866,7 @@ export async function executeObjective(
       repositoryGovernanceRequired = implementation.checkpoint.repositoryGovernanceRequired;
       if (implementation.newlySucceeded) {
         preserveSandbox = true;
-        return deferredExecution();
+        return deferredExecution(Date.now() + POST_IMPLEMENTATION_RUNTIME_QUIESCENCE_MS);
       }
     } else {
       const cloned = await clonePublicRepository(env, journal, objective, repositoryPath);
