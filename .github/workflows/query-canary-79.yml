@@ -10,10 +10,10 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Trace canary 79 execution failure'
+    if: github.event.head_commit.message == 'Compare successful and failed Sandbox windows'
     runs-on: ubuntu-latest
     steps:
-      - name: Query bounded production failure signals
+      - name: Compare bounded production windows
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -21,14 +21,14 @@ jobs:
         run: |
           set -euo pipefail
           query_logs() {
-            local needle="$1"
-            local slug
-            slug=$(printf '%s' "$needle" | tr ' /' '__' | tr -cd '[:alnum:]_-')
-            local request="$RUNNER_TEMP/request-$slug.json"
-            local response="$RUNNER_TEMP/response-$slug.json"
-            jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-79-trace",
-              timeframe: {from: 1788379320000, to: 1788402600000},
+            local label="$1" from="$2" to="$3" needle="$4"
+            local slug request response
+            slug=$(printf '%s-%s' "$label" "$needle" | tr ' /:!' '_____' | tr -cd '[:alnum:]_-')
+            request="$RUNNER_TEMP/request-$slug.json"
+            response="$RUNNER_TEMP/response-$slug.json"
+            jq -n --arg needle "$needle" --argjson from "$from" --argjson to "$to" '{
+              queryId: "donestate-sandbox-then-now",
+              timeframe: {from: $from, to: $to},
               view: "events",
               limit: 200,
               parameters: {
@@ -39,21 +39,25 @@ jobs:
                 needle: {value: $needle, isRegex: false, matchCase: false}
               }
             }' > "$request"
-            curl -fsS \
-              -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" \
+            curl -fsS -X POST \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/observability/telemetry/query" \
               -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
               -H 'Content-Type: application/json' \
               --data-binary @"$request" > "$response"
-            echo "=== $needle ==="
+            echo "=== $label :: $needle ==="
             jq '{count: .result.events.count, events: [(.result.events.events // [])[] | {
               timestamp,
               metadata: ((.["$metadata"] // {}) | {message, error, level, type, origin, service}),
               workers: ((.["$workers"] // {}) | {eventType, outcome, entrypoint, durableObjectId, scriptVersion})
             }]}' "$response"
           }
-          query_logs "sandbox.exec error"
-          query_logs "DoneState run stopped"
-          query_logs "failed clone sandbox cleanup"
-          query_logs "automatic independent verification did not complete"
-          query_logs "publication_started"
-          query_logs "harness_started"
+
+          # #66 successful implementation/publication window.
+          for needle in "version mismatch" "transport" "sandbox.exec error" "HTTP error! status: 500" "codex --ask-for-approval" "DoneState run stopped"; do
+            query_logs success66 1788338400000 1788339900000 "$needle"
+          done
+
+          # #79 failed implementation window.
+          for needle in "version mismatch" "transport" "sandbox.exec error" "HTTP error! status: 500" "codex --ask-for-approval" "DoneState run stopped"; do
+            query_logs failure79 1788379200000 1788380100000 "$needle"
+          done
