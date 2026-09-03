@@ -35,18 +35,37 @@ jobs:
           PY
       - name: Apply terminal receipt correction
         run: node scripts/tmp-reconcile-codex-receipt.mjs
-      - name: Correct emitted receipt command quoting
+      - name: Correct emitted receipt source
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
           path = Path('apps/mcp-worker/src/executor.ts')
-          lines = path.read_text().splitlines()
+          text = path.read_text()
+
+          lines = text.splitlines()
           matches = [i for i, line in enumerate(lines) if 'printf ' in line and 'receipt_schema' in line and 'tmp_path' in line]
           if len(matches) != 1:
               raise SystemExit('emitted receipt printf context drift')
           lines[matches[0]] = '    "printf \'%s\\\\t%s\\\\t%s\\\\t%s\\\\t%s\\\\n\' \\"$receipt_schema\\" \\"$receipt_run_id\\" \\"$receipt_command_digest\\" \\"$exit_code\\" \\"$receipt_nonce\\" > \\"$tmp_path\\"",'
-          path.write_text('\n'.join(lines) + '\n')
+          text = '\n'.join(lines) + '\n'
+
+          old_parse = '  const [schema, runId, commandDigest, exitCodeText, nonce] = parts;'
+          new_parse = '''  const schema = parts[0]!;
+          const runId = parts[1]!;
+          const commandDigest = parts[2]!;
+          const exitCodeText = parts[3]!;
+          const nonce = parts[4]!;'''
+          if text.count(old_parse) != 1:
+              raise SystemExit('receipt parser context drift')
+          text = text.replace(old_parse, new_parse)
+
+          old_read = 'const receipt = parseImplementationReceipt(await reconciled.readFile(receiptPath));'
+          new_read = 'const receipt = parseImplementationReceipt((await reconciled.readFile(receiptPath)).content);'
+          if text.count(old_read) != 1:
+              raise SystemExit('receipt read context drift')
+          text = text.replace(old_read, new_read)
+          path.write_text(text)
           PY
       - name: Install root dependencies
         run: npm ci
