@@ -20,6 +20,47 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      - name: Normalize staging-helper embedded source literals
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          path = Path('scripts/tmp-alarm-sliced-execution.mjs')
+          text = path.read_text()
+          text = text.replace('throw new Error(`execution checkpoint ${key} is invalid`);', 'throw new Error("execution checkpoint " + key + " is invalid");')
+          text = text.replace('throw new Error(`execution checkpoint ${key} is invalid`);', 'throw new Error("execution checkpoint " + key + " is invalid");')
+          text = text.replace('throw new RunFailure("BLOCKED_AUTHORITY", `${authority} authority is required for ${id}`);', 'throw new RunFailure("BLOCKED_AUTHORITY", authority + " authority is required for " + id);')
+          text = text.replace('throw new RunFailure("BLOCKED_CAPABILITY", `${id} could not execute`, { error: redact(message, secrets) });', 'throw new RunFailure("BLOCKED_CAPABILITY", id + " could not execute", { error: redact(message, secrets) });')
+          text = text.replace('throw new RunFailure("FAILED_SAFE", `${id} failed with exit code ${raw.exitCode}`, result);', 'throw new RunFailure("FAILED_SAFE", id + " failed with exit code " + raw.exitCode, result);')
+
+          def literalize_declaration(source, prefix, suffix):
+              start = source.index(prefix)
+              content_start = start + len(prefix)
+              end = source.index(suffix, content_start)
+              content = source[content_start:end]
+              name = prefix.split('=')[0].strip()
+              return source[:start] + name + '= ' + json.dumps(content) + ';' + source[end + len(suffix):]
+
+          def literalize_expression(source, prefix, suffix):
+              start = source.index(prefix)
+              content_start = start + len(prefix)
+              end = source.index(suffix, content_start)
+              content = source[content_start:end]
+              return source[:start] + prefix[:-1] + json.dumps(content) + suffix[1:] + source[end + len(suffix):]
+
+          text = literalize_declaration(text, 'const tail = String.raw`', '`;\nexecutor = executor.slice')
+          text = text.replace(';executor = executor.slice', ';\nexecutor = executor.slice', 1)
+          text = literalize_declaration(text, 'const alarmBlock = `', '`;\ncoordinator = coordinator.slice')
+          text = text.replace(';coordinator = coordinator.slice', ';\ncoordinator = coordinator.slice', 1)
+          text = literalize_declaration(text, 'const implementationMethods = `', '`;\ncoordinator = coordinator.slice')
+          text = text.replace(';coordinator = coordinator.slice', ';\ncoordinator = coordinator.slice', 1)
+          text = literalize_expression(text, 'executor = executor.slice(0, runActionStart) + `', '` + executor.slice(runActionEnd);')
+          text = literalize_expression(text, 'executorTest = executorTest.slice(0, executorTestInsert) + `', '` + executorTest.slice(executorTestInsert);')
+          text = literalize_expression(text, 'coordinatorTest = coordinatorTest.slice(0, coordinatorTestInsert) + `', '` + coordinatorTest.slice(coordinatorTestInsert);')
+          path.write_text(text)
+          PY
+          node --check scripts/tmp-alarm-sliced-execution.mjs
       - name: Apply alarm-sliced execution repair
         run: node scripts/tmp-alarm-sliced-execution.mjs
       - name: Install root dependencies
