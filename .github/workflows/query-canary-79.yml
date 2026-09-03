@@ -1,4 +1,4 @@
-name: Inspect canary 103 Sandbox configuration ordering
+name: Confirm canary 103 terminal receipt deadline
 
 on:
   push:
@@ -10,10 +10,10 @@ permissions:
 
 jobs:
   query:
-    if: github.event.head_commit.message == 'Inspect canary 103 Sandbox configuration ordering'
+    if: github.event.head_commit.message == 'Confirm canary 103 terminal receipt deadline'
     runs-on: ubuntu-latest
     steps:
-      - name: Query bounded configuration signals
+      - name: Query terminal production signals
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -27,17 +27,14 @@ jobs:
             request="$RUNNER_TEMP/request-$slug.json"
             response="$RUNNER_TEMP/response-$slug.json"
             jq -n --arg needle "$needle" '{
-              queryId: "donestate-canary-103-config-order",
-              timeframe: {from: 1788440040000, to: 1788440200000},
+              queryId: "donestate-canary-103-terminal",
+              timeframe: {from: 1788441800000, to: 1788442200000},
               view: "events",
               limit: 500,
               parameters: {
                 datasets: [],
                 filterCombination: "and",
-                filters: [
-                  {key: "$metadata.service", operation: "eq", type: "string", value: "donestate-mcp"},
-                  {key: "$workers.durableObjectId", operation: "eq", type: "string", value: "68cab69aaa11d8b8727dd4eeea876c9dcabe2ca367943627bb0cde9e89f6653e"}
-                ],
+                filters: [{key: "$metadata.service", operation: "eq", type: "string", value: "donestate-mcp"}],
                 limit: 300,
                 needle: {value: $needle, isRegex: false, matchCase: false}
               }
@@ -55,12 +52,10 @@ jobs:
             }]}' "$response"
           }
           for needle in \
-            "configure" \
-            "setKeepAlive" \
-            "setSleepAfter" \
-            "Using rpc transport" \
-            "git clone --no-tags" \
-            "nohup /bin/sh" \
-            "Container cleaned up successfully"; do
+            "implementation effect could not be reconciled from a terminal receipt before the configured deadline" \
+            "implementation_terminal_receipt_unavailable_before_deadline" \
+            "DoneState run stopped" \
+            "publication_started" \
+            "pull request"; do
             query_logs "$needle"
           done
