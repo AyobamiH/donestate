@@ -2,7 +2,7 @@ import { DurableObject } from "cloudflare:workers";
 import { canonicalJson, digest } from "./canonical";
 import { sealSecret, unsealSecret, verifyAttestation } from "./crypto";
 import type { DoneStateEnv } from "./environment";
-import { executeObjective, type ActionSettlement, type ExecutionJournal } from "./executor";
+import { destroyExecutionSandbox, executeObjective, parseExecutionCheckpoint, type ActionSettlement, type ExecutionCheckpoint, type ExecutionCheckpointDraft, type ExecutionJournal, type ImplementationActionStart } from "./executor";
 import { requestOpsTruthAttestation, requestOpsTruthVerification } from "./opstruth";
 import {
   VERIFICATION_CONTRACT_VERSION,
@@ -37,6 +37,7 @@ interface RunRow extends Record<string, SqlStorageValue> {
   verification_snapshot_digest: string | null;
   attestation_json: string | null;
   verification_response_json: string | null;
+  execution_checkpoint_json: string | null;
 }
 
 interface ActionRow extends Record<string, SqlStorageValue> {
@@ -156,6 +157,9 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
     if (!runColumns.some((column) => column.name === "verification_response_json")) {
       this.ctx.storage.sql.exec("ALTER TABLE run ADD COLUMN verification_response_json TEXT");
     }
+    if (!runColumns.some((column) => column.name === "execution_checkpoint_json")) {
+      this.ctx.storage.sql.exec("ALTER TABLE run ADD COLUMN execution_checkpoint_json TEXT");
+    }
     this.ctx.storage.sql.exec(`
       CREATE TABLE IF NOT EXISTS verification_replays (
         run_id TEXT NOT NULL,
@@ -205,6 +209,28 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
   async cancel(ownerLogin: string): Promise<PublicRunRecord> {
     const run = this.assertOwner(ownerLogin);
     if (!TERMINAL_STATES.has(run.state) && run.state !== "AWAITING_VERIFICATION") {
+      const checkpoint = this.executionCheckpoint(false);
+      if (checkpoint) {
+        try {
+          await destroyExecutionSandbox(this.env, checkpoint.sandboxId);
+        } catch (error) {
+          console.error(JSON.stringify({
+            message: "cancelled execution sandbox cleanup failed",
+            runId: run.id,
+            error: error instanceof Error ? error.message : "unknown sandbox cleanup error",
+          }));
+        }
+        const runningImplementation = this.actions().find((action) => action.id === "implement" && action.state === "RUNNING");
+        if (runningImplementation) {
+          await this.settleImplementationAction(
+            { state: "FAILED", result: { reason: "operator_cancelled_during_implementation" } },
+            null,
+          );
+        } else {
+          this.clearExecutionCheckpoint();
+        }
+      }
+      await this.env.CREDENTIAL_VAULT.getByName(run.owner_login).release(run.owner_login, run.id);
       await this.transition("CANCELLED", "operator_cancelled");
       await this.ctx.storage.deleteAlarm();
     }
@@ -419,24 +445,50 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
   }
 
   override async alarm(): Promise<void> {
-    const run = this.runRow();
-    if (!run) return;
-    if (run.state !== "QUEUED") {
-      const runningAction = this.actions().find((action) => action.state === "RUNNING");
-      if (runningAction && !TERMINAL_STATES.has(run.state)) {
-        await this.settleAction(runningAction.id, {
-          state: "AMBIGUOUS",
-          result: { reason: "durable intent exists without durable settlement after worker recovery" },
-        });
-        await this.transition("AMBIGUOUS_EFFECT", "interrupted_action_detected", runningAction.id);
-      }
+    let run = this.runRow();
+    if (!run || TERMINAL_STATES.has(run.state) || run.state === "AWAITING_VERIFICATION") return;
+    const objective = JSON.parse(run.objective_json) as HostedObjective;
+
+    if (run.state === "RECONCILING") {
+      await this.finishReconciliation(run, objective);
       return;
     }
-    const objective = JSON.parse(run.objective_json) as HostedObjective;
+    if (run.state === "QUEUED") {
+      await this.transition("EXECUTING", "execution_started");
+      run = this.runRow();
+      if (!run) throw new Error("run disappeared after execution admission");
+    }
+    if (!["EXECUTING", "VALIDATING", "PUBLISHING"].includes(run.state)) return;
+
+    let checkpoint: ExecutionCheckpoint | null;
+    try {
+      checkpoint = this.executionCheckpoint(true);
+    } catch (error) {
+      const running = this.actions().find((action) => action.state === "RUNNING");
+      if (running) await this.settleAction(running.id, { state: "AMBIGUOUS", result: { reason: "execution_checkpoint_invalid" } });
+      await this.transition("AMBIGUOUS_EFFECT", "execution_checkpoint_invalid", error instanceof Error ? error.message : "execution checkpoint is invalid");
+      return;
+    }
+    const runningAction = this.actions().find((action) => action.state === "RUNNING");
+    if (runningAction && !(runningAction.id === "implement" && checkpoint?.implementationPhase === "pending")) {
+      await this.settleAction(runningAction.id, {
+        state: "AMBIGUOUS",
+        result: { reason: "durable intent exists without durable settlement after worker recovery" },
+      });
+      await this.transition("AMBIGUOUS_EFFECT", "interrupted_action_detected", runningAction.id);
+      await this.cleanupExecutionContext(checkpoint);
+      return;
+    }
+    if ((run.state === "VALIDATING" || run.state === "PUBLISHING") && !checkpoint) {
+      await this.transition("BLOCKED_CAPABILITY", "execution_checkpoint_missing", run.state);
+      return;
+    }
+
     const credentialVault = this.env.CREDENTIAL_VAULT.getByName(run.owner_login);
     let credentialAcquired = false;
+    let retainCredentialLease = false;
+    let deferred = false;
     try {
-      await this.transition("EXECUTING", "execution_started");
       let openaiApiKey: string;
       try {
         openaiApiKey = await credentialVault.acquire(
@@ -454,46 +506,50 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
       const githubToken = await unsealSecret(run.sealed_github_token, this.env.TOKEN_ENCRYPTION_KEY);
       const journal: ExecutionJournal = {
         transition: async (state, eventType, detail) => this.transition(state, eventType, detail),
+        currentState: () => this.runRow()?.state ?? "FAILED_SAFE",
         startAction: async (id, authority, intent) => this.startAction(id, authority, intent),
         settleAction: async (id, settlement) => this.settleAction(id, settlement),
+        startImplementationAction: async (intent, draft) => this.startImplementationAction(intent, draft),
+        updateExecutionCheckpoint: async (value) => this.updateExecutionCheckpoint(value),
+        settleImplementationAction: async (settlement, value) => this.settleImplementationAction(settlement, value),
         cancelled: () => this.runRow()?.state === "CANCELLED",
         recordPublication: (values) => this.recordPublication(values),
       };
-      await executeObjective(this.env, objective, githubToken, openaiApiKey, journal);
+      const outcome = await executeObjective(this.env, objective, githubToken, openaiApiKey, journal, checkpoint);
+      if (outcome.status === "deferred") {
+        deferred = true;
+        retainCredentialLease = true;
+        await this.ctx.storage.setAlarm(outcome.resumeAtMs);
+        return;
+      }
       await this.transition("RECONCILING", "execution_reconciled");
-      const actions = this.actions();
-      if (actions.some((action) => action.state !== "SUCCEEDED")) {
-        throw new RunFailure("BLOCKED_SAFETY", "not every action has a durable successful settlement");
-      }
+      this.clearExecutionCheckpoint();
       const current = this.runRow();
-      if (!current) throw new Error("run disappeared during execution");
-      const snapshot = await this.snapshotDigest(current, actions);
-      this.ctx.storage.sql.exec(
-        "UPDATE run SET verification_snapshot_digest = ?, updated_at = ? WHERE id = ?",
-        snapshot,
-        new Date().toISOString(),
-        current.id,
-      );
-      await this.transition("AWAITING_VERIFICATION", "independent_verification_required", snapshot);
-      if (this.env.OPSTRUTH_MCP_URL && objective.trustedVerifierFingerprints.length > 0) {
-        try {
-          await this.requestIndependentVerification(run.owner_login);
-        } catch (error) {
-          console.error(JSON.stringify({
-            message: "automatic independent verification did not complete",
-            runId: objective.runId,
-            error: error instanceof Error ? error.message : "unknown verification error",
-          }));
-        }
-      }
+      if (!current) throw new Error("run disappeared during reconciliation");
+      await this.finishReconciliation(current, objective);
     } catch (error) {
+      const current = this.runRow();
+      const resumableCheckpoint = this.executionCheckpoint(false);
+      const currentRunning = this.actions().find((action) => action.state === "RUNNING");
+      if (!(error instanceof RunFailure)
+        && current
+        && !TERMINAL_STATES.has(current.state)
+        && (deferred || (currentRunning?.id === "implement" && resumableCheckpoint?.implementationPhase === "pending"))) {
+        retainCredentialLease = true;
+        console.error(JSON.stringify({
+          message: "resumable execution control operation was interrupted",
+          runId: objective.runId,
+          error: error instanceof Error ? error.message : "unknown resumable control error",
+        }));
+        throw error;
+      }
       const failure = error instanceof RunFailure
         ? error
         : new RunFailure("FAILED_SAFE", error instanceof Error ? error.message : "unknown execution failure");
-      const current = this.runRow();
       if (current && !TERMINAL_STATES.has(current.state)) {
         await this.transition(failure.state, "execution_stopped", failure.message);
       }
+      await this.cleanupExecutionContext(resumableCheckpoint);
       console.error(JSON.stringify({
         message: "DoneState run stopped",
         runId: objective.runId,
@@ -501,7 +557,7 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
         error: failure.message,
       }));
     } finally {
-      if (credentialAcquired) {
+      if (credentialAcquired && !retainCredentialLease) {
         try {
           await credentialVault.release(run.owner_login, run.id);
         } catch (error) {
@@ -513,6 +569,67 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
         }
       }
     }
+  }
+
+  private async finishReconciliation(run: RunRow, objective: HostedObjective): Promise<void> {
+    const actions = this.actions();
+    if (actions.some((action) => action.state !== "SUCCEEDED")) {
+      throw new RunFailure("BLOCKED_SAFETY", "not every action has a durable successful settlement");
+    }
+    const snapshot = await this.snapshotDigest(run, actions);
+    this.ctx.storage.sql.exec(
+      "UPDATE run SET verification_snapshot_digest = ?, updated_at = ? WHERE id = ?",
+      snapshot,
+      new Date().toISOString(),
+      run.id,
+    );
+    await this.transition("AWAITING_VERIFICATION", "independent_verification_required", snapshot);
+    if (this.env.OPSTRUTH_MCP_URL && objective.trustedVerifierFingerprints.length > 0) {
+      try {
+        await this.requestIndependentVerification(run.owner_login);
+      } catch (error) {
+        console.error(JSON.stringify({
+          message: "automatic independent verification did not complete",
+          runId: objective.runId,
+          error: error instanceof Error ? error.message : "unknown verification error",
+        }));
+      }
+    }
+  }
+
+  private executionCheckpoint(strict: boolean): ExecutionCheckpoint | null {
+    const run = this.runRow();
+    if (!run?.execution_checkpoint_json) return null;
+    try {
+      const checkpoint = parseExecutionCheckpoint(JSON.parse(run.execution_checkpoint_json));
+      const implement = this.actions().find((action) => action.id === "implement");
+      if (!implement || checkpoint.actionIntentDigest !== implement.intentDigest) {
+        throw new Error("execution checkpoint does not match the implementation action intent");
+      }
+      return checkpoint;
+    } catch (error) {
+      if (strict) throw error;
+      return null;
+    }
+  }
+
+  private clearExecutionCheckpoint(): void {
+    this.ctx.storage.sql.exec("UPDATE run SET execution_checkpoint_json = NULL, updated_at = ?", new Date().toISOString());
+  }
+
+  private async cleanupExecutionContext(checkpoint: ExecutionCheckpoint | null): Promise<void> {
+    if (checkpoint) {
+      try {
+        await destroyExecutionSandbox(this.env, checkpoint.sandboxId);
+      } catch (error) {
+        console.error(JSON.stringify({
+          message: "execution sandbox cleanup failed",
+          runId: checkpoint.runId,
+          error: error instanceof Error ? error.message : "unknown sandbox cleanup error",
+        }));
+      }
+    }
+    this.clearExecutionCheckpoint();
   }
 
   private runRow(): RunRow | null {
@@ -569,6 +686,89 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
       actions: this.actions(),
       events: this.events(),
     };
+  }
+
+  private async startImplementationAction(
+    intent: Record<string, unknown>,
+    draft: ExecutionCheckpointDraft,
+  ): Promise<ImplementationActionStart> {
+    const run = this.runRow();
+    if (!run) throw new Error("run not found");
+    if (!JSON.parse(run.objective_json).authorities.includes("local_write")) {
+      throw new RunFailure("BLOCKED_AUTHORITY", "local_write authority is required for implement");
+    }
+    const existing = this.ctx.storage.sql.exec<ActionRow>("SELECT * FROM actions WHERE id = 'implement'").toArray()[0];
+    if (existing) {
+      if (existing.state === "SUCCEEDED") {
+        return { status: "succeeded", result: existing.result_json ? JSON.parse(existing.result_json) as Record<string, unknown> : {} };
+      }
+      throw new RunFailure("AMBIGUOUS_EFFECT", "action implement already has a non-terminal durable intent", { state: existing.state });
+    }
+    const intentDigest = await digest(intent);
+    const checkpoint = parseExecutionCheckpoint({ ...draft, actionIntentDigest: intentDigest });
+    const now = new Date().toISOString();
+    this.ctx.storage.transactionSync(() => {
+      const locked = this.runRow();
+      if (!locked || locked.id !== run.id || locked.state !== run.state || locked.execution_checkpoint_json) {
+        throw new Error("implementation checkpoint conflicted with another coordinator request");
+      }
+      this.ctx.storage.sql.exec(
+        `INSERT INTO actions (id, authority, state, idempotency_key, intent_digest, updated_at)
+         VALUES ('implement', 'local_write', 'RUNNING', ?, ?, ?)`,
+        typeof intent.idempotencyKey === "string" ? intent.idempotencyKey : `${run.id}:implement:v1`,
+        intentDigest,
+        now,
+      );
+      this.ctx.storage.sql.exec(
+        "UPDATE run SET execution_checkpoint_json = ?, updated_at = ? WHERE id = ?",
+        canonicalJson(checkpoint),
+        now,
+        run.id,
+      );
+    });
+    return { status: "started", checkpoint };
+  }
+
+  private async updateExecutionCheckpoint(checkpoint: ExecutionCheckpoint): Promise<void> {
+    const parsed = parseExecutionCheckpoint(checkpoint);
+    const existing = this.ctx.storage.sql.exec<ActionRow>("SELECT * FROM actions WHERE id = 'implement'").toArray()[0];
+    if (!existing || existing.state !== "RUNNING" || existing.intent_digest !== parsed.actionIntentDigest) {
+      throw new Error("implementation checkpoint cannot update without its running action intent");
+    }
+    this.ctx.storage.sql.exec(
+      "UPDATE run SET execution_checkpoint_json = ?, updated_at = ? WHERE id = ?",
+      canonicalJson(parsed),
+      new Date().toISOString(),
+      parsed.runId,
+    );
+  }
+
+  private async settleImplementationAction(
+    settlement: ActionSettlement,
+    checkpoint: ExecutionCheckpoint | null,
+  ): Promise<void> {
+    const existing = this.ctx.storage.sql.exec<ActionRow>("SELECT * FROM actions WHERE id = 'implement'").toArray()[0];
+    if (!existing) throw new Error("action implement has no durable intent");
+    if (existing.state === "SUCCEEDED" && settlement.state === "SUCCEEDED") return;
+    if (existing.state !== "RUNNING") throw new Error(`action implement cannot settle from ${existing.state}`);
+    const parsed = checkpoint ? parseExecutionCheckpoint(checkpoint) : null;
+    if (parsed && parsed.actionIntentDigest !== existing.intent_digest) {
+      throw new Error("implementation settlement checkpoint does not match its action intent");
+    }
+    const now = new Date().toISOString();
+    this.ctx.storage.transactionSync(() => {
+      this.ctx.storage.sql.exec(
+        "UPDATE actions SET state = ?, result_json = ?, updated_at = ? WHERE id = 'implement' AND state = 'RUNNING'",
+        settlement.state,
+        canonicalJson(settlement.result),
+        now,
+      );
+      this.ctx.storage.sql.exec(
+        "UPDATE run SET execution_checkpoint_json = ?, updated_at = ?",
+        parsed ? canonicalJson(parsed) : null,
+        now,
+      );
+    });
   }
 
   private async startAction(id: string, authority: AuthorityClass, intent: Record<string, unknown>): Promise<Record<string, unknown> | null> {
