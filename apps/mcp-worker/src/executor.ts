@@ -36,13 +36,34 @@ export const PUBLIC_CLONE_MAX_ATTEMPTS = 3;
 export const PUBLIC_CLONE_RETRY_BASE_DELAY_MS = 2_000;
 export const SANDBOX_RUNTIME_OPTIONS = { sleepAfter: "15m", keepAlive: true, enableDefaultSession: false } as const;
 export const IMPLEMENTATION_START_ATTEMPTS = 1;
-export const IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS = 3;
-export const IMPLEMENTATION_CONTROL_RETRY_BASE_DELAY_MS = 500;
+export const IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS = 5_000;
+export const IMPLEMENTATION_RECEIPT_GRACE_MS = 15_000;
+export const IMPLEMENTATION_LAUNCH_TIMEOUT_MS = 30_000;
+export const IMPLEMENTATION_DETACHED_LAUNCH_COMMAND = 'nohup /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH" > "$DONESTATE_RECEIPT_LOG_PATH" 2>&1 < /dev/null &';
 export const IMPLEMENTATION_RECEIPT_SCHEMA = "donestate.implementation-receipt.v1";
 export const IMPLEMENTATION_RECEIPT_DIR = "/workspace/.donestate-control";
 
 export function implementationReceiptPath(runId: string): string {
   return IMPLEMENTATION_RECEIPT_DIR + "/implementation-" + runId + ".receipt";
+}
+
+export function implementationReceiptScriptPath(runId: string): string {
+  return IMPLEMENTATION_RECEIPT_DIR + "/implementation-" + runId + ".sh";
+}
+
+export function implementationReceiptLogPath(runId: string): string {
+  return IMPLEMENTATION_RECEIPT_DIR + "/implementation-" + runId + ".log";
+}
+
+export function implementationReceiptDeadlineMs(startedAtMs: number, maxDurationMs: number): number {
+  if (!Number.isFinite(startedAtMs) || startedAtMs < 0) throw new Error("implementation receipt start time is invalid");
+  if (!Number.isFinite(maxDurationMs) || maxDurationMs <= 0) throw new Error("implementation duration is invalid");
+  return startedAtMs + maxDurationMs + IMPLEMENTATION_RECEIPT_GRACE_MS;
+}
+
+export function implementationReceiptPollDelayMs(nowMs: number, deadlineMs: number): number {
+  if (!Number.isFinite(nowMs) || !Number.isFinite(deadlineMs)) throw new Error("implementation receipt poll time is invalid");
+  return Math.max(0, Math.min(IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS, deadlineMs - nowMs));
 }
 
 export function implementationReceiptCommand(): string {
@@ -52,9 +73,10 @@ export function implementationReceiptCommand(): string {
     'receipt_schema="$DONESTATE_RECEIPT_SCHEMA"',
     'receipt_run_id="$DONESTATE_RECEIPT_RUN_ID"',
     'receipt_command_digest="$DONESTATE_RECEIPT_COMMAND_DIGEST"',
-    'unset DONESTATE_RECEIPT_NONCE DONESTATE_RECEIPT_PATH DONESTATE_RECEIPT_SCHEMA DONESTATE_RECEIPT_RUN_ID DONESTATE_RECEIPT_COMMAND_DIGEST',
+    'receipt_timeout_seconds="$DONESTATE_IMPLEMENTATION_TIMEOUT_SECONDS"',
+    'unset DONESTATE_RECEIPT_NONCE DONESTATE_RECEIPT_PATH DONESTATE_RECEIPT_SCHEMA DONESTATE_RECEIPT_RUN_ID DONESTATE_RECEIPT_COMMAND_DIGEST DONESTATE_IMPLEMENTATION_TIMEOUT_SECONDS DONESTATE_RECEIPT_SCRIPT_PATH DONESTATE_RECEIPT_LOG_PATH',
     'set +e',
-    CODEX_IMPLEMENT_COMMAND,
+    'timeout --signal=TERM --kill-after=5s "${receipt_timeout_seconds}s" ' + CODEX_IMPLEMENT_COMMAND,
     'exit_code=$?',
     'set -e',
     'tmp_path="${receipt_path}.tmp.$$"',
@@ -412,8 +434,9 @@ function pullRequestBody(objective: HostedObjective): string {
   ].join("\n");
 }
 
-async function waitForImplementationControlRetry(attempt: number): Promise<void> {
-  await new Promise<void>((resolve) => setTimeout(resolve, attempt * IMPLEMENTATION_CONTROL_RETRY_BASE_DELAY_MS));
+async function waitForImplementationReceiptPoll(nowMs: number, deadlineMs: number): Promise<void> {
+  const delayMs = implementationReceiptPollDelayMs(nowMs, deadlineMs);
+  if (delayMs > 0) await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
 }
 
 async function executeImplementationWithReceipt(
@@ -434,32 +457,43 @@ async function executeImplementationWithReceipt(
   const commandDigest = await digest(CODEX_IMPLEMENT_COMMAND);
   const receiptNonce = crypto.randomUUID().replaceAll("-", "");
   const receiptPath = implementationReceiptPath(objective.runId);
+  const receiptScriptPath = implementationReceiptScriptPath(objective.runId);
+  const receiptLogPath = implementationReceiptLogPath(objective.runId);
+  const wrapper = implementationReceiptCommand();
   const previousResult = await journal.startAction(id, authority, {
     schema: "donestate.action-intent.v1",
     idempotencyKey: actionIdempotency(objective.runId, id),
     commandDigest,
-    executionMode: "single_foreground_exec_terminal_receipt_v1",
+    executionMode: "single_detached_exec_terminal_receipt_v2",
     startAttempts: IMPLEMENTATION_START_ATTEMPTS,
+    launchCommandDigest: await digest(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND),
+    wrapperDigest: await digest(wrapper),
     receiptSchema: IMPLEMENTATION_RECEIPT_SCHEMA,
     receiptPath,
+    receiptScriptPath,
+    receiptLogPath,
     receiptNonceDigest: await digest(receiptNonce),
     sandboxId,
+    implementationTimeoutMs: objective.maxDurationMs,
   });
   if (previousResult) return getSandbox(env.Sandbox, sandboxId, SANDBOX_RUNTIME_OPTIONS);
 
   try {
     await sandbox.mkdir(IMPLEMENTATION_RECEIPT_DIR, { recursive: true });
+    await sandbox.writeFile(receiptScriptPath, wrapper);
   } catch (error) {
-    const detail = redact(error instanceof Error ? error.message : "implementation receipt directory could not be prepared", [openaiApiKey, githubToken]);
-    const result = { reason: "implementation_receipt_directory_unavailable", error: detail, sandboxId };
+    const detail = redact(error instanceof Error ? error.message : "implementation receipt control files could not be prepared", [openaiApiKey, githubToken]);
+    const result = { reason: "implementation_receipt_control_unavailable", error: detail, sandboxId };
     await journal.settleAction(id, { state: "FAILED", result });
-    throw new RunFailure("BLOCKED_CAPABILITY", "implementation receipt directory could not be prepared", result);
+    throw new RunFailure("BLOCKED_CAPABILITY", "implementation receipt control files could not be prepared", result);
   }
 
-  let raw: Awaited<ReturnType<Sandbox["exec"]>> | null = null;
-  let controlError: string | null = null;
+  const startedAtMs = Date.now();
+  const deadlineMs = implementationReceiptDeadlineMs(startedAtMs, objective.maxDurationMs);
+  let launchRaw: Awaited<ReturnType<Sandbox["exec"]>> | null = null;
+  let launchError: string | null = null;
   try {
-    raw = await sandbox.exec(implementationReceiptCommand(), {
+    launchRaw = await sandbox.exec(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND, {
       cwd: "/workspace/repo",
       env: {
         HOME: "/workspace/home",
@@ -470,33 +504,39 @@ async function executeImplementationWithReceipt(
         DONESTATE_RECEIPT_SCHEMA: IMPLEMENTATION_RECEIPT_SCHEMA,
         DONESTATE_RECEIPT_RUN_ID: objective.runId,
         DONESTATE_RECEIPT_COMMAND_DIGEST: commandDigest,
+        DONESTATE_RECEIPT_SCRIPT_PATH: receiptScriptPath,
+        DONESTATE_RECEIPT_LOG_PATH: receiptLogPath,
+        DONESTATE_IMPLEMENTATION_TIMEOUT_SECONDS: String(Math.max(1, Math.ceil(objective.maxDurationMs / 1_000))),
       },
-      timeout: objective.maxDurationMs,
+      timeout: IMPLEMENTATION_LAUNCH_TIMEOUT_MS,
     });
   } catch (error) {
-    controlError = redact(error instanceof Error ? error.message : "implementation foreground control operation was interrupted", [openaiApiKey, githubToken]);
+    launchError = redact(error instanceof Error ? error.message : "implementation detached launch acknowledgement was interrupted", [openaiApiKey, githubToken]);
   }
 
-  const diagnostics = raw
-    ? resultRecord(raw, [openaiApiKey, githubToken])
-    : { success: false, error: controlError, stdout: "", stderr: "", truncated: false };
+  const launchDiagnostics = launchRaw
+    ? resultRecord(launchRaw, [openaiApiKey, githubToken])
+    : { success: false, error: launchError, stdout: "", stderr: "", truncated: false };
   let verifiedReceipt: ImplementationReceipt | null = null;
   let lastControlError: string | null = null;
+  let receiptPollAttempt = 0;
 
-  for (let attempt = 1; attempt <= IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS; attempt += 1) {
+  while (Date.now() <= deadlineMs) {
+    receiptPollAttempt += 1;
     const reconciled = getSandbox(env.Sandbox, sandboxId, SANDBOX_RUNTIME_OPTIONS);
     try {
       const receipt = parseImplementationReceipt((await reconciled.readFile(receiptPath)).content);
       if (receipt.runId !== objective.runId || receipt.commandDigest !== commandDigest || receipt.nonce !== receiptNonce) {
         const result = {
-          ...diagnostics,
+          ...launchDiagnostics,
           reason: "implementation_receipt_identity_mismatch",
           sandboxId,
           receiptSchema: receipt.schema,
           receiptRunId: receipt.runId,
           receiptCommandDigest: receipt.commandDigest,
           receiptNonceMatched: receipt.nonce === receiptNonce,
-          controlError,
+          launchError,
+          receiptPollAttempt,
         };
         await journal.settleAction(id, { state: "AMBIGUOUS", result });
         throw new RunFailure("AMBIGUOUS_EFFECT", "implementation terminal receipt did not match the durable action intent", result);
@@ -504,32 +544,33 @@ async function executeImplementationWithReceipt(
       verifiedReceipt = receipt;
       if (receipt.exitCode !== 0) {
         const result = {
-          ...diagnostics,
+          ...launchDiagnostics,
           success: false,
           exitCode: receipt.exitCode,
           sandboxId,
           receiptSchema: receipt.schema,
           receiptVerified: true,
-          controlError,
-          controlReconcileAttempt: attempt,
+          launchError,
+          receiptPollAttempt,
         };
         await journal.settleAction(id, { state: "FAILED", result });
         throw new RunFailure("FAILED_SAFE", "implement failed with exit code " + receipt.exitCode, result);
       }
 
-      const head = await reconciled.exec("git rev-parse HEAD", { cwd: "/workspace/repo" });
+      const head = await reconciled.exec("git rev-parse HEAD", { cwd: "/workspace/repo", timeout: 30_000 });
       if (!head.success) throw new Error("post-implementation repository head check failed with exit code " + head.exitCode);
       const observedHead = head.stdout.trim();
       const result = {
-        ...diagnostics,
+        ...launchDiagnostics,
         success: true,
         exitCode: 0,
         sandboxId,
         receiptSchema: receipt.schema,
         receiptVerified: true,
-        controlError,
+        launchError,
         controlRecovered: true,
-        controlReconcileAttempt: attempt,
+        receiptPollAttempt,
+        receiptDeadlineMs: deadlineMs,
         postImplementationHead: observedHead,
       };
       await journal.settleAction(id, { state: "SUCCEEDED", result });
@@ -546,24 +587,37 @@ async function executeImplementationWithReceipt(
         error instanceof Error ? error.message : "implementation receipt or repository continuity could not be read",
         [openaiApiKey, githubToken],
       );
-      if (attempt < IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS) {
-        await waitForImplementationControlRetry(attempt);
-      }
     }
+
+    const nowMs = Date.now();
+    if (nowMs >= deadlineMs) break;
+    await waitForImplementationReceiptPoll(nowMs, deadlineMs);
+  }
+
+  let implementationLog: Record<string, unknown> | null = null;
+  try {
+    const log = await getSandbox(env.Sandbox, sandboxId, SANDBOX_RUNTIME_OPTIONS).readFile(receiptLogPath);
+    const bounded = boundedOutput(redact(log.content, [openaiApiKey, githubToken]));
+    implementationLog = { text: bounded.text, truncated: bounded.truncated };
+  } catch {
+    implementationLog = null;
   }
 
   if (verifiedReceipt) {
     const result = {
-      ...diagnostics,
+      ...launchDiagnostics,
       success: true,
       exitCode: verifiedReceipt.exitCode,
       sandboxId,
       receiptSchema: verifiedReceipt.schema,
       receiptVerified: true,
-      controlError,
+      launchError,
       controlRecovered: false,
       reason: "post_implementation_repository_continuity_unavailable",
       lastControlError,
+      receiptPollAttempt,
+      receiptDeadlineMs: deadlineMs,
+      implementationLog,
     };
     await journal.settleAction(id, { state: "SUCCEEDED", result });
     throw new RunFailure(
@@ -574,18 +628,21 @@ async function executeImplementationWithReceipt(
   }
 
   const result = {
-    ...diagnostics,
+    ...launchDiagnostics,
     sandboxId,
     receiptSchema: IMPLEMENTATION_RECEIPT_SCHEMA,
     receiptVerified: false,
-    controlError,
-    reason: "implementation_terminal_receipt_unavailable",
+    launchError,
+    reason: "implementation_terminal_receipt_unavailable_before_deadline",
     lastControlError,
+    receiptPollAttempt,
+    receiptDeadlineMs: deadlineMs,
+    implementationLog,
   };
   await journal.settleAction(id, { state: "AMBIGUOUS", result });
   throw new RunFailure(
     "AMBIGUOUS_EFFECT",
-    "implementation effect could not be reconciled from a terminal receipt",
+    "implementation effect could not be reconciled from a terminal receipt before the configured deadline",
     result,
   );
 }

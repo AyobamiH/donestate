@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS, IMPLEMENTATION_RECEIPT_SCHEMA, IMPLEMENTATION_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, implementationPrompt, implementationReceiptCommand, implementationReceiptPath, parseImplementationReceipt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
+import { CHANGED_FILES_COMMAND, CODEX_IMPLEMENT_COMMAND, IMPLEMENTATION_DETACHED_LAUNCH_COMMAND, IMPLEMENTATION_RECEIPT_GRACE_MS, IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS, IMPLEMENTATION_RECEIPT_SCHEMA, IMPLEMENTATION_START_ATTEMPTS, PUBLIC_CLONE_MAX_ATTEMPTS, PUBLIC_CLONE_RETRY_BASE_DELAY_MS, SANDBOX_RUNTIME_OPTIONS, decodeChangedFiles, implementationPrompt, implementationReceiptCommand, implementationReceiptDeadlineMs, implementationReceiptLogPath, implementationReceiptPath, implementationReceiptPollDelayMs, implementationReceiptScriptPath, parseImplementationReceipt, protectedMaintenancePath, publicCloneCommand, publicCloneRetryDelayMs, publicCloneSandboxId } from "../src/executor";
 import type { HostedObjective } from "../src/types";
 
 describe("hosted Codex executor contract", () => {
@@ -57,20 +57,36 @@ describe("hosted Codex executor contract", () => {
     expect(SANDBOX_RUNTIME_OPTIONS).toEqual({ sleepAfter: "15m", keepAlive: true, enableDefaultSession: false });
   });
 
-  it("launches Codex once inside a terminal-receipt wrapper outside the repository", () => {
+  it("launches Codex exactly once through a short detached handoff and reconciles only by terminal receipt", () => {
     const runId = "0e3fc377-6ff7-47ba-8cdf-df0a226a7a85";
     const receiptPath = implementationReceiptPath(runId);
+    const scriptPath = implementationReceiptScriptPath(runId);
+    const logPath = implementationReceiptLogPath(runId);
     const wrapper = implementationReceiptCommand();
 
     expect(IMPLEMENTATION_START_ATTEMPTS).toBe(1);
-    expect(IMPLEMENTATION_CONTROL_RECONCILE_ATTEMPTS).toBe(3);
+    expect(IMPLEMENTATION_RECEIPT_POLL_INTERVAL_MS).toBe(5_000);
+    expect(IMPLEMENTATION_RECEIPT_GRACE_MS).toBe(15_000);
     expect(receiptPath).toBe(`/workspace/.donestate-control/implementation-${runId}.receipt`);
+    expect(scriptPath).toBe(`/workspace/.donestate-control/implementation-${runId}.sh`);
+    expect(logPath).toBe(`/workspace/.donestate-control/implementation-${runId}.log`);
     expect(receiptPath.startsWith("/workspace/repo/")).toBe(false);
     expect(wrapper.split(CODEX_IMPLEMENT_COMMAND)).toHaveLength(2);
+    expect(wrapper).toContain('timeout --signal=TERM --kill-after=5s "${receipt_timeout_seconds}s"');
     expect(wrapper).toContain("unset DONESTATE_RECEIPT_NONCE");
     expect(wrapper).toContain('tmp_path="${receipt_path}.tmp.$$"');
     expect(wrapper).toContain('mv "$tmp_path" "$receipt_path"');
+    expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).toContain('nohup /bin/sh "$DONESTATE_RECEIPT_SCRIPT_PATH"');
+    expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).toContain('&');
+    expect(IMPLEMENTATION_DETACHED_LAUNCH_COMMAND).not.toContain(CODEX_IMPLEMENT_COMMAND);
     expect(wrapper).not.toContain("startProcess");
+  });
+
+  it("keeps receipt reconciliation open for the configured implementation deadline", () => {
+    expect(implementationReceiptDeadlineMs(1_000, 180_000)).toBe(196_000);
+    expect(implementationReceiptPollDelayMs(1_000, 20_000)).toBe(5_000);
+    expect(implementationReceiptPollDelayMs(19_500, 20_000)).toBe(500);
+    expect(implementationReceiptPollDelayMs(20_000, 20_000)).toBe(0);
   });
 
   it("parses only the exact implementation terminal receipt contract", () => {
