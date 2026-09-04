@@ -1,0 +1,64 @@
+import fs from "node:fs";
+
+const testPath = "src/test/store.test.ts";
+let source = fs.readFileSync(testPath, "utf8");
+const before = `test("resume turns an unsettled mutating intent into AMBIGUOUS_EFFECT", async () => {
+  const root = await temporaryRoot();
+  const store = new DoneStateStore(path.join(root, "state.sqlite"));
+  const objective = simpleObjective(root);
+  const run = await store.createRun(createRunId(), admitObjective(objective, policyFor(root)));
+  await store.transition(run.id, "RECEIVED", "ADMITTED", "test_admission");
+  await store.transition(run.id, "ADMITTED", "EXECUTING", "test_execution");
+  const lease = await store.acquireLease(run.id, "crashed-worker", 100);
+  await store.startAction(run.id, "execute", "crashed-worker", lease.fencingToken);
+  await delay(120);
+  const resumed = await new DoneStateController(store, "replacement-worker").resume(run.id);
+  assert.equal(resumed.state, "AMBIGUOUS_EFFECT");
+  assert.equal((await store.listActions(run.id))[0]!.state, "AMBIGUOUS");
+});`;
+const after = `test("resume turns an unsettled mutating intent into AMBIGUOUS_EFFECT", async () => {
+  const root = await temporaryRoot();
+  let now = new Date("2026-08-27T12:00:00.000Z");
+  const store = new DoneStateStore(path.join(root, "state.sqlite"), () => now);
+  const objective = simpleObjective(root);
+  const run = await store.createRun(createRunId(), admitObjective(objective, policyFor(root)));
+  await store.transition(run.id, "RECEIVED", "ADMITTED", "test_admission");
+  await store.transition(run.id, "ADMITTED", "EXECUTING", "test_execution");
+  const lease = await store.acquireLease(run.id, "crashed-worker", 100);
+  await store.startAction(run.id, "execute", "crashed-worker", lease.fencingToken);
+  now = new Date(now.getTime() + 101);
+  const resumed = await new DoneStateController(store, "replacement-worker").resume(run.id);
+  assert.equal(resumed.state, "AMBIGUOUS_EFFECT");
+  assert.equal((await store.listActions(run.id))[0]!.state, "AMBIGUOUS");
+});`;
+if (!source.includes(before)) throw new Error("expected timing-sensitive test block not found");
+source = source.replace(before, after);
+source = source.replace('import { setTimeout as delay } from "node:timers/promises";\n', "");
+fs.writeFileSync(testPath, source);
+
+const ledgerPath = "governance/project-ledger.json";
+const ledger = JSON.parse(fs.readFileSync(ledgerPath, "utf8"));
+ledger.updatedAt = "2026-09-04";
+const gov = ledger.workItems.find(item => item.id === "GOV-001");
+if (!gov) throw new Error("GOV-001 missing");
+if (!gov.evidenceIds.includes("E-039")) gov.evidenceIds.push("E-039");
+if (!ledger.evidenceStories.some(story => story.id === "E-039")) {
+  ledger.evidenceStories.push({
+    id: "E-039",
+    date: "2026-09-04",
+    identity: "Lease-expiry recovery test made clock-deterministic after slow-runner exposure",
+    situation: "Provider-protection closure PR #119 exposed a timing-sensitive test when a GitHub Actions Node 22 runner spent about five minutes in npm ci. The test gave a real worker lease only 100 ms before startAction, so scheduler and SQLite latency could expire the lease before the intended ambiguous-resume scenario was established.",
+    verification: "The repair changes only src/test/store.test.ts. It injects a fixed clock into DoneStateStore, establishes the action while the lease is valid, advances the clock exactly 101 ms past the 100 ms lease, and then exercises resume. Production lease durations, fencing rules, store implementation, controller behaviour, and runtime code are unchanged. PR #119 must rerun core (22), core (24), hosted-plugin, and governance impact on the new exact head before merge.",
+    accountability: {
+      owner: "DoneState maintainers",
+      status: "active",
+      nextAction: "Require all three exact-head PR checks and governance impact to pass on the deterministic test repair, then merge the provider-protection closure normally without owner bypass.",
+      waitCondition: "PR #119 exact-head CI must prove the test no longer depends on runner wall-clock latency.",
+      staleDate: "2026-09-08"
+    },
+    outcome: "Pending exact-head CI; the test now models lease expiry through the store clock seam instead of a sub-second real-time race.",
+    content: "PR #119 Node 22 failure STALE_FENCING_TOKEN, five-minute npm-ci delay, deterministic injected-clock repair, unchanged production lease semantics, and required protected-branch revalidation.",
+    measurement: "One flaky wall-clock dependency removed; zero production runtime files changed; zero lease or fencing semantics changed; three protected-branch checks required before closure."
+  });
+}
+fs.writeFileSync(ledgerPath, JSON.stringify(ledger, null, 2) + "\n");
