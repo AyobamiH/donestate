@@ -1,4 +1,4 @@
-name: Render project state once
+name: Record active main protection once
 
 on:
   push:
@@ -9,23 +9,361 @@ permissions:
   contents: write
 
 jobs:
-  render:
+  close-governance:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: docs/product-kb-verified-canary
+          ref: main
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: node scripts/render-project-state.mjs
-      - name: Commit generated state only
+      - name: Create closure branch
+        run: git checkout -B governance/record-active-main-protection-20260904 origin/main
+      - name: Record provider evidence in canonical JSON
+        shell: bash
         run: |
-          git diff --exit-code -- docs/PROJECT-STATE.md && exit 0
+          node <<'NODE'
+          const fs = require('fs');
+          const manifestPath = 'governance/main-ruleset.proposed.json';
+          const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+          manifest.providerObservation = {
+            observedAt: '2026-09-04',
+            branch: 'main',
+            headCommit: 'a802384ca6cf7fa7596b952a2e4654be71b6a292',
+            state: 'PROTECTED',
+            source: 'GitHub branch and ruleset API read-back plus enforcement probe PR #118',
+            providerMessage: 'protected=true; active rulesets=1; ruleset 22247029 enforcement=active',
+            rulesetId: 22247029
+          };
+          manifest.activation.state = 'ACTIVE';
+          manifest.activation.appliedAt = '2026-09-04T05:42:20.251+01:00';
+          manifest.activation.blockingIssue = 'https://github.com/AyobamiH/donestate/issues/117';
+          manifest.activation.blockers = [];
+          manifest.stages.mechanicalBaseline.state = 'ACTIVE';
+          manifest.activationReadBack = {
+            state: 'VERIFIED',
+            observedAt: '2026-09-04T05:57:28+01:00',
+            rulesetId: 22247029,
+            providerEnforcement: 'active',
+            effectiveBranchRules: [
+              'refs/heads/main only',
+              'pull request required',
+              'core (22) required via GitHub Actions integration 15368',
+              'core (24) required via GitHub Actions integration 15368',
+              'hosted-plugin required via GitHub Actions integration 15368',
+              'strict target-branch freshness',
+              'resolved review conversations',
+              'deletion blocked',
+              'non-fast-forward blocked',
+              'zero required approvals',
+              'single owner emergency bypass'
+            ]
+          };
+          fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
+
+          const ledgerPath = 'governance/project-ledger.json';
+          const ledger = JSON.parse(fs.readFileSync(ledgerPath, 'utf8'));
+          ledger.updatedAt = '2026-09-04';
+          const gov = ledger.workItems.find(x => x.id === 'GOV-003');
+          if (!gov) throw new Error('GOV-003 missing');
+          Object.assign(gov, {
+            status: 'complete',
+            lastUpdated: '2026-09-04',
+            staleDate: '2026-12-01',
+            nextAction: 'Keep GitHub ruleset 22247029 active on main with the exact Stage 1 mechanical baseline. Add one independent human approval later only as an additive Stage 2 strengthening step.',
+            waitCondition: 'None.',
+            reentryCondition: 'Reopen if GitHub no longer reports ruleset 22247029 active on main, any required check or destructive-ref rule drifts, normal merges use the owner bypass, or a future Stage 2 change weakens the mechanical baseline.'
+          });
+          if (!gov.evidenceIds.includes('E-038')) gov.evidenceIds.push('E-038');
+          const prior = ledger.evidenceStories.find(x => x.id === 'E-014');
+          if (prior?.accountability) {
+            prior.accountability.status = 'complete';
+            prior.accountability.nextAction = 'None; provider activation was later completed and is recorded independently in E-038.';
+            prior.accountability.waitCondition = 'None.';
+            prior.accountability.staleDate = '2026-12-01';
+          }
+          if (!ledger.evidenceStories.some(x => x.id === 'E-038')) {
+            ledger.evidenceStories.push({
+              id: 'E-038',
+              date: '2026-09-04',
+              identity: 'DoneState main mechanical protection activated and provider-enforced',
+              situation: 'The production DoneState-to-OpsTruth loop was already proven VERIFIED and contract-locked, but GitHub main protection still required an authenticated provider action and an enforcement proof through the normal pull-request path.',
+              verification: 'GitHub read-back reports main protected=true and repository ruleset 22247029, DoneState main governance, enforcement=active, targeting only refs/heads/main. It requires core (22), core (24), and hosted-plugin through GitHub Actions integration 15368 with strict freshness, resolved review conversations, deletion blocking, non-fast-forward blocking, zero approvals, and the single owner emergency bypass. Enforcement probe PR #118 exact head 15e326116cb8aa424647a10f92ad4f8364a71fa1 ran workflow 33838442614; all three required jobs succeeded before the PR merged normally as a802384ca6cf7fa7596b952a2e4654be71b6a292. Issue #117 then closed completed. Canary PR #115 remained open and unmerged.',
+              accountability: {
+                owner: 'DoneState maintainers',
+                status: 'complete',
+                nextAction: 'Preserve Stage 1 provider enforcement and monitor for drift; treat the independent-human-review Stage 2 as additive only.',
+                waitCondition: 'None.',
+                staleDate: '2026-12-01'
+              },
+              outcome: 'DoneState main is mechanically protected at the GitHub provider layer and the required-check gate has been proven by a normal governance-only pull request.',
+              content: 'Provider ruleset 22247029, exact main target, three pinned GitHub Actions checks, strict freshness, resolved conversations, destructive-ref blocking, zero approvals, owner emergency bypass, proof PR #118, proof workflow 33838442614, merge a802384ca6cf7fa7596b952a2e4654be71b6a292, and preserved PR #115/historical outcomes.',
+              measurement: 'One active main-only ruleset, three required checks, one enforcement-probe PR, three successful exact-head jobs, one normal merge after the gate cleared, zero canary merges, and zero rewritten historical outcomes.'
+            });
+          }
+          fs.writeFileSync(ledgerPath, JSON.stringify(ledger, null, 2) + '\n');
+          NODE
+      - name: Replace main-governance validator with active-state validator
+        shell: bash
+        run: |
+          cat > scripts/check-main-governance.mjs <<'EOF'
+          import { readFile } from "node:fs/promises";
+          import { pathToFileURL } from "node:url";
+
+          const expectedContexts = ["core (22)", "core (24)", "hosted-plugin"];
+          const expectedRules = ["deletion", "non_fast_forward", "pull_request", "required_status_checks"];
+
+          export function validateMainGovernance({ manifest, codeowners, workflow, runbook, currentStatus, ledger }) {
+            requireValue(manifest.schemaVersion === 2, "main governance schemaVersion must be 2");
+            requireValue(manifest.proposalId === "donestate.main-governance.v2", "unexpected main governance proposalId");
+            requireValue(manifest.repository?.fullName === "AyobamiH/donestate", "main governance repository name drifted");
+            requireValue(manifest.repository?.repositoryId === 1348643925, "main governance repository ID drifted");
+            requireValue(manifest.repository?.defaultBranch === "main", "main governance default branch drifted");
+
+            const provider = manifest.providerObservation;
+            requireValue(provider?.state === "PROTECTED", "provider evidence must remain PROTECTED");
+            requireValue(provider?.rulesetId === 22247029, "active DoneState ruleset ID drifted");
+            requireValue(/protected=true/.test(provider?.providerMessage || ""), "provider observation must record protected=true");
+            requireValue(/active rulesets=1/.test(provider?.providerMessage || ""), "provider observation must record one active ruleset");
+
+            const activation = manifest.activation;
+            requireValue(activation?.state === "ACTIVE", "mechanical main protection must remain ACTIVE");
+            requireValue(activation?.desiredProviderEnforcement === "active", "desired provider enforcement must be active");
+            requireValue(activation?.artifactProviderEnforcement === "disabled", "checked-in import template must remain disabled by default");
+            requireValue(typeof activation?.appliedAt === "string" && activation.appliedAt.length > 0, "active protection must record appliedAt");
+            requireValue(activation?.blockingIssue === "https://github.com/AyobamiH/donestate/issues/117", "activation proof issue drifted");
+            requireValue(Array.isArray(activation?.blockers) && activation.blockers.length === 0, "active protection cannot retain provider blockers");
+
+            requireValue(manifest.stages?.mechanicalBaseline?.state === "ACTIVE", "mechanical baseline must remain ACTIVE");
+            requireValue(manifest.stages?.mechanicalBaseline?.requiresSecondHumanReviewer === false, "second human reviewer cannot become a Stage 1 blocker");
+            requireValue(manifest.stages?.mechanicalBaseline?.requiredApprovals === 0, "Stage 1 must keep zero approvals until a trusted human exists");
+            requireValue(manifest.stages?.independentHumanReview?.state === "FOLLOW_ON", "independent human review must remain follow-on");
+            requireValue(manifest.stages?.independentHumanReview?.requiredApprovalsAfterActivation === 1, "Stage 2 must add one approval");
+            requireValue(manifest.stages?.independentHumanReview?.mustNotWeakenMechanicalBaseline === true, "Stage 2 cannot weaken mechanical protection");
+
+            const reviewer = manifest.ownership?.independentReviewer;
+            requireValue(reviewer?.login === null && reviewer?.state === "UNNAMED", "do not invent an independent reviewer");
+            requireValue(reviewer?.activationBlocker === false, "unnamed reviewer cannot block active Stage 1 protection");
+            requireValue(manifest.ownership?.mergeExecutor?.login === "AyobamiH" && manifest.ownership.mergeExecutor.userId === 47716486, "owner merge executor drifted");
+            requireValue(codeowners.includes("* @AyobamiH"), "CODEOWNERS must identify the current owner");
+
+            const inventory = manifest.checkInventory;
+            requireExactSet(inventory?.contexts, expectedContexts, "check inventory contexts");
+            requireValue(inventory?.providerApp?.integrationId === 15368, "required checks must remain pinned to GitHub Actions");
+            requireValue(/^name: CI$/m.test(workflow) && /^  pull_request:\s*$/m.test(workflow), "CI must emit on pull requests");
+            requireValue(!/^\s+(?:paths|paths-ignore|branches|branches-ignore):/m.test(pullRequestBlock(workflow)), "CI pull_request trigger cannot be filtered");
+            requireValue(!/^\s{4}if:/m.test(workflow), "required CI jobs cannot have job-level conditions");
+            requireValue(!/continue-on-error:/m.test(workflow), "required CI jobs cannot tolerate failure");
+
+            const ruleset = manifest.githubRuleset;
+            requireValue(ruleset?.target === "branch" && ruleset?.enforcement === "disabled", "checked-in ruleset must remain an import-safe disabled template");
+            requireExactSet(ruleset?.conditions?.ref_name?.include, ["refs/heads/main"], "ruleset include refs");
+            requireExactSet(ruleset?.conditions?.ref_name?.exclude, [], "ruleset exclude refs");
+            requireValue(ruleset?.bypass_actors?.length === 1, "ruleset must preserve exactly one owner recovery bypass");
+            const bypass = ruleset.bypass_actors[0];
+            requireValue(bypass.actor_id === 47716486 && bypass.actor_type === "User" && bypass.bypass_mode === "always", "owner recovery bypass drifted");
+            const rules = new Map(ruleset.rules.map(rule => [rule.type, rule]));
+            requireExactSet([...rules.keys()], expectedRules, "ruleset rule types");
+            const pr = rules.get("pull_request").parameters;
+            requireValue(pr.required_approving_review_count === 0 && pr.require_code_owner_review === false && pr.require_last_push_approval === false, "Stage 1 must not invent human approval");
+            requireValue(pr.required_review_thread_resolution === true, "review threads must resolve");
+            const checks = rules.get("required_status_checks").parameters;
+            requireValue(checks.strict_required_status_checks_policy === true, "required checks must be current with main");
+            requireExactSet(checks.required_status_checks.map(check => check.context), expectedContexts, "ruleset required contexts");
+            requireValue(checks.required_status_checks.every(check => check.integration_id === 15368), "every required check must be pinned to GitHub Actions");
+
+            const readBack = manifest.activationReadBack;
+            requireValue(readBack?.state === "VERIFIED", "provider activation read-back must remain VERIFIED");
+            requireValue(readBack?.rulesetId === 22247029 && readBack?.providerEnforcement === "active", "provider activation read-back drifted");
+            for (const token of ["pull request required", "deletion blocked", "non-fast-forward blocked", "zero required approvals"]) {
+              requireValue(readBack.effectiveBranchRules?.includes(token), `activation read-back missing ${token}`);
+            }
+
+            for (const [name, contents] of [["runbook", runbook], ["current status", currentStatus]]) {
+              requireValue(/PROTECTED/.test(contents), `${name} must state the provider state is PROTECTED`);
+              requireValue(/22247029/.test(contents), `${name} must record active ruleset 22247029`);
+              requireValue(!/Current provider state:\s*UNPROTECTED/.test(contents), `${name} cannot claim current provider state is UNPROTECTED`);
+              requireValue(!/Provider activation is therefore \*\*BLOCKED_PROVIDER_ACTION\*\*/.test(contents), `${name} cannot claim provider activation is blocked`);
+            }
+
+            const item = ledger.workItems?.find(candidate => candidate.id === "GOV-003");
+            requireValue(item?.status === "complete", "GOV-003 must remain complete while provider protection is active");
+            requireValue(item?.evidenceIds?.includes("E-038"), "GOV-003 must cite provider-enforcement evidence E-038");
+            const evidence = ledger.evidenceStories?.find(story => story.id === "E-038");
+            requireValue(evidence?.accountability?.status === "complete", "E-038 must remain complete");
+            requireValue(ledger.evidenceStories?.some(story => story.id === "E-037"), "production VERIFIED evidence E-037 must be preserved");
+          }
+
+          function pullRequestBlock(workflow) {
+            const start = workflow.search(/^  pull_request:\s*$/m);
+            if (start < 0) return "";
+            const rest = workflow.slice(start + workflow.slice(start).indexOf("\n") + 1);
+            const end = rest.search(/^\S/m);
+            return end < 0 ? rest : rest.slice(0, end);
+          }
+
+          function requireExactSet(actual, expected, label) {
+            requireValue(Array.isArray(actual), `${label} must be an array`);
+            requireValue(JSON.stringify([...actual].sort()) === JSON.stringify([...expected].sort()), `${label} must be exactly ${expected.join(", ") || "empty"}`);
+          }
+
+          function requireValue(condition, message) {
+            if (!condition) throw new Error(message);
+          }
+
+          async function main() {
+            const root = new URL("../", import.meta.url);
+            const [manifestSource, codeowners, workflow, runbook, currentStatus, ledgerSource] = await Promise.all([
+              readFile(new URL("governance/main-ruleset.proposed.json", root), "utf8"),
+              readFile(new URL(".github/CODEOWNERS", root), "utf8"),
+              readFile(new URL(".github/workflows/ci.yml", root), "utf8"),
+              readFile(new URL("docs/MAIN-GOVERNANCE.md", root), "utf8"),
+              readFile(new URL("docs/CURRENT-STATUS.md", root), "utf8"),
+              readFile(new URL("governance/project-ledger.json", root), "utf8")
+            ]);
+            validateMainGovernance({ manifest: JSON.parse(manifestSource), codeowners, workflow, runbook, currentStatus, ledger: JSON.parse(ledgerSource) });
+            console.log("main governance: active provider protection verified");
+          }
+
+          if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();
+          EOF
+
+          cat > scripts/check-main-governance.test.mjs <<'EOF'
+          import assert from "node:assert/strict";
+          import { readFile } from "node:fs/promises";
+          import { test } from "node:test";
+          import { validateMainGovernance } from "./check-main-governance.mjs";
+
+          const root = new URL("../", import.meta.url);
+          async function fixture() {
+            const [manifestSource, codeowners, workflow, runbook, currentStatus, ledgerSource] = await Promise.all([
+              readFile(new URL("governance/main-ruleset.proposed.json", root), "utf8"),
+              readFile(new URL(".github/CODEOWNERS", root), "utf8"),
+              readFile(new URL(".github/workflows/ci.yml", root), "utf8"),
+              readFile(new URL("docs/MAIN-GOVERNANCE.md", root), "utf8"),
+              readFile(new URL("docs/CURRENT-STATUS.md", root), "utf8"),
+              readFile(new URL("governance/project-ledger.json", root), "utf8")
+            ]);
+            return { manifest: JSON.parse(manifestSource), codeowners, workflow, runbook, currentStatus, ledger: JSON.parse(ledgerSource) };
+          }
+          const clone = value => structuredClone(value);
+
+          test("accepts verified active main protection", async () => validateMainGovernance(await fixture()));
+          test("rejects provider regression to unprotected", async () => {
+            const changed = clone(await fixture());
+            changed.manifest.providerObservation.state = "UNPROTECTED";
+            assert.throws(() => validateMainGovernance(changed), /PROTECTED/);
+          });
+          test("rejects ruleset identity drift", async () => {
+            const changed = clone(await fixture());
+            changed.manifest.providerObservation.rulesetId = 1;
+            assert.throws(() => validateMainGovernance(changed), /ruleset ID/);
+          });
+          test("rejects silently adding a Stage 1 approval", async () => {
+            const changed = clone(await fixture());
+            changed.manifest.githubRuleset.rules.find(rule => rule.type === "pull_request").parameters.required_approving_review_count = 1;
+            assert.throws(() => validateMainGovernance(changed), /must not invent human approval/);
+          });
+          test("rejects required check drift", async () => {
+            const changed = clone(await fixture());
+            changed.manifest.githubRuleset.rules.find(rule => rule.type === "required_status_checks").parameters.required_status_checks.push({ context: "other", integration_id: 15368 });
+            assert.throws(() => validateMainGovernance(changed), /required contexts/);
+          });
+          test("rejects stale blocked documentation", async () => {
+            const changed = clone(await fixture());
+            changed.currentStatus += "\nProvider activation is therefore **BLOCKED_PROVIDER_ACTION**.\n";
+            assert.throws(() => validateMainGovernance(changed), /cannot claim provider activation is blocked/);
+          });
+          test("rejects reopening GOV-003 without evidence", async () => {
+            const changed = clone(await fixture());
+            changed.ledger.workItems.find(item => item.id === "GOV-003").status = "blocked";
+            assert.throws(() => validateMainGovernance(changed), /GOV-003 must remain complete/);
+          });
+          EOF
+      - name: Update current governance documentation
+        shell: bash
+        run: |
+          cat > docs/MAIN-GOVERNANCE.md <<'EOF'
+          # Main branch governance runbook
+
+          <!-- Main governance activation: ACTIVE -->
+          <!-- Current provider state: PROTECTED -->
+          <!-- Active ruleset: 22247029 -->
+
+          `main` is **PROTECTED** at the GitHub provider boundary. GitHub ruleset **22247029**, `DoneState main governance`, is active and targets only `refs/heads/main`.
+
+          ## Active Stage 1 mechanical baseline
+
+          The provider-enforced baseline requires:
+
+          - every normal update to `main` arrives through a pull request;
+          - exact checks `core (22)`, `core (24)`, and `hosted-plugin`, pinned to GitHub Actions integration `15368`;
+          - required checks are current with the target branch;
+          - review conversations are resolved;
+          - branch deletion is blocked;
+          - non-fast-forward updates are blocked;
+          - required human approvals remain zero;
+          - the owner retains one auditable emergency bypass, which is not a normal merge path.
+
+          Enforcement was proven through governance-only PR #118. Its exact head `15e326116cb8aa424647a10f92ad4f8364a71fa1` ran workflow `33838442614`; `core (22)`, `core (24)`, and `hosted-plugin` all succeeded before the PR merged normally as `a802384ca6cf7fa7596b952a2e4654be71b6a292`. Issue #117 then closed completed.
+
+          The checked-in `githubRuleset` object in `governance/main-ruleset.proposed.json` intentionally remains an import-safe `disabled` template. Provider truth is carried separately by `providerObservation` and `activationReadBack`, which record ruleset 22247029 as active.
+
+          ## Stage 2: independent human review
+
+          After a real trusted human reviewer is named and the provider access consequence is accepted, strengthen the active ruleset to require one independent approval. This stage may only add constraints. It must never remove or weaken the Stage 1 mechanical baseline.
+
+          Automated DoneState, OpsTruth, GitHub Actions, bot, or agent output never counts as the independent human approval.
+
+          ## Normal merge path
+
+          1. A contributor opens or updates a pull request targeting `main`.
+          2. `core (22)`, `core (24)`, and `hosted-plugin` run on the exact pull-request head and pass.
+          3. The pull request is current with `main` and review conversations are resolved.
+          4. The repository owner, `AyobamiH`, makes the merge decision and executes the merge.
+
+          DoneState itself still has no merge authority. Provider capability and product authority remain separate.
+
+          ## Drift response
+
+          Reopen governance item `GOV-003` immediately if ruleset 22247029 is disabled, deleted, retargeted, gains or loses a required check unexpectedly, stops blocking deletion/non-fast-forward updates, or normal work begins using the owner bypass.
+
+          Stage 2 must also reopen review if it weakens any Stage 1 constraint.
+
+          ## Emergency recovery
+
+          The owner bypass uses GitHub's auditable `always` bypass mode. It exists only for recovery when the normal pull-request path cannot safely restore the repository.
+
+          1. Identify or open an incident or recovery issue before bypass when practical.
+          2. Keep the ruleset enabled. Do not delete it or switch enforcement off.
+          3. The repository owner alone performs the smallest recovery update and records its exact commit.
+          4. Run the three required contexts against the recovery result as soon as the provider path permits.
+          5. Record the provider bypass evidence, post-recovery CI, and owner-reviewed post-incident record.
+          6. Repair any workflow or ruleset drift through the normal pull-request path.
+
+          Force push and branch deletion remain blocked for ordinary actors. Owner bypass is emergency authority, not evidence of independent review.
+          EOF
+
+          node <<'NODE'
+          const fs = require('fs');
+          const p = 'docs/CURRENT-STATUS.md';
+          let text = fs.readFileSync(p, 'utf8');
+          const replacement = `## Default branch governance\n\nCurrent GitHub provider state is **PROTECTED**. Repository ruleset **22247029**, \`DoneState main governance\`, is active on \`refs/heads/main\`. It requires pull requests, exact checks \`core (22)\`, \`core (24)\`, and \`hosted-plugin\` pinned to GitHub Actions integration \`15368\`, strict target-branch freshness, resolved review conversations, deletion blocking, and non-fast-forward blocking, with zero required human approvals and one owner emergency bypass.\n\nProvider enforcement was proven by governance-only PR #118. Exact head \`15e326116cb8aa424647a10f92ad4f8364a71fa1\` ran workflow \`33838442614\`; all three required jobs succeeded before normal merge \`a802384ca6cf7fa7596b952a2e4654be71b6a292\`. Activation issue #117 is closed completed. The second trusted human reviewer remains an additive Stage 2 strengthening step and does not weaken or gate the active mechanical baseline.\n\n`;
+          text = text.replace(/## Default branch governance\n\n[\s\S]*?(?=## Hosted service and production maintenance runtime)/, replacement);
+          fs.writeFileSync(p, text);
+          NODE
+      - name: Render and validate canonical state
+        run: |
+          node scripts/render-project-state.mjs
+          npm ci
+          npm run check
+      - name: Commit closure branch
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/PROJECT-STATE.md
-          git commit -m "Render project state from canonical ledger"
-          git push origin HEAD:docs/product-kb-verified-canary
+          git add governance/main-ruleset.proposed.json governance/project-ledger.json docs/PROJECT-STATE.md docs/MAIN-GOVERNANCE.md docs/CURRENT-STATUS.md scripts/check-main-governance.mjs scripts/check-main-governance.test.mjs
+          git commit -m "Record active DoneState main protection"
+          git push --force-with-lease origin HEAD:governance/record-active-main-protection-20260904
