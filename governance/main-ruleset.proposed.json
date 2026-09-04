@@ -9,29 +9,23 @@
   "providerObservation": {
     "observedAt": "2026-09-04",
     "branch": "main",
-    "headCommit": "e75a78e45f73ce8eebd13284c5bd52097bc764cc",
-    "state": "UNPROTECTED",
-    "source": "GitHub branch and ruleset API read-back",
-    "providerMessage": "protected=false; required status-check enforcement=off; active rulesets=0",
-    "rulesetId": null
+    "headCommit": "a802384ca6cf7fa7596b952a2e4654be71b6a292",
+    "state": "PROTECTED",
+    "source": "GitHub branch and ruleset API read-back plus enforcement probe PR #118",
+    "providerMessage": "protected=true; active rulesets=1; ruleset 22247029 enforcement=active",
+    "rulesetId": 22247029
   },
   "activation": {
-    "state": "BLOCKED_PROVIDER_ACTION",
+    "state": "ACTIVE",
     "desiredProviderEnforcement": "active",
     "artifactProviderEnforcement": "disabled",
-    "appliedAt": null,
-    "blockingIssue": "https://github.com/AyobamiH/donestate/issues/60",
-    "blockers": [
-      {
-        "id": "PROVIDER_RULESET_WRITE",
-        "state": "UNRESOLVED",
-        "detail": "An authenticated repository-owner provider settings action must apply this exact main-only ruleset with enforcement active, followed by a separate provider read-back and test pull request."
-      }
-    ]
+    "appliedAt": "2026-09-04T05:42:20.251+01:00",
+    "blockingIssue": "https://github.com/AyobamiH/donestate/issues/117",
+    "blockers": []
   },
   "stages": {
     "mechanicalBaseline": {
-      "state": "READY_FOR_PROVIDER_ACTIVATION",
+      "state": "ACTIVE",
       "requiresSecondHumanReviewer": false,
       "requiredApprovals": 0,
       "requirements": [
@@ -58,7 +52,9 @@
       "userId": 47716486,
       "authority": "OWNER_ONLY"
     },
-    "codeOwners": ["@AyobamiH"],
+    "codeOwners": [
+      "@AyobamiH"
+    ],
     "independentReviewer": {
       "login": null,
       "state": "UNNAMED",
@@ -82,15 +78,34 @@
     "branchFiltered": false,
     "pathFiltered": false,
     "jobLevelConditions": false,
-    "contexts": ["core (22)", "core (24)", "hosted-plugin"],
-    "providerApp": {"slug": "github-actions", "integrationId": 15368},
+    "contexts": [
+      "core (22)",
+      "core (24)",
+      "hosted-plugin"
+    ],
+    "providerApp": {
+      "slug": "github-actions",
+      "integrationId": 15368
+    },
     "providerEvidence": {
       "sourceCommit": "c84faf1433a01a5cd3e7eef616175b4273d0bb47",
       "workflowRunId": 33484917639,
       "jobs": [
-        {"name":"core (22)","jobId":99782635467,"conclusion":"success"},
-        {"name":"core (24)","jobId":99782635540,"conclusion":"success"},
-        {"name":"hosted-plugin","jobId":99782635216,"conclusion":"success"}
+        {
+          "name": "core (22)",
+          "jobId": 99782635467,
+          "conclusion": "success"
+        },
+        {
+          "name": "core (24)",
+          "jobId": 99782635540,
+          "conclusion": "success"
+        },
+        {
+          "name": "hosted-plugin",
+          "jobId": 99782635216,
+          "conclusion": "success"
+        }
       ]
     }
   },
@@ -99,52 +114,96 @@
     "target": "branch",
     "enforcement": "disabled",
     "bypass_actors": [
-      {"actor_id":47716486,"actor_type":"User","bypass_mode":"always"}
+      {
+        "actor_id": 47716486,
+        "actor_type": "User",
+        "bypass_mode": "always"
+      }
     ],
     "conditions": {
-      "ref_name": {"include":["refs/heads/main"],"exclude":[]}
+      "ref_name": {
+        "include": [
+          "refs/heads/main"
+        ],
+        "exclude": []
+      }
     },
     "rules": [
-      {"type":"deletion"},
-      {"type":"non_fast_forward"},
       {
-        "type":"pull_request",
+        "type": "deletion"
+      },
+      {
+        "type": "non_fast_forward"
+      },
+      {
+        "type": "pull_request",
         "parameters": {
-          "allowed_merge_methods":["merge","squash","rebase"],
-          "dismiss_stale_reviews_on_push":false,
-          "require_code_owner_review":false,
-          "require_last_push_approval":false,
-          "required_approving_review_count":0,
-          "required_review_thread_resolution":true
+          "allowed_merge_methods": [
+            "merge",
+            "squash",
+            "rebase"
+          ],
+          "dismiss_stale_reviews_on_push": false,
+          "require_code_owner_review": false,
+          "require_last_push_approval": false,
+          "required_approving_review_count": 0,
+          "required_review_thread_resolution": true
         }
       },
       {
-        "type":"required_status_checks",
+        "type": "required_status_checks",
         "parameters": {
-          "do_not_enforce_on_create":false,
-          "required_status_checks":[
-            {"context":"core (22)","integration_id":15368},
-            {"context":"core (24)","integration_id":15368},
-            {"context":"hosted-plugin","integration_id":15368}
+          "do_not_enforce_on_create": false,
+          "required_status_checks": [
+            {
+              "context": "core (22)",
+              "integration_id": 15368
+            },
+            {
+              "context": "core (24)",
+              "integration_id": 15368
+            },
+            {
+              "context": "hosted-plugin",
+              "integration_id": 15368
+            }
           ],
-          "strict_required_status_checks_policy":true
+          "strict_required_status_checks_policy": true
         }
       }
     ]
   },
   "emergencyRecovery": {
-    "mode":"OWNER_BYPASS",
-    "bypassMode":"always",
-    "rulesetMustRemainEnabled":true,
-    "providerBypassMustRemainAuditable":true,
-    "normalMergeMayNotUseBypass":true,
-    "requiredRecords":["incident or recovery issue","exact recovery commit","provider bypass record","post-recovery CI result","post-incident review"]
+    "mode": "OWNER_BYPASS",
+    "bypassMode": "always",
+    "rulesetMustRemainEnabled": true,
+    "providerBypassMustRemainAuditable": true,
+    "normalMergeMayNotUseBypass": true,
+    "requiredRecords": [
+      "incident or recovery issue",
+      "exact recovery commit",
+      "provider bypass record",
+      "post-recovery CI result",
+      "post-incident review"
+    ]
   },
   "activationReadBack": {
-    "state":"NOT_ATTEMPTED",
-    "observedAt":null,
-    "rulesetId":null,
-    "providerEnforcement":null,
-    "effectiveBranchRules":[]
+    "state": "VERIFIED",
+    "observedAt": "2026-09-04T05:57:28+01:00",
+    "rulesetId": 22247029,
+    "providerEnforcement": "active",
+    "effectiveBranchRules": [
+      "refs/heads/main only",
+      "pull request required",
+      "core (22) required via GitHub Actions integration 15368",
+      "core (24) required via GitHub Actions integration 15368",
+      "hosted-plugin required via GitHub Actions integration 15368",
+      "strict target-branch freshness",
+      "resolved review conversations",
+      "deletion blocked",
+      "non-fast-forward blocked",
+      "zero required approvals",
+      "single owner emergency bypass"
+    ]
   }
 }

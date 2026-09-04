@@ -1,35 +1,35 @@
 # Main branch governance runbook
 
-<!-- Main governance activation: BLOCKED_PROVIDER_ACTION -->
-<!-- Current provider state: UNPROTECTED -->
+<!-- Main governance activation: ACTIVE -->
+<!-- Current provider state: PROTECTED -->
+<!-- Active ruleset: 22247029 -->
 
-`main` is still **UNPROTECTED** at the provider boundary. The 4 September 2026 GitHub read-back reports `protected=false`, required status-check enforcement off, and zero active repository rulesets. The checked-in [`governance/main-ruleset.proposed.json`](../governance/main-ruleset.proposed.json) is therefore evidence and an activation payload, not evidence that GitHub is already enforcing it.
+`main` is **PROTECTED** at the GitHub provider boundary. GitHub ruleset **22247029**, `DoneState main governance`, is active and targets only `refs/heads/main`.
 
-## Staged protection model
+## Active Stage 1 mechanical baseline
 
-Protection is now deliberately split into two stages so the absence of a second trusted human does not leave `main` mechanically unprotected.
+The provider-enforced baseline requires:
 
-### Stage 1: mechanical baseline
-
-Activate immediately at the GitHub provider boundary with **zero required human approvals**:
-
-- every update to `main` must arrive through a pull request;
-- exact checks `core (22)`, `core (24)`, and `hosted-plugin` are required and pinned to the GitHub Actions integration;
-- required checks must be current with the target branch;
-- review conversations must be resolved;
+- every normal update to `main` arrives through a pull request;
+- exact checks `core (22)`, `core (24)`, and `hosted-plugin`, pinned to GitHub Actions integration `15368`;
+- required checks are current with the target branch;
+- review conversations are resolved;
 - branch deletion is blocked;
 - non-fast-forward updates are blocked;
+- required human approvals remain zero;
 - the owner retains one auditable emergency bypass, which is not a normal merge path.
 
-The repository already proves the three required contexts are structurally emitted on every pull request: the CI workflow has an unfiltered `pull_request` trigger, no path filter, and no job-level condition for the required jobs.
+Enforcement was proven through governance-only PR #118. Its exact head `15e326116cb8aa424647a10f92ad4f8364a71fa1` ran workflow `33838442614`; `core (22)`, `core (24)`, and `hosted-plugin` all succeeded before the PR merged normally as `a802384ca6cf7fa7596b952a2e4654be71b6a292`. Issue #117 then closed completed.
 
-### Stage 2: independent human review
+The checked-in `githubRuleset` object in `governance/main-ruleset.proposed.json` intentionally remains an import-safe `disabled` template. Provider truth is carried separately by `providerObservation` and `activationReadBack`, which record ruleset 22247029 as active.
 
-After a real trusted human reviewer is named and the provider access consequence is accepted, strengthen the active ruleset to require one independent approval, stale-review dismissal, code-owner review, and last-push approval. This stage may only add constraints. It must never remove or weaken the Stage 1 mechanical baseline.
+## Stage 2: independent human review
+
+After a real trusted human reviewer is named and the provider access consequence is accepted, strengthen the active ruleset to require one independent approval. This stage may only add constraints. It must never remove or weaken the Stage 1 mechanical baseline.
 
 Automated DoneState, OpsTruth, GitHub Actions, bot, or agent output never counts as the independent human approval.
 
-## Normal merge path under Stage 1
+## Normal merge path
 
 1. A contributor opens or updates a pull request targeting `main`.
 2. `core (22)`, `core (24)`, and `hosted-plugin` run on the exact pull-request head and pass.
@@ -38,23 +38,15 @@ Automated DoneState, OpsTruth, GitHub Actions, bot, or agent output never counts
 
 DoneState itself still has no merge authority. Provider capability and product authority remain separate.
 
-## Provider activation gate
+## Drift response
 
-Repository implementation is ready. Activation is **BLOCKED_PROVIDER_ACTION** only because an authenticated GitHub repository-settings write and subsequent provider read-back have not occurred.
+Reopen governance item `GOV-003` immediately if ruleset 22247029 is disabled, deleted, retargeted, gains or loses a required check unexpectedly, stops blocking deletion/non-fast-forward updates, or normal work begins using the owner bypass.
 
-The owner-side activation procedure is:
-
-1. Apply the `githubRuleset` object from `governance/main-ruleset.proposed.json`, changing only `enforcement` from `disabled` to `active`.
-2. Do not add another target, bypass actor, approval requirement, or check in the same action.
-3. Read the provider state back independently and record the ruleset ID, `active` enforcement, effective `main` rules, and timestamp.
-4. Open a harmless test pull request and prove a direct/default-branch bypass is rejected while the three required checks gate the PR normally.
-5. Update the canonical ledger only from that observed provider evidence. Until then, repository documentation must continue to say `UNPROTECTED` and `BLOCKED_PROVIDER_ACTION`.
-
-A second trusted human reviewer is no longer a prerequisite for this mechanical protection. It is the next strengthening step after Stage 1 is active.
+Stage 2 must also reopen review if it weakens any Stage 1 constraint.
 
 ## Emergency recovery
 
-The proposed owner bypass uses GitHub's auditable `always` bypass mode. It exists only for recovery when the normal pull-request path cannot safely restore the repository.
+The owner bypass uses GitHub's auditable `always` bypass mode. It exists only for recovery when the normal pull-request path cannot safely restore the repository.
 
 1. Identify or open an incident or recovery issue before bypass when practical.
 2. Keep the ruleset enabled. Do not delete it or switch enforcement off.
