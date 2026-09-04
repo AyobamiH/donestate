@@ -1,0 +1,85 @@
+{
+  "schema": "proofandstate.distribution-release-candidate.v1",
+  "preparedAt": "2026-09-04",
+  "product": "DoneState",
+  "repository": "AyobamiH/donestate",
+  "repositoryTruth": {
+    "head": "a3be2ce3464161c38c3ae6314eb60ed92f97b9a4",
+    "postMergeCiRun": 33843356315,
+    "postMergeCiConclusion": "success",
+    "runtimeChangedSinceDeployedSource": false,
+    "commitsSinceDeployedSource": 22
+  },
+  "runtime": {
+    "sourceCommit": "e75a78e45f73ce8eebd13284c5bd52097bc764cc",
+    "deploymentRun": 33803045585,
+    "workerVersion": "97c8cca5-a554-42a7-82ab-a98337dc4a2a",
+    "containerDigest": "sha256:8b710cb6911473cbba8fc1c5777bb496e1aaf93577c68aed6595cd707846d89a",
+    "canonicalMcpEndpoint": "https://donestate.proofandstate.com/mcp"
+  },
+  "plugin": {
+    "manifestVersion": "0.2.0",
+    "appId": "asdk_app_6a9169a598348191b0aa3b2f2638355b",
+    "displayName": "DoneState",
+    "capabilities": ["Interactive", "Write"],
+    "skills": [
+      "maintain-repository",
+      "monitor-objective",
+      "run-objective",
+      "verify-objective"
+    ]
+  },
+  "existingOpenAIReview": {
+    "version": "0.2.0",
+    "state": "Review",
+    "submittedSourceCommit": "1588c0588dfcbfcefc70cda71e8197c1b14b7fed",
+    "submittedMcpEndpoint": "https://donestate-mcp.woeinvests.workers.dev/mcp",
+    "commitsFromSubmittedSourceToCurrentHead": 224,
+    "disposition": "STALE_REVIEW_SNAPSHOT_REQUIRES_PROVIDER_UPDATE_OR_REPLACEMENT"
+  },
+  "productionProof": {
+    "successorIssue": 114,
+    "runId": "c4a07fa6-90b2-4597-a4c6-eae66de5a3e8",
+    "pullRequest": 115,
+    "pullRequestState": "OPEN_UNMERGED_EVIDENCE",
+    "exactHead": "41f1ae3b0fed670e64bd99f1bcb1aea9c9e7e869",
+    "exactHeadCiRun": 33806832575,
+    "verificationContract": "donestate.verification-contract.v2",
+    "independentVerifier": "OpsTruth",
+    "terminalOutcome": "VERIFIED"
+  },
+  "authorityBoundary": {
+    "publication": "PULL_REQUEST_ONLY",
+    "selfMerge": false,
+    "selfApprove": false,
+    "selfVerify": false,
+    "independentVerificationRequired": true
+  },
+  "githubMarketplace": {
+    "existingListing": "DoneState",
+    "oauthAppId": 3822030,
+    "state": "SUBMITTED_IN_REVIEW_PENDING_FOR_PUBLISH",
+    "action": "KEEP_EXISTING_LISTING_AND_UPDATE_REVIEWER_MATERIALS_IN_PLACE_IF_PROVIDER_UI_PERMITS",
+    "doNot": ["CREATE_DUPLICATE_LISTING", "WITHDRAW_BEFORE_REPLACEMENT_IS_READY"]
+  },
+  "openAIProviderAction": {
+    "target": "EXISTING_DONESTATE_APP_AND_EXISTING_REVIEW",
+    "actionOrder": [
+      "OPEN_EXISTING_PUBLISHER_RECORD",
+      "READ_CURRENT_PROVIDER_STATE",
+      "REFRESH_OR_REPLACE_THE_REVIEW_SNAPSHOT_WITH_THIS_RELEASE_CANDIDATE",
+      "USE_CANONICAL_MCP_ENDPOINT",
+      "REFRESH_TOOL_AND_INPUT_SNAPSHOT_FROM_LIVE_CANONICAL_ENDPOINT",
+      "PRESERVE_EXISTING_PUBLISHER_IDENTITY_AND_REVIEWER_CREDENTIAL_CHANNEL",
+      "SUBMIT_THE_UPDATED_EXISTING_PRODUCT_FOR_REVIEW",
+      "RECORD_PROVIDER_VERSION_AND_REVIEW_ID"
+    ],
+    "versionRule": "DO_NOT_INVENT_A_NEW_VERSION_IN_REPOSITORY. If the provider allows replacing the pending 0.2.0 snapshot, retain that review identity. If the provider requires a new version, use the provider-supported next-version flow and record the resulting version before claiming submission.",
+    "doNot": ["CREATE_DUPLICATE_PRODUCT", "PUBLISH_STALE_WORKERS_DEV_SNAPSHOT"]
+  },
+  "providerReferences": {
+    "openAIApps": "https://help.openai.com/en/articles/11487775",
+    "openAIAppsSdk": "https://help.openai.com/en/articles/12515353-build-with-the-apps-sdk",
+    "githubMarketplaceListing": "https://docs.github.com/en/apps/github-marketplace/listing-an-app-on-github-marketplace/drafting-a-listing-for-your-app"
+  }
+}
