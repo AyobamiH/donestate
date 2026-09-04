@@ -23,6 +23,10 @@
     "requiredChecks": ["core (22)", "core (24)", "hosted-plugin"],
     "mergeCommit": "a802384ca6cf7fa7596b952a2e4654be71b6a292"
   },
+  "closureValidation": {
+    "reason": "Owner-authored exact-head revalidation after GitHub returned action_required for the preceding github-actions bot-authored repair commit",
+    "preservesDeterministicLeaseTestRepair": true
+  },
   "invariants": {
     "canaryPullRequest115OpenUnmerged": true,
     "historicalRunOutcomesUnchanged": true
