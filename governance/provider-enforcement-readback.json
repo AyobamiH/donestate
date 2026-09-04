@@ -1,0 +1,23 @@
+{
+  "schema": "donestate.provider-enforcement-readback",
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T05:57:28+01:00",
+  "repository": "AyobamiH/donestate",
+  "branch": "main",
+  "activeRuleset": {
+    "id": 22247029,
+    "name": "DoneState main governance",
+    "enforcement": "active"
+  },
+  "enforcementProbe": {
+    "pullRequest": 118,
+    "head": "15e326116cb8aa424647a10f92ad4f8364a71fa1",
+    "workflowRun": 33838442614,
+    "requiredChecks": ["core (22)", "core (24)", "hosted-plugin"],
+    "mergeCommit": "a802384ca6cf7fa7596b952a2e4654be71b6a292"
+  },
+  "invariants": {
+    "canaryPullRequest115OpenUnmerged": true,
+    "historicalRunOutcomesUnchanged": true
+  }
+}
