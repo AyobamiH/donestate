@@ -1,0 +1,46 @@
+{
+  "schema": "donestate.provider-enforcement-readback",
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T05:42:20.251+01:00",
+  "repository": "AyobamiH/donestate",
+  "branch": "main",
+  "mainHead": "2e99edaa2f0b90cb2ea589e7b6079c6706e3c67a",
+  "protected": true,
+  "activeRuleset": {
+    "id": 22247029,
+    "name": "DoneState main governance",
+    "enforcement": "active",
+    "target": "branch",
+    "include": ["refs/heads/main"],
+    "exclude": [],
+    "rules": ["deletion", "non_fast_forward", "pull_request", "required_status_checks"],
+    "requiredApprovals": 0,
+    "requiredReviewThreadResolution": true,
+    "strictRequiredStatusChecks": true,
+    "requiredStatusChecks": [
+      {"context": "core (22)", "integrationId": 15368},
+      {"context": "core (24)", "integrationId": 15368},
+      {"context": "hosted-plugin", "integrationId": 15368}
+    ],
+    "ownerEmergencyBypass": {"actorId": 47716486, "actorType": "User", "mode": "always"}
+  },
+  "providerNormalisation": {
+    "requireExtraApprovalForUnattributedChanges": true
+  },
+  "otherRulesets": [
+    {"id": 22246929, "name": "done-state-main-rulesets", "enforcement": "disabled"}
+  ],
+  "postMergeValidation": {
+    "workflowRunId": 33835198180,
+    "jobs": {
+      "core (22)": "success",
+      "core (24)": "success",
+      "hosted-plugin": "success"
+    }
+  },
+  "invariants": {
+    "canaryPullRequest115MustRemainOpenUnmerged": true,
+    "historicalRunOutcomesMustNotBeRewritten": true,
+    "independentHumanReviewRemainsFollowOn": true
+  }
+}
