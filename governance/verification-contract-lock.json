@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "donestate.verification-contract.v2",
+  "peerRepository": "AyobamiH/opstruth-chatgpt-plugin",
+  "peerManifestPath": "contracts/donestate/manifest.json",
+  "artifacts": {
+    "schemas/verification-response-v2.schema.json": "2e1b893609591938b1cb69e26939d842967762c3",
+    "schemas/verification-report-v1.schema.json": "d01912f824c39534c9607a5b37fc193046d9581e",
+    "schemas/verification-attestation-v2.schema.json": "f49c361bcd954e50be773cb9afff79000b58aadc",
+    "schemas/vectors/verification-contract-v2-verified.json": "bd2e4bd51997a453894050defee7125e38180649",
+    "schemas/vectors/verification-contract-v2-failed.json": "6fb3e203276c7718fa5c6b28bd6428a668b26256",
+    "schemas/vectors/verification-contract-v2-uncertain.json": "cecd856508a21a0d0c2de2b55c3b15a8ed02ac9d",
+    "schemas/vectors/verification-contract-v2-negative.json": "06a1566827fb001bc7dbbf331ad29a16ea4d2623"
+  },
+  "invariants": {
+    "completeResponseRequiredForNewHostedRuns": true,
+    "uncertainTerminalState": "AWAITING_VERIFICATION",
+    "historicalOutcomes": "never rewritten by this contract"
+  }
+}
