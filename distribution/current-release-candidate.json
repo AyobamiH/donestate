@@ -15,13 +15,17 @@
     "deploymentRun": 33803045585,
     "workerVersion": "97c8cca5-a554-42a7-82ab-a98337dc4a2a",
     "containerDigest": "sha256:8b710cb6911473cbba8fc1c5777bb496e1aaf93577c68aed6595cd707846d89a",
-    "canonicalMcpEndpoint": "https://donestate.proofandstate.com/mcp"
+    "canonicalMcpEndpoint": "https://donestate.proofandstate.com/mcp",
+    "releaseRequirement": "Deploy the merged 0.3.0 release commit and bind the provider scan to that exact deployed source before submitting the new plugin version."
   },
   "plugin": {
-    "manifestVersion": "0.2.0",
+    "manifestVersion": "0.3.0",
     "appId": "asdk_app_6a9169a598348191b0aa3b2f2638355b",
     "displayName": "DoneState",
-    "capabilities": ["Interactive", "Write"],
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
     "skills": [
       "maintain-repository",
       "monitor-objective",
@@ -60,26 +64,43 @@
     "oauthAppId": 3822030,
     "state": "SUBMITTED_IN_REVIEW_PENDING_FOR_PUBLISH",
     "action": "KEEP_EXISTING_LISTING_AND_UPDATE_REVIEWER_MATERIALS_IN_PLACE_IF_PROVIDER_UI_PERMITS",
-    "doNot": ["CREATE_DUPLICATE_LISTING", "WITHDRAW_BEFORE_REPLACEMENT_IS_READY"]
+    "doNot": [
+      "CREATE_DUPLICATE_LISTING",
+      "WITHDRAW_BEFORE_REPLACEMENT_IS_READY"
+    ]
   },
   "openAIProviderAction": {
-    "target": "EXISTING_DONESTATE_APP_AND_EXISTING_REVIEW",
+    "target": "EXISTING_DONESTATE_APP_AND_PRODUCT",
+    "newVersion": "0.3.0",
     "actionOrder": [
+      "MERGE_AND_DEPLOY_EXACT_0_3_0_RELEASE_SOURCE",
       "OPEN_EXISTING_PUBLISHER_RECORD",
-      "READ_CURRENT_PROVIDER_STATE",
-      "REFRESH_OR_REPLACE_THE_REVIEW_SNAPSHOT_WITH_THIS_RELEASE_CANDIDATE",
+      "CREATE_NEW_VERSION_0_3_0_ON_EXISTING_PRODUCT",
       "USE_CANONICAL_MCP_ENDPOINT",
-      "REFRESH_TOOL_AND_INPUT_SNAPSHOT_FROM_LIVE_CANONICAL_ENDPOINT",
+      "SCAN_LIVE_CANONICAL_MCP_SERVER",
+      "REVIEW_THE_FROZEN_20_TOOL_AND_SKILL_SNAPSHOT",
       "PRESERVE_EXISTING_PUBLISHER_IDENTITY_AND_REVIEWER_CREDENTIAL_CHANNEL",
-      "SUBMIT_THE_UPDATED_EXISTING_PRODUCT_FOR_REVIEW",
-      "RECORD_PROVIDER_VERSION_AND_REVIEW_ID"
+      "SUBMIT_0_3_0_FOR_REVIEW",
+      "PUBLISH_THE_APPROVED_0_3_0_VERSION",
+      "RUN_CLEAN_ACCOUNT_INSTALL_AND_END_TO_END_USER_CANARY"
     ],
-    "versionRule": "DO_NOT_INVENT_A_NEW_VERSION_IN_REPOSITORY. If the provider allows replacing the pending 0.2.0 snapshot, retain that review identity. If the provider requires a new version, use the provider-supported next-version flow and record the resulting version before claiming submission.",
-    "doNot": ["CREATE_DUPLICATE_PRODUCT", "PUBLISH_STALE_WORKERS_DEV_SNAPSHOT"]
+    "doNot": [
+      "CREATE_DUPLICATE_DONESTATE_PRODUCT",
+      "PUBLISH_STALE_0_2_0_WORKERS_DEV_SNAPSHOT",
+      "CLAIM_0_3_0_PUBLIC_BEFORE_PROVIDER_APPROVAL_AND_PUBLICATION"
+    ]
   },
   "providerReferences": {
     "openAIApps": "https://help.openai.com/en/articles/11487775",
     "openAIAppsSdk": "https://help.openai.com/en/articles/12515353-build-with-the-apps-sdk",
     "githubMarketplaceListing": "https://docs.github.com/en/apps/github-marketplace/listing-an-app-on-github-marketplace/drafting-a-listing-for-your-app"
+  },
+  "releaseVersionDecision": {
+    "version": "0.3.0",
+    "previousReviewVersion": "0.2.0",
+    "reason": "The reviewed MCP snapshot exposed 19 tools; the proven current runtime exposes 20 and adds submit_verifier_response for the complete donestate.verification-contract.v2 response while retaining submit_verifier_attestation only for historical compatibility. OpenAI requires a new plugin version to change a reviewed MCP metadata or skill snapshot.",
+    "previousToolCount": 19,
+    "currentToolCount": 20,
+    "toolCatalogueChanged": true
   }
 }

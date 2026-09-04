@@ -1,6 +1,6 @@
 {
   "name": "donestate",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Governed autonomous coding with durable execution and independent verification handoff.",
   "author": {
     "name": "AyobamiH",
@@ -9,7 +9,13 @@
   "homepage": "https://github.com/AyobamiH/donestate",
   "repository": "https://github.com/AyobamiH/donestate",
   "license": "Apache-2.0",
-  "keywords": ["autonomous-coding", "developer-tools", "github", "mcp", "verification"],
+  "keywords": [
+    "autonomous-coding",
+    "developer-tools",
+    "github",
+    "mcp",
+    "verification"
+  ],
   "skills": "./skills/",
   "apps": "./.app.json",
   "interface": {
@@ -18,7 +24,10 @@
     "longDescription": "Describe a repository outcome in prose, approve one bounded consequence envelope, and let DoneState run, validate and publish the change in an isolated durable workflow. DoneState stops at independent verification and never treats its own completion claim as proof.",
     "developerName": "AyobamiH",
     "category": "Productivity",
-    "capabilities": ["Interactive", "Write"],
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
     "websiteURL": "https://github.com/AyobamiH/donestate",
     "privacyPolicyURL": "https://github.com/AyobamiH/donestate/blob/main/docs/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/AyobamiH/donestate/blob/main/docs/TERMS.md",

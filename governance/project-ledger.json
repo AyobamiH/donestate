@@ -724,16 +724,17 @@
       "id": "OPENAI-001",
       "title": "Close the OpenAI review and legacy transport",
       "stream": "distribution",
-      "status": "blocked",
+      "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-15",
-      "nextAction": "Record the version 0.2.0 decision, then retire workers.dev callback/transport only when review no longer needs them.",
-      "waitCondition": "OpenAI version 0.2.0 remains in Review.",
-      "reentryCondition": "Resume when OpenAI sends a decision.",
+      "lastUpdated": "2026-09-04",
+      "staleDate": "2026-09-12",
+      "nextAction": "Merge and deploy the exact DoneState 0.3.0 release, scan https://donestate.proofandstate.com/mcp in the existing OpenAI publisher record, submit new version 0.3.0 for review, then publish the approved version and run a clean-account end-to-end install canary.",
+      "waitCondition": "Provider submission cannot truthfully start until the exact 0.3.0 release source is merged and deployed; the historical 0.2.0 review remains stale evidence, not the target release.",
+      "reentryCondition": "Continue immediately through release merge, exact deployment, provider scan, review submission, publication and clean-account canary. Do not create a duplicate product.",
       "dependencies": [],
       "evidenceIds": [
-        "E-005"
+        "E-005",
+        "E-040"
       ]
     },
     {
@@ -1432,6 +1433,23 @@
       "outcome": "Pending exact-head CI; the test now models lease expiry through the store clock seam instead of a sub-second real-time race.",
       "content": "PR #119 Node 22 failure STALE_FENCING_TOKEN, five-minute npm-ci delay, deterministic injected-clock repair, unchanged production lease semantics, and required protected-branch revalidation.",
       "measurement": "One flaky wall-clock dependency removed; zero production runtime files changed; zero lease or fencing semantics changed; three protected-branch checks required before closure."
+    },
+    {
+      "id": "E-040",
+      "date": "2026-09-04",
+      "identity": "DoneState 0.3.0 distribution release candidate selected from the proven production runtime",
+      "situation": "The OpenAI 0.2.0 review snapshot predates the production-proven DoneState-to-OpsTruth v2 loop and is 224 commits behind current repository truth. Distribution must advance the existing DoneState product rather than publish that stale snapshot or create a duplicate.",
+      "verification": "The submitted 0.2.0 source 1588c0588dfcbfcefc70cda71e8197c1b14b7fed registers 19 MCP tools. The deployed production source e75a78e45f73ce8eebd13284c5bd52097bc764cc registers 20, adding submit_verifier_response for the complete donestate.verification-contract.v2 bundle while retaining submit_verifier_attestation as historical compatibility. Current repository truth before this version cut is 99cbf9701dae9dc408fb42b0f26a130345347175, and runtime code did not change in the 22 commits after e75a78e45f73ce8eebd13284c5bd52097bc764cc. OpenAI submission guidance requires a new plugin version when reviewed MCP metadata or skill snapshots change.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "active",
+        "nextAction": "Merge and deploy 0.3.0, scan the canonical MCP endpoint in the existing publisher product, submit 0.3.0 for review, publish after approval, and prove a clean-account install and real end-to-end outcome.",
+        "waitCondition": "Exact 0.3.0 merge and deployment must precede provider submission.",
+        "staleDate": "2026-09-12"
+      },
+      "outcome": "The next DoneState directory release is 0.3.0 and is bound to the existing DoneState product identity; the stale 0.2.0 review is not treated as the target public release.",
+      "content": "Version decision, 19-to-20 MCP tool delta, canonical MCP endpoint, existing app/product identity, production VERIFIED proof chain, release/deploy/submission/publication order and duplicate-product prohibition.",
+      "measurement": "One existing product identity, one selected 0.3.0 release, 20 current MCP tools, one new complete-response submission tool, zero autonomous merges, zero duplicate products and zero historical outcomes rewritten."
     }
   ]
 }
