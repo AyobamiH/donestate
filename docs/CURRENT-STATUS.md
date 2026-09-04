@@ -8,9 +8,9 @@ As of 2026-09-04, the production DoneState-to-OpsTruth maintenance loop has one 
 
 ## Default branch governance
 
-Current GitHub provider state remains **UNPROTECTED**. The 4 September read-back reports `protected=false`, required status-check enforcement off, and zero active repository rulesets. Provider activation is therefore **BLOCKED_PROVIDER_ACTION**. Repository implementation is ready, but no source file can truthfully claim that a GitHub provider rule is active before an authenticated settings write and independent read-back occur.
+Current GitHub provider state is **PROTECTED**. Repository ruleset **22247029**, `DoneState main governance`, is active on `refs/heads/main`. It requires pull requests, exact checks `core (22)`, `core (24)`, and `hosted-plugin` pinned to GitHub Actions integration `15368`, strict target-branch freshness, resolved review conversations, deletion blocking, and non-fast-forward blocking, with zero required human approvals and one owner emergency bypass.
 
-The reviewed Stage 1 proposal in [Main governance](MAIN-GOVERNANCE.md) now requires pull requests, exact checks `core (22)`, `core (24)`, and `hosted-plugin`, strict target-branch freshness, resolved review conversations, deletion blocking, and non-fast-forward blocking, with zero required human approvals. A second trusted human reviewer is a Stage 2 strengthening step that adds one independent approval later; it no longer blocks mechanical protection.
+Provider enforcement was proven by governance-only PR #118. Exact head `15e326116cb8aa424647a10f92ad4f8364a71fa1` ran workflow `33838442614`; all three required jobs succeeded before normal merge `a802384ca6cf7fa7596b952a2e4654be71b6a292`. Activation issue #117 is closed completed. The second trusted human reviewer remains an additive Stage 2 strengthening step and does not weaken or gate the active mechanical baseline.
 
 ## Hosted service and production maintenance runtime
 

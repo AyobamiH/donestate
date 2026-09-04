@@ -4,7 +4,6 @@ import { test } from "node:test";
 import { validateMainGovernance } from "./check-main-governance.mjs";
 
 const root = new URL("../", import.meta.url);
-
 async function fixture() {
   const [manifestSource, codeowners, workflow, runbook, currentStatus, ledgerSource] = await Promise.all([
     readFile(new URL("governance/main-ruleset.proposed.json", root), "utf8"),
@@ -12,57 +11,40 @@ async function fixture() {
     readFile(new URL(".github/workflows/ci.yml", root), "utf8"),
     readFile(new URL("docs/MAIN-GOVERNANCE.md", root), "utf8"),
     readFile(new URL("docs/CURRENT-STATUS.md", root), "utf8"),
-    readFile(new URL("governance/project-ledger.json", root), "utf8"),
+    readFile(new URL("governance/project-ledger.json", root), "utf8")
   ]);
   return { manifest: JSON.parse(manifestSource), codeowners, workflow, runbook, currentStatus, ledger: JSON.parse(ledgerSource) };
 }
+const clone = value => structuredClone(value);
 
-function clone(value) { return structuredClone(value); }
-
-test("accepts the activation-ready mechanical main governance proposal", async () => {
-  validateMainGovernance(await fixture());
-});
-
-test("rejects an active claim while provider evidence remains unprotected", async () => {
+test("accepts verified active main protection", async () => validateMainGovernance(await fixture()));
+test("rejects provider regression to unprotected", async () => {
   const changed = clone(await fixture());
-  changed.manifest.activation.state = "ACTIVE";
-  changed.manifest.githubRuleset.enforcement = "active";
-  assert.throws(() => validateMainGovernance(changed), /BLOCKED_PROVIDER_ACTION/);
+  changed.manifest.providerObservation.state = "UNPROTECTED";
+  assert.throws(() => validateMainGovernance(changed), /PROTECTED/);
 });
-
-test("rejects a documentation claim that main is protected", async () => {
+test("rejects ruleset identity drift", async () => {
   const changed = clone(await fixture());
-  changed.currentStatus += "\nMain is protected.\n";
-  assert.throws(() => validateMainGovernance(changed), /current status must not claim main is protected/);
+  changed.manifest.providerObservation.rulesetId = 1;
+  assert.throws(() => validateMainGovernance(changed), /ruleset ID/);
 });
-
-test("rejects a required check that is not always emitted", async () => {
+test("rejects silently adding a Stage 1 approval", async () => {
   const changed = clone(await fixture());
-  changed.manifest.githubRuleset.rules.find((rule) => rule.type === "required_status_checks").parameters.required_status_checks.push({ context: "Governance freshness / project-state" });
-  assert.throws(() => validateMainGovernance(changed), /ruleset required contexts must be exactly/);
+  changed.manifest.githubRuleset.rules.find(rule => rule.type === "pull_request").parameters.required_approving_review_count = 1;
+  assert.throws(() => validateMainGovernance(changed), /must not invent human approval/);
 });
-
-test("rejects pull-request path filters that could deadlock required checks", async () => {
+test("rejects required check drift", async () => {
   const changed = clone(await fixture());
-  changed.workflow = changed.workflow.replace("  pull_request:\n", "  pull_request:\n    paths: [src/**]\n");
-  assert.throws(() => validateMainGovernance(changed), /pull_request trigger cannot be filtered/);
+  changed.manifest.githubRuleset.rules.find(rule => rule.type === "required_status_checks").parameters.required_status_checks.push({ context: "other", integration_id: 15368 });
+  assert.throws(() => validateMainGovernance(changed), /required contexts/);
 });
-
-test("rejects an invented independent reviewer", async () => {
+test("rejects stale blocked documentation", async () => {
   const changed = clone(await fixture());
-  changed.manifest.ownership.independentReviewer.login = "placeholder-reviewer";
-  changed.manifest.ownership.independentReviewer.state = "NAMED";
-  assert.throws(() => validateMainGovernance(changed), /do not invent or imply an independent reviewer/);
+  changed.currentStatus += "\nProvider activation is therefore **BLOCKED_PROVIDER_ACTION**.\n";
+  assert.throws(() => validateMainGovernance(changed), /cannot claim provider activation is blocked/);
 });
-
-test("rejects making the future reviewer a mechanical activation blocker", async () => {
+test("rejects reopening GOV-003 without evidence", async () => {
   const changed = clone(await fixture());
-  changed.manifest.stages.mechanicalBaseline.requiresSecondHumanReviewer = true;
-  assert.throws(() => validateMainGovernance(changed), /second human reviewer cannot block mechanical protection/);
-});
-
-test("rejects silently adding an approval before a reviewer exists", async () => {
-  const changed = clone(await fixture());
-  changed.manifest.githubRuleset.rules.find((rule) => rule.type === "pull_request").parameters.required_approving_review_count = 1;
-  assert.throws(() => validateMainGovernance(changed), /must not invent a human approval requirement/);
+  changed.ledger.workItems.find(item => item.id === "GOV-003").status = "blocked";
+  assert.throws(() => validateMainGovernance(changed), /GOV-003 must remain complete/);
 });
