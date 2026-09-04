@@ -1,0 +1,31 @@
+name: Render project state once
+
+on:
+  push:
+    branches:
+      - automation/render-project-state-20260904
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/product-kb-verified-canary
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node scripts/render-project-state.mjs
+      - name: Commit generated state only
+        run: |
+          git diff --exit-code -- docs/PROJECT-STATE.md && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/PROJECT-STATE.md
+          git commit -m "Render project state from canonical ledger"
+          git push origin HEAD:docs/product-kb-verified-canary
