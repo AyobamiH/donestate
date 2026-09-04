@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import path from "node:path";
-import { setTimeout as delay } from "node:timers/promises";
 import test from "node:test";
 import { DoneStateController } from "../controller.js";
 import { createRunId } from "../hash.js";
@@ -26,14 +25,15 @@ test("leases reject concurrent owners and advance fencing tokens after expiry", 
 
 test("resume turns an unsettled mutating intent into AMBIGUOUS_EFFECT", async () => {
   const root = await temporaryRoot();
-  const store = new DoneStateStore(path.join(root, "state.sqlite"));
+  let now = new Date("2026-08-27T12:00:00.000Z");
+  const store = new DoneStateStore(path.join(root, "state.sqlite"), () => now);
   const objective = simpleObjective(root);
   const run = await store.createRun(createRunId(), admitObjective(objective, policyFor(root)));
   await store.transition(run.id, "RECEIVED", "ADMITTED", "test_admission");
   await store.transition(run.id, "ADMITTED", "EXECUTING", "test_execution");
   const lease = await store.acquireLease(run.id, "crashed-worker", 100);
   await store.startAction(run.id, "execute", "crashed-worker", lease.fencingToken);
-  await delay(120);
+  now = new Date(now.getTime() + 101);
   const resumed = await new DoneStateController(store, "replacement-worker").resume(run.id);
   assert.equal(resumed.state, "AMBIGUOUS_EFFECT");
   assert.equal((await store.listActions(run.id))[0]!.state, "AMBIGUOUS");

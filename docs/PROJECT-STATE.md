@@ -471,3 +471,13 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 - **Outcome:** DoneState main is mechanically protected at the GitHub provider layer and the required-check gate has been proven by a normal governance-only pull request.
 - **Content:** Provider ruleset 22247029, exact main target, three pinned GitHub Actions checks, strict freshness, resolved conversations, destructive-ref blocking, zero approvals, owner emergency bypass, proof PR #118, proof workflow 33838442614, merge a802384ca6cf7fa7596b952a2e4654be71b6a292, and preserved PR #115/historical outcomes.
 - **Measurement:** One active main-only ruleset, three required checks, one enforcement-probe PR, three successful exact-head jobs, one normal merge after the gate cleared, zero canary merges, and zero rewritten historical outcomes.
+
+### E-039 — Lease-expiry recovery test made clock-deterministic after slow-runner exposure
+
+- **Date:** 2026-09-04
+- **Situation:** Provider-protection closure PR #119 exposed a timing-sensitive test when a GitHub Actions Node 22 runner spent about five minutes in npm ci. The test gave a real worker lease only 100 ms before startAction, so scheduler and SQLite latency could expire the lease before the intended ambiguous-resume scenario was established.
+- **Verification:** The repair changes only src/test/store.test.ts. It injects a fixed clock into DoneStateStore, establishes the action while the lease is valid, advances the clock exactly 101 ms past the 100 ms lease, and then exercises resume. Production lease durations, fencing rules, store implementation, controller behaviour, and runtime code are unchanged. PR #119 must rerun core (22), core (24), hosted-plugin, and governance impact on the new exact head before merge.
+- **Accountability:** owner=DoneState maintainers; status=active; next=Require all three exact-head PR checks and governance impact to pass on the deterministic test repair, then merge the provider-protection closure normally without owner bypass.; wait=PR #119 exact-head CI must prove the test no longer depends on runner wall-clock latency.; stale=2026-09-08
+- **Outcome:** Pending exact-head CI; the test now models lease expiry through the store clock seam instead of a sub-second real-time race.
+- **Content:** PR #119 Node 22 failure STALE_FENCING_TOKEN, five-minute npm-ci delay, deterministic injected-clock repair, unchanged production lease semantics, and required protected-branch revalidation.
+- **Measurement:** One flaky wall-clock dependency removed; zero production runtime files changed; zero lease or fencing semantics changed; three protected-branch checks required before closure.
