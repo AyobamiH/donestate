@@ -199,7 +199,7 @@ const verificationResponseSchema = z.object({
 }).strict();
 
 function createServer(): McpServer {
-  const server = new McpServer({ name: "DoneState", version: "0.2.0" });
+  const server = new McpServer({ name: "DoneState", version: "0.3.0" });
 
   server.registerTool(
     "get_openai_credential_status",
