@@ -4,10 +4,17 @@
   "observedAt": "2026-09-04T05:57:28+01:00",
   "repository": "AyobamiH/donestate",
   "branch": "main",
+  "protected": true,
   "activeRuleset": {
     "id": 22247029,
     "name": "DoneState main governance",
-    "enforcement": "active"
+    "enforcement": "active",
+    "target": "refs/heads/main",
+    "requiredStatusChecks": [
+      {"context": "core (22)", "integrationId": 15368},
+      {"context": "core (24)", "integrationId": 15368},
+      {"context": "hosted-plugin", "integrationId": 15368}
+    ]
   },
   "enforcementProbe": {
     "pullRequest": 118,
