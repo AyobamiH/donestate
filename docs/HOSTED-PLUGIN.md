@@ -1,12 +1,12 @@
 # Hosted service and ChatGPT plugin
 
-DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. The supported public-repository path is deployed as the live hosted service and has recorded production evidence. Version 0.2.0 is submitted for OpenAI review but is not yet approved or published; separately gated capabilities and unresolved verification states are stated below.
+DoneState 0.2 introduces a hosted MCP execution plane and a ChatGPT plugin package. The supported public-repository path is deployed as the live hosted service and has recorded production evidence. Version 0.3.0 is submitted and in OpenAI Review as of 8 September 2026; the historical 0.2.0 disposition is unknown; separately gated capabilities and unresolved verification states are stated below.
 
 Canonical hosted endpoint: `https://donestate.proofandstate.com/mcp`
 
 The original `https://donestate-mcp.woeinvests.workers.dev/mcp` endpoint remains enabled temporarily because OpenAI directory version 0.2.0 was submitted against that immutable review transport. New configuration and documentation use the Proof & State hostname.
 
-The Worker and Container application are deployed. Public reachability, OAuth protection, authenticated GitHub OAuth, user-funded OpenAI credential setup, an end-to-end pull-request objective, and the historical independent OpsTruth v2 round trip have been verified. The private GitHub App is installed on only `AyobamiH/donestate`. Its fresh PR-only canary PR was later owner-merged, but the canary run remains `AWAITING_VERIFICATION` because no fresh signed terminal verifier decision is publicly evidenced. OpenAI directory version 0.2.0 is in `Review`.
+The Worker and Container application are deployed. Public reachability, OAuth protection, authenticated GitHub OAuth, user-funded OpenAI credential setup, an end-to-end pull-request objective, and the historical independent OpsTruth v2 round trip have been verified. The private GitHub App is installed on only `AyobamiH/donestate`. Its fresh PR-only canary PR was later owner-merged, but the canary run remains `AWAITING_VERIFICATION` because no fresh signed terminal verifier decision is publicly evidenced. OpenAI directory version 0.3.0 is in `Review` as observed on 8 September 2026; this does not establish the historical 0.2.0 disposition.
 
 ## What the hosted slice does
 
@@ -126,3 +126,9 @@ The canonical fresh canary is run `b4242932-0bc1-4876-a202-634d9c12d72a` and pul
 Post-merge workflow `33474288066` passed `core (24)` and `hosted-plugin` but failed `core (22)` at governance impact because the canary document changed without the canonical ledger. Earlier OpsTruth attempts signed `uncertain`; the latest retry failed closed on GitHub's anonymous rate limit. DoneState correctly remains `AWAITING_VERIFICATION`, and `AyobamiH/opstruth-chatgpt-plugin#11` tracks the authenticated read-lane blocker. Until a fresh signed terminal decision is accepted, the owner-side canary must not be described as independently verified.
 
 DoneState still does not implement merge queues, autonomous deployment or package publication, multi-repository objectives, hardware-backed verifier-key custody, external event anchoring, or fleet SLOs. These remain gated work and must not be implied by the plugin listing.
+
+## Distribution reconciliation — 8 September 2026
+
+See [the current directory submission record](DIRECTORY-SUBMISSION.md): DoneState 0.3.0 is submitted / Review, OpsTruth 0.4.1 is Published, and the existing GitHub Marketplace listing is still Pending for publish and not published. Earlier dated 0.2.0 Review observations are historical, not a current provider read. The observed DoneState review app ID differs from the historical mapping; continuity and old-version disposition remain unresolved. No duplicate is established; neither identity should be deleted or silently replaced.
+
+OpsTruth standalone public-repository inspection does not require DoneState. Its authenticated DoneState exact-head bridge is a separate lane currently scoped only to AyobamiH/donestate. Directory visibility, a signed repository map and the historical VERIFIED canary do not substitute for a fresh clean-account end-to-end production outcome.

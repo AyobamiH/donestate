@@ -22,7 +22,9 @@ This file is the canonical, reviewable handoff for the current DoneState ChatGPT
 | Submission type | With MCP, Universal URL |
 | Previous review version | 0.2.0 |
 | Current release version | 0.3.0 |
-| Existing app ID | `asdk_app_6a9169a598348191b0aa3b2f2638355b` |
+| Historical app ID (repository mapping) | `asdk_app_6a9169a598348191b0aa3b2f2638355b` |
+| Observed 0.3.0 review app ID | `asdk_app_6a929a3cf3fc8191bb06ea4a3cc0a1e9` |
+| Identity continuity | Unresolved; retain historical mapping pending provider confirmation |
 | MCP tool count | 20 |
 
 ## Why this is a new version
@@ -88,7 +90,7 @@ Use the existing publisher availability configuration only where the verified pu
 
 ## Submission evidence and remaining provider boundary
 
-Before submitting 0.3.0:
+Original release checklist (merge, deployment and submission are now evidenced below; approval and clean-account gates remain):
 
 - merge the exact 0.3.0 release through protected `main`;
 - require `core (22)`, `core (24)` and `hosted-plugin` to pass on the exact release head;
@@ -102,8 +104,28 @@ Before submitting 0.3.0:
 
 The production proof already establishes that GitHub App installation, selected-repository execution, PR-only publication and complete independent verification can succeed without merging PR #115 or rewriting historical outcomes.
 
-## Publication state
+## Distribution reconciliation — 8 September 2026
 
-**0.3.0 RELEASE CANDIDATE — NOT YET SUBMITTED OR PUBLIC.**
+DoneState 0.3.0 is submitted / Review, not Published. OpenAI's receipt is dated 2026-09-04T15:24:52Z. The [review record](https://platform.openai.com/plugins/edit/asdk_app_6a929a3cf3fc8191bb06ea4a3cc0a1e9/asdk_app_v_6a929a3d9ea48191a55a8f84dc512f7c) freezes https://donestate.proofandstate.com/mcp and 20 tools including submit_verifier_response. Its OAuth authorization, token, base and resource settings use the canonical origin; the domain is verified. Publisher: AYOBAMI JOHN HAASTRUP; category: Productivity. Editing and scanning are disabled during review. Do not cancel or resubmit the accepted version to refresh evidence.
 
-Version 0.2.0 remains a historical OpenAI review snapshot submitted on 30 August 2026 and is not the target release. Preserve its legacy review transport only while that historical review still needs it. The current target is version 0.3.0 on the existing DoneState product, using the canonical owned-domain MCP endpoint. Do not create a duplicate product and do not claim 0.3.0 public before provider approval and publication.
+The observed review app is asdk_app_6a929a3cf3fc8191bb06ea4a3cc0a1e9; the repository's historical app mapping is asdk_app_6a9169a598348191b0aa3b2f2638355b. Only one DoneState product, with 0.3.0, was visible in the inspected Personal organization / Default project inventory. Historical 0.2.0 was not visible; its current disposition and identity continuity are unknown. This does not prove duplicate creation or migration. Preserve plugins/donestate/.app.json until the provider confirms the mapping; do not delete either identity, create another product or publish the historical workers.dev snapshot.
+
+The deployed release source is 4ab47e099c3303d08565a7dbf4cda36bc68b74ce, CI 33869297576 and deployment 33869297590 (both successful). Deployment logs record Worker d1a85a35-dc0d-4106-a95a-d9a763db4adf and container sha256:66d81bb158d7a309a56d43e2f9d0758cd9a8208f0ff56eb350d7c2b5cc813bd8. Later documentation-only commits do not change deployed runtime identity.
+
+OpsTruth 0.4.1 is Published at https://chatgpt.com/plugins/plugins_6a8d4dc60bf081918a06094873890eb4. Live health binds cbe833dce0646314c189568be6acc21348895ed8 and discovery returns 21 tools, all read-only. Deployment 33868337668 attempt 2 passed production smoke. The directory displays six skills; a clean-account installed MCP connection is not established by directory visibility alone.
+
+### Standalone OpsTruth is independent of DoneState
+
+OpsTruth's standalone public-repository inspection does not require a DoneState session, objective or credential. A direct opstruth_inspect_repository call against AyobamiH/opstruth-chatgpt-plugin on 2026-09-08 returned a complete signed repository map with changedState.changed=false. This proves bounded public inspection, not execution or a clean-account journey.
+
+The special authenticated DoneState exact-head bridge is a different lane: its verifier-owned GitHub App is configured only for AyobamiH/donestate and rejects other repository identities. General public audit tools use the separate public-data path. The bridge requests checks, contents and statuses read (metadata read), never writes. An arbitrary customer's repository is not yet covered; support requires an explicit scope decision and separately reviewed configuration/implementation, not a blanket permission increase.
+
+### Remaining external and owner controls
+
+- Reconcile the two DoneState app IDs and historical 0.2.0 disposition with the provider, without cancelling or duplicating the current submission.
+- Obtain OpenAI approval and publish only DoneState 0.3.0. OpsTruth 0.4.1 requires no republishing.
+- Keep the existing GitHub Marketplace request: https://github.com/marketplace/donestate/edit still says Pending for publish, under review and not published. Current description and screenshot captions match the PR-only boundary; no correction request was visible on that dashboard.
+- Complete real publisher decisions in LEGAL-001. A renewed tracking review is not legal clearance.
+- After publication, use a genuinely clean account, explicit repository-specific executor and independent read-only verifier authority, and a fresh objective. Record versions, run, unmerged PR/head, complete v2 response and terminal VERIFIED.
+
+PR #115 remains open/unmerged at 41f1ae3b0fed670e64bd99f1bcb1aea9c9e7e869. Read-only retrieval still reports run c4a07fa6-90b2-4597-a4c6-eae66de5a3e8 as VERIFIED. Never reuse this run as a clean-user canary or rewrite predecessor outcomes.
