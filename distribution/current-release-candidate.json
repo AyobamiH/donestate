@@ -4,19 +4,20 @@
   "product": "DoneState",
   "repository": "AyobamiH/donestate",
   "repositoryTruth": {
-    "head": "a3be2ce3464161c38c3ae6314eb60ed92f97b9a4",
-    "postMergeCiRun": 33843356315,
+    "head": "4ab47e099c3303d08565a7dbf4cda36bc68b74ce",
+    "postMergeCiRun": 33869297576,
     "postMergeCiConclusion": "success",
     "runtimeChangedSinceDeployedSource": false,
-    "commitsSinceDeployedSource": 22
+    "commitsSinceDeployedSource": 0,
+    "scope": "Snapshot of main at observation time; subsequent documentation reconciliation is not a runtime deployment."
   },
   "runtime": {
-    "sourceCommit": "e75a78e45f73ce8eebd13284c5bd52097bc764cc",
-    "deploymentRun": 33803045585,
-    "workerVersion": "97c8cca5-a554-42a7-82ab-a98337dc4a2a",
-    "containerDigest": "sha256:8b710cb6911473cbba8fc1c5777bb496e1aaf93577c68aed6595cd707846d89a",
+    "sourceCommit": "4ab47e099c3303d08565a7dbf4cda36bc68b74ce",
+    "deploymentRun": 33869297590,
+    "workerVersion": "d1a85a35-dc0d-4106-a95a-d9a763db4adf",
+    "containerDigest": "sha256:66d81bb158d7a309a56d43e2f9d0758cd9a8208f0ff56eb350d7c2b5cc813bd8",
     "canonicalMcpEndpoint": "https://donestate.proofandstate.com/mcp",
-    "releaseRequirement": "Deploy the merged 0.3.0 release commit and bind the provider scan to that exact deployed source before submitting the new plugin version."
+    "evidenceScope": "Successful deployment log, not a fresh Cloudflare control-plane inventory."
   },
   "plugin": {
     "manifestVersion": "0.3.0",
@@ -35,11 +36,11 @@
   },
   "existingOpenAIReview": {
     "version": "0.2.0",
-    "state": "Review",
+    "state": "UNKNOWN_NOT_VISIBLE_IN_CURRENT_INVENTORY",
     "submittedSourceCommit": "1588c0588dfcbfcefc70cda71e8197c1b14b7fed",
     "submittedMcpEndpoint": "https://donestate-mcp.woeinvests.workers.dev/mcp",
-    "commitsFromSubmittedSourceToCurrentHead": 224,
-    "disposition": "STALE_REVIEW_SNAPSHOT_REQUIRES_PROVIDER_UPDATE_OR_REPLACEMENT"
+    "disposition": "HISTORICAL_NOT_TARGET_FOR_PUBLICATION",
+    "lastKnownState": "Review"
   },
   "productionProof": {
     "successorIssue": 114,
@@ -63,26 +64,22 @@
     "existingListing": "DoneState",
     "oauthAppId": 3822030,
     "state": "SUBMITTED_IN_REVIEW_PENDING_FOR_PUBLISH",
-    "action": "KEEP_EXISTING_LISTING_AND_UPDATE_REVIEWER_MATERIALS_IN_PLACE_IF_PROVIDER_UI_PERMITS",
+    "action": "KEEP_EXISTING_SUBMITTED_LISTING_WAIT_FOR_PROVIDER_DECISION",
     "doNot": [
       "CREATE_DUPLICATE_LISTING",
       "WITHDRAW_BEFORE_REPLACEMENT_IS_READY"
-    ]
+    ],
+    "observedAt": "2026-09-08"
   },
   "openAIProviderAction": {
-    "target": "EXISTING_DONESTATE_APP_AND_PRODUCT",
+    "target": "OBSERVED_0_3_0_REVIEW_PENDING_HISTORICAL_ID_RECONCILIATION",
     "newVersion": "0.3.0",
     "actionOrder": [
-      "MERGE_AND_DEPLOY_EXACT_0_3_0_RELEASE_SOURCE",
-      "OPEN_EXISTING_PUBLISHER_RECORD",
-      "CREATE_NEW_VERSION_0_3_0_ON_EXISTING_PRODUCT",
-      "USE_CANONICAL_MCP_ENDPOINT",
-      "SCAN_LIVE_CANONICAL_MCP_SERVER",
-      "REVIEW_THE_FROZEN_20_TOOL_AND_SKILL_SNAPSHOT",
-      "PRESERVE_EXISTING_PUBLISHER_IDENTITY_AND_REVIEWER_CREDENTIAL_CHANNEL",
-      "SUBMIT_0_3_0_FOR_REVIEW",
-      "PUBLISH_THE_APPROVED_0_3_0_VERSION",
-      "RUN_CLEAN_ACCOUNT_INSTALL_AND_END_TO_END_USER_CANARY"
+      "RECONCILE_HISTORICAL_AND_CURRENT_APP_ID_WITH_PROVIDER",
+      "PRESERVE_CURRENT_0_3_0_REVIEW",
+      "PUBLISH_ONLY_AFTER_0_3_0_APPROVAL",
+      "CONFIRM_EXPLICIT_TEST_REPOSITORY_EXECUTOR_AND_READ_ONLY_VERIFIER_SCOPE",
+      "RUN_CLEAN_ACCOUNT_PUBLIC_INSTALL_AND_NEW_END_TO_END_CANARY"
     ],
     "doNot": [
       "CREATE_DUPLICATE_DONESTATE_PRODUCT",
@@ -102,5 +99,53 @@
     "previousToolCount": 19,
     "currentToolCount": 20,
     "toolCatalogueChanged": true
+  },
+  "observedAt": "2026-09-08",
+  "currentOpenAIReview": {
+    "version": "0.3.0",
+    "state": "Review",
+    "submittedAt": "2026-09-04T15:24:52Z",
+    "observedAppId": "asdk_app_6a929a3cf3fc8191bb06ea4a3cc0a1e9",
+    "reviewUrl": "https://platform.openai.com/plugins/edit/asdk_app_6a929a3cf3fc8191bb06ea4a3cc0a1e9/asdk_app_v_6a929a3d9ea48191a55a8f84dc512f7c",
+    "mcpEndpoint": "https://donestate.proofandstate.com/mcp",
+    "frozenToolCount": 20,
+    "completeResponseTool": "submit_verifier_response",
+    "publisher": "AYOBAMI JOHN HAASTRUP",
+    "category": "Productivity",
+    "domainVerified": true,
+    "public": false
+  },
+  "publisherIdentityReconciliation": {
+    "historicalAppId": "asdk_app_6a9169a598348191b0aa3b2f2638355b",
+    "observedReviewAppId": "asdk_app_6a929a3cf3fc8191bb06ea4a3cc0a1e9",
+    "status": "UNRESOLVED_PROVIDER_MAPPING",
+    "visibleDoneStateProducts": 1,
+    "visibleVersions": [
+      "0.3.0"
+    ],
+    "duplicateConclusion": "No duplicate visible; identity continuity not established.",
+    "nextAction": "Provider confirmation before changing identities or publishing."
+  },
+  "opsTruth": {
+    "repository": "AyobamiH/opstruth-chatgpt-plugin",
+    "version": "0.4.1",
+    "sourceCommit": "cbe833dce0646314c189568be6acc21348895ed8",
+    "deploymentRun": 33868337668,
+    "deploymentAttempt": 2,
+    "publicationState": "Published",
+    "listingId": "plugins_6a8d4dc60bf081918a06094873890eb4",
+    "canonicalMcpEndpoint": "https://mcp.opstruth.io/mcp",
+    "liveToolCount": 21,
+    "allToolsReadOnly": true,
+    "standalonePublicInspectionRequiresDoneState": false,
+    "standaloneProbeRepository": "AyobamiH/opstruth-chatgpt-plugin",
+    "standaloneProbeOutcome": "complete signed read-only repository map; not execution verification",
+    "authenticatedDoneStateBridgeRepository": "AyobamiH/donestate",
+    "arbitraryCustomerBridgeOutcome": "NOT_PROVEN_NOT_IN_CURRENT_AUTHENTICATED_SCOPE"
+  },
+  "cleanAccountProductionOutcome": {
+    "state": "NOT_YET_EVIDENCED",
+    "mustUseFreshRun": true,
+    "firstPublicationGate": "DoneState 0.3.0 OpenAI approval and publication"
   }
 }

@@ -19,7 +19,7 @@ Provider enforcement was proven by governance-only PR #118. Exact head `15e32611
 - historical hosted baseline workflow: `33210941821`
 - historical hosted run: `631d8a08-d337-4bae-bd18-b55c31f48a8b` (`VERIFIED`)
 - canonical MCP endpoint: `https://donestate.proofandstate.com/mcp`
-- current maintenance source before this documentation closure: `e75a78e45f73ce8eebd13284c5bd52097bc764cc`
+- historical successful-canary runtime source (not the later 0.3.0 release): `e75a78e45f73ce8eebd13284c5bd52097bc764cc`
 - post-receipt repair PR: #113
 - repair exact review head: `6853e110f05a0fc97a16ecec6eda3175dccc3ec1`
 - repair exact-head CI: `33802965309`
@@ -68,8 +68,14 @@ The production Marketplace submission remains **Pending for publish** and has no
 
 The owner preview does not prove public availability, public discoverability, webhook delivery, entitlement state, OAuth completion, repository selection, execution, billing, retention, or user outcome. The edit page at `https://github.com/marketplace/donestate/edit` remains the provider state boundary and historically showed `Pending for publish`, `Withdraw request`, `This listing has not been published to Marketplace`, and `This listing is a draft and has not yet been published on GitHub Marketplace`.
 
-The separate OpenAI channel remains distinct: DoneState version `0.2.0` remains in `Review`. Neither Marketplace preview content nor OpenAI review status changes the production maintenance verifier evidence above.
+The separate OpenAI channel remains distinct: DoneState version `0.3.0` is in `Review` as observed on 8 September 2026; historical `0.2.0` is absent from the inspected inventory and its current disposition is unknown. Neither Marketplace preview content nor OpenAI review status changes the production maintenance verifier evidence above.
 
 ## Not implemented
 
 DoneState does not merge its automatic maintenance pull requests, deploy or publish releases or packages autonomously, approve its own pull requests, manage repository fleets, or use CrabBox or ClawPatch at runtime. Multi-repository and fleet authority remain later explicit gates.
+
+## Distribution reconciliation — 8 September 2026
+
+See [the current directory submission record](DIRECTORY-SUBMISSION.md): DoneState 0.3.0 is submitted / Review, OpsTruth 0.4.1 is Published, and the existing GitHub Marketplace listing is still Pending for publish and not published. Earlier dated 0.2.0 Review observations are historical, not a current provider read. The observed DoneState review app ID differs from the historical mapping; continuity and old-version disposition remain unresolved. No duplicate is established; neither identity should be deleted or silently replaced.
+
+OpsTruth standalone public-repository inspection does not require DoneState. Its authenticated DoneState exact-head bridge is a separate lane currently scoped only to AyobamiH/donestate. Directory visibility, a signed repository map and the historical VERIFIED canary do not substitute for a fresh clean-account end-to-end production outcome.

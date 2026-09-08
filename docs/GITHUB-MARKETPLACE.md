@@ -114,3 +114,9 @@ Before submission, GitHub warned that any existing subscriptions would be remove
 - <https://docs.github.com/en/apps/github-marketplace/listing-an-app-on-github-marketplace/writing-a-listing-description-for-your-app>
 - <https://docs.github.com/en/apps/github-marketplace/listing-an-app-on-github-marketplace/configuring-a-webhook-to-notify-you-of-plan-changes>
 - <https://docs.github.com/en/apps/github-marketplace/using-the-github-marketplace-api-in-your-app/handling-new-purchases-and-free-trials>
+
+## Distribution reconciliation — 8 September 2026
+
+See [the current directory submission record](DIRECTORY-SUBMISSION.md): DoneState 0.3.0 is submitted / Review, OpsTruth 0.4.1 is Published, and the existing GitHub Marketplace listing is still Pending for publish and not published. Earlier dated 0.2.0 Review observations are historical, not a current provider read. The observed DoneState review app ID differs from the historical mapping; continuity and old-version disposition remain unresolved. No duplicate is established; neither identity should be deleted or silently replaced.
+
+OpsTruth standalone public-repository inspection does not require DoneState. Its authenticated DoneState exact-head bridge is a separate lane currently scoped only to AyobamiH/donestate. Directory visibility, a signed repository map and the historical VERIFIED canary do not substitute for a fresh clean-account end-to-end production outcome.

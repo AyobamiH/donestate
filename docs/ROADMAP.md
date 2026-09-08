@@ -15,7 +15,7 @@ Milestone themes live here; the executable recovery order and every active, bloc
 
 ## 0.2: provider transactions
 
-- ChatGPT and Codex plugin control surface with prose-first objective skills. Deployed; directory version 0.2.0 submitted and in OpenAI Review.
+- ChatGPT and Codex plugin control surface with prose-first objective skills. Deployed; directory version 0.3.0 submitted and in OpenAI Review (8 September 2026); the historical 0.2.0 disposition is unknown.
 - GitHub Marketplace OAuth submission. Still `SUBMITTED / IN_REVIEW` and `Pending for publish`; the authenticated edit page says the listing is a draft and has not been published. The owner preview at `https://github.com/marketplace/donestate` displays provider `AyobamiH`, a `$0` `Public repositories` plan, and `1 install`, while an unauthenticated exact Marketplace search returns no result. Preview content and authenticated inventory do not prove public availability, webhook delivery, entitlement, OAuth completion, repository selection, execution, billing, retention, or user outcome. The separate development listing remains owner-only.
 - OAuth 2.1 MCP transport, durable hosted run coordination and isolated Codex execution. Deployed and canary-verified for the public-repository path.
 - Exact-head branch push and pull-request actions with durable effect probes. Deployed and canary-verified for the public-repository path.
@@ -44,3 +44,9 @@ Milestone themes live here; the executable recovery order and every active, bloc
 CrabBox and ClawPatch are deferred provider adapters. They may be added only after recorded evidence shows Cloudflare Sandbox and direct Codex execution cannot satisfy a named requirement. Multi-repository and fleet authority remains last.
 
 The version numbers are product milestones, not promises of dates. "Deployed" means code reached the production Worker; it does not imply that an unconfigured provider path or unpassed canary is production-verified. Security and independent-verification invariants remain release gates.
+
+## Distribution reconciliation — 8 September 2026
+
+See [the current directory submission record](DIRECTORY-SUBMISSION.md): DoneState 0.3.0 is submitted / Review, OpsTruth 0.4.1 is Published, and the existing GitHub Marketplace listing is still Pending for publish and not published. Earlier dated 0.2.0 Review observations are historical, not a current provider read. The observed DoneState review app ID differs from the historical mapping; continuity and old-version disposition remain unresolved. No duplicate is established; neither identity should be deleted or silently replaced.
+
+OpsTruth standalone public-repository inspection does not require DoneState. Its authenticated DoneState exact-head bridge is a separate lane currently scoped only to AyobamiH/donestate. Directory visibility, a signed repository map and the historical VERIFIED canary do not substitute for a fresh clean-account end-to-end production outcome.
