@@ -35,7 +35,8 @@ Let a human authorise an outcome and consequence envelope once, then allow a cod
 - Ambiguous external effects are not blindly replayed.
 - Authority is consequence-specific and does not silently widen.
 - Deterministic code, not model judgement, owns execution-state truth and safety boundaries.
-- Push, PR, merge, deploy, publish, secret access, and destructive authority remain explicit.
+- Automatic repository maintenance is PR-only; DoneState does not merge its own repairs.
+- Push, PR creation, deployment, publication, secret access, and destructive authority remain explicit and separately bounded.
 
 ## Evidence of Done
 
