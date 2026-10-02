@@ -250,13 +250,13 @@
       "id": "GOV-002",
       "title": "Synchronize Proof & State governance records",
       "stream": "governance",
-      "status": "active",
+      "status": "complete",
       "owner": "Proof & State maintainers",
       "lastUpdated": "2026-10-02",
-      "staleDate": "2026-10-09",
-      "nextAction": "After this launch-boundary change merges, update Proof & State portfolio records to the exact DoneState merge subject and record three parallel distribution states: owned-domain standalone service, OpenAI review, and GitHub Marketplace review.",
-      "waitCondition": "The channels must remain separate: owned-domain launch must not imply external-directory publication, and external-directory delay must not block owned-domain operation.",
-      "reentryCondition": "Close after Proof & State points to the exact merged DoneState subject and accurately records each channel state.",
+      "staleDate": "2026-12-01",
+      "nextAction": "Preserve the Proof & State portfolio reconciliation at merge bf5da722c7df0af781c677b685624098ba02b749 and reopen only if the parent source pin or channel-state separation drifts.",
+      "waitCondition": "None.",
+      "reentryCondition": "Reopen only on parent-governance drift, DoneState source/deployment drift, or a provider-state change that the parent ledger fails to represent.",
       "dependencies": [
         "GOV-001",
         "MKT-001",
@@ -271,7 +271,8 @@
         "E-008",
         "E-012",
         "E-013",
-        "E-032"
+        "E-032",
+        "E-050"
       ]
     },
     {
@@ -1625,6 +1626,23 @@
       "outcome": "Both DoneState npm lock trees no longer resolve the known vulnerable fast-uri 3.1.6 path; the Worker transitive advisory set is pinned to patched overrides and CI now fails on future high-severity npm advisories.",
       "content": "Root and Worker security lock refresh; exact npm-generated Worker lock; patched fast-uri, hono, ip-address, qs, sharp and undici overrides; permanent high-severity Worker audit gate; unchanged runtime authority, MCP tool inventory and provider state.",
       "measurement": "Exact-head run 37026803683: core (22) passed, core (24) passed, hosted-plugin passed, permanent npm audit --audit-level=high passed, plugin validation passed; 382 Worker lock package entries; zero MCP tools changed; zero external listing/provider mutations."
+    },
+    {
+      "id": "E-050",
+      "date": "2026-10-02",
+      "identity": "Proof & State parent sync closed against secured DoneState production",
+      "situation": "DoneState GOV-002 required the parent portfolio to point to the current merged DoneState subject and preserve owned-domain, OpenAI and GitHub Marketplace as independent distribution states.",
+      "verification": "Proof & State PR #28 exact head 5c43b41a4af321ce68a8d74f9ed8712cb8fe1707 passed portfolio-state and contract-tests; its deploy-cloudflare-canary consequence was correctly skipped. PR #28 merged as bf5da722c7df0af781c677b685624098ba02b749. Post-merge Governance run 37028126231 passed and GTM Orchestrator run 37028125832 passed its contract checks while publishing remained disabled. The parent ledger now pins DoneState main af620d2ab05bafc89c927ff030be28c3732b0adf, post-merge CI 37027143899, production deployment 37027143173 and Worker 2a570090-b8e5-4edc-97a2-0adc35fce92d, while retaining OpenAI Review and GitHub Marketplace Pending for publish as separate external states.",
+      "accountability": {
+        "owner": "DoneState and Proof & State maintainers",
+        "status": "complete",
+        "nextAction": "Preserve the exact parent/source/runtime pins and channel-state separation; reopen only on drift or a new provider transition.",
+        "waitCondition": "None.",
+        "staleDate": "2026-12-01"
+      },
+      "outcome": "The parent governance repository now represents the secured current DoneState owned service and does not treat OpenAI or GitHub Marketplace as the sole route to market.",
+      "content": "Exact parent PR, merge, post-merge governance checks, DoneState source/CI/deployment/Worker pins, publishing-disabled parent consequence, and three-channel state separation.",
+      "measurement": "One parent reconciliation PR merged; two post-merge parent checks passed; one current DoneState source pin; one current runtime deployment pin; zero external provider states inferred or mutated."
     }
   ]
 }
