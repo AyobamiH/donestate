@@ -123,12 +123,16 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
   }
 
   async status(ownerLogin: string): Promise<CredentialStatus> {
-    this.assertOwner(ownerLogin);
+    if (!ownerLogin) throw new Error("credential owner is required");
+    const owner = this.ctx.storage.sql.exec<OwnerRow>(
+      "SELECT owner_login FROM owner WHERE singleton = 1",
+    ).toArray()[0] ?? null;
+    if (owner && owner.owner_login !== ownerLogin) throw new Error("credential vault belongs to another identity");
     const nowMs = Date.now();
     const credential = this.assertCredentialOwner(ownerLogin, false);
-    this.ensureQuota(ownerLogin, nowMs);
     const quota = this.quota(ownerLogin);
-    const active = quota?.active_run_id && quota.active_until_ms && quota.active_until_ms > nowMs
+    const currentDay = quota?.day_utc === todayUtc(nowMs);
+    const active = currentDay && quota?.active_run_id && quota.active_until_ms && quota.active_until_ms > nowMs
       ? quota.active_run_id
       : null;
     return {
@@ -137,7 +141,7 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
       createdAt: credential?.created_at ?? null,
       updatedAt: credential?.updated_at ?? null,
       lastUsedAt: credential?.last_used_at ?? null,
-      dailyRunsUsed: quota?.runs_started ?? 0,
+      dailyRunsUsed: currentDay ? quota?.runs_started ?? 0 : 0,
       dailyRunLimit: dailyRunLimit(this.env),
       activeRunId: active,
     };
