@@ -126,6 +126,7 @@ describe("execution credential setup", () => {
 
     expect(response.status).toBe(200);
     expect(result).toContain("DoneState account data deleted");
+    expect(result).toContain("Deleted selected repositories: 1");
     expect(await env.CREDENTIAL_VAULT.getByName(user).status(user)).toMatchObject({ connected: false });
     expect(await env.MAINTENANCE_REGISTRY.getByName("global").listRepositories(user)).toEqual([]);
   });
