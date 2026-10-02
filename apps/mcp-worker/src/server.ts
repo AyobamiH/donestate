@@ -11,7 +11,7 @@ import { createGitHubAppSetup } from "./github-app-settings";
 import type { DoneStateEnv } from "./environment";
 import { getBranchHead, getRepositoryAccess } from "./github";
 import { mcpAuthInfo, type TokenInspector } from "./mcp-auth";
-import { MaintenanceRegistry } from "./maintenance-registry";
+import { MaintenanceRegistry, type FunnelEvent } from "./maintenance-registry";
 import { allowsMarketplaceDevelopmentRequest, isMarketplaceDevelopment } from "./marketplace-development";
 import {
   AUTHORITY_CLASSES,
@@ -78,6 +78,18 @@ function credentialVault(login: string) {
 
 function maintenanceRegistry() {
   return doneStateEnv().MAINTENANCE_REGISTRY.getByName("global");
+}
+
+async function recordFunnelBestEffort(event: FunnelEvent): Promise<void> {
+  try {
+    await maintenanceRegistry().recordFunnelEvent(event);
+  } catch (error) {
+    console.error(JSON.stringify({
+      message: "DoneState funnel counter did not update",
+      event,
+      error: error instanceof Error ? error.message : "unknown error",
+    }));
+  }
 }
 
 function textResult(value: unknown) {
@@ -454,6 +466,7 @@ function createServer(): McpServer {
       try {
         await stub.create(objective, githubToken);
         await maintenanceRegistry().requireAccountWritable(identity.login, admission.accountGeneration);
+        await recordFunnelBestEffort("objective_created");
         const run = input.autoStart ? await stub.start(identity.login) : await stub.get(identity.login);
         return textResult({ run, repositoryPrivate: access.private, credentialSource });
       } catch (error) {
