@@ -53,8 +53,12 @@ The owned-domain service, OpenAI/ChatGPT distribution and GitHub Marketplace are
 
 No channel changes DoneState's core authority boundary: remote work is bounded, PR-oriented and independently verifiable, and final merge authority remains with the repository owner.
 
-## Deletion and current launch boundary
+## Account settings and deletion
 
-The service already exposes `delete_objective` for eligible terminal/cancelled objectives and `delete_openai_credential` for the stored user-funded execution credential.
+`create_openai_credential_setup` remains the existing MCP entry point for the secure browser settings flow. Its single-use HTTPS link now opens a consolidated DoneState account console showing the authenticated GitHub identity, OpenAI credential status and quota, selected maintenance repositories, and indexed objectives.
 
-Whole-account deletion and a consolidated account/status surface remain tracked customer-readiness work. Until those are complete and a fresh clean-account customer journey is proven, treat the owned-domain launch as controlled technical access rather than unrestricted self-serve GA.
+The same account console can delete indexed DoneState account data. Deletion requires typing the exact GitHub login and fails closed while an indexed objective is active. During deletion, new run indexing, repository selection, maintenance discovery/repair and credential replacement are blocked. The shared registry and per-user credential vault each carry a monotonic deletion generation, so work admitted before deletion cannot resume after the purge. Partial destructive failure keeps the locks engaged for a safe retry; an active-objective refusal before destructive work rolls them back. Successful deletion removes indexed deletable objectives, the encrypted OpenAI credential, selected-repository state, maintenance findings and user Marketplace entitlement records. Organization Marketplace entitlement state is preserved while the deleting user's authorizer identity is cleared. A minimal opaque generation fence remains only to reject stale in-flight writes; the shared fence does not store the plaintext GitHub login.
+
+The owner-level run index is new. Historical maintenance runs are backfilled from maintenance findings, but a direct objective created before the account-controls release may not be discoverable automatically. Delete any such historical run with `delete_objective` using its known run ID or submit a privacy request.
+
+A fresh clean-account end-to-end customer acceptance remains required before describing the owned-domain service as unrestricted self-serve GA.

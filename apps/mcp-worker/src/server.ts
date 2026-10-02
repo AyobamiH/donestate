@@ -369,6 +369,7 @@ function createServer(): McpServer {
       requireExecutionScope(context);
       const identity = authProps(context);
       requireWritableIdentity(identity);
+      const accountAdmission = await maintenanceRegistry().requireAccountWritable(identity.login);
       const credential = await credentialVault(identity.login).status(identity.login);
       if (!credential.connected) throw new Error("BLOCKED_CAPABILITY: connect your OpenAI execution credential first");
       return textResult(await maintenanceRegistry().startRepair(identity.login, findingId));
@@ -400,6 +401,7 @@ function createServer(): McpServer {
       requireExecutionScope(context);
       const identity = authProps(context);
       requireWritableIdentity(identity);
+      const accountAdmission = await maintenanceRegistry().requireAccountWritable(identity.login);
       const credential = await credentialVault(identity.login).status(identity.login);
       if (!credential.connected) {
         throw new Error("BLOCKED_CAPABILITY: connect your own OpenAI API key with create_openai_credential_setup before creating an objective");
@@ -441,10 +443,28 @@ function createServer(): McpServer {
         maxChangedFiles: input.maxChangedFiles,
         maxDurationMs: input.maxDurationMs,
       };
+      const admission = await maintenanceRegistry().recordRun(
+        identity.login,
+        runId,
+        input.repository,
+        "operator",
+        accountAdmission.generation,
+      );
       const stub = coordinator(runId);
-      await stub.create(objective, githubToken);
-      const run = input.autoStart ? await stub.start(identity.login) : await stub.get(identity.login);
-      return textResult({ run, repositoryPrivate: access.private, credentialSource });
+      try {
+        await stub.create(objective, githubToken);
+        await maintenanceRegistry().requireAccountWritable(identity.login, admission.accountGeneration);
+        const run = input.autoStart ? await stub.start(identity.login) : await stub.get(identity.login);
+        return textResult({ run, repositoryPrivate: access.private, credentialSource });
+      } catch (error) {
+        try {
+          await stub.purge(identity.login);
+        } catch {
+          // The run may not have been created yet.
+        }
+        await maintenanceRegistry().removeRun(identity.login, runId);
+        throw error;
+      }
     },
   );
 
@@ -459,6 +479,7 @@ function createServer(): McpServer {
       requireExecutionScope(context);
       const identity = authProps(context);
       requireWritableIdentity(identity);
+      await maintenanceRegistry().requireAccountWritable(identity.login);
       return textResult(await coordinator(runId).start(identity.login));
     },
   );
@@ -502,7 +523,9 @@ function createServer(): McpServer {
       requireExecutionScope(context);
       const identity = authProps(context);
       requireWritableIdentity(identity);
-      return textResult(await coordinator(runId).purge(identity.login));
+      const result = await coordinator(runId).purge(identity.login);
+      await maintenanceRegistry().removeRun(identity.login, runId);
+      return textResult(result);
     },
   );
 
