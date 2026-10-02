@@ -537,6 +537,12 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
   }
 
   async purgeAccount(login: string): Promise<AccountDataSummary & { deleted: true }> {
+    const ownerKey = await this.accountOwnerKey(login);
+    const control = this.ctx.storage.sql.exec<AccountControlRow>(
+      "SELECT * FROM account_controls WHERE owner_key = ?",
+      ownerKey,
+    ).toArray()[0];
+    if (control?.deleting !== 1) throw new Error("DoneState account deletion lock is required");
     const before = await this.accountDataSummary(login);
     this.ctx.storage.sql.exec("DELETE FROM findings WHERE owner_login = ?", login);
     this.ctx.storage.sql.exec("DELETE FROM selected_repositories WHERE owner_login = ?", login);
@@ -549,7 +555,6 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       "UPDATE marketplace_entitlements SET authorized_by_login = NULL WHERE account_type = 'Organization' AND authorized_by_login = ?",
       login,
     );
-    const ownerKey = await this.accountOwnerKey(login);
     this.ctx.storage.sql.exec(
       "UPDATE account_controls SET deleting = 0, updated_at = ? WHERE owner_key = ?",
       new Date().toISOString(),
