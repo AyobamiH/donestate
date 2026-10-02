@@ -305,8 +305,8 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-09",
-      "nextAction": "Perform one production browser readback of the newly deployed public root at desktop and narrow width, then one authenticated account-console readback from a freshly issued setup URL. Confirm the shared DoneState/Proof & State hierarchy, responsive stacking, visible status separation, focus treatment, credential/quota status, selected repositories and indexed objectives.",
-      "waitCondition": "The cohesive root is merged, post-merge CI is green, and the exact Worker is deployed. The remaining evidence is visual/browser-specific: the available public fetcher cannot access donestate.proofandstate.com, and the account console requires a fresh one-time authenticated browser handoff.",
+      "nextAction": "Perform production browser readback of the owned-service root and authenticated account console. Confirm the branded hierarchy, responsive layout, direct Get started / full MCP reference navigation, visible channel-status separation, focus treatment, credential/quota state, selected repositories and indexed objectives.",
+      "waitCondition": "The cohesive root is already deployed. This candidate only routes the public root into the first-class Proof & State documentation without changing the frozen 20-tool MCP contract; visual/browser readback remains required after merge/deploy.",
       "reentryCondition": "Close after production browser evidence proves both the public entry point and authenticated account console at the deployed version.",
       "dependencies": [
         "GOV-001"
@@ -315,7 +315,8 @@
         "E-043",
         "E-044",
         "E-053",
-        "E-054"
+        "E-054",
+        "E-055"
       ]
     },
     {
@@ -553,7 +554,8 @@
         "E-041",
         "E-044",
         "E-049",
-        "E-054"
+        "E-054",
+        "E-055"
       ]
     },
     {
@@ -1715,6 +1717,23 @@
       "outcome": "The owned-domain root now ships the Proof & State-aligned DoneState shell, shared Worker UI tokens, clear distribution-state separation, setup path, canonical endpoint, workflow model and authority boundary without changing the 20-tool MCP surface.",
       "content": "Protected exact-head validation, permanent dependency-audit pass, plugin-validation pass, protected merge, post-merge CI, production Worker/container identity, shared UI token implementation, repository design contract and explicit visual-readback limitation.",
       "measurement": "Three required exact-head jobs passed; one permanent high-severity audit gate passed; one plugin validation passed; one protected merge; one post-merge CI passed; one production deployment passed; zero MCP tools changed; zero OAuth scopes changed; zero provider listing mutations; visual readback still pending."
+    },
+    {
+      "id": "E-055",
+      "date": "2026-10-02",
+      "identity": "Owned-service landing page routes developers into first-class DoneState documentation",
+      "situation": "The branded owned-service root already explained the DoneState trust boundary, but its primary setup action still sent developers to repository Markdown. Proof & State now has a structured DoneState documentation surface with quickstart and complete MCP reference, so the service root should lead users there without changing the submitted MCP tool contract.",
+      "verification": "Candidate branch ux/hosted-service-home-20261002 changes only apps/mcp-worker/src/auth.ts landing-page links and its auth regression test. The MCP endpoint, OAuth scope, tool registration, schemas, execution behaviour and verification contract are unchanged. Exact-head hosted-plugin and Node 24 CI passed; Node 22 reached governance-impact enforcement after all tests, documentation closure and package audit passed, requiring this ledger record before merge.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Require exact-head core (22), core (24) and hosted-plugin to pass after this governance update, merge through protected main, deploy the Worker, then include the new docs links in production browser readback.",
+        "waitCondition": "CI and deployment are repository-controlled; visual production readback follows deployment.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "The owned-service home will provide direct Get started, complete MCP tool reference, product overview, documentation and source paths while preserving the existing runtime and external review contracts.",
+      "content": "Developer navigation and discovery only; no MCP tool, secret, provider credential, reviewer credential, authority model or execution semantics change.",
+      "measurement": "Three high-intent developer paths from the service hero, one explicit Documentation footer path, zero MCP tool-count changes and zero OAuth/verification-contract changes."
     }
   ]
 }
