@@ -230,6 +230,39 @@ describe("MaintenanceRegistry", () => {
     expect(verifiedMergedMaintenanceBranchRetirementEligible({ ...run, objective: { ...run.objective, objectiveClass: "operator" } } as PublicRunRecord, subject)).toBe(false);
   });
 
+  it("blocks new owner-scoped mutations while account deletion is in progress and restores writes after rollback", async () => {
+    const registry = env.MAINTENANCE_REGISTRY.getByName("account-deletion-lock-test");
+    const login = "deleting-user";
+
+    await registry.beginAccountDeletion(login);
+    await expect(registry.requireAccountWritable(login)).rejects.toThrow("account deletion is in progress");
+    await expect(registry.selectRepository(login, {
+      repository: "owner/blocked-during-delete",
+      defaultBranch: "main",
+      mode: "observe",
+      scheduleEnabled: false,
+      autoRepair: false,
+      requiredCheckNames: [],
+    })).rejects.toThrow("account deletion is in progress");
+    await expect(registry.recordRun(
+      login,
+      "11111111-1111-4111-8111-111111111113",
+      "owner/blocked-during-delete",
+      "operator",
+    )).rejects.toThrow("account deletion is in progress");
+
+    await registry.endAccountDeletion(login);
+    await expect(registry.requireAccountWritable(login)).resolves.toEqual({ writable: true });
+    await expect(registry.selectRepository(login, {
+      repository: "owner/allowed-after-delete-rollback",
+      defaultBranch: "main",
+      mode: "observe",
+      scheduleEnabled: false,
+      autoRepair: false,
+      requiredCheckNames: [],
+    })).resolves.toMatchObject({ repository: "owner/allowed-after-delete-rollback" });
+  });
+
   it("indexes account-owned runs and purges owner-scoped registry data without touching platform configuration", async () => {
     const registry = env.MAINTENANCE_REGISTRY.getByName("account-index-test");
     const login = "account-user";
