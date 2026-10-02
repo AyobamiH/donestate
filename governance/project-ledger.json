@@ -305,16 +305,17 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-09",
-      "nextAction": "Pass exact-head CI and plugin validation for the cohesive owned-service shell, merge and deploy it through protected main, then perform one production browser readback of the public root plus one authenticated account-console readback from a freshly issued setup URL. Confirm the root, settings and success surfaces read as one DoneState/Proof & State product family while the frozen 20-tool MCP contract remains unchanged.",
-      "waitCondition": "The account controls are deployed and the public root is live but visually under-designed. The cohesive shell candidate is not yet merged. The authenticated account-console browser readback still requires a fresh one-time production setup URL.",
-      "reentryCondition": "Close after the cohesive root is deployed and production browser readback proves both the public entry point and authenticated account console without MCP metadata drift.",
+      "nextAction": "Perform one production browser readback of the newly deployed public root at desktop and narrow width, then one authenticated account-console readback from a freshly issued setup URL. Confirm the shared DoneState/Proof & State hierarchy, responsive stacking, visible status separation, focus treatment, credential/quota status, selected repositories and indexed objectives.",
+      "waitCondition": "The cohesive root is merged, post-merge CI is green, and the exact Worker is deployed. The remaining evidence is visual/browser-specific: the available public fetcher cannot access donestate.proofandstate.com, and the account console requires a fresh one-time authenticated browser handoff.",
+      "reentryCondition": "Close after production browser evidence proves both the public entry point and authenticated account console at the deployed version.",
       "dependencies": [
         "GOV-001"
       ],
       "evidenceIds": [
         "E-043",
         "E-044",
-        "E-053"
+        "E-053",
+        "E-054"
       ]
     },
     {
@@ -537,8 +538,8 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-09",
-      "nextAction": "Keep controlled owned-domain access live. Complete the authenticated account-console browser readback, the disposable-account deletion acceptance, publisher legal decisions, and one fresh clean-account create → execute → verify → inspect → delete journey before unrestricted self-serve GA. Continue OpenAI and GitHub Marketplace publication independently.",
-      "waitCondition": "Account controls are merged and deployed on the owned service without changing the frozen OpenAI MCP contract. Unrestricted GA still depends on CUST-001, CUST-002 and LEGAL-001 plus the fresh customer outcome; external-directory approval remains independent.",
+      "nextAction": "Keep controlled owned-domain access live. Complete the production visual readback, disposable-account deletion acceptance, publisher legal decisions, and one fresh clean-account create → execute → verify → inspect → delete journey before unrestricted self-serve GA. Continue OpenAI and GitHub Marketplace publication independently.",
+      "waitCondition": "The cohesive owned-service shell is merged and deployed without changing the frozen OpenAI MCP contract. Unrestricted GA still depends on CUST-001, CUST-002 and LEGAL-001 plus the fresh customer outcome; external-directory approval remains independent.",
       "reentryCondition": "Advance from controlled standalone access to unrestricted GA when the owned-channel gates are satisfied; separately publish external channels when each provider approves them.",
       "dependencies": [
         "VERIFY-004",
@@ -551,7 +552,8 @@
         "E-038",
         "E-041",
         "E-044",
-        "E-049"
+        "E-049",
+        "E-054"
       ]
     },
     {
@@ -1696,6 +1698,23 @@
       "outcome": "The candidate converts the root from an unstyled protocol notice into a coherent DoneState entry point with clear owned-service status, setup action, canonical MCP endpoint, three-step workflow and authority boundary while preserving all runtime and provider-review contracts.",
       "content": "Shared DoneState UI tokens, responsive root landing shell, accessible semantic hierarchy, explicit distribution-state separation, repository-local DESIGN.md contract, regression coverage and unchanged 20-tool MCP surface.",
       "measurement": "One shared Worker UI token source; one public root redesigned; one provider-development surface brought into the same shell; one design contract added; zero MCP tools changed; zero OAuth scopes changed; zero authority classes changed; zero external provider listing mutations."
+    },
+    {
+      "id": "E-054",
+      "date": "2026-10-02",
+      "identity": "Cohesive DoneState owned-service shell merged and deployed",
+      "situation": "E-053 recorded a cohesive root design candidate after a production screenshot showed the owned-domain root as sparse browser-default HTML. The candidate then passed the protected review path and was promoted to production.",
+      "verification": "PR #135 exact head 7e87dd190aceb95396f05201d496144bb775eae1 passed CI run 37043469753: core (22), core (24) and hosted-plugin all succeeded; the hosted job also passed the permanent high-severity dependency audit and plugin validation. PR #135 merged through protected main as 5c67efadc4e47dc579f15d1ef9704c4a2d7a6d79 with no review threads. Post-merge CI run 37043804159 completed successfully. Production deployment 37043804082 completed successfully, publishing donestate.proofandstate.com as Worker version fb2bae08-3e6d-4a26-b24c-ca2e1377cebe and sandbox container digest sha256:0209e8f2928e86887b39a3ffd2956ba501436239fc3cda49b560f5c5d9810768. The available public fetcher could not access the custom domain for an independent visual readback, so deployment evidence is not being misrepresented as visual acceptance.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Capture a production browser readback of the public root at desktop and narrow width and an authenticated one-time account-console readback; verify visual cohesion and responsive behaviour against docs/DESIGN.md.",
+        "waitCondition": "Source, CI, merge and deployment are complete. Visual/browser acceptance remains externally observable and the authenticated account console requires a fresh one-time setup URL.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "The owned-domain root now ships the Proof & State-aligned DoneState shell, shared Worker UI tokens, clear distribution-state separation, setup path, canonical endpoint, workflow model and authority boundary without changing the 20-tool MCP surface.",
+      "content": "Protected exact-head validation, permanent dependency-audit pass, plugin-validation pass, protected merge, post-merge CI, production Worker/container identity, shared UI token implementation, repository design contract and explicit visual-readback limitation.",
+      "measurement": "Three required exact-head jobs passed; one permanent high-severity audit gate passed; one plugin validation passed; one protected merge; one post-merge CI passed; one production deployment passed; zero MCP tools changed; zero OAuth scopes changed; zero provider listing mutations; visual readback still pending."
     }
   ]
 }
