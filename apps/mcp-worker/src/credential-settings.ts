@@ -171,6 +171,21 @@ function registry(env: CredentialSettingsEnv) {
   return env.MAINTENANCE_REGISTRY.getByName("global");
 }
 
+async function recordFunnelBestEffort(
+  env: CredentialSettingsEnv,
+  event: "credential_setup_issued" | "account_console_opened" | "credential_connected" | "account_deletion_completed",
+): Promise<void> {
+  try {
+    await registry(env).recordFunnelEvent(event);
+  } catch (error) {
+    console.error(JSON.stringify({
+      message: "DoneState funnel counter did not update",
+      event,
+      error: error instanceof Error ? error.message : "unknown error",
+    }));
+  }
+}
+
 function runCoordinator(env: CredentialSettingsEnv, runId: string) {
   // Wrangler's generated DurableObjectNamespace method surface can narrow the
   // custom RPC `get()` method to `never` because the stub itself also has
@@ -231,6 +246,7 @@ export async function createCredentialSetup(
   );
   const setupUrl = new URL("/settings/openai", origin);
   setupUrl.searchParams.set("ticket", ticket);
+  await recordFunnelBestEffort(env, "credential_setup_issued");
   return {
     setupUrl: setupUrl.href,
     expiresAt: new Date(expiresAtMs).toISOString(),
@@ -259,6 +275,7 @@ async function beginSetup(request: Request, env: CredentialSettingsEnv): Promise
     JSON.stringify({ ...pending, csrfDigest: await digest(csrf) } satisfies SetupSession),
     { expirationTtl: SESSION_TTL_SECONDS },
   );
+  await recordFunnelBestEffort(env, "account_console_opened");
   const response = await accountPage(env, pending.login, csrf);
   response.headers.append("Set-Cookie", sessionCookie(session));
   return response;
@@ -307,6 +324,7 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
       }
       await vault(env, pending.login).purgeAccount(pending.login);
       const registryReceipt = await registry(env).purgeAccount(pending.login);
+      await recordFunnelBestEffort(env, "account_deletion_completed");
       await env.OAUTH_KV.delete(sessionKey);
       return html(
         `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState account data deleted</title></head><body><main><h1>DoneState account data deleted</h1><p>Indexed DoneState service data for <strong>${escapeHtml(pending.login)}</strong> was deleted.</p><p>Deleted indexed objectives: ${registryReceipt.indexedRuns}. Deleted selected repositories: ${registryReceipt.selectedRepositories}. Deleted maintenance findings: ${registryReceipt.findings}.</p><p>If you used direct DoneState objectives before the account-controls release and a historical run was not listed in the account console, delete it using its known run ID or submit a privacy request.</p></main></body></html>`,
@@ -337,6 +355,7 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
       verifiedKey,
       vaultAdmission.generation,
     );
+    await recordFunnelBestEffort(env, "credential_connected");
     await env.OAUTH_KV.delete(sessionKey);
     return success(pending.login, status);
   } catch (error) {
