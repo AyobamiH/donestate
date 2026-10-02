@@ -11,6 +11,7 @@ import {
 import type { DoneStateEnv } from "./environment";
 import { exchangeGitHubCode, getAuthenticatedUser } from "./github";
 import type { GitHubAuthProps } from "./types";
+import { DONESTATE_UI_CSS } from "./ui";
 
 export const EXECUTION_SCOPE = "donestate:execute";
 
@@ -311,9 +312,80 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
 
 function home(env: DoneStateEnv): Response {
   if (env.DEPLOYMENT_MODE === "marketplace-development") {
-    return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState Marketplace development</title></head><body><main><h1>DoneState Marketplace development</h1><p>This isolated environment accepts draft-listing onboarding and signed Marketplace lifecycle events only.</p><p>Repository access, MCP execution, maintenance automation, OpenAI review access, and production entitlements are disabled here.</p></main></body></html>`);
+    return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState Marketplace development</title><style>${DONESTATE_UI_CSS}</style></head><body><div class="site-shell"><header class="topbar"><div class="topbar-inner"><div class="brand-lockup"><span class="brand-mark" aria-hidden="true">DS</span><span class="brand-copy"><span class="eyebrow">Proof &amp; State</span><span class="brand-name">DoneState</span></span></div></div></header><main class="settings-page"><section class="settings-card"><div class="settings-intro"><p class="kicker">Isolated provider surface</p><h1>Marketplace development</h1><p>This environment accepts draft-listing onboarding and signed Marketplace lifecycle events only.</p></div><div class="settings-section"><h2>Deliberately unavailable here</h2><p>Repository access, MCP execution, maintenance automation, OpenAI review access and production entitlements remain disabled on this isolated surface.</p></div></section></main></div></body></html>`);
   }
-  return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState MCP</title></head><body><main><h1>DoneState MCP</h1><p>Governed autonomous coding over MCP. Connect a compatible MCP client at <code>/mcp</code>.</p><p>DoneState completes authorised work. Independent verifiers such as OpsTruth prove it.</p><p>The owned-domain service is a first-class launch channel. OpenAI and GitHub Marketplace remain additional distribution channels.</p><p><a href="https://github.com/AyobamiH/donestate/blob/main/docs/STANDALONE-MCP.md">Standalone setup guide</a></p></main></body></html>`);
+  return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>DoneState — governed autonomous coding</title><style>${DONESTATE_UI_CSS}</style></head><body>
+<div class="site-shell">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand-lockup" href="/" aria-label="DoneState home">
+        <span class="brand-mark" aria-hidden="true">DS</span>
+        <span class="brand-copy"><span class="eyebrow">Proof &amp; State</span><span class="brand-name">DoneState</span></span>
+      </a>
+      <a class="topbar-link" href="https://proofandstate.com/donestate">Product overview</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="kicker">Governed autonomous coding</p>
+        <h1 id="page-title">Give an agent an outcome. Keep the boundary.</h1>
+        <p class="lede">DoneState executes authorised repository work, publishes a reviewable branch or pull request, and stops for independent verification. You keep merge authority.</p>
+        <div class="actions">
+          <a class="button" href="https://github.com/AyobamiH/donestate/blob/main/docs/STANDALONE-MCP.md">Set up DoneState</a>
+          <a class="button secondary" href="https://proofandstate.com/donestate">See how it works</a>
+        </div>
+        <div class="endpoint" aria-label="Canonical MCP endpoint">
+          <span class="endpoint-label">Canonical MCP endpoint</span>
+          <code>https://donestate.proofandstate.com/mcp</code>
+        </div>
+      </div>
+
+      <aside class="panel" aria-label="Distribution status">
+        <div class="panel-inner">
+          <div class="status-heading">
+            <h2>Service status</h2>
+            <span class="status-pill">Owned service live</span>
+          </div>
+          <ul class="status-list">
+            <li class="status-row"><span class="status-label">Proof &amp; State</span><span class="status-value live">Available now</span></li>
+            <li class="status-row"><span class="status-label">OpenAI</span><span class="status-value review">Review continues</span></li>
+            <li class="status-row"><span class="status-label">GitHub Marketplace</span><span class="status-value review">Review continues</span></li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section" aria-labelledby="workflow-title">
+      <div class="section-heading">
+        <h2 id="workflow-title">One bounded path from intent to evidence</h2>
+        <p>The interface stays simple because consequence boundaries remain explicit underneath it.</p>
+      </div>
+      <div class="workflow">
+        <article class="step"><span class="step-index">01</span><h3>Connect</h3><p>Add the remote MCP endpoint, complete GitHub OAuth, and connect your own execution credential through the secure account settings flow.</p></article>
+        <article class="step"><span class="step-index">02</span><h3>Authorise</h3><p>Choose the repository outcome and grant only the consequence classes that objective actually needs.</p></article>
+        <article class="step"><span class="step-index">03</span><h3>Review proof</h3><p>DoneState publishes reviewable work and independent verification evidence. The repository owner decides whether anything merges.</p></article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="boundary-title">
+      <div class="boundary">
+        <div>
+          <h2 id="boundary-title">Execution is not approval.</h2>
+          <p><strong>DoneState never treats its own successful execution as proof.</strong> It records durable effects, preserves ambiguity when reconciliation is incomplete, and uses independent verifier evidence for terminal verification.</p>
+        </div>
+        <div class="boundary-note">PR-oriented by design. Final merge authority stays outside DoneState.</div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>DoneState by Proof &amp; State</span>
+      <span><a href="https://github.com/AyobamiH/donestate">Source &amp; docs</a> · <a href="https://proofandstate.com/donestate">Proof &amp; State</a></span>
+    </footer>
+  </main>
+</div>
+</body></html>`);
 }
 
 export const authHandler = {

@@ -100,15 +100,20 @@ describe("OAuth authorisation security policy", () => {
     expect(response.headers.get("Content-Security-Policy")).not.toContain("https://github.com");
   });
 
-  it("presents the owned-domain service as client-neutral while retaining parallel distribution channels", async () => {
+  it("presents a cohesive client-neutral owned-service landing page while retaining parallel channels", async () => {
     const response = await authHandler.fetch(new Request("https://done.example/"), authorizationEnv());
     const page = await response.text();
 
     expect(response.status).toBe(200);
-    expect(page).toContain("compatible MCP client");
-    expect(page).toContain("OpenAI and GitHub Marketplace remain additional distribution channels");
-    expect(page).toContain("Standalone setup guide");
+    expect(page).toContain("Proof &amp; State");
+    expect(page).toContain("Owned service live");
+    expect(page).toContain("https://donestate.proofandstate.com/mcp");
+    expect(page).toContain("Set up DoneState");
+    expect(page).toContain("OpenAI");
+    expect(page).toContain("GitHub Marketplace");
+    expect(page).toContain("Execution is not approval.");
     expect(page).toContain("https://github.com/AyobamiH/donestate/blob/main/docs/STANDALONE-MCP.md");
+    expect(page).toContain("--canvas: #f4f4f0");
     expect(page).not.toContain("for ChatGPT");
   });
 
