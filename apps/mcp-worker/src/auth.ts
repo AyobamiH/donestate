@@ -300,7 +300,7 @@ function home(env: DoneStateEnv): Response {
   if (env.DEPLOYMENT_MODE === "marketplace-development") {
     return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState Marketplace development</title></head><body><main><h1>DoneState Marketplace development</h1><p>This isolated environment accepts draft-listing onboarding and signed Marketplace lifecycle events only.</p><p>Repository access, MCP execution, maintenance automation, OpenAI review access, and production entitlements are disabled here.</p></main></body></html>`);
   }
-  return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState MCP</title></head><body><main><h1>DoneState MCP</h1><p>Governed autonomous coding for ChatGPT. Connect an MCP client at <code>/mcp</code>.</p><p>DoneState completes authorised work. Independent verifiers such as OpsTruth prove it.</p></main></body></html>`);
+  return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState MCP</title></head><body><main><h1>DoneState MCP</h1><p>Governed autonomous coding over MCP. Connect a compatible MCP client at <code>/mcp</code>.</p><p>DoneState completes authorised work. Independent verifiers such as OpsTruth prove it.</p><p>The owned-domain service is a first-class launch channel. OpenAI and GitHub Marketplace remain additional distribution channels.</p><p><a href="https://github.com/AyobamiH/donestate/blob/main/docs/STANDALONE-MCP.md">Standalone setup guide</a></p></main></body></html>`);
 }
 
 export const authHandler = {

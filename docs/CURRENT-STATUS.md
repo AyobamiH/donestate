@@ -62,6 +62,12 @@ The private maintenance App remains restricted to only `AyobamiH/donestate` with
 
 The successful #114 canary leaves PR #115 open and unmerged specifically so the proof remains evidence of PR-only publication rather than evidence of autonomous merge authority.
 
+## Launch channel policy — 2 October 2026
+
+DoneState is proceeding with the owned Proof & State service as a first-class standalone launch channel. This does **not** abandon either OpenAI/ChatGPT distribution or GitHub Marketplace. Both remain active parallel distribution tracks with their existing integration code and provider-state evidence preserved.
+
+The canonical owned endpoint is `https://donestate.proofandstate.com/mcp`. Controlled standalone access does not wait for OpenAI review or GitHub Marketplace publication. Those external provider states gate only their respective distribution channels. Unrestricted self-serve GA still requires the owned-channel customer account/deletion work, the publisher-level legal decisions tracked in `LEGAL-001`, and one fresh clean-account end-to-end acceptance result.
+
 ## GitHub Marketplace review
 
 The production Marketplace submission remains **Pending for publish** and has not been published. The owner-authenticated preview at `https://github.com/marketplace/donestate` displays provider `AyobamiH`, `Add`, `Install it for free`, a `$0` `Public repositories` plan, and `1 install`. The authenticated management page at `https://github.com/marketplace/manage` lists production and development inventory, which is owner inventory rather than public evidence. An **unauthenticated exact Marketplace search returned no result**.

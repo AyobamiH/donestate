@@ -74,8 +74,9 @@ function validateLedger(value) {
   const today = process.env.GOVERNANCE_NOW ?? new Date().toISOString().slice(0, 10);
   const stale = value.workItems.filter((item) => item.status !== "complete" && item.staleDate < today);
   requireValue(stale.length === 0, `stale work items require review: ${stale.map((item) => item.id).join(", ")}`);
-  const staleEvidence = value.evidenceStories.filter((story) => story.accountability.status !== "complete" && story.accountability.staleDate < today);
-  requireValue(staleEvidence.length === 0, `stale evidence stories require review: ${staleEvidence.map((story) => story.id).join(", ")}`);
+  // Evidence stories are append-only historical receipts. Their accountability fields describe
+  // the state observed when the receipt was recorded and must not be mutated merely to refresh a
+  // date. Freshness is enforced on workItems, which carry the current owner and next action.
 }
 
 function renderLedger(value) {

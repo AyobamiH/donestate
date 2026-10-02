@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-09-08",
+  "updatedAt": "2026-10-02",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {
@@ -16,7 +16,7 @@
     },
     {
       "id": "R1",
-      "title": "Keep Marketplace channel truth current",
+      "title": "Keep distribution-channel truth current",
       "workItemIds": [
         "MKT-001",
         "MKT-002",
@@ -24,7 +24,7 @@
         "OPS-001",
         "LEGAL-001"
       ],
-      "exitCriterion": "Public wording matches live provider state, lifecycle events are monotonic and tested, and operating decisions are documented."
+      "exitCriterion": "Owned-domain, OpenAI and GitHub Marketplace states are represented independently; lifecycle events remain monotonic where applicable and publisher operating decisions are documented."
     },
     {
       "id": "R2",
@@ -44,14 +44,14 @@
     },
     {
       "id": "R4",
-      "title": "Prepare for the first external customer",
+      "title": "Prepare unrestricted standalone customer access",
       "workItemIds": [
         "CUST-001",
         "CUST-002",
         "OPS-002",
         "GTM-001"
       ],
-      "exitCriterion": "Customers can inspect and delete their state, operators can detect failures, and useful outcomes are measured."
+      "exitCriterion": "Standalone customers can inspect and delete their state, operators can support failures, and useful outcomes are measured before unrestricted self-serve GA."
     },
     {
       "id": "R5",
@@ -86,7 +86,7 @@
         "UPSTREAM-001",
         "SKILLS-001"
       ],
-      "exitCriterion": "Each capability advances only when its authority, evidence, demand, and release conditions are satisfied; fleet authority remains last."
+      "exitCriterion": "Owned-domain release, OpenAI distribution, GitHub Marketplace distribution and later capabilities advance through independent explicit gates; no external directory becomes the sole route to market and fleet authority remains last."
     }
   ],
   "workItems": [
@@ -233,11 +233,11 @@
       "stream": "legal",
       "status": "blocked",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-09-08",
-      "staleDate": "2026-09-09",
-      "nextAction": "Choose public support/privacy aliases, record a legitimate service address, complete the ICO fee self-assessment, and record offered territories. Rechecked 2026-09-08: decisions remain outstanding; publisher follow-up due 2026-09-09. This tracking review does not constitute legal clearance.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2026-10-09",
+      "nextAction": "Complete the remaining publisher-level decisions for unrestricted public onboarding: record a legitimate service address, complete the ICO fee self-assessment, record offered territories, and confirm the public support/privacy contact path. This is a human publisher gate, not an OpenAI or GitHub Marketplace launch gate.",
       "waitCondition": "Requires real publisher decisions; private contact data must not be invented or copied into the repository.",
-      "reentryCondition": "Resume when those decisions are available.",
+      "reentryCondition": "Resume as soon as the publisher decisions are available. Controlled technical early access on the owned service does not constitute legal clearance.",
       "dependencies": [
         "GOV-001"
       ],
@@ -252,11 +252,11 @@
       "stream": "governance",
       "status": "active",
       "owner": "Proof & State maintainers",
-      "lastUpdated": "2026-09-03",
-      "staleDate": "2026-09-10",
-      "nextAction": "Land the selective DoneState product-boundary documentation and skill repair on current main without merging historical evidence branches or rewriting the submitted 0.2.0 publisher identity; record exact CI and merge subjects, then update Proof & State's portfolio records to the resulting DoneState subject and current external review states.",
-      "waitCondition": "The historical branch audit proved the branch and pull-request engine is retained. Current README, architecture, trust model, ADR and skill role language had drifted from Proof & State's canonical product boundaries, but the exact OpenAI-submitted 0.2.0 manifest intentionally remains under the verified individual developer identity AyobamiH / AYOBAMI JOHN HAASTRUP. Proof & State is only the parent brand until separate business verification permits it to replace the publisher identity. Proof & State also pins older DoneState subjects, so portfolio closure must wait for the reviewed DoneState repair and its exact merge subject.",
-      "reentryCondition": "Close only after the DoneState repair merge and post-merge CI are exact, the Proof & State repair points to that subject, and its post-merge governance run passes. Keep the plugin publisher identity unchanged until the separate review/business-verification gate permits a new release identity.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2026-10-09",
+      "nextAction": "After this launch-boundary change merges, update Proof & State portfolio records to the exact DoneState merge subject and record three parallel distribution states: owned-domain standalone service, OpenAI review, and GitHub Marketplace review.",
+      "waitCondition": "The channels must remain separate: owned-domain launch must not imply external-directory publication, and external-directory delay must not block owned-domain operation.",
+      "reentryCondition": "Close after Proof & State points to the exact merged DoneState subject and accurately records each channel state.",
       "dependencies": [
         "GOV-001",
         "MKT-001",
@@ -280,11 +280,11 @@
       "stream": "marketplace",
       "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-12",
-      "nextAction": "Exercise changed, pending_change, and pending_change_cancelled through the owner-only draft listing and capture their non-personal receipts without touching production listing state.",
-      "waitCondition": "Purchase and cancellation are proven under E-009 and E-011; the remaining three live transition results have not been exercised.",
-      "reentryCondition": "Resume through authenticated development-listing controls; keep the draft private and do not alter either production app configuration.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2026-10-16",
+      "nextAction": "Continue exercising changed, pending_change, and pending_change_cancelled through the owner-only draft listing and capture non-personal receipts without touching production listing state.",
+      "waitCondition": "Marketplace development remains a parallel distribution-validation lane; it is not a prerequisite for owned-domain standalone launch.",
+      "reentryCondition": "Continue through authenticated development-listing controls while keeping the draft isolated from production.",
       "dependencies": [
         "GOV-002"
       ],
@@ -298,34 +298,33 @@
     },
     {
       "id": "CUST-001",
-      "title": "Add customer account and plan visibility",
+      "title": "Add standalone customer account and service visibility",
       "stream": "customer-readiness",
-      "status": "planned",
+      "status": "active",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-18",
-      "nextAction": "Expose identity, entitlement status, plan, effective time, and support path.",
-      "waitCondition": "Lifecycle state must first be monotonic and contract-tested.",
-      "reentryCondition": "Begin after MKT-002 and MKT-003.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2026-10-09",
+      "nextAction": "Expose authenticated GitHub identity, selected repository access, OpenAI execution-credential status, service state, and support/deletion paths on the owned-domain customer surface without requiring a Marketplace entitlement.",
+      "waitCondition": "Underlying status/setup tools exist, but there is not yet one consolidated standalone customer account/status surface.",
+      "reentryCondition": "Complete before unrestricted self-serve GA; controlled technical early access may use the existing MCP setup/status tools.",
       "dependencies": [
-        "MKT-002",
-        "MKT-003"
+        "GOV-001"
       ],
       "evidenceIds": []
     },
     {
       "id": "CUST-002",
-      "title": "Add whole-account and entitlement deletion",
+      "title": "Add standalone whole-account deletion",
       "stream": "customer-readiness",
-      "status": "planned",
+      "status": "active",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-18",
-      "nextAction": "Implement authenticated self-service deletion with a non-personal auditable tombstone.",
-      "waitCondition": "Deletion semantics and PRIVACY.md retention wording must agree.",
-      "reentryCondition": "Begin after MKT-002 and LEGAL-001.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2026-10-09",
+      "nextAction": "Implement authenticated account-level deletion that removes the stored OpenAI credential and all eligible user-owned DoneState service records while retaining only the minimum non-personal evidence required by the documented deletion contract.",
+      "waitCondition": "Objective-level and credential-level deletion exist, but whole-account deletion is not yet exposed.",
+      "reentryCondition": "Complete before unrestricted self-serve GA and keep docs/PRIVACY.md aligned with the implemented semantics.",
       "dependencies": [
-        "MKT-002",
+        "CUST-001",
         "LEGAL-001"
       ],
       "evidenceIds": []
@@ -336,11 +335,11 @@
       "stream": "operations",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-18",
-      "nextAction": "Add bounded retry visibility, dead-letter evidence, operator alerts, and escalation instructions.",
-      "waitCondition": "Incident ownership must be declared in OPS-001.",
-      "reentryCondition": "Begin after OPS-001 and MKT-003.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2026-10-16",
+      "nextAction": "Continue the Marketplace-specific webhook visibility and escalation work in parallel before Marketplace publication.",
+      "waitCondition": "Owned-domain standalone launch does not depend on Marketplace webhook delivery; this remains required for the Marketplace channel itself.",
+      "reentryCondition": "Resume with the existing incident runbook and Marketplace lifecycle suite; do not couple it to owned-domain launch.",
       "dependencies": [
         "OPS-001",
         "MKT-003"
@@ -351,13 +350,13 @@
       "id": "GTM-001",
       "title": "Instrument the useful-result funnel",
       "stream": "go-to-market",
-      "status": "planned",
+      "status": "active",
       "owner": "Proof & State maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-25",
-      "nextAction": "Measure non-founder activation, run started, PR opened, verifier decision, repeat use, support load, and conversion without unnecessary personal data.",
-      "waitCondition": "Account and deletion semantics must be stable.",
-      "reentryCondition": "Begin before the first external-customer cohort.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2026-10-16",
+      "nextAction": "Measure the owned-domain standalone funnel first: authenticated connection, repository selected, credential connected, objective started, PR opened, verifier decision, repeat use, support load, and conversion without unnecessary personal data. Add channel-specific attribution for OpenAI and Marketplace when they publish.",
+      "waitCondition": "Use bounded manual cohort evidence until the account/deletion surface is stable; external-directory approval is not required to begin measurement.",
+      "reentryCondition": "Keep active through the first external standalone cohort and extend rather than replace it when additional channels go live.",
       "dependencies": [
         "CUST-001",
         "CUST-002"
@@ -387,13 +386,13 @@
       "id": "VERIFY-002",
       "title": "Independently decide the maintenance canary",
       "stream": "verification",
-      "status": "blocked",
+      "status": "deferred",
       "owner": "OpsTruth maintainers",
-      "lastUpdated": "2026-09-01",
-      "staleDate": "2026-09-09",
-      "nextAction": "After VERIFY-001, re-evaluate run b4242932-0bc1-4876-a202-634d9c12d72a against PR 22 head ffec48e6c5abd9cef840ab591896613769d3e779 and record the exact signed result.",
-      "waitCondition": "PR 22 was later owner-merged as 4543c4dcbc1f5f95d1d53ef0a1f8cbeafd8ead4a, but the run remains AWAITING_VERIFICATION and the merge is not verifier evidence. The successful fresh #114 successor does not rewrite this historical run.",
-      "reentryCondition": "Resume when a deliberate historical re-evaluation is authorised; this item is no longer a dependency of the proven fresh production loop.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2026-12-01",
+      "nextAction": "Preserve historical run b4242932-0bc1-4876-a202-634d9c12d72a exactly as AWAITING_VERIFICATION. No re-evaluation is required for launch because the fresh production successor under E-037 is already VERIFIED.",
+      "waitCondition": "Historical re-evaluation is optional and must never rewrite the original outcome.",
+      "reentryCondition": "Resume only if a deliberate historical audit is authorised.",
       "dependencies": [
         "VERIFY-001"
       ],
@@ -409,11 +408,11 @@
       "stream": "verification",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-12",
-      "nextAction": "Build the exact archive, validate manifests and skills, scan secrets, and record digest plus CI.",
-      "waitCondition": "Repository validation alone is not archive validation.",
-      "reentryCondition": "Begin after R1.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2026-10-16",
+      "nextAction": "Build and validate the exact installable OpenAI/plugin archive before the next directory release, including manifests, skills, secret scan, digest and CI.",
+      "waitCondition": "This is required for the OpenAI distribution channel but is not a prerequisite for the owned-domain standalone launch.",
+      "reentryCondition": "Begin when the next OpenAI directory submission or resubmission requires a new archive.",
       "dependencies": [
         "MKT-001",
         "MKT-002",
@@ -502,13 +501,13 @@
       "id": "AGENTPROOF-001",
       "title": "Complete AgentProof consequence-receipt integration",
       "stream": "verification",
-      "status": "planned",
+      "status": "deferred",
       "owner": "DoneState and AgentProof maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-09-25",
-      "nextAction": "Define the receipt boundary, add the repository-patch adapter, and prove receipts never become completion authority.",
-      "waitCondition": "The DoneState-to-OpsTruth loop is now proven; begin only when this integration is the selected next product priority.",
-      "reentryCondition": "Begin after VERIFY-004.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2027-01-15",
+      "nextAction": "Keep AgentProof consequence receipts outside the standalone launch critical path; resume when this integration becomes the selected next product priority.",
+      "waitCondition": "The production DoneState-to-OpsTruth completion boundary is already proven without AgentProof.",
+      "reentryCondition": "Resume after standalone customer readiness is established or when consequential-action receipts become a customer requirement.",
       "dependencies": [
         "VERIFY-004"
       ],
@@ -516,20 +515,26 @@
     },
     {
       "id": "RELEASE-001",
-      "title": "Gate DoneState 0.2 release and publication",
+      "title": "Gate DoneState standalone launch and future channel releases",
       "stream": "release",
-      "status": "deferred",
+      "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-01",
-      "nextAction": "Run check, pack audit, secret scan, and exact asset verification before seeking publication authority.",
-      "waitCondition": "No autonomous merge, deploy, release, or package publication is authorised.",
-      "reentryCondition": "Resume after VERIFY-003 and VERIFY-004 plus explicit publication authority.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2026-10-09",
+      "nextAction": "Use https://donestate.proofandstate.com as the canonical owned-domain launch channel, run exact-head validation, deploy the reviewed candidate, and prove one fresh clean-account end-to-end customer outcome. Continue OpenAI and GitHub Marketplace publication work independently in parallel.",
+      "waitCondition": "The production runtime and DoneState-to-OpsTruth loop are already proven. Unrestricted self-serve GA still requires the standalone customer controls, publisher legal decisions, and a fresh clean-account acceptance result; OpenAI and GitHub Marketplace approval are not prerequisites.",
+      "reentryCondition": "Advance from controlled standalone access to unrestricted GA when the owned-channel gates are satisfied; separately publish external channels when each provider approves them.",
       "dependencies": [
-        "VERIFY-003",
-        "VERIFY-004"
+        "VERIFY-004",
+        "CUST-001",
+        "CUST-002",
+        "LEGAL-001"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-037",
+        "E-038",
+        "E-041"
+      ]
     },
     {
       "id": "MKT-005",
@@ -727,11 +732,11 @@
       "stream": "distribution",
       "status": "blocked",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-09-08",
-      "staleDate": "2026-09-12",
-      "nextAction": "Resolve historical app asdk_app_6a9169a598348191b0aa3b2f2638355b versus observed review app asdk_app_6a929a3cf3fc8191bb06ea4a3cc0a1e9 with the provider; retain submitted 0.3.0 and publish only after approval, then prove a fresh clean-account canary within explicit verifier scope.",
-      "waitCondition": "0.3.0 is Review, not publishable. Identity continuity and historical 0.2.0 disposition are unknown. Clean-user proof and arbitrary-repository authenticated bridge support are not established.",
-      "reentryCondition": "Resume after provider identity confirmation and approval; never create a duplicate or publish stale 0.2.0.",
+      "lastUpdated": "2026-10-02",
+      "staleDate": "2026-10-16",
+      "nextAction": "Continue resolving the historical app identity versus the observed 0.3.0 review app with OpenAI, preserve the existing submission, and publish that channel only after provider approval. Do not create a duplicate product and do not make this review a dependency of the owned-domain launch.",
+      "waitCondition": "0.3.0 remains externally controlled by provider review and identity continuity is unresolved; this blocks only the OpenAI distribution channel.",
+      "reentryCondition": "Resume immediately on provider identity confirmation, review feedback, approval, or any other state change.",
       "dependencies": [],
       "evidenceIds": [
         "E-005",
@@ -1469,6 +1474,23 @@
       "outcome": "Release and submission completed; public DoneState distribution and clean-user proof remain blocked. Standalone OpsTruth works independently of DoneState. Earlier evidence and run outcomes remain unchanged.",
       "content": "Current deployed/submitted release snapshot, unresolved app identity, standalone-versus-bridge distinction and outstanding owner controls.",
       "measurement": "20 frozen DoneState tools; 21 read-only OpsTruth tools; one signed standalone repository inspection; zero runtime, permission or tool changes; zero duplicate products, withdrawals, canary merges or historical outcome rewrites."
+    },
+    {
+      "id": "E-042",
+      "date": "2026-10-02",
+      "identity": "Owned-domain-first multi-channel launch boundary selected",
+      "situation": "DoneState's production execution and independent-verification path was already proven end to end, but launch governance still allowed OpenAI and GitHub Marketplace review state to look like a single route to market. The publisher chose to proceed with the owned Proof & State service now while retaining both external distribution channels in parallel.",
+      "verification": "Current main is cfbaaa4b1082a5d6a35bef7eee30e5edae00670c. E-037 records a complete production DoneState-to-OpsTruth v2 VERIFIED successor and E-038 records provider-enforced main protection. Scheduled governance run 36444659180 reached npm ci successfully and then failed only because tracked work/evidence review dates were stale. Source review found the owned service root still described DoneState as 'for ChatGPT'; this launch candidate makes the MCP surface client-neutral while leaving OpenAI reviewer and Marketplace integration code intact. The candidate also adds docs/STANDALONE-MCP.md with the exact owned endpoint, OAuth/user-funded credential path, public-repository scope, authority classes, verification flow, deletion boundary and explicit limits for unaccepted clients/private-repository self-service.",
+      "accountability": {
+        "owner": "DoneState and Proof & State maintainers",
+        "status": "complete",
+        "nextAction": "Launch through the owned-domain service without waiting on external-directory approval, continue OpenAI and GitHub Marketplace work in parallel, and require a fresh clean-account acceptance before unrestricted self-serve GA.",
+        "waitCondition": "None.",
+        "staleDate": "2026-12-01"
+      },
+      "outcome": "DoneState has one canonical owned-domain launch path plus optional parallel OpenAI and GitHub Marketplace distribution paths. No external directory is abandoned and no external directory is the sole launch gate.",
+      "content": "Launch-channel separation, exact current main, proven production verifier chain, stale-governance diagnosis, client-neutral owned-domain MCP positioning, and preserved OpenAI/Marketplace integrations. Standalone onboarding documentation is now part of the reviewed launch candidate rather than an implicit ChatGPT-only workflow.",
+      "measurement": "One owned-domain launch path; two retained external distribution channels; zero integrations removed; one proven production VERIFIED successor retained; one governance freshness failure classified as stale review state rather than runtime failure."
     }
   ]
 }
