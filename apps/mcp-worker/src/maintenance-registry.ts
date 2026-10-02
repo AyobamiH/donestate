@@ -564,7 +564,17 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
   }
 
   private async accountOwnerKey(login: string): Promise<string> {
-    return digest({ schema: "donestate.account-owner-key.v1", login });
+    const key = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(this.env.TOKEN_ENCRYPTION_KEY),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"],
+    );
+    const signature = new Uint8Array(
+      await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(`donestate.account-owner-key.v1:${login}`)),
+    );
+    return [...signature].map((value) => value.toString(16).padStart(2, "0")).join("");
   }
 
   private async assertAccountWritable(login: string, expectedGeneration?: number): Promise<number> {
