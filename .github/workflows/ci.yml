@@ -38,6 +38,12 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: apps/mcp-worker/package-lock.json
+      - name: Resolve Worker security overrides for diagnostic
+        working-directory: apps/mcp-worker
+        shell: bash
+        run: |
+          npm install --package-lock-only --ignore-scripts --no-audit
+          git diff -- package-lock.json
       - run: npm ci
         working-directory: apps/mcp-worker
       - name: Report Worker dependency advisories
