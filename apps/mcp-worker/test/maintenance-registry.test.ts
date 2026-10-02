@@ -16,6 +16,34 @@ async function webhookSignature(secret: string, body: string): Promise<string> {
 }
 
 describe("MaintenanceRegistry", () => {
+  it("stores only aggregate daily funnel counts without customer identifiers", async () => {
+    const registry = env.MAINTENANCE_REGISTRY.getByName("privacy-minimal-funnel-registry");
+    const now = Date.parse("2026-10-02T12:30:00Z");
+    await registry.recordFunnelEvent("oauth_connection_completed", now);
+    await registry.recordFunnelEvent("objective_created", now);
+    await registry.recordFunnelEvent("objective_created", now);
+
+    expect(await registry.funnelDailySnapshot("2026-10-02")).toEqual({
+      schema: "donestate.funnel-daily.v1",
+      dayUtc: "2026-10-02",
+      counts: {
+        oauth_connection_completed: 1,
+        objective_created: 2,
+      },
+      totalEvents: 3,
+    });
+
+    await runInDurableObject(registry, async (instance: MaintenanceRegistry) => {
+      const state = Reflect.get(instance as unknown as object, "ctx") as DurableObjectState;
+      const serialized = JSON.stringify(state.storage.sql.exec(
+        "SELECT day_utc, event_name, event_count FROM funnel_daily ORDER BY event_name",
+      ).toArray());
+      expect(serialized).not.toContain("owner/repository");
+      expect(serialized).not.toContain("operator");
+      expect(serialized).not.toContain("@");
+    });
+  });
+
   it("stores an observe-only repository without silently granting scheduled authority", async () => {
     const registry = env.MAINTENANCE_REGISTRY.getByName("global");
     const selected = await registry.selectRepository("operator", {
