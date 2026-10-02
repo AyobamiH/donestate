@@ -669,6 +669,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
   }
 
   async discover(login: string, repository: string, fallbackToken?: string): Promise<{ repository: string; findings: MaintenanceFinding[] }> {
+    this.assertAccountWritable(login);
     const selected = this.repository(login, repository);
     let token = fallbackToken;
     if (selected.installationId) token = (await createInstallationToken(await this.appCredentials(), selected.installationId, "read")).token;
@@ -712,6 +713,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
   }
 
   async startRepair(login: string, findingId: string): Promise<{ finding: MaintenanceFinding; runId: string }> {
+    this.assertAccountWritable(login);
     const row = this.ctx.storage.sql.exec<FindingRow>(
       "SELECT * FROM findings WHERE id = ? AND owner_login = ?",
       findingId, login,
