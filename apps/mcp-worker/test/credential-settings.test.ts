@@ -79,4 +79,55 @@ describe("execution credential setup", () => {
     expect(openAiFetch).toHaveBeenCalledOnce();
     expect(await env.CREDENTIAL_VAULT.getByName(user).status(user)).toMatchObject({ connected: true });
   });
+  it("shows consolidated account state and deletes owner-scoped standalone data with exact-login confirmation", async () => {
+    const user = "delete-account-user";
+    const setup = await createCredentialSetup(env, user, "https://done.example");
+    await env.CREDENTIAL_VAULT.getByName(user).storeCredential(
+      user,
+      "test-user-funded-credential-not-a-secret-delete-1111111111",
+    );
+    await env.MAINTENANCE_REGISTRY.getByName("global").selectRepository(user, {
+      repository: "owner/delete-account-repository",
+      defaultBranch: "main",
+      mode: "observe",
+      scheduleEnabled: false,
+      autoRepair: false,
+      requiredCheckNames: [],
+    });
+
+    const begin = await credentialSettingsHandler.fetch(new Request(setup.setupUrl), env);
+    const page = await begin.text();
+    const csrf = page.match(/name="csrf" value="([^"]+)"/)?.[1];
+    const session = begin.headers.get("Set-Cookie")?.split(";", 1)[0];
+    expect(page).toContain("DoneState account settings");
+    expect(page).toContain("owner/delete-account-repository");
+    expect(page).toContain("Delete indexed DoneState account data");
+    expect(csrf).toBeTruthy();
+    expect(session).toBeTruthy();
+
+    const body = new URLSearchParams({
+      csrf: csrf!,
+      action: "delete_account",
+      confirm_login: user,
+    }).toString();
+    const response = await credentialSettingsHandler.fetch(new Request(
+      "https://done.example/settings/openai",
+      {
+        method: "POST",
+        headers: {
+          "Content-Length": String(new TextEncoder().encode(body).byteLength),
+          "Content-Type": "application/x-www-form-urlencoded",
+          Cookie: session!,
+        },
+        body,
+      },
+    ), env);
+    const result = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(result).toContain("DoneState account data deleted");
+    expect(await env.CREDENTIAL_VAULT.getByName(user).status(user)).toMatchObject({ connected: false });
+    expect(await env.MAINTENANCE_REGISTRY.getByName("global").listRepositories(user)).toEqual([]);
+  });
+
 });
