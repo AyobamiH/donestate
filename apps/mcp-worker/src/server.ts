@@ -401,6 +401,7 @@ function createServer(): McpServer {
       requireExecutionScope(context);
       const identity = authProps(context);
       requireWritableIdentity(identity);
+      const accountAdmission = await maintenanceRegistry().requireAccountWritable(identity.login);
       const credential = await credentialVault(identity.login).status(identity.login);
       if (!credential.connected) {
         throw new Error("BLOCKED_CAPABILITY: connect your own OpenAI API key with create_openai_credential_setup before creating an objective");
