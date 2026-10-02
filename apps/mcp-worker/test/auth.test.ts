@@ -107,6 +107,8 @@ describe("OAuth authorisation security policy", () => {
     expect(response.status).toBe(200);
     expect(page).toContain("compatible MCP client");
     expect(page).toContain("OpenAI and GitHub Marketplace remain additional distribution channels");
+    expect(page).toContain("Standalone setup guide");
+    expect(page).toContain("https://github.com/AyobamiH/donestate/blob/main/docs/STANDALONE-MCP.md");
     expect(page).not.toContain("for ChatGPT");
   });
 
