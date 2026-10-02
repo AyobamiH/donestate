@@ -1480,7 +1480,7 @@
       "date": "2026-10-02",
       "identity": "Owned-domain-first multi-channel launch boundary selected",
       "situation": "DoneState's production execution and independent-verification path was already proven end to end, but launch governance still allowed OpenAI and GitHub Marketplace review state to look like a single route to market. The publisher chose to proceed with the owned Proof & State service now while retaining both external distribution channels in parallel.",
-      "verification": "Current main is cfbaaa4b1082a5d6a35bef7eee30e5edae00670c. E-037 records a complete production DoneState-to-OpsTruth v2 VERIFIED successor and E-038 records provider-enforced main protection. Scheduled governance run 36444659180 reached npm ci successfully and then failed only because tracked work/evidence review dates were stale. Source review found the owned service root still described DoneState as 'for ChatGPT'; this launch candidate makes the MCP surface client-neutral while leaving OpenAI reviewer and Marketplace integration code intact.",
+      "verification": "Current main is cfbaaa4b1082a5d6a35bef7eee30e5edae00670c. E-037 records a complete production DoneState-to-OpsTruth v2 VERIFIED successor and E-038 records provider-enforced main protection. Scheduled governance run 36444659180 reached npm ci successfully and then failed only because tracked work/evidence review dates were stale. Source review found the owned service root still described DoneState as 'for ChatGPT'; this launch candidate makes the MCP surface client-neutral while leaving OpenAI reviewer and Marketplace integration code intact. The candidate also adds docs/STANDALONE-MCP.md with the exact owned endpoint, OAuth/user-funded credential path, public-repository scope, authority classes, verification flow, deletion boundary and explicit limits for unaccepted clients/private-repository self-service.",
       "accountability": {
         "owner": "DoneState and Proof & State maintainers",
         "status": "complete",
@@ -1489,7 +1489,7 @@
         "staleDate": "2026-12-01"
       },
       "outcome": "DoneState has one canonical owned-domain launch path plus optional parallel OpenAI and GitHub Marketplace distribution paths. No external directory is abandoned and no external directory is the sole launch gate.",
-      "content": "Launch-channel separation, exact current main, proven production verifier chain, stale-governance diagnosis, client-neutral owned-domain MCP positioning, and preserved OpenAI/Marketplace integrations.",
+      "content": "Launch-channel separation, exact current main, proven production verifier chain, stale-governance diagnosis, client-neutral owned-domain MCP positioning, and preserved OpenAI/Marketplace integrations. Standalone onboarding documentation is now part of the reviewed launch candidate rather than an implicit ChatGPT-only workflow.",
       "measurement": "One owned-domain launch path; two retained external distribution channels; zero integrations removed; one proven production VERIFIED successor retained; one governance freshness failure classified as stale review state rather than runtime failure."
     }
   ]
