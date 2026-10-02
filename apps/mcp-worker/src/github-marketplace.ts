@@ -148,12 +148,12 @@ export async function completeMarketplaceInstall(
   const purchase = purchases.find((candidate) => candidate.plan.id === pending.planId);
   if (!purchase) return html("<h1>GitHub Marketplace purchase was not found</h1>", 403);
   const entitlement = await registry(env).recordMarketplacePurchase({
-    accountId: accountId!,
-    accountLogin: accountLogin!,
-    accountType: accountType!,
+    accountId: purchase.account.id,
+    accountLogin: purchase.account.login,
+    accountType: purchase.account.type,
     authorizedByLogin: user.login,
-    planId: planId!,
-    planName: planName!,
+    planId: purchase.plan.id,
+    planName: purchase.plan.name,
     action: "purchased",
     effectiveAt: new Date().toISOString(),
   });
@@ -235,19 +235,20 @@ export const githubMarketplaceWebhookHandler = {
       || typeof planName !== "string" || !planName.trim() || planName.length > 100) {
       return Response.json({ accepted: false }, { status: 400, headers: { "Cache-Control": "no-store" } });
     }
+    const normalizedPurchase = {
+      accountId: accountId as number,
+      accountLogin,
+      accountType: accountType as "User" | "Organization",
+      planId: planId as number,
+      planName,
+      action: payload.action as MarketplacePurchaseAction,
+      effectiveAt: payload.effective_date,
+    };
 
     try {
       const result = await registry(env).ingestMarketplaceWebhook({
         deliveryId,
-        purchase: {
-          accountId: purchase.account.id,
-          accountLogin: purchase.account.login,
-          accountType: purchase.account.type,
-          planId: purchase.plan.id,
-          planName: purchase.plan.name,
-          action: payload.action,
-          effectiveAt: payload.effective_date,
-        },
+        purchase: normalizedPurchase,
       });
       await registry(env).resolveMarketplaceWebhookFailures({
         deliveryId,
