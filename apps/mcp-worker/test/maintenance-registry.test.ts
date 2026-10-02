@@ -230,4 +230,40 @@ describe("MaintenanceRegistry", () => {
     expect(verifiedMergedMaintenanceBranchRetirementEligible({ ...run, objective: { ...run.objective, objectiveClass: "operator" } } as PublicRunRecord, subject)).toBe(false);
   });
 
+  it("indexes account-owned runs and purges owner-scoped registry data without touching platform configuration", async () => {
+    const registry = env.MAINTENANCE_REGISTRY.getByName("account-index-test");
+    const login = "account-user";
+    const runId = "11111111-1111-4111-8111-111111111112";
+
+    await registry.selectRepository(login, {
+      repository: "owner/account-repository",
+      defaultBranch: "main",
+      mode: "observe",
+      scheduleEnabled: false,
+      autoRepair: false,
+      requiredCheckNames: [],
+    });
+    await registry.recordRun(login, runId, "owner/account-repository", "operator");
+
+    expect(await registry.listRuns(login)).toEqual([
+      expect.objectContaining({
+        schema: "donestate.account-run.v1",
+        ownerLogin: login,
+        runId,
+        repository: "owner/account-repository",
+        objectiveClass: "operator",
+      }),
+    ]);
+    expect(await registry.accountDataSummary(login)).toMatchObject({
+      ownerLogin: login,
+      selectedRepositories: 1,
+      indexedRuns: 1,
+    });
+
+    const receipt = await registry.purgeAccount(login);
+    expect(receipt).toMatchObject({ deleted: true, selectedRepositories: 1, indexedRuns: 1 });
+    expect(await registry.listRepositories(login)).toEqual([]);
+    expect(await registry.listRuns(login)).toEqual([]);
+  });
+
 });
