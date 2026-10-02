@@ -32,6 +32,67 @@ describe("MaintenanceRegistry", () => {
     expect(await registry.listRepositories("another-user")).toEqual([]);
   });
 
+  it("tracks and resolves bounded Marketplace operational failures", async () => {
+    const registry = env.MAINTENANCE_REGISTRY.getByName("marketplace-health-registry");
+    await registry.recordMarketplaceWebhookFailure({
+      category: "configuration",
+      deliveryId: "marketplace-config-failure-1",
+      eventName: "marketplace_purchase",
+      statusCode: 503,
+      detail: "webhook secret unavailable",
+    });
+    await registry.recordMarketplaceWebhookFailure({
+      category: "processing",
+      deliveryId: "marketplace-processing-failure-1",
+      eventName: "marketplace_purchase",
+      statusCode: 503,
+      detail: "durable ingest failed",
+    });
+
+    expect(await registry.marketplaceWebhookHealth()).toMatchObject({
+      schema: "donestate.marketplace-webhook-health.v1",
+      unresolvedRecent: 2,
+      unresolvedConfiguration: 1,
+      unresolvedProcessing: 1,
+      escalationRequired: true,
+    });
+
+    await registry.resolveMarketplaceWebhookFailures({ deliveryId: "marketplace-processing-failure-1" });
+    expect(await registry.marketplaceWebhookHealth()).toMatchObject({
+      unresolvedRecent: 1,
+      unresolvedConfiguration: 1,
+      unresolvedProcessing: 0,
+      escalationRequired: true,
+    });
+
+    await registry.resolveMarketplaceWebhookFailures({ includeConfiguration: true });
+    expect(await registry.marketplaceWebhookHealth()).toMatchObject({
+      unresolvedRecent: 0,
+      unresolvedConfiguration: 0,
+      unresolvedProcessing: 0,
+      latestObservedAt: null,
+      escalationRequired: false,
+    });
+  });
+
+  it("includes Marketplace webhook health in the hourly sweep result", async () => {
+    const registry = env.MAINTENANCE_REGISTRY.getByName("marketplace-sweep-health");
+    await registry.recordMarketplaceWebhookFailure({
+      category: "processing",
+      deliveryId: "marketplace-sweep-failure-1",
+      eventName: "marketplace_purchase",
+      statusCode: 503,
+      detail: "test operational failure",
+    });
+
+    const result = await registry.scheduledSweep();
+    expect(result.marketplaceWebhook).toMatchObject({
+      unresolvedRecent: 1,
+      unresolvedProcessing: 1,
+      escalationRequired: true,
+    });
+  });
+
   it("rejects automatic repair without PR-only scheduled policy", async () => {
     const registry = env.MAINTENANCE_REGISTRY.getByName("global");
     await runInDurableObject(registry, async (instance: MaintenanceRegistry) => {
