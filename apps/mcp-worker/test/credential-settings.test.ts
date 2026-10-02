@@ -144,5 +144,68 @@ describe("execution credential setup", () => {
     const after = await registry.funnelDailySnapshot();
     expect(after.counts.account_deletion_completed ?? 0).toBe((before.counts.account_deletion_completed ?? 0) + 1);
   });
+  it("resumes safely from a durable interruption between vault and registry purge", async () => {
+    const registry = env.MAINTENANCE_REGISTRY.getByName("global");
+    const before = await registry.funnelDailySnapshot();
+    const user = "retry-delete-account-user";
+    const userVault = env.CREDENTIAL_VAULT.getByName(user);
+    const setup = await createCredentialSetup(env, user, "https://done.example");
+    await userVault.storeCredential(
+      user,
+      "test-user-funded-credential-not-a-secret-retry-delete-1111111111",
+    );
+    await registry.selectRepository(user, {
+      repository: "owner/retry-delete-account-repository",
+      defaultBranch: "main",
+      mode: "observe",
+      scheduleEnabled: false,
+      autoRepair: false,
+      requiredCheckNames: [],
+    });
+
+    const begin = await credentialSettingsHandler.fetch(new Request(setup.setupUrl), env);
+    const page = await begin.text();
+    const csrf = page.match(/name="csrf" value="([^"]+)"/)?.[1];
+    const session = begin.headers.get("Set-Cookie")?.split(";", 1)[0];
+    expect(csrf).toBeTruthy();
+    expect(session).toBeTruthy();
+
+    // Reproduce the durable state left by an interruption after the settings
+    // handler has acquired both deletion locks and purged the user vault, but
+    // before the owner-scoped registry purge has completed.
+    await registry.beginAccountDeletion(user);
+    await userVault.beginAccountDeletion();
+    await userVault.purgeAccount(user);
+    expect(await userVault.status(user)).toMatchObject({ connected: false });
+    expect(await registry.listRepositories(user)).toHaveLength(1);
+
+    const body = new URLSearchParams({
+      csrf: csrf!,
+      action: "delete_account",
+      confirm_login: user,
+    }).toString();
+    const retry = await credentialSettingsHandler.fetch(new Request(
+      "https://done.example/settings/openai",
+      {
+        method: "POST",
+        headers: {
+          "Content-Length": String(new TextEncoder().encode(body).byteLength),
+          "Content-Type": "application/x-www-form-urlencoded",
+          Cookie: session!,
+        },
+        body,
+      },
+    ), env);
+    const retryPage = await retry.text();
+
+    expect(retry.status).toBe(200);
+    expect(retryPage).toContain("DoneState account data deleted");
+    expect(await userVault.status(user)).toMatchObject({ connected: false });
+    expect(await registry.listRepositories(user)).toEqual([]);
+
+    const after = await registry.funnelDailySnapshot();
+    expect(after.counts.account_deletion_completed ?? 0).toBe((before.counts.account_deletion_completed ?? 0) + 1);
+  });
+
 
 });
