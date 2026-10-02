@@ -148,12 +148,12 @@ export async function completeMarketplaceInstall(
   const purchase = purchases.find((candidate) => candidate.plan.id === pending.planId);
   if (!purchase) return html("<h1>GitHub Marketplace purchase was not found</h1>", 403);
   const entitlement = await registry(env).recordMarketplacePurchase({
-    accountId: purchase.account.id,
-    accountLogin: purchase.account.login,
-    accountType: purchase.account.type,
+    accountId: accountId!,
+    accountLogin: accountLogin!,
+    accountType: accountType!,
     authorizedByLogin: user.login,
-    planId: purchase.plan.id,
-    planName: purchase.plan.name,
+    planId: planId!,
+    planName: planName!,
     action: "purchased",
     effectiveAt: new Date().toISOString(),
   });
@@ -221,9 +221,18 @@ export const githubMarketplaceWebhookHandler = {
       return Response.json({ accepted: false }, { status: 400, headers: { "Cache-Control": "no-store" } });
     }
     const purchase = payload.marketplace_purchase;
+    const accountId = purchase?.account?.id;
+    const planId = purchase?.plan?.id;
+    const accountLogin = purchase?.account?.login;
+    const accountType = purchase?.account?.type;
+    const planName = purchase?.plan?.name;
     if (!payload.action || !["purchased", "changed", "cancelled", "pending_change", "pending_change_cancelled"].includes(payload.action)
-      || !payload.effective_date || !purchase?.account?.id || !purchase.account.login || !purchase.account.type
-      || !purchase.plan?.id || !purchase.plan.name) {
+      || !payload.effective_date || !Number.isFinite(Date.parse(payload.effective_date))
+      || !Number.isSafeInteger(accountId) || Number(accountId) < 1
+      || typeof accountLogin !== "string" || !/^[A-Za-z0-9-]{1,100}$/.test(accountLogin)
+      || !["User", "Organization"].includes(accountType ?? "")
+      || !Number.isSafeInteger(planId) || Number(planId) < 1
+      || typeof planName !== "string" || !planName.trim() || planName.length > 100) {
       return Response.json({ accepted: false }, { status: 400, headers: { "Cache-Control": "no-store" } });
     }
 
