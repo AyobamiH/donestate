@@ -342,16 +342,17 @@
       "status": "active",
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-02",
-      "staleDate": "2026-10-16",
-      "nextAction": "Require exact-head core (22), core (24) and hosted-plugin acceptance on the Marketplace webhook health candidate, merge through protected main, deploy the Worker, then confirm the hourly sweep remains healthy without manufacturing a production failure.",
-      "waitCondition": "The candidate now distinguishes expected 4xx rejects from retryable DoneState 5xx failures, persists bounded privacy-minimal operational receipts, and escalates unresolved recent failures through the existing hourly sweep. Exact-head CI, merge, deployment and post-deploy health observation remain.",
-      "reentryCondition": "Close after exact-head and post-merge CI, production deployment, and a healthy scheduled sweep prove the detection path. Do not require Marketplace publication or induce a production incident.",
+      "staleDate": "2026-10-09",
+      "nextAction": "Observe the first natural hourly production maintenance sweep after Worker version 0f43dffa-b5e5-48fe-8d3f-b86fd83ff5dc and confirm Marketplace webhook health reports no unresolved recent failures and emits no escalation. Do not manufacture a production failure.",
+      "waitCondition": "PR #127 exact-head CI, protected merge, post-merge CI, and production deployment are proven. Only a natural post-deploy scheduled health observation remains.",
+      "reentryCondition": "Close OPS-002 after one healthy natural scheduled sweep is observed. If the sweep reports unresolved Marketplace webhook failures, follow docs/INCIDENT-RESPONSE.md and keep the item active until reconciled.",
       "dependencies": [
         "OPS-001",
         "MKT-003"
       ],
       "evidenceIds": [
-        "E-045"
+        "E-045",
+        "E-046"
       ]
     },
     {
@@ -1553,6 +1554,23 @@
       "outcome": "The candidate makes genuine DoneState-side Marketplace webhook failures retryable and durably visible while keeping hostile or malformed input out of the incident signal.",
       "content": "5xx-versus-4xx failure taxonomy, bounded durable failure receipts, delivery-specific recovery, configuration recovery, hourly structured escalation, retention limits, privacy-minimal fields and preserved distribution/tool boundaries.",
       "measurement": "Zero new MCP tools; two operational failure categories; one 24-hour health window; 30-day maximum failure retention; 500-row cap; 503 retry semantics for internal failures; 4xx reject semantics for invalid external requests; zero Marketplace listing mutations."
+    },
+    {
+      "id": "E-046",
+      "date": "2026-10-02",
+      "identity": "Marketplace webhook health merged and deployed to production",
+      "situation": "DoneState needed durable visibility and retry semantics for genuine GitHub Marketplace webhook operational failures without coupling owned-domain availability to Marketplace publication or changing the frozen OpenAI MCP tool surface.",
+      "verification": "PR #127 final exact head 14e153fc7d419f5be4e1f22713b1126935277f79 passed workflow 37011081001 with core (22), core (24), and hosted-plugin all successful. It merged through protected main as 6964e2118c77d35e1e2abdbc69bcdaa05fe0c997. Post-merge workflow 37011175067 completed successfully. Production deployment workflow 37011174983 completed successfully and deployed donestate.proofandstate.com with Worker version 0f43dffa-b5e5-48fe-8d3f-b86fd83ff5dc, container digest sha256:978e511c9f9011f8c10495be87b6532f10fddd5302853d35ba01fd98dc4f34f8, and the existing hourly schedule 0 * * * *. No MCP tool was added and no OpenAI or GitHub Marketplace listing/provider state was mutated.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Observe one natural hourly production maintenance sweep and confirm Marketplace webhook health has zero unresolved recent failures and no escalation event; do not inject a production failure.",
+        "waitCondition": "Implementation, exact-head CI, protected merge, post-merge CI, and production deployment are complete. The remaining proof is an observational scheduled-run receipt.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Marketplace webhook operational-failure detection, retry semantics, bounded durable receipts, and hourly escalation are live in production while distribution-channel state remains unchanged.",
+      "content": "Protected merge, exact-head and post-merge CI, production Worker/container deployment, 4xx-versus-5xx failure taxonomy, bounded durable failure health, hourly escalation, frozen 20-tool preservation and unchanged external review state.",
+      "measurement": "Three exact-head required checks passed; one protected merge; one post-merge CI passed; one production deployment passed; one Worker version and one container digest recorded; hourly cron retained; zero new MCP tools; zero Marketplace listing mutations; zero synthetic production incidents."
     }
   ]
 }
