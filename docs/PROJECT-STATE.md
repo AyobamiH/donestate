@@ -12,7 +12,7 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 
 1. **R0 — Restore self-documenting governance.** The ledger, generated state, PR template, change-impact gate, stale-state check, reviewable main-governance design, and bounded branch-retirement lifecycle are merged and green; provider ruleset and ordinary merged-branch auto-deletion remain separately evidenced owner settings. (3 complete)
 2. **R1 — Keep distribution-channel truth current.** Owned-domain, OpenAI and GitHub Marketplace states are represented independently; lifecycle events remain monotonic where applicable and publisher operating decisions are documented. (4 complete, 1 blocked)
-3. **R2 — Synchronize Proof & State.** Proof & State points to exact DoneState commits and external review states. (1 active)
+3. **R2 — Synchronize Proof & State.** Proof & State points to exact DoneState commits and external review states. (1 complete)
 4. **R3 — Separate Marketplace development from production.** A separate development OAuth App and draft listing can test lifecycle events without changing either production app. (1 active)
 5. **R4 — Prepare unrestricted standalone customer access.** Standalone customers can inspect and delete their state, operators can support failures, and useful outcomes are measured before unrestricted self-serve GA. (4 active)
 6. **R5 — Close independent-verification proof gaps.** OpsTruth restores an authenticated exact-head read lane, both products enforce one versioned verification response contract, and synthetic plus live cross-product loops have exact evidence. (3 complete, 2 deferred, 1 planned)
@@ -42,7 +42,7 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 
 | ID | Status | Owner | Next action | Wait or re-entry condition | Stale date |
 |---|---|---|---|---|---|
-| GOV-002 — Synchronize Proof & State governance records | active | Proof & State maintainers | After this launch-boundary change merges, update Proof & State portfolio records to the exact DoneState merge subject and record three parallel distribution states: owned-domain standalone service, OpenAI review, and GitHub Marketplace review. | Wait: The channels must remain separate: owned-domain launch must not imply external-directory publication, and external-directory delay must not block owned-domain operation. Re-entry: Close after Proof & State points to the exact merged DoneState subject and accurately records each channel state. | 2026-10-09 |
+| GOV-002 — Synchronize Proof & State governance records | complete | Proof & State maintainers | Preserve the Proof & State portfolio reconciliation at merge bf5da722c7df0af781c677b685624098ba02b749 and reopen only if the parent source pin or channel-state separation drifts. | Wait: None. Re-entry: Reopen only on parent-governance drift, DoneState source/deployment drift, or a provider-state change that the parent ledger fails to represent. | 2026-12-01 |
 
 ### R3 — Separate Marketplace development from production
 
@@ -581,3 +581,13 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 - **Outcome:** Both DoneState npm lock trees no longer resolve the known vulnerable fast-uri 3.1.6 path; the Worker transitive advisory set is pinned to patched overrides and CI now fails on future high-severity npm advisories.
 - **Content:** Root and Worker security lock refresh; exact npm-generated Worker lock; patched fast-uri, hono, ip-address, qs, sharp and undici overrides; permanent high-severity Worker audit gate; unchanged runtime authority, MCP tool inventory and provider state.
 - **Measurement:** Exact-head run 37026803683: core (22) passed, core (24) passed, hosted-plugin passed, permanent npm audit --audit-level=high passed, plugin validation passed; 382 Worker lock package entries; zero MCP tools changed; zero external listing/provider mutations.
+
+### E-050 — Proof & State parent sync closed against secured DoneState production
+
+- **Date:** 2026-10-02
+- **Situation:** DoneState GOV-002 required the parent portfolio to point to the current merged DoneState subject and preserve owned-domain, OpenAI and GitHub Marketplace as independent distribution states.
+- **Verification:** Proof & State PR #28 exact head 5c43b41a4af321ce68a8d74f9ed8712cb8fe1707 passed portfolio-state and contract-tests; its deploy-cloudflare-canary consequence was correctly skipped. PR #28 merged as bf5da722c7df0af781c677b685624098ba02b749. Post-merge Governance run 37028126231 passed and GTM Orchestrator run 37028125832 passed its contract checks while publishing remained disabled. The parent ledger now pins DoneState main af620d2ab05bafc89c927ff030be28c3732b0adf, post-merge CI 37027143899, production deployment 37027143173 and Worker 2a570090-b8e5-4edc-97a2-0adc35fce92d, while retaining OpenAI Review and GitHub Marketplace Pending for publish as separate external states.
+- **Accountability:** owner=DoneState and Proof & State maintainers; status=complete; next=Preserve the exact parent/source/runtime pins and channel-state separation; reopen only on drift or a new provider transition.; wait=None.; stale=2026-12-01
+- **Outcome:** The parent governance repository now represents the secured current DoneState owned service and does not treat OpenAI or GitHub Marketplace as the sole route to market.
+- **Content:** Exact parent PR, merge, post-merge governance checks, DoneState source/CI/deployment/Worker pins, publishing-disabled parent consequence, and three-channel state separation.
+- **Measurement:** One parent reconciliation PR merged; two post-merge parent checks passed; one current DoneState source pin; one current runtime deployment pin; zero external provider states inferred or mutated.
