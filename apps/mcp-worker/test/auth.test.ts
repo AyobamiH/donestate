@@ -100,6 +100,16 @@ describe("OAuth authorisation security policy", () => {
     expect(response.headers.get("Content-Security-Policy")).not.toContain("https://github.com");
   });
 
+  it("presents the owned-domain service as client-neutral while retaining parallel distribution channels", async () => {
+    const response = await authHandler.fetch(new Request("https://done.example/"), authorizationEnv());
+    const page = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(page).toContain("compatible MCP client");
+    expect(page).toContain("OpenAI and GitHub Marketplace remain additional distribution channels");
+    expect(page).not.toContain("for ChatGPT");
+  });
+
   it("identifies the isolated Marketplace development surface without advertising MCP execution", async () => {
     const env = authorizationEnv();
     (env as unknown as { DEPLOYMENT_MODE: "marketplace-development" }).DEPLOYMENT_MODE = "marketplace-development";
