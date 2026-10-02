@@ -87,6 +87,13 @@ interface AccountRunRow extends Record<string, SqlStorageValue> {
   updated_at: string;
 }
 
+interface AccountControlRow extends Record<string, SqlStorageValue> {
+  owner_key: string;
+  deleting: number;
+  generation: number;
+  updated_at: string;
+}
+
 export interface AccountRunRecord {
   schema: "donestate.account-run.v1";
   ownerLogin: string;
@@ -296,8 +303,9 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       CREATE INDEX IF NOT EXISTS idx_account_runs_owner_updated
         ON account_runs(owner_login, updated_at DESC);
       CREATE TABLE IF NOT EXISTS account_controls (
-        owner_login TEXT PRIMARY KEY,
+        owner_key TEXT PRIMARY KEY,
         deleting INTEGER NOT NULL CHECK (deleting IN (0, 1)),
+        generation INTEGER NOT NULL,
         updated_at TEXT NOT NULL
       );
     `);
@@ -356,7 +364,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     autoRepair: boolean;
     requiredCheckNames: string[];
   }): Promise<SelectedRepository> {
-    this.assertAccountWritable(login);
+    const accountGeneration = await this.assertAccountWritable(login);
     assertRepository(input.repository);
     assertRef(input.defaultBranch);
     if (input.autoRepair && (input.mode !== "pr_only" || !input.scheduleEnabled)) {
@@ -375,6 +383,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     } catch (error) {
       if (input.scheduleEnabled || input.autoRepair) throw error;
     }
+    await this.assertAccountWritable(login, accountGeneration);
     const now = new Date().toISOString();
     this.ctx.storage.sql.exec(
       `INSERT INTO selected_repositories (
@@ -402,8 +411,9 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     runId: string,
     repository: string,
     objectiveClass: "operator" | "maintenance_pr",
-  ): Promise<AccountRunRecord> {
-    this.assertAccountWritable(login);
+    expectedGeneration?: number,
+  ): Promise<AccountRunRecord & { accountGeneration: number }> {
+    const accountGeneration = await this.assertAccountWritable(login, expectedGeneration);
     if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(runId)) {
       throw new Error("run id must be a UUID");
     }
@@ -419,7 +429,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
          updated_at=excluded.updated_at`,
       login, runId, repository, objectiveClass, now, now,
     );
-    return this.accountRun(login, runId);
+    return { ...this.accountRun(login, runId), accountGeneration };
   }
 
   async removeRun(login: string, runId: string): Promise<{ runId: string; removed: boolean }> {
@@ -452,38 +462,49 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     ).toArray().map(accountRunRecord);
   }
 
-  async requireAccountWritable(login: string): Promise<{ writable: true }> {
-    const row = this.ctx.storage.sql.exec<{ deleting: number }>(
-      "SELECT deleting FROM account_controls WHERE owner_login = ?",
-      login,
-    ).toArray()[0];
-    if (row?.deleting === 1) throw new Error("DoneState account deletion is in progress");
-    return { writable: true };
+  async requireAccountWritable(
+    login: string,
+    expectedGeneration?: number,
+  ): Promise<{ writable: true; generation: number }> {
+    const generation = await this.assertAccountWritable(login, expectedGeneration);
+    return { writable: true, generation };
   }
 
-  async beginAccountDeletion(login: string): Promise<{ deleting: true }> {
-    const existing = this.ctx.storage.sql.exec<{ deleting: number }>(
-      "SELECT deleting FROM account_controls WHERE owner_login = ?",
-      login,
+  async beginAccountDeletion(login: string): Promise<{ deleting: true; generation: number }> {
+    const ownerKey = await this.accountOwnerKey(login);
+    const existing = this.ctx.storage.sql.exec<AccountControlRow>(
+      "SELECT * FROM account_controls WHERE owner_key = ?",
+      ownerKey,
     ).toArray()[0];
-    if (existing?.deleting === 1) throw new Error("DoneState account deletion is already in progress");
+    if (existing?.deleting === 1) return { deleting: true, generation: existing.generation };
+    const generation = (existing?.generation ?? 0) + 1;
     this.ctx.storage.sql.exec(
-      `INSERT INTO account_controls (owner_login, deleting, updated_at)
-       VALUES (?, 1, ?)
-       ON CONFLICT(owner_login) DO UPDATE SET deleting = 1, updated_at = excluded.updated_at`,
-      login,
+      `INSERT INTO account_controls (owner_key, deleting, generation, updated_at)
+       VALUES (?, 1, ?, ?)
+       ON CONFLICT(owner_key) DO UPDATE SET
+         deleting = 1,
+         generation = excluded.generation,
+         updated_at = excluded.updated_at`,
+      ownerKey,
+      generation,
       new Date().toISOString(),
     );
-    return { deleting: true };
+    return { deleting: true, generation };
   }
 
-  async endAccountDeletion(login: string): Promise<{ deleting: false }> {
+  async endAccountDeletion(login: string): Promise<{ deleting: false; generation: number }> {
+    const ownerKey = await this.accountOwnerKey(login);
+    const existing = this.ctx.storage.sql.exec<AccountControlRow>(
+      "SELECT * FROM account_controls WHERE owner_key = ?",
+      ownerKey,
+    ).toArray()[0];
+    const generation = existing?.generation ?? 0;
     this.ctx.storage.sql.exec(
-      "UPDATE account_controls SET deleting = 0, updated_at = ? WHERE owner_login = ?",
+      "UPDATE account_controls SET deleting = 0, updated_at = ? WHERE owner_key = ?",
       new Date().toISOString(),
-      login,
+      ownerKey,
     );
-    return { deleting: false };
+    return { deleting: false, generation };
   }
 
   async accountDataSummary(login: string): Promise<AccountDataSummary> {
@@ -528,16 +549,31 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       "UPDATE marketplace_entitlements SET authorized_by_login = NULL WHERE account_type = 'Organization' AND authorized_by_login = ?",
       login,
     );
-    this.ctx.storage.sql.exec("DELETE FROM account_controls WHERE owner_login = ?", login);
+    const ownerKey = await this.accountOwnerKey(login);
+    this.ctx.storage.sql.exec(
+      "UPDATE account_controls SET deleting = 0, updated_at = ? WHERE owner_key = ?",
+      new Date().toISOString(),
+      ownerKey,
+    );
     return { ...before, deleted: true };
   }
 
-  private assertAccountWritable(login: string): void {
-    const row = this.ctx.storage.sql.exec<{ deleting: number }>(
-      "SELECT deleting FROM account_controls WHERE owner_login = ?",
-      login,
+  private async accountOwnerKey(login: string): Promise<string> {
+    return digest({ schema: "donestate.account-owner-key.v1", login });
+  }
+
+  private async assertAccountWritable(login: string, expectedGeneration?: number): Promise<number> {
+    const ownerKey = await this.accountOwnerKey(login);
+    const row = this.ctx.storage.sql.exec<AccountControlRow>(
+      "SELECT * FROM account_controls WHERE owner_key = ?",
+      ownerKey,
     ).toArray()[0];
+    const generation = row?.generation ?? 0;
     if (row?.deleting === 1) throw new Error("DoneState account deletion is in progress");
+    if (expectedGeneration !== undefined && generation !== expectedGeneration) {
+      throw new Error("DoneState account state changed during operation");
+    }
+    return generation;
   }
 
   private accountRun(login: string, runId: string): AccountRunRecord {
@@ -669,12 +705,13 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
   }
 
   async discover(login: string, repository: string, fallbackToken?: string): Promise<{ repository: string; findings: MaintenanceFinding[] }> {
-    this.assertAccountWritable(login);
+    const accountGeneration = await this.assertAccountWritable(login);
     const selected = this.repository(login, repository);
     let token = fallbackToken;
     if (selected.installationId) token = (await createInstallationToken(await this.appCredentials(), selected.installationId, "read")).token;
     if (!token) throw new Error("no read credential is available for maintenance discovery");
     const candidates = await discoverMaintenanceCandidates(token, repository);
+    await this.assertAccountWritable(login, accountGeneration);
     await this.upsertCandidates(login, repository, candidates);
     return { repository, findings: await this.listFindings(login, repository) };
   }
@@ -713,7 +750,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
   }
 
   async startRepair(login: string, findingId: string): Promise<{ finding: MaintenanceFinding; runId: string }> {
-    this.assertAccountWritable(login);
+    const accountGeneration = await this.assertAccountWritable(login);
     const row = this.ctx.storage.sql.exec<FindingRow>(
       "SELECT * FROM findings WHERE id = ? AND owner_login = ?",
       findingId, login,
@@ -731,6 +768,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     const baseHeadSha = await getBranchHead(installation.token, selected.repository, selected.defaultBranch);
     if (!baseHeadSha) throw new Error("selected default branch does not exist");
     const runId = crypto.randomUUID();
+    await this.assertAccountWritable(login, accountGeneration);
     const claimedAt = new Date().toISOString();
     this.ctx.storage.sql.exec(
       "UPDATE findings SET state = 'REPAIR_QUEUED', run_id = ?, updated_at = ? WHERE id = ? AND owner_login = ? AND state = 'OPEN' AND repair_eligible = 1",
@@ -770,10 +808,21 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       maxChangedFiles: 25,
       maxDurationMs: 1_800_000,
     };
+    const admission = await this.recordRun(login, runId, selected.repository, "maintenance_pr", accountGeneration);
     const coordinator = this.env.RUN_COORDINATOR.getByName(runId);
-    await coordinator.create(objective, installation.token);
-    await this.recordRun(login, runId, selected.repository, "maintenance_pr");
-    await coordinator.start(login);
+    try {
+      await coordinator.create(objective, installation.token);
+      await this.assertAccountWritable(login, admission.accountGeneration);
+      await coordinator.start(login);
+    } catch (error) {
+      try {
+        await coordinator.purge(login);
+      } catch {
+        // The coordinator may not have been created yet; the account generation still fences future mutation.
+      }
+      await this.removeRun(login, runId);
+      throw error;
+    }
     const updated = this.ctx.storage.sql.exec<FindingRow>("SELECT * FROM findings WHERE id = ?", row.id).one();
     return { finding: findingRecord(updated), runId };
   }
