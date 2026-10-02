@@ -76,7 +76,7 @@ The demo intentionally ends at `AWAITING_VERIFICATION`. Self-verification would 
 
 <!-- Current GitHub Marketplace evidence: E-013 -->
 
-The canonical hosted service is the MCP endpoint at [donestate.proofandstate.com](https://donestate.proofandstate.com). It is a first-class standalone launch channel: a compatible MCP client can connect to the owned service, the user authenticates with GitHub, selects repository scope, supplies their own OpenAI execution credential, approves a bounded consequence envelope, and monitors durable execution through independent verification.
+The canonical hosted service is the MCP endpoint at [donestate.proofandstate.com](https://donestate.proofandstate.com). It is a first-class standalone launch channel: a compatible MCP client can connect to the owned service, the user authenticates with GitHub, selects repository scope, supplies their own OpenAI execution credential, approves a bounded consequence envelope, and monitors durable execution through independent verification. See [Standalone hosted MCP setup](docs/STANDALONE-MCP.md) for the bounded current onboarding path and its acceptance limits.
 
 OpenAI/ChatGPT and GitHub Marketplace remain supported distribution channels, not abandoned integrations and not prerequisites for the owned-domain launch. The existing ChatGPT/Codex plugin package under `plugins/donestate`, the OpenAI reviewer path, Marketplace onboarding, lifecycle handling, and Marketplace development environment remain in the product. Each channel advances on its own provider state; delay in one channel must not be represented as a failure or blocker in another.
 
