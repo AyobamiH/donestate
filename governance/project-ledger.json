@@ -787,9 +787,9 @@
       "accountability": {
         "owner": "Publisher owner",
         "status": "blocked",
-        "nextAction": "Continue this GitHub Marketplace lane in parallel and preserve exact provider-state evidence without treating it as proof of owned-domain launch state.",
-        "waitCondition": "GitHub Marketplace provider state controls this distribution channel only; it does not block the owned-domain standalone launch.",
-        "staleDate": "2026-10-16"
+        "nextAction": "Respond to reviewer feedback and record every state transition.",
+        "waitCondition": "GitHub reviewer decision or request.",
+        "staleDate": "2026-09-15"
       },
       "outcome": "The listing is under review, not approved or published.",
       "content": "Listing copy, legal policies, media, demo, and signed lifecycle webhook.",
@@ -820,10 +820,10 @@
       "verification": "PR workflow 33260424569 passed all three required jobs. Earlier OpsTruth attempts returned signed uncertain decisions, and the latest retry failed closed on GitHub's anonymous rate limit. AyobamiH/opstruth-chatgpt-plugin#11 tracks the authenticated read-lane blocker. No publicly evidenced signed terminal decision has been accepted.",
       "accountability": {
         "owner": "OpsTruth maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "blocked",
+        "nextAction": "Prove the issue 11 authenticated read lane and independently re-evaluate the exact canary head.",
+        "waitCondition": "A least-privilege verifier path with exact source, CI, deployment, runtime, and signed-result evidence.",
+        "staleDate": "2026-09-09"
       },
       "outcome": "PR 22 is owner-merged, while the canary run remains AWAITING_VERIFICATION.",
       "content": "Historical one-file PR-only authorization, exact PR head and checks, separate owner merge, failed-closed retry, and an explicit independent-verification blocker.",
@@ -854,10 +854,10 @@
       "verification": "The status page reported Review after submission materials and reviewer access were saved.",
       "accountability": {
         "owner": "Publisher owner",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "blocked",
+        "nextAction": "Record the decision and retire legacy transport when safe.",
+        "waitCondition": "OpenAI reviewer decision.",
+        "staleDate": "2026-09-15"
       },
       "outcome": "Version 0.2.0 is in review, not approved or published.",
       "content": "MCP submission, media, prompts, cases, annotations, challenge route, and read-only reviewer account.",
@@ -923,9 +923,9 @@
       "accountability": {
         "owner": "Publisher owner",
         "status": "active",
-        "nextAction": "Continue this GitHub Marketplace lane in parallel and preserve exact provider-state evidence without treating it as proof of owned-domain launch state.",
-        "waitCondition": "GitHub Marketplace provider state controls this distribution channel only; it does not block the owned-domain standalone launch.",
-        "staleDate": "2026-10-16"
+        "nextAction": "Complete live changed, pending_change, and pending_change_cancelled coverage.",
+        "waitCondition": "Three live transition results remain; purchase and cancellation are recorded.",
+        "staleDate": "2026-09-12"
       },
       "outcome": "The separate development app and owner-only draft listing have exact ping, purchase, and accepted cancellation evidence; credential isolation is recovered under E-010, while the remaining live transitions keep the lifecycle exit criterion open.",
       "content": "Development-only runtime and state, OAuth App and draft listing identities, credential names, zero-cost Development Test plan, route allowlist, exact ping, purchase, accepted cancellation receipt, and explicit remaining proof gaps.",
@@ -991,9 +991,9 @@
       "accountability": {
         "owner": "Publisher owner",
         "status": "blocked",
-        "nextAction": "Continue this GitHub Marketplace lane in parallel and preserve exact provider-state evidence without treating it as proof of owned-domain launch state.",
-        "waitCondition": "GitHub Marketplace provider state controls this distribution channel only; it does not block the owned-domain standalone launch.",
-        "staleDate": "2026-10-16"
+        "nextAction": "Wait for a GitHub review decision, respond to any provider feedback, and record an unauthenticated listing read-back before claiming publication or discoverability.",
+        "waitCondition": "The submission is Pending for publish and explicitly unpublished; owner preview content, authenticated inventory, and the displayed 1 install do not establish public availability, webhook delivery, entitlement state, OAuth completion, repository selection, execution, billing, retention, or user outcome.",
+        "staleDate": "2026-09-15"
       },
       "outcome": "The production submission remains SUBMITTED / IN_REVIEW, Pending for publish, draft, and unpublished. The owner preview shows the listing content and a displayed count of 1, not public discoverability or a public install. OpenAI version 0.2.0 separately remains in Review.",
       "content": "Authenticated submission status, draft and unpublished notice, Withdraw request control, owner-preview identity and content, unauthenticated search result, authenticated listing inventory, separate OpenAI review state, and explicit proof gaps.",
@@ -1024,10 +1024,10 @@
       "verification": "The PR 63 candidate introduces contract version donestate.verification-contract.v2, strict report and response schemas, full report-plus-attestation retention, report digest and decision coherence checks, exact sealed subject and requirement coverage, 15-minute maximum age, five-minute future skew, objective-pinned Ed25519 trust, a revocation denylist, durable one-time nonce/handoff claims, verified/failed/uncertain vectors, negative mutations, and a root-state regression keeping uncertainty at AWAITING_VERIFICATION. Local root and Worker gates must pass again on the final PR head; no deployment or live verifier round trip is claimed by this evidence.",
       "accountability": {
         "owner": "DoneState and OpsTruth contract maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Land the review-only DoneState candidate after exact-head CI, implement the matching read-only OpsTruth response envelope against the same vectors, then run a fresh authenticated canary after separate reviewed deployments.",
+        "waitCondition": "Neither contract half is proven live yet; OpsTruth must not self-certify its own contract change and DoneState has no merge or deployment authority in this work item.",
+        "staleDate": "2026-09-15"
       },
       "outcome": "The false-evidence boundary is encoded as a review candidate rather than left as prose; live interoperability remains UNPROVEN until both independently reviewed sides are deployed and exercised.",
       "content": "Version manifest, schemas, full response validation, trust lifecycle, replay storage, uncertainty semantics, shared compatibility vectors, adversarial tests, and explicit legacy adapter boundary.",
@@ -1041,10 +1041,10 @@
       "verification": "OpsTruth deployment workflow 33571362136 attempt 2 succeeded on commit ad54c1081d952b133c72f32ccf8d23df0ba937b2; Cloudflare Worker version dff0a2d5-fd50-46dc-9c9a-2c0c8674ad2f passed production smoke with 21 read-only tools and selected-repository GitHub App reads. DoneState issue 64 is open with label donestate:repair and a one-file PR-only canary boundary. This change moves the production maintenance cron from every six hours to hourly without widening repair authority.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Deploy the hourly cadence, let maintenance pick up issue 64, and record the resulting PR, CI, OpsTruth response, and DoneState terminal state.",
+        "waitCondition": "Issue 64 has not yet produced a fresh canary PR and terminal verification read-back.",
+        "staleDate": "2026-09-09"
       },
       "outcome": "Authenticated verifier production is proven and the maintenance discovery cadence is being shortened from six hours to one hour; end-to-end live verification remains pending issue 64.",
       "content": "Exact OpsTruth source and deployment subjects, verifier GitHub App production smoke, bounded DoneState canary issue, hourly cron change, and unchanged PR-only authority boundary.",
@@ -1058,10 +1058,10 @@
       "verification": "PR 66 hosted-plugin and core (24) passed, while core (22) failed only at governance:impact because docs/VERIFICATION-CONTRACT-V2-CANARY.md changed without governance/project-ledger.json and generated docs/PROJECT-STATE.md. Code inspection also confirmed RunCoordinator invokes OpsTruth once immediately after publication but no workflow_run path retries an AWAITING_VERIFICATION exact head after CI completes. The temporary every-minute Cloudflare diagnostic trigger used to force one sweep was removed; production remains hourly.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Teach maintenance execution that repository governance closure outranks conflicting untrusted issue limits, fail governance impact before publication, wire completed workflow exact-head verification retry, deploy, and run a replacement sealed canary.",
+        "waitCondition": "PR 66 is intentionally unmerged evidence of the defects; terminal live interoperability remains unproven until the repaired runtime completes a replacement canary.",
+        "staleDate": "2026-09-09"
       },
       "outcome": "The live canary prevented a false success claim and converted two hidden autonomy gaps into exact reproducible repair work without changing historical canaries.",
       "content": "Fresh run and PR identities, one-file branch evidence, exact CI failure layer, runtime retry-code inspection, temporary scheduler diagnostic provenance, and a bounded repair plan.",
@@ -1075,10 +1075,10 @@
       "verification": "Cloudflare deployment workflow 33612599617 succeeded and its Wrangler output recorded schedule 0 * * * *. GitHub shows issue 68 open and eligible, zero open DoneState pull requests, and no new DoneState run branch after the repaired deployment. Earlier issue 64 required a temporary provider minute trigger before its run was picked up. Source inspection at 92359483968226509d55dc10bf51bc8a3ef3a920 shows signed issue webhooks upsert eligible findings but only scheduledSweep invokes startRepair, making scheduled-event delivery a single point of liveness failure. OpsTruth remains deployed at b25734e9919832854027e8c22b6212b822563f9f / Worker 084fa621-7bbd-4360-b210-a4caeebc8ee0.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Add idempotent event-driven repair dispatch after a valid signed eligible issue webhook, retain hourly scheduledSweep as reconciliation, deploy the repair, then edit issue 68 once to trigger the live replacement canary.",
+        "waitCondition": "The replacement canary has not started because the configured hourly provider event is not delivering the required sweep reliably; do not claim live interoperability until issue 68 produces a new terminally verified run.",
+        "staleDate": "2026-09-09"
       },
       "outcome": "The remaining liveness dependency is isolated at the orchestration trigger rather than the verifier contract, GitHub discovery, CI, or PR-only authority layer. Event-driven dispatch restores webhook-first operation while preserving periodic reconciliation and the independent-verifier boundary.",
       "content": "Exact DoneState deployment and schedule evidence, replacement issue state, absence of a new run or PR, source-level webhook-versus-sweep ownership, idempotent dispatch design, and unchanged PR-only verification authority.",
@@ -1109,10 +1109,10 @@
       "verification": "GitHub Hookshot delivered the issue event to the exact Worker and HTTP 202 followed successful MaintenanceRegistry ingestion. The registry logged the same finding ID and run ID 91125856-325d-4cf9-8479-9f3e2e94e0ea for duplicate issue deliveries, while RunCoordinator create and start both completed, proving idempotent durable queueing. The alarm entered the sandbox, then anonymous command `git clone --no-tags --single-branch --branch main https://github.com/AyobamiH/donestate.git /workspace/repo` returned exit code 128. DoneState logged `state=FAILED_SAFE` and `clone failed with exit code 128`; no donestate/91125856-... branch or pull request was created. Earlier run 5ba4e808-21d1-4937-b1ba-ee5b5d63bade reached branch/PR publication through the same anonymous public materialization design, so the failure is not evidence that the repository requires credentialed clone.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Retry the anonymous public clone up to three times inside the same durable read-only clone action with bounded backoff and sandbox-directory cleanup, keep credentials out of clone, deploy under normal review, and use a fresh successor canary.",
+        "waitCondition": "Issue 71 is terminal FAILED_SAFE before any repository mutation. Do not retry that run; prove the bounded read-only retry with a new run after deployment.",
+        "staleDate": "2026-09-09"
       },
       "outcome": "Scheduler, signed webhook delivery, duplicate convergence, durable queue setup and alarm execution are now proven live. The next blocker is isolated to resilience of the pre-mutation anonymous clone operation.",
       "content": "Exact DoneState source and Worker, issue/finding/run identities, GitHub Hookshot delivery, duplicate queue convergence, RunCoordinator create/start, sandbox clone command and exit code, terminal FAILED_SAFE state, and historical successful anonymous materialization evidence.",
@@ -1143,10 +1143,10 @@
       "verification": "Production Workers observability shows the Sandbox clone command was a shell while loop intended to attempt the anonymous public clone three times with 2s and 4s backoff. The first clone failure terminated the Cloudflare Sandbox shell session with exit code 1 and the runtime reported that the session was dead and could not execute further commands. RunCoordinator then emitted DoneState run stopped before publication. No OpsTruth verification attempt occurred because there was no published exact head. The failure is pre-mutation and credentials remained absent from the anonymous clone command.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Move clone retry ownership into deterministic TypeScript orchestration, give each attempt a fresh Sandbox identity, settle the one durable clone action only on first success or final exhaustion, preserve bounded 2s/4s backoff and credential-free cloning, deploy, then run a fresh successor canary.",
+        "waitCondition": "Issue 73 is terminal failure evidence and must not be retried or rewritten. Live DoneState-to-OpsTruth interoperability remains unproven until a new run survives repository materialization and reaches exact-head verification.",
+        "staleDate": "2026-09-09"
       },
       "outcome": "The retry policy itself was sound but was placed at the wrong execution layer. A failed Sandbox exec can terminate its session, so retries that must survive that failure require fresh sandbox identities controlled by deterministic orchestration rather than an in-session shell loop.",
       "content": "Exact issue and run identity, deployed Worker subject, RunCoordinator alarm execution, anonymous clone shell command, session-death error, absence of branch/PR and verifier activity, and fresh-sandbox retry design.",
@@ -1160,10 +1160,10 @@
       "verification": "Historical comparison disproved a recent-regression theory: run 5ba4e808 completed the same Codex command in 158578 ms and published PR 66; earlier maintenance sequences also contain implementation HTTP 500 failures followed by successful successor runs. The Dockerfile has used cloudflare/sandbox:0.7.0 since the hosted control plane was introduced while the Worker lockfile resolves @cloudflare/sandbox 0.12.9. The current runtime also logs Using http transport. This change corrects only the documented SDK/image mismatch and adds a deterministic version-sync gate; Codex version, command, HTTP transport, OpsTruth, scheduler, webhook and retry semantics remain unchanged.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Review and deploy exact Sandbox SDK/image 0.12.9 alignment, confirm the deployed container image and version-sync gate, then launch a fresh canary without changing Codex or transport.",
+        "waitCondition": "Do not add Codex retries or switch HTTP to RPC in the same experiment. Preserve issue 79 as terminal pre-publication failure evidence.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "The implementation HTTP 500 is no longer being treated as proof of an OpenAI/Codex API failure. The first corrective layer is the objectively unsupported Cloudflare Sandbox package/image mismatch, isolated as one variable.",
       "content": "Exact successful and failed production command timings, historical HTTP 500/successor PR pattern, Worker and container versions, package-lock SDK version, Docker image version, and the one-variable correction boundary.",
@@ -1177,10 +1177,10 @@
       "verification": "Deployment 33710162469 passed 113 Worker tests, printed Cloudflare Sandbox versions aligned at 0.12.9, and built the container from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe. Issue 81 queued on that exact Worker, anonymous clone succeeded, production observability logged Using http transport, and the unchanged Codex command failed at Sandbox.exec with HTTP 500 after 133625 ms. No branch, PR or OpsTruth call occurred. This falsifies the SDK/image mismatch as the sole cause while leaving deprecated HTTP transport as the next isolated common layer.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Switch only SANDBOX_TRANSPORT from the deprecated HTTP default to rpc on the aligned 0.12.9 stack, add a deterministic transport guard, deploy under normal review, and launch a fresh successor canary with Codex and retry semantics unchanged.",
+        "waitCondition": "Issue 81 is terminal pre-publication evidence and must not be retried or rewritten. Do not combine the RPC migration with Codex upgrades, retries, timeout changes or verifier changes.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "Version alignment was necessary but not sufficient. The next experiment is now correctly isolated at the Sandbox transport layer rather than the Codex execution policy.",
       "content": "Exact aligned Worker deployment, container base digest, issue 81 clone success, HTTP transport log, 133625 ms Sandbox.exec 500, no publication and no verifier activity, plus Cloudflare staged RPC migration boundary.",
@@ -1194,10 +1194,10 @@
       "verification": "Post-merge CI 33711766653 passed all three jobs and deployment 33711766651 passed 113 Worker tests with transport=rpc. Production observability for issue 83 recorded RPC transport and zero HTTP selections, successful anonymous materialization, then Sandbox.exec failed after 69498 ms with 'Sandbox operation commands.execute was interrupted while the runtime connection was closing'. The earlier HTTP 500 signature was absent. DoneState passes objective.maxDurationMs=1800000 to the implementation exec, so the stop is not the configured command timeout. Executor inspection shows the active Sandbox has sleepAfter=15m but no keepAlive, while the SDK exposes keepAlive specifically to prevent automatic sleep during long-running work and DoneState already destroys activeSandbox in finally.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Enable keepAlive for the bounded Sandbox runtime used by clone/implementation while preserving deterministic destroy cleanup, keep RPC, Codex 0.150.1, command, timeout and retry semantics unchanged, deploy under normal review, and launch a fresh successor canary.",
+        "waitCondition": "Issue 83 is terminal pre-publication evidence and must not be retried or rewritten. Do not combine keepAlive with Codex upgrades, generic implementation retries, timeout changes or verifier changes.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "RPC fixed the deprecated HTTP transport failure signature but did not complete the loop. The current failure is now isolated to Sandbox runtime lifecycle during a long active implementation command.",
       "content": "Exact PR 82 merge/deploy subjects, RPC selection, clone success, 69498 ms runtime-closing interruption, absence of HTTP 500/publication/verifier activity, explicit 30-minute DoneState implementation timeout, missing keepAlive configuration, and existing deterministic Sandbox destroy cleanup.",
@@ -1211,10 +1211,10 @@
       "verification": "Clone attempt 1 failed with exit 128 and bounded fresh-sandbox attempt 2 succeeded. Production then ran the unchanged Codex implementation command through RPC with keepAlive enabled, but Sandbox.exec failed after 23486 ms with Sandbox operation commands.execute was interrupted while the runtime connection was closing. No HTTP 500 occurred, no validation or publication began, no branch or PR was created and OpsTruth was never invoked. Cloudflare Sandbox 0.12.9 source defaults enableDefaultSession to true unless callers explicitly disable it; current Cloudflare migration guidance recommends enableDefaultSession false for implicit operations. Upstream sandbox-sdk issues 864/865 reproduce the same OperationInterruptedError/session_disposed family and identify stale default-session identity across container generations as a defect. The 0.12.9 changelog contains no release note for that generation repair.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Set enableDefaultSession false in the existing bounded Sandbox runtime options, preserve 0.12.9, RPC, keepAlive and deterministic destroy cleanup, keep Codex and retry semantics unchanged, deploy under normal review, then launch a fresh successor canary.",
+        "waitCondition": "Issue 85 is terminal pre-publication evidence and must not be retried, reopened, reset or rewritten. Do not add Codex retries or change transport/version/timeouts in the same experiment.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "keepAlive is retained as valid lifecycle hardening but is not sufficient. The next isolated layer removes reliance on the persistent default session implicated by current Cloudflare guidance and upstream session-generation failure evidence.",
       "content": "Exact issue/finding/run identities, deployed Worker and Sandbox subjects, clone-attempt outcomes, RPC+keepAlive Codex interruption at 23486 ms, absence of publication/verifier activity, 0.12.9 default-session behavior and upstream session_disposed evidence.",
@@ -1228,10 +1228,10 @@
       "verification": "Production observability recorded the unchanged Codex implementation command completing successfully after 168383 ms. The immediately following read-only git rev-parse HEAD failed after 142 ms with Sandbox operation commands.execute was interrupted while the runtime connection was closing. RunCoordinator stopped before validation. No branch, pull request or OpsTruth call was produced. This proves sessionless execution materially fixed the original long Codex execution boundary while sequential control-channel continuity after the completed process remains unreliable.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Move only the long implementation call from blocking Sandbox.exec to one deterministic startProcess identity, reconcile that identity with bounded read-only observation, never relaunch Codex ambiguously, preserve sessionless 0.12.9 + RPC + keepAlive and deterministic destroy cleanup, deploy after normal review, then launch one fresh successor canary.",
+        "waitCondition": "Issue 94 is terminal pre-publication evidence and must not be retried, reopened, reset or rewritten. Do not add blind Codex retries or change Sandbox version, transport, keepAlive, sessionless mode, Codex version, command, timeout, publication authority or verifier in the same experiment.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "The Codex implementation problem is materially fixed; the remaining blocker is the control plane immediately after a successful long process. The next isolated layer makes the implementation effect durable and reconcilable by process identity without granting a second launch.",
       "content": "Exact PR 93 merge, CI, deployment, Worker and Sandbox subjects; issue 94 outcome; 168383 ms successful Codex completion; 142 ms failed post-Codex read-only command; absence of validation, publication and verifier activity; and the bounded single-launch process-reconciliation design.",
@@ -1245,10 +1245,10 @@
       "verification": "The signed issue webhook created finding 87023d1e62b0fb2e058b2a8a38a3023a13bfc15f24e78471fbee301e9bb48b14 and queued run 0e3fc377-6ff7-47ba-8cdf-df0a226a7a85. Clone attempt 2 succeeded. The implement action durably recorded one acknowledged deterministic process ID donestate-implement-0e3fc377-6ff7-47ba-8cdf-df0a226a7a85, then settled AMBIGUOUS with reason process_identity_disappeared; the run entered AMBIGUOUS_EFFECT at 2026-09-03T07:05:31.877Z. No validation, branch, pull request, verification snapshot or OpsTruth decision followed. Cloudflare Sandbox 0.12.9 ProcessStore removes terminal records from memory after attempting file persistence and explicitly permits process history loss when that write fails, so process identity is not a durable completion oracle for DoneState. The next isolated repair returns to the sessionless foreground exec that issue 94 proved can complete, wraps the unchanged inner Codex command with an atomic terminal receipt outside /workspace/repo, removes receipt secrets from the child environment before Codex starts, and reacquires the same Sandbox ID for bounded read-only receipt and repository-head reconciliation.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Review the foreground terminal-receipt and same-Sandbox reacquisition repair, preserve the aligned 0.12.9 RPC + keepAlive + sessionless runtime and unchanged Codex inner command, deploy normally, then launch one fresh successor canary.",
+        "waitCondition": "Issue 96 and run 0e3fc377-6ff7-47ba-8cdf-df0a226a7a85 are terminal ambiguity evidence and must not be retried, reset or rewritten. Missing or mismatched receipt must remain AMBIGUOUS_EFFECT and must never authorize a second Codex launch.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "The background-process idea removed blind retry but did not provide durable terminal identity in Sandbox 0.12.9. The next repair moves effect reconciliation to a DoneState-owned terminal receipt while retaining fail-closed ambiguity when the Sandbox filesystem disappears.",
       "content": "PR 95 merge and CI/deployment subjects, issue 96 finding/run identity, successful clone attempt, acknowledged process identity, process_identity_disappeared settlement, terminal AMBIGUOUS_EFFECT state, absence of publication/verifier activity, Cloudflare 0.12.9 process-store semantics, and the bounded receipt/reacquisition design.",
@@ -1262,10 +1262,10 @@
       "verification": "Production observability shows anonymous clone success in 1347 ms, RPC transport, then the terminal-receipt wrapper itself remained one long Sandbox commands.execute call and was interrupted while the runtime connection was closing after 111428 ms. RunCoordinator stopped as AMBIGUOUS_EFFECT roughly 5681 ms later. No validation, branch, PR or OpsTruth call occurred. The code at cb1951df allows only three receipt/control attempts with 500 ms and 1000 ms linear backoff, while issue 94 already proved the unchanged Codex 0.150.1 path can complete successfully after 168383 ms. Therefore the receipt oracle was sound but its reconciliation window was structurally shorter than a known-valid implementation runtime.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Launch the same receipt wrapper exactly once through a short detached nohup handoff, enforce the existing implementation duration inside the wrapper, and poll the receipt plus repository continuity read-only until that configured deadline plus a small terminal-write grace. Never relaunch Codex after the durable implementation intent, even if launch acknowledgement is ambiguous.",
+        "waitCondition": "Issue 98 is terminal AMBIGUOUS_EFFECT evidence and must not be retried or rewritten. Do not change Sandbox version, transport, lifecycle, Codex version/arguments, verifier or authority in the same repair.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "The terminal receipt remains the correct completion authority, but it must decouple DoneState from a long-lived Sandbox RPC and its reconciliation window must cover the configured implementation lifetime rather than three immediate retries.",
       "content": "Exact issue 98 deployed subject, clone and RPC evidence, 111428 ms foreground-wrapper interruption, AMBIGUOUS_EFFECT stop timing, absence of publication/verifier activity, three-attempt reconciliation constants, and the earlier 168383 ms successful Codex comparison.",
@@ -1279,10 +1279,10 @@
       "verification": "PR 100 merged as b4febe960fc7e71d48049e3a758256c1b61841ef after exact-head CI 33738177238; post-merge CI 33738273567 and deployment 33738273580 passed. The deployment published Worker f89f842c-2f74-43a6-8f3e-ed90411e6964 and container sha256:da8f52ef1570de5ace6c6d336ad29b92b7a5a5a8ecb9b0e336707a98fff5e9c2 with Sandbox 0.12.9 and Codex 0.150.1. Source inspection shows RunCoordinator.alarm directly awaits executeObjective, whose detached implementation still polls until maxDurationMs plus receipt grace and whose Node validation could run multiple long commands in the same alarm. Hosted maintenance defaults to 1800000 ms and the public objective contract permits 7200000 ms. Cloudflare documents a 15-minute alarm-handler wall-time and at-least-once alarm retries.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Make execution alarm-sliced with one durable implementation checkpoint, short per-alarm actions, safe same-run resumption, credential/sandbox retention across safe yields, and no replay of ambiguous generic mutations; then review, deploy and run one fresh canary.",
+        "waitCondition": "Fresh canary is blocked until the deployed execution model no longer depends on one alarm invocation surviving longer than the platform wall-time.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "PR100 remains valid evidence for the detached receipt layer, but it is not yet sufficient proof of the advertised autonomous duration contract.",
       "content": "Exact PR100 source/CI/deployment/runtime subjects, Cloudflare alarm semantics, coordinator recovery behavior, objective duration limits, credential lease behavior, and the alarm-sliced repair boundary.",
@@ -1296,10 +1296,10 @@
       "verification": "Production observability shows repository clone success, RPC selection, exactly one short `sandbox.exec` launch of `nohup /bin/sh $DONESTATE_RECEIPT_SCRIPT_PATH ... &` acknowledged in 166 ms, then repeated successful RunCoordinator alarms at roughly five-second intervals across the full 30-minute implementation budget. No matching terminal receipt ever appeared. At 2026-09-03T13:25:31.891Z RunCoordinator emitted DoneState run stopped on the exact reason `implementation effect could not be reconciled from a terminal receipt before the configured deadline`; zero validation, publication, pull request or OpsTruth activity followed. Cloudflare stable Sandbox guidance distinguishes foreground exec from the background startProcess primitive. Earlier issue 96 proved only that Sandbox process-record identity is not a durable completion oracle; DoneState now owns a stronger atomic receipt and therefore can use startProcess strictly as a one-launch primitive without restoring getProcess-based completion.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Launch the existing receipt wrapper exactly once with Sandbox startProcess under deterministic process ID, leave the wrapper timeout and atomic receipt unchanged, reconcile completion only from the receipt across alarms, never call getProcess as completion truth and never relaunch Codex after durable intent, then deploy and run one fresh successor canary.",
+        "waitCondition": "Issue 103 is terminal AMBIGUOUS_EFFECT evidence and must not be retried, reopened, reset or rewritten. Do not change Sandbox version, RPC, keepAlive, sessionless mode, Codex version/arguments, receipt schema, objective timeout, publication authority or OpsTruth in the same experiment.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "Alarm slicing is proven healthy; the remaining implementation liveness defect is narrowed to using a shell-detached child as a background-process substitute inside foreground Sandbox.exec. The next repair uses the provider-supported background launch primitive while retaining DoneState-owned receipt authority.",
       "content": "Exact PR102/main/Worker subjects, issue103 workload and terminal timestamp, successful clone/RPC/one-launch evidence, healthy alarm cadence, absent receipt/publication/verifier evidence, and the startProcess-plus-receipt design boundary.",
@@ -1313,10 +1313,10 @@
       "verification": "Against current main 3c56aa3eb977565d4c845609ca15a8ee6c340269, branches b4242932-0bc1-4876-a202-634d9c12d72a and be725545-79db-4ee9-ba21-a650a18a95c7 are fully contained with zero commits ahead. Branches 631d8a08-d337-4bae-bd18-b55c31f48a8b, 186d9439-4352-4ffe-a5f2-725ab0f6550a and 5ba4e808-21d1-4937-b1ba-ee5b5d63bade are single-commit diverged canary or historical-evidence refs and must remain unmerged. Relative to the hosted 0.2 PR lineage, 1c77934d-05f9-4c70-8c01-1c76c539c2cc and 46dd99fa-9892-4f90-9e36-dac39cc575fc each preserve an early DoneState-authored product-boundary correction. Current Proof & State governance independently defines DoneState as the authorised execution control plane, OpsTruth as independent verification, and AgentProof as the evidence and receipt layer. A second current-state check then proved that the exact OpenAI-submitted 0.2.0 manifest at source 1588c0588dfcbfcefc70cda71e8197c1b14b7fed uses author/developer identity AyobamiH, while docs/DIRECTORY-SUBMISSION.md records verified developer identity `Individual: AYOBAMI JOHN HAASTRUP` and `Proof & State, pending separate business verification before use as publisher identity`. Therefore the historical `developerName: Proof & State` manifest diff is deliberately rejected for this repair rather than treated as drift.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Review the selective current-main documentation and skill repair, require core (22), core (24), hosted-plugin and governance closure to pass, merge only after review, then use the exact merge subject for Proof & State portfolio synchronization. Keep the submitted 0.2.0 publisher manifest unchanged until a separately verified publisher/release transition authorizes it.",
+        "waitCondition": "This review changes product-role documentation and skill guidance only. Historical canary branches remain immutable evidence, the submitted 0.2.0 publisher identity remains intact, the current Sandbox/Codex execution repair is untouched, and external OpenAI or GitHub review state is not changed merely by editing repository source.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "The historical branches confirm that DoneState already achieved branch-per-run publication. The portable recovery is the execution-versus-verification product boundary in current documentation and skills; the historical Proof & State publisher-identity diff is not portable under today's verified-developer state.",
       "content": "Seven retained run-branch lineages, current-versus-historical diffs, Proof & State canonical product roles, exact submitted 0.2.0 manifest and verified-developer boundary, selective README/architecture/trust/ADR/skill targets, and explicit runtime/evidence non-targets.",
@@ -1330,10 +1330,10 @@
       "verification": "DoneState run 70310be5-5abe-413f-9643-f9e8e2425cc2 is terminal AMBIGUOUS_EFFECT. Clone succeeded, the implementation launch was acknowledged exactly once, receipt reconciliation continued until the configured deadline, and no validation, branch, pull request or OpsTruth verification followed. Draft PR 107 from base 8b073250bfd01e8fca14755209a673ae42f5f5f0 changes only the startProcess launch command to `setsid -f /bin/sh \"$DONESTATE_RECEIPT_SCRIPT_PATH\" > \"$DONESTATE_RECEIPT_LOG_PATH\" 2>&1`, versions the durable execution mode to single_start_process_setsid_terminal_receipt_alarm_resumable_v5, and pins the contract in the executor regression. Initial exact-head CI 33788125800 passed hosted-plugin and both npm run check paths; core (22) failed only at governance:impact because this ledger and its generated project-state view had not yet changed, and core (24) was cancelled after that failure. Cloudflare sandbox-sdk issue 891 independently reports startProcess-managed process trees being killed with session teardown and reports `setsid -f` as a mitigation; this is supporting evidence rather than identity proof for the production failure.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Commit canonical governance closure to PR 107, require all three exact-head checks to pass, merge and deploy the isolated repair, then launch one fresh successor canary and continue until the full OpsTruth-backed VERIFIED loop passes.",
+        "waitCondition": "Do not retry, reset, reopen or rewrite issue 105/run 70310be5-5abe-413f-9643-f9e8e2425cc2. Do not create the successor before PR 107 is green, merged and deployed.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "The queue, clone, alarm slicing and one-launch admission layers remain proven; the unsolved liveness boundary is narrowed to the lifetime of the startProcess-launched receipt worker. PR 107 isolates Unix-session detachment without changing receipt authority, Codex semantics, verifier semantics or publication authority.",
       "content": "Terminal issue-105 run identity and action result, PR 107 base/branch/repair surface, initial exact-head CI result, supporting Cloudflare session-lifetime evidence, unchanged safety boundaries, and the fresh-successor gate.",
@@ -1347,10 +1347,10 @@
       "verification": "DoneState production converged duplicate issue deliveries on run a0ae892d-1aeb-4f72-bd8b-f82bf94e6022 and stopped it terminal AMBIGUOUS_EFFECT. Read-only Cloudflare telemetry captured the single process ID donestate-implement-a0ae892d-1aeb-4f72-bd8b-f82bf94e6022: process.start at 2026-09-03T18:31:29.365Z, process.exit exitCode 0 at 2026-09-03T18:31:29.491Z, and command.stream exitCode 0 at 2026-09-03T18:31:29.495Z. At the deadline both /workspace/.donestate-control/implementation-a0ae892d-1aeb-4f72-bd8b-f82bf94e6022.receipt and .log were absent, no Codex command matched telemetry, and no validation, branch, pull request or verifier activity followed. Diagnostic workflow 33796337929 job 100784808192 captured the exact provider process and file evidence; issue 108 is preserved and will not be retried.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Review, merge and deploy only the isolated tracked-waiter repair after exact-head CI, then launch one fresh successor canary and require terminal VERIFIED with its PR unmerged.",
+        "waitCondition": "The tracked-waiter repair is not yet reviewed, merged or deployed; issue 108 cannot be reused.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "Issue 108 is immutable terminal AMBIGUOUS_EFFECT evidence. setsid -f alone is not sufficient for DoneState receipt durability; the next bounded repair keeps an independent session child while retaining a tracked waiter with setsid -f -w.",
       "content": "Exact run identity, one launch, provider process start/exit, missing terminal receipt and log, absent Codex evidence, no publication, and the bounded tracked-waiter repair hypothesis.",
@@ -1364,10 +1364,10 @@
       "verification": "Read-only diagnostic workflow 33797877330 observed run 05aee1b9-9d24-47dd-af4c-701b9ad5c3fc in BLOCKED_CAPABILITY with error daily autonomous-run limit reached and zero matching implementation-process, Codex-command, or terminal-receipt signals. PR 111 starts from exact main 4f60b5892674471fb6428b4c372575dbde2d25a1 and changes only apps/mcp-worker/wrangler.jsonc USER_DAILY_RUN_LIMIT from 10 to 12; Sandbox max_instances remains 5 and Sandbox, Codex, receipt, OpsTruth, scheduler and PR-only authority semantics remain unchanged. Initial exact-head CI 33800619283 passed core (24); core (22) passed npm run check and then correctly failed governance:impact because this canonical evidence and generated project state were not yet part of the change.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Require PR 111 to pass core (22), core (24), hosted-plugin and governance impact on its final exact head, merge and deploy only the quota-only repair, then create one fresh successor canary with a new run identity and continue through exact-head CI, OpsTruth v2 and DoneState VERIFIED without merging the canary PR.",
+        "waitCondition": "Issue 110 and run 05aee1b9-9d24-47dd-af4c-701b9ad5c3fc remain immutable BLOCKED_CAPABILITY evidence and must not be reset, reused or rewritten. Do not create the successor until the quota-only repair is green, merged and deployed.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "The current blocker is isolated to a clean pre-execution capability gate, so no ambiguous Codex effect or historical maintenance evidence is disturbed by the minimal quota override.",
       "content": "Exact issue-110 run and diagnostic identities, pre-Codex capability stop, one-variable production quota change, retained global Sandbox cap, unchanged execution and verification contracts, and fresh-successor gate.",
@@ -1381,10 +1381,10 @@
       "verification": "Production telemetry for run 60ec7f6a-dfe9-47f8-aafc-0d8836b6e472 recorded the exact tracked process exitCode 0, sessionless post-receipt git rev-parse HEAD exitCode 0, git diff --check exitCode 0, followed by npm ci OperationInterruptedError: Sandbox operation commands.execute was interrupted while the runtime connection was closing. The run then stopped BLOCKED_CAPABILITY with install-node could not execute. No donestate/run branch, pull request or OpsTruth decision was published. Cloudflare stable Sandbox guidance keeps enableDefaultSession false and permits workflow isolation; this repair does not change Sandbox 0.12.9, RPC, Codex 0.150.1, process identity, receipt authority, retry count, publication authority or verifier contract.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Require the bounded post-receipt runtime-quiescence repair to pass exact-head core (22), core (24), hosted-plugin and governance checks; merge and deploy it; then create one fresh successor canary and require the complete issue to run to branch to PR to exact-head CI to OpsTruth v2 to DoneState VERIFIED chain without merging the canary PR.",
+        "waitCondition": "Issue 112 and run 60ec7f6a-dfe9-47f8-aafc-0d8836b6e472 remain immutable BLOCKED_CAPABILITY evidence. Never retry or reuse that run. The successor must use a fresh execution identity after the repair is deployed.",
+        "staleDate": "2026-09-10"
       },
       "outcome": "The implementation layer is now proven to reach an authoritative receipt; the remaining blocker is isolated to validation starting while the prior managed process runtime connection is still closing.",
       "content": "Exact issue-112 run, tracked waiter zero exit, receipt-gated post-implementation continuity, successful diff check, npm-ci RPC interruption, immutable historical boundary, and bounded quiescence repair gate.",
@@ -1433,9 +1433,9 @@
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Confirm the deterministic lease-expiry repair remains represented in current protected main and close this historical follow-up without changing production lease semantics.",
-        "waitCondition": "This bookkeeping follow-up is not a standalone launch blocker.",
-        "staleDate": "2026-10-09"
+        "nextAction": "Require all three exact-head PR checks and governance impact to pass on the deterministic test repair, then merge the provider-protection closure normally without owner bypass.",
+        "waitCondition": "PR #119 exact-head CI must prove the test no longer depends on runner wall-clock latency.",
+        "staleDate": "2026-09-08"
       },
       "outcome": "Pending exact-head CI; the test now models lease expiry through the store clock seam instead of a sub-second real-time race.",
       "content": "PR #119 Node 22 failure STALE_FENCING_TOKEN, five-minute npm-ci delay, deterministic injected-clock repair, unchanged production lease semantics, and required protected-branch revalidation.",
@@ -1449,10 +1449,10 @@
       "verification": "The submitted 0.2.0 source 1588c0588dfcbfcefc70cda71e8197c1b14b7fed registers 19 MCP tools. The deployed production source e75a78e45f73ce8eebd13284c5bd52097bc764cc registers 20, adding submit_verifier_response for the complete donestate.verification-contract.v2 bundle while retaining submit_verifier_attestation as historical compatibility. Current repository truth before this version cut is 99cbf9701dae9dc408fb42b0f26a130345347175, and runtime code did not change in the 22 commits after e75a78e45f73ce8eebd13284c5bd52097bc764cc. OpenAI submission guidance requires a new plugin version when reviewed MCP metadata or skill snapshots change.",
       "accountability": {
         "owner": "Publisher owner",
-        "status": "complete",
-        "nextAction": "Preserve this as immutable historical evidence. Later production evidence may supersede its follow-up work but must not rewrite the recorded outcome.",
-        "waitCondition": "None.",
-        "staleDate": "2026-12-01"
+        "status": "active",
+        "nextAction": "Merge and deploy 0.3.0, scan the canonical MCP endpoint in the existing publisher product, submit 0.3.0 for review, publish after approval, and prove a clean-account install and real end-to-end outcome.",
+        "waitCondition": "Exact 0.3.0 merge and deployment must precede provider submission.",
+        "staleDate": "2026-09-12"
       },
       "outcome": "The next DoneState directory release is 0.3.0 and is bound to the existing DoneState product identity; the stale 0.2.0 review is not treated as the target public release.",
       "content": "Version decision, 19-to-20 MCP tool delta, canonical MCP endpoint, existing app/product identity, production VERIFIED proof chain, release/deploy/submission/publication order and duplicate-product prohibition.",
@@ -1466,10 +1466,10 @@
       "verification": "DoneState main 4ab47e099c3303d08565a7dbf4cda36bc68b74ce, CI 33869297576 and deployment 33869297590 are successful. OpenAI receipt 2026-09-04T15:24:52Z and authenticated review page show 0.3.0 Review, canonical MCP and 20 frozen tools including submit_verifier_response. Observed app asdk_app_6a929a3cf3fc8191bb06ea4a3cc0a1e9 differs from historical asdk_app_6a9169a598348191b0aa3b2f2638355b; one visible product does not establish continuity or duplicate creation. OpsTruth 0.4.1 is Published; health binds cbe833dce0646314c189568be6acc21348895ed8 and discovery returns 21 read-only tools. Direct standalone inspection of AyobamiH/opstruth-chatgpt-plugin succeeded without a DoneState session or supplied credential. Its authenticated bridge remains scoped to AyobamiH/donestate. GitHub Marketplace edit still reports Pending for publish and not published. PR 115 remains open/unmerged at 41f1ae3b0fed670e64bd99f1bcb1aea9c9e7e869 and read-only run retrieval reports VERIFIED. Governance freshness run 34127966239 failed after LEGAL-001's original 2026-09-06 deadline. The 2026-09-08 review preserves its owner-blocked state, records the missed deadline here and sets a one-day follow-up without inventing legal decisions.",
       "accountability": {
         "owner": "Publisher owner",
-        "status": "active",
-        "nextAction": "Track OpenAI and GitHub Marketplace state in parallel while the owned-domain standalone path advances independently; preserve identity continuity and avoid duplicate products.",
-        "waitCondition": "External provider review remains outstanding for those channels only. Clean-account standalone acceptance remains an owned-channel gate.",
-        "staleDate": "2026-10-16"
+        "status": "blocked",
+        "nextAction": "Resolve historical app asdk_app_6a9169a598348191b0aa3b2f2638355b versus observed review app asdk_app_6a929a3cf3fc8191bb06ea4a3cc0a1e9 with the provider; retain submitted 0.3.0 and publish only after approval, then prove a fresh clean-account canary within explicit verifier scope.",
+        "waitCondition": "Provider review and identity mapping, actual publisher legal decisions and explicit clean-user test scope remain external controls.",
+        "staleDate": "2026-09-12"
       },
       "outcome": "Release and submission completed; public DoneState distribution and clean-user proof remain blocked. Standalone OpsTruth works independently of DoneState. Earlier evidence and run outcomes remain unchanged.",
       "content": "Current deployed/submitted release snapshot, unresolved app identity, standalone-versus-bridge distinction and outstanding owner controls.",
