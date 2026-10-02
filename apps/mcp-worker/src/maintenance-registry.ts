@@ -78,6 +78,35 @@ interface MarketplaceWebhookReceipt {
   currentEffectiveAt: string;
 }
 
+interface AccountRunRow extends Record<string, SqlStorageValue> {
+  owner_login: string;
+  run_id: string;
+  repository: string;
+  objective_class: "operator" | "maintenance_pr";
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AccountRunRecord {
+  schema: "donestate.account-run.v1";
+  ownerLogin: string;
+  runId: string;
+  repository: string;
+  objectiveClass: "operator" | "maintenance_pr";
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AccountDataSummary {
+  schema: "donestate.account-data-summary.v1";
+  ownerLogin: string;
+  selectedRepositories: number;
+  findings: number;
+  indexedRuns: number;
+  marketplaceUserEntitlements: number;
+  marketplaceOrganizationAuthorizations: number;
+}
+
 const MAX_SCHEDULED_REPOSITORIES = 20;
 const MAX_AUTOMATIC_REPAIRS_PER_SWEEP = 2;
 
@@ -152,6 +181,18 @@ function findingRecord(row: FindingRow): MaintenanceFinding {
     state: row.state,
     runId: row.run_id,
     discoveredAt: row.discovered_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function accountRunRecord(row: AccountRunRow): AccountRunRecord {
+  return {
+    schema: "donestate.account-run.v1",
+    ownerLogin: row.owner_login,
+    runId: row.run_id,
+    repository: row.repository,
+    objectiveClass: row.objective_class,
+    createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
 }
@@ -243,6 +284,17 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
         effective_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS account_runs (
+        owner_login TEXT NOT NULL,
+        run_id TEXT NOT NULL,
+        repository TEXT NOT NULL,
+        objective_class TEXT NOT NULL CHECK (objective_class IN ('operator', 'maintenance_pr')),
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY (owner_login, run_id)
+      );
+      CREATE INDEX IF NOT EXISTS idx_account_runs_owner_updated
+        ON account_runs(owner_login, updated_at DESC);
     `);
   }
 
@@ -337,6 +389,113 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       "SELECT * FROM selected_repositories WHERE owner_login = ? ORDER BY repository",
       login,
     ).toArray().map(repositoryRecord);
+  }
+
+  async recordRun(
+    login: string,
+    runId: string,
+    repository: string,
+    objectiveClass: "operator" | "maintenance_pr",
+  ): Promise<AccountRunRecord> {
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(runId)) {
+      throw new Error("run id must be a UUID");
+    }
+    assertRepository(repository);
+    if (!["operator", "maintenance_pr"].includes(objectiveClass)) throw new Error("objective class is invalid");
+    const now = new Date().toISOString();
+    this.ctx.storage.sql.exec(
+      `INSERT INTO account_runs (owner_login, run_id, repository, objective_class, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON CONFLICT(owner_login, run_id) DO UPDATE SET
+         repository=excluded.repository,
+         objective_class=excluded.objective_class,
+         updated_at=excluded.updated_at`,
+      login, runId, repository, objectiveClass, now, now,
+    );
+    return this.accountRun(login, runId);
+  }
+
+  async removeRun(login: string, runId: string): Promise<{ runId: string; removed: boolean }> {
+    const existing = this.ctx.storage.sql.exec<AccountRunRow>(
+      "SELECT * FROM account_runs WHERE owner_login = ? AND run_id = ?",
+      login, runId,
+    ).toArray()[0];
+    if (!existing) return { runId, removed: false };
+    this.ctx.storage.sql.exec(
+      "DELETE FROM account_runs WHERE owner_login = ? AND run_id = ?",
+      login, runId,
+    );
+    return { runId, removed: true };
+  }
+
+  async listRuns(login: string): Promise<AccountRunRecord[]> {
+    // Backfill maintenance runs already discoverable from the canonical findings ledger.
+    this.ctx.storage.sql.exec(
+      `INSERT OR IGNORE INTO account_runs (
+         owner_login, run_id, repository, objective_class, created_at, updated_at
+       )
+       SELECT owner_login, run_id, repository, 'maintenance_pr', discovered_at, updated_at
+       FROM findings
+       WHERE owner_login = ? AND run_id IS NOT NULL`,
+      login,
+    );
+    return this.ctx.storage.sql.exec<AccountRunRow>(
+      "SELECT * FROM account_runs WHERE owner_login = ? ORDER BY updated_at DESC LIMIT 200",
+      login,
+    ).toArray().map(accountRunRecord);
+  }
+
+  async accountDataSummary(login: string): Promise<AccountDataSummary> {
+    const selectedRepositories = this.ctx.storage.sql.exec<{ count: number }>(
+      "SELECT COUNT(*) AS count FROM selected_repositories WHERE owner_login = ?",
+      login,
+    ).one().count;
+    const findings = this.ctx.storage.sql.exec<{ count: number }>(
+      "SELECT COUNT(*) AS count FROM findings WHERE owner_login = ?",
+      login,
+    ).one().count;
+    const indexedRuns = (await this.listRuns(login)).length;
+    const marketplaceUserEntitlements = this.ctx.storage.sql.exec<{ count: number }>(
+      "SELECT COUNT(*) AS count FROM marketplace_entitlements WHERE account_type = 'User' AND account_login = ?",
+      login,
+    ).one().count;
+    const marketplaceOrganizationAuthorizations = this.ctx.storage.sql.exec<{ count: number }>(
+      "SELECT COUNT(*) AS count FROM marketplace_entitlements WHERE account_type = 'Organization' AND authorized_by_login = ?",
+      login,
+    ).one().count;
+    return {
+      schema: "donestate.account-data-summary.v1",
+      ownerLogin: login,
+      selectedRepositories,
+      findings,
+      indexedRuns,
+      marketplaceUserEntitlements,
+      marketplaceOrganizationAuthorizations,
+    };
+  }
+
+  async purgeAccount(login: string): Promise<AccountDataSummary & { deleted: true }> {
+    const before = await this.accountDataSummary(login);
+    this.ctx.storage.sql.exec("DELETE FROM findings WHERE owner_login = ?", login);
+    this.ctx.storage.sql.exec("DELETE FROM selected_repositories WHERE owner_login = ?", login);
+    this.ctx.storage.sql.exec("DELETE FROM account_runs WHERE owner_login = ?", login);
+    this.ctx.storage.sql.exec(
+      "DELETE FROM marketplace_entitlements WHERE account_type = 'User' AND account_login = ?",
+      login,
+    );
+    this.ctx.storage.sql.exec(
+      "UPDATE marketplace_entitlements SET authorized_by_login = NULL WHERE account_type = 'Organization' AND authorized_by_login = ?",
+      login,
+    );
+    return { ...before, deleted: true };
+  }
+
+  private accountRun(login: string, runId: string): AccountRunRecord {
+    const row = this.ctx.storage.sql.exec<AccountRunRow>(
+      "SELECT * FROM account_runs WHERE owner_login = ? AND run_id = ?",
+      login, runId,
+    ).one();
+    return accountRunRecord(row);
   }
 
   async recordMarketplacePurchase(input: {
@@ -561,6 +720,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     };
     const coordinator = this.env.RUN_COORDINATOR.getByName(runId);
     await coordinator.create(objective, installation.token);
+    await this.recordRun(login, runId, selected.repository, "maintenance_pr");
     await coordinator.start(login);
     const updated = this.ctx.storage.sql.exec<FindingRow>("SELECT * FROM findings WHERE id = ?", row.id).one();
     return { finding: findingRecord(updated), runId };
