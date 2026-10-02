@@ -339,18 +339,20 @@
       "id": "OPS-002",
       "title": "Detect and escalate Marketplace webhook failures",
       "stream": "operations",
-      "status": "planned",
+      "status": "active",
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-16",
-      "nextAction": "Continue the Marketplace-specific webhook visibility and escalation work in parallel before Marketplace publication.",
-      "waitCondition": "Owned-domain standalone launch does not depend on Marketplace webhook delivery; this remains required for the Marketplace channel itself.",
-      "reentryCondition": "Resume with the existing incident runbook and Marketplace lifecycle suite; do not couple it to owned-domain launch.",
+      "nextAction": "Require exact-head core (22), core (24) and hosted-plugin acceptance on the Marketplace webhook health candidate, merge through protected main, deploy the Worker, then confirm the hourly sweep remains healthy without manufacturing a production failure.",
+      "waitCondition": "The candidate now distinguishes expected 4xx rejects from retryable DoneState 5xx failures, persists bounded privacy-minimal operational receipts, and escalates unresolved recent failures through the existing hourly sweep. Exact-head CI, merge, deployment and post-deploy health observation remain.",
+      "reentryCondition": "Close after exact-head and post-merge CI, production deployment, and a healthy scheduled sweep prove the detection path. Do not require Marketplace publication or induce a production incident.",
       "dependencies": [
         "OPS-001",
         "MKT-003"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-045"
+      ]
     },
     {
       "id": "GTM-001",
@@ -1534,6 +1536,23 @@
       "outcome": "The generation-fenced account-controls runtime is merged and live on the owned service, while unrestricted self-serve GA remains gated on real customer-facing browser/deletion acceptance and publisher legal decisions.",
       "content": "Protected merge, exact-head and post-merge CI, successful production Worker/container deployment, live authenticated credential-status and setup-link issuance, zero-new-tool design, dual deletion generations, and explicit non-claim for unobserved browser/deletion acceptance.",
       "measurement": "One protected merge; three exact-head required checks passed; one post-merge CI passed; one production deployment passed; one live authenticated status call passed; one fresh production setup URL issued; zero destructive production account actions performed; zero unrestricted-GA claims."
+    },
+    {
+      "id": "E-045",
+      "date": "2026-10-02",
+      "identity": "Marketplace webhook operational failure detection candidate",
+      "situation": "The signed GitHub Marketplace webhook path had lifecycle ordering and incident documentation, but DoneState-side processing failures were returned as HTTP 400 and existed only in ephemeral console logs. That made malformed external requests indistinguishable from internal delivery failures and gave GitHub no retry signal for a transient DoneState fault.",
+      "verification": "The candidate adds a bounded durable marketplace_webhook_failures ledger in the existing MaintenanceRegistry Durable Object. Missing webhook configuration and signed well-formed deliveries that fail during durable ingestion are classified as operational failures and return HTTP 503; invalid signatures, unsupported events, oversized bodies, malformed JSON and invalid Marketplace fields remain 4xx rejects and do not enter the operational queue. Successful ping or purchase handling resolves matching failures. The existing hourly scheduled sweep now includes a privacy-minimal 24-hour health summary and emits a structured error event whenever unresolved recent failures require operator attention. Failure records omit Marketplace account and plan identity, are capped at 500 rows and are removed after 30 days. The implementation does not add an MCP tool or mutate a Marketplace listing, plan, entitlement or provider review state.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Pass exact-head CI and hosted-plugin validation, merge through protected main, deploy, and observe one healthy scheduled sweep without injecting a production failure.",
+        "waitCondition": "No external Marketplace approval is needed for this operations control. Production failure injection is intentionally unnecessary because failure semantics are covered by isolated Durable Object and webhook tests.",
+        "staleDate": "2026-10-16"
+      },
+      "outcome": "The candidate makes genuine DoneState-side Marketplace webhook failures retryable and durably visible while keeping hostile or malformed input out of the incident signal.",
+      "content": "5xx-versus-4xx failure taxonomy, bounded durable failure receipts, delivery-specific recovery, configuration recovery, hourly structured escalation, retention limits, privacy-minimal fields and preserved distribution/tool boundaries.",
+      "measurement": "Zero new MCP tools; two operational failure categories; one 24-hour health window; 30-day maximum failure retention; 500-row cap; 503 retry semantics for internal failures; 4xx reject semantics for invalid external requests; zero Marketplace listing mutations."
     }
   ]
 }
