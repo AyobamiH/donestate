@@ -64,6 +64,28 @@ function registry(env: DoneStateEnv) {
   return env.MAINTENANCE_REGISTRY.getByName("global");
 }
 
+async function recordOperationalFailure(
+  env: DoneStateEnv,
+  input: {
+    category: "configuration" | "processing";
+    deliveryId?: string | null;
+    eventName?: string | null;
+    statusCode: number;
+    detail: string;
+  },
+): Promise<void> {
+  try {
+    await registry(env).recordMarketplaceWebhookFailure(input);
+  } catch (error) {
+    console.error(JSON.stringify({
+      message: "Marketplace webhook failure recording failed",
+      category: input.category,
+      statusCode: input.statusCode,
+      error: error instanceof Error ? error.message : "unknown error",
+    }));
+  }
+}
+
 export function isMarketplaceOAuthState(value: string): boolean {
   return value.startsWith(MARKETPLACE_STATE_PREFIX);
 }
@@ -153,37 +175,61 @@ async function validSignature(body: string, signature: string, secret: string): 
 export const githubMarketplaceWebhookHandler = {
   async fetch(request: Request, env: DoneStateEnv): Promise<Response> {
     if (request.method !== "POST") return new Response("Method not allowed", { status: 405, headers: { Allow: "POST" } });
+    const deliveryId = request.headers.get("x-github-delivery") ?? "";
+    const event = request.headers.get("x-github-event") ?? "";
     const secret = env.GITHUB_MARKETPLACE_WEBHOOK_SECRET?.trim();
-    if (!secret) return Response.json({ accepted: false }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    if (!secret) {
+      await recordOperationalFailure(env, {
+        category: "configuration",
+        deliveryId: /^[A-Za-z0-9-]{1,100}$/.test(deliveryId) ? deliveryId : null,
+        eventName: /^[A-Za-z0-9_.-]{1,80}$/.test(event) ? event : "unknown",
+        statusCode: 503,
+        detail: "GitHub Marketplace webhook secret is unavailable",
+      });
+      return Response.json({ accepted: false }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
     const length = Number(request.headers.get("content-length") ?? 0);
     if (!Number.isFinite(length) || length > MAX_WEBHOOK_BYTES) return new Response("Payload too large", { status: 413 });
     const body = await request.text();
     if (new TextEncoder().encode(body).byteLength > MAX_WEBHOOK_BYTES) return new Response("Payload too large", { status: 413 });
     if (!await validSignature(body, request.headers.get("x-hub-signature-256") ?? "", secret)) {
+      console.warn(JSON.stringify({ message: "GitHub Marketplace webhook signature rejected", event }));
       return Response.json({ accepted: false }, { status: 401, headers: { "Cache-Control": "no-store" } });
     }
-    const event = request.headers.get("x-github-event");
+    if (!/^[A-Za-z0-9-]{1,100}$/.test(deliveryId)) {
+      return Response.json({ accepted: false }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    }
     if (event === "ping") {
+      await registry(env).resolveMarketplaceWebhookFailures({ includeConfiguration: true });
       return Response.json({ accepted: true, event }, { status: 200, headers: { "Cache-Control": "no-store" } });
     }
     if (event !== "marketplace_purchase") {
       return Response.json({ accepted: false }, { status: 400, headers: { "Cache-Control": "no-store" } });
     }
-    try {
-      const payload = JSON.parse(body) as {
-        action?: MarketplacePurchaseAction;
-        effective_date?: string;
-        marketplace_purchase?: {
-          account?: { id?: number; login?: string; type?: "User" | "Organization" };
-          plan?: { id?: number; name?: string };
-        };
+
+    let payload: {
+      action?: MarketplacePurchaseAction;
+      effective_date?: string;
+      marketplace_purchase?: {
+        account?: { id?: number; login?: string; type?: "User" | "Organization" };
+        plan?: { id?: number; name?: string };
       };
-      const purchase = payload.marketplace_purchase;
-      if (!payload.action || !["purchased", "changed", "cancelled", "pending_change", "pending_change_cancelled"].includes(payload.action)
-        || !payload.effective_date || !purchase?.account?.id || !purchase.account.login || !purchase.account.type
-        || !purchase.plan?.id || !purchase.plan.name) throw new Error("invalid GitHub Marketplace payload");
+    };
+    try {
+      payload = JSON.parse(body) as typeof payload;
+    } catch {
+      return Response.json({ accepted: false }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    }
+    const purchase = payload.marketplace_purchase;
+    if (!payload.action || !["purchased", "changed", "cancelled", "pending_change", "pending_change_cancelled"].includes(payload.action)
+      || !payload.effective_date || !purchase?.account?.id || !purchase.account.login || !purchase.account.type
+      || !purchase.plan?.id || !purchase.plan.name) {
+      return Response.json({ accepted: false }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    }
+
+    try {
       const result = await registry(env).ingestMarketplaceWebhook({
-        deliveryId: request.headers.get("x-github-delivery") ?? "",
+        deliveryId,
         purchase: {
           accountId: purchase.account.id,
           accountLogin: purchase.account.login,
@@ -194,10 +240,23 @@ export const githubMarketplaceWebhookHandler = {
           effectiveAt: payload.effective_date,
         },
       });
+      await registry(env).resolveMarketplaceWebhookFailures({
+        deliveryId,
+        includeConfiguration: true,
+      });
       return Response.json(result, { status: result.duplicate ? 200 : 202, headers: { "Cache-Control": "no-store" } });
     } catch (error) {
-      console.error(JSON.stringify({ message: "GitHub Marketplace webhook rejected", error: error instanceof Error ? error.message : "unknown error" }));
-      return Response.json({ accepted: false }, { status: 400, headers: { "Cache-Control": "no-store" } });
+      const detail = error instanceof Error ? error.message : "unknown processing error";
+      console.error(JSON.stringify({ message: "GitHub Marketplace webhook processing failed", deliveryId, error: detail }));
+      await recordOperationalFailure(env, {
+        category: "processing",
+        deliveryId,
+        eventName: event,
+        statusCode: 503,
+        detail,
+      });
+      return Response.json({ accepted: false }, { status: 503, headers: { "Cache-Control": "no-store" } });
     }
   },
 };
+
