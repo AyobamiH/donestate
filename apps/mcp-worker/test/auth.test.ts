@@ -108,11 +108,12 @@ describe("OAuth authorisation security policy", () => {
     expect(page).toContain("Proof &amp; State");
     expect(page).toContain("Owned service live");
     expect(page).toContain("https://donestate.proofandstate.com/mcp");
-    expect(page).toContain("Set up DoneState");
+    expect(page).toContain("Get started");
     expect(page).toContain("OpenAI");
     expect(page).toContain("GitHub Marketplace");
     expect(page).toContain("Execution is not approval.");
-    expect(page).toContain("https://github.com/AyobamiH/donestate/blob/main/docs/STANDALONE-MCP.md");
+    expect(page).toContain("https://proofandstate.com/docs/donestate/get-started");
+    expect(page).toContain("https://proofandstate.com/docs/donestate/reference/mcp-tools");
     expect(page).toContain("--canvas: #f4f4f0");
     expect(page).not.toContain("for ChatGPT");
   });
