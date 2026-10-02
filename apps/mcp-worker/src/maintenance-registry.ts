@@ -295,6 +295,11 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       );
       CREATE INDEX IF NOT EXISTS idx_account_runs_owner_updated
         ON account_runs(owner_login, updated_at DESC);
+      CREATE TABLE IF NOT EXISTS account_controls (
+        owner_login TEXT PRIMARY KEY,
+        deleting INTEGER NOT NULL CHECK (deleting IN (0, 1)),
+        updated_at TEXT NOT NULL
+      );
     `);
   }
 
@@ -351,6 +356,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     autoRepair: boolean;
     requiredCheckNames: string[];
   }): Promise<SelectedRepository> {
+    this.assertAccountWritable(login);
     assertRepository(input.repository);
     assertRef(input.defaultBranch);
     if (input.autoRepair && (input.mode !== "pr_only" || !input.scheduleEnabled)) {
@@ -397,6 +403,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     repository: string,
     objectiveClass: "operator" | "maintenance_pr",
   ): Promise<AccountRunRecord> {
+    this.assertAccountWritable(login);
     if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(runId)) {
       throw new Error("run id must be a UUID");
     }
@@ -445,6 +452,40 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     ).toArray().map(accountRunRecord);
   }
 
+  async requireAccountWritable(login: string): Promise<{ writable: true }> {
+    const row = this.ctx.storage.sql.exec<{ deleting: number }>(
+      "SELECT deleting FROM account_controls WHERE owner_login = ?",
+      login,
+    ).toArray()[0];
+    if (row?.deleting === 1) throw new Error("DoneState account deletion is in progress");
+    return { writable: true };
+  }
+
+  async beginAccountDeletion(login: string): Promise<{ deleting: true }> {
+    const existing = this.ctx.storage.sql.exec<{ deleting: number }>(
+      "SELECT deleting FROM account_controls WHERE owner_login = ?",
+      login,
+    ).toArray()[0];
+    if (existing?.deleting === 1) throw new Error("DoneState account deletion is already in progress");
+    this.ctx.storage.sql.exec(
+      `INSERT INTO account_controls (owner_login, deleting, updated_at)
+       VALUES (?, 1, ?)
+       ON CONFLICT(owner_login) DO UPDATE SET deleting = 1, updated_at = excluded.updated_at`,
+      login,
+      new Date().toISOString(),
+    );
+    return { deleting: true };
+  }
+
+  async endAccountDeletion(login: string): Promise<{ deleting: false }> {
+    this.ctx.storage.sql.exec(
+      "UPDATE account_controls SET deleting = 0, updated_at = ? WHERE owner_login = ?",
+      new Date().toISOString(),
+      login,
+    );
+    return { deleting: false };
+  }
+
   async accountDataSummary(login: string): Promise<AccountDataSummary> {
     const selectedRepositories = this.ctx.storage.sql.exec<{ count: number }>(
       "SELECT COUNT(*) AS count FROM selected_repositories WHERE owner_login = ?",
@@ -487,7 +528,16 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       "UPDATE marketplace_entitlements SET authorized_by_login = NULL WHERE account_type = 'Organization' AND authorized_by_login = ?",
       login,
     );
+    this.ctx.storage.sql.exec("DELETE FROM account_controls WHERE owner_login = ?", login);
     return { ...before, deleted: true };
+  }
+
+  private assertAccountWritable(login: string): void {
+    const row = this.ctx.storage.sql.exec<{ deleting: number }>(
+      "SELECT deleting FROM account_controls WHERE owner_login = ?",
+      login,
+    ).toArray()[0];
+    if (row?.deleting === 1) throw new Error("DoneState account deletion is in progress");
   }
 
   private accountRun(login: string, runId: string): AccountRunRecord {
