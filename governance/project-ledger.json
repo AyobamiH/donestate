@@ -305,7 +305,7 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-09",
-      "nextAction": "Perform one authenticated browser readback from a freshly issued production credential-setup URL and confirm the deployed account console renders identity, credential/quota status, selected repositories and indexed objectives. The implementation, exact-head CI, merge, post-merge CI, production deployment and live one-time setup-link issuance are already proven.",
+      "nextAction": "Perform one authenticated browser readback from a freshly issued production credential-setup URL and confirm the deployed account console renders identity, credential/quota status, selected repositories and indexed objectives. The current candidate also removes the last ChatGPT-only success-page instruction so standalone users are returned generically to their MCP client.",
       "waitCondition": "Only the authenticated browser rendering remains unobserved. The available server-side HTTP fetchers cannot consume the one-time browser handoff, so do not substitute code inspection or tool output for that readback.",
       "reentryCondition": "Close after a production authenticated browser readback proves the consolidated account console on the owned domain.",
       "dependencies": [
@@ -1661,6 +1661,23 @@
       "outcome": "The browser settings deletion handler is now covered by an exact-head passing recovery fixture for the durable post-vault/pre-registry interruption boundary; retry completes without double-counting the completion metric.",
       "content": "Account-console session, deletion-generation locks, credential-vault purge, intentionally retained registry state, real delete_account retry, final owner-state purge and exactly-once aggregate completion counter.",
       "measurement": "Exact-head run 37029459689 passed all three required jobs; one durable interruption boundary; one authenticated handler retry; final credential connected=false; selected repositories=0; account_deletion_completed delta=1; zero MCP tool changes."
+    },
+    {
+      "id": "E-052",
+      "date": "2026-10-02",
+      "identity": "Standalone account success copy made client-neutral",
+      "situation": "The owned-domain account console was client-neutral, but the successful OpenAI-credential connection page still told every user to return to ChatGPT. That contradicted the owned-domain-first multi-client launch boundary while the OpenAI-reviewed MCP tool inventory itself must remain frozen at 20.",
+      "verification": "The candidate changes only the browser credential-settings success copy from 'return to ChatGPT' to 'return to your MCP client' and adds a regression assertion that the standalone success page contains the client-neutral instruction and no ChatGPT-only instruction. No MCP tool, OAuth scope, authority class, provider listing, or review metadata changes.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Pass exact-head core (22), core (24), hosted-plugin and plugin validation, then merge and deploy through protected main before the final production browser readback.",
+        "waitCondition": "The browser readback remains the separate CUST-001 acceptance gate.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "The candidate removes the last known ChatGPT-only instruction from the standalone account success journey without changing the frozen 20-tool contract.",
+      "content": "Client-neutral browser copy, regression coverage, preserved OpenAI tool inventory and unchanged external provider states.",
+      "measurement": "One visible standalone copy defect removed; one regression assertion added; zero MCP tools changed; zero external listing mutations."
     }
   ]
 }
