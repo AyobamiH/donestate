@@ -1,6 +1,7 @@
-import { env } from "cloudflare:test";
+import { env, runInDurableObject } from "cloudflare:test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { authHandler, type AuthEnv } from "../src/auth";
+import type { MaintenanceRegistry } from "../src/maintenance-registry";
 
 const testEnv = env as unknown as AuthEnv;
 
@@ -349,6 +350,93 @@ describe("GitHub Marketplace purchase webhook", () => {
       stale: null,
       currentState: "CANCELLED",
       currentEffectiveAt: "2026-09-30T00:00:00.000Z",
+    });
+  });
+
+  it("records missing webhook configuration as an operational failure", async () => {
+    const workerEnv = marketplaceEnv("");
+    const body = JSON.stringify({ zen: "configuration check" });
+    const response = await authHandler.fetch(new Request(
+      "https://donestate.proofandstate.com/webhooks/github-marketplace",
+      { method: "POST", headers: {
+        "Content-Type": "application/json",
+        "x-github-delivery": "marketplace-config-missing-1",
+        "x-github-event": "ping",
+        "x-hub-signature-256": "sha256=" + "0".repeat(64),
+      }, body },
+    ), workerEnv);
+
+    expect(response.status).toBe(503);
+    const registry = workerEnv.MAINTENANCE_REGISTRY.getByName("global");
+    expect(await registry.marketplaceWebhookHealth()).toMatchObject({
+      unresolvedRecent: 1,
+      unresolvedConfiguration: 1,
+      unresolvedProcessing: 0,
+      escalationRequired: true,
+    });
+    await registry.resolveMarketplaceWebhookFailures({ includeConfiguration: true });
+    expect(await registry.marketplaceWebhookHealth()).toMatchObject({
+      unresolvedRecent: 0,
+      escalationRequired: false,
+    });
+  });
+
+  it("keeps malformed signed events out of the operational failure queue", async () => {
+    const workerEnv = marketplaceEnv();
+    const secret = workerEnv.GITHUB_MARKETPLACE_WEBHOOK_SECRET!;
+    const body = JSON.stringify({
+      action: "changed",
+      effective_date: "not-a-date",
+      marketplace_purchase: {
+        account: { id: 9205, login: "marketplace-org", type: "Organization" },
+        plan: { id: 205, name: "Public repositories" },
+      },
+    });
+    const response = await authHandler.fetch(new Request(
+      "https://donestate.proofandstate.com/webhooks/github-marketplace",
+      { method: "POST", headers: {
+        "Content-Type": "application/json",
+        "x-github-delivery": "marketplace-malformed-signed-1",
+        "x-github-event": "marketplace_purchase",
+        "x-hub-signature-256": await signature(body, secret),
+      }, body },
+    ), workerEnv);
+
+    expect(response.status).toBe(400);
+    expect(await workerEnv.MAINTENANCE_REGISTRY.getByName("global").marketplaceWebhookHealth()).toMatchObject({
+      unresolvedRecent: 0,
+      escalationRequired: false,
+    });
+  });
+
+  it("returns 503 and records a durable failure when Marketplace ingestion is internally inconsistent", async () => {
+    const workerEnv = marketplaceEnv();
+    const registry = workerEnv.MAINTENANCE_REGISTRY.getByName("global");
+    await runInDurableObject(registry, async (instance: MaintenanceRegistry) => {
+      const state = Reflect.get(instance as unknown as object, "ctx") as DurableObjectState;
+      state.storage.sql.exec(
+        "INSERT INTO webhook_deliveries (delivery_id, event_name, repository, received_at) VALUES (?, 'marketplace_purchase', NULL, ?)",
+        "marketplace-orphan-delivery-1",
+        "2026-10-02T12:00:00.000Z",
+      );
+    });
+
+    const response = await sendMarketplaceEvent(workerEnv, {
+      deliveryId: "marketplace-orphan-delivery-1",
+      action: "changed",
+      effectiveDate: "2026-10-02T12:01:00Z",
+      accountId: 9298,
+      planId: 298,
+      planName: "Public repositories",
+    });
+
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ accepted: false });
+    expect(await registry.marketplaceWebhookHealth()).toMatchObject({
+      unresolvedRecent: 1,
+      unresolvedConfiguration: 0,
+      unresolvedProcessing: 1,
+      escalationRequired: true,
     });
   });
 

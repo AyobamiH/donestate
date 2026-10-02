@@ -41,6 +41,20 @@ For a security incident that affects the GitHub Marketplace app or GitHub-suppli
 
 Assess and meet any shorter contractual or legal notification deadline that applies to affected users, providers, regulators, or data. The 24-hour GitHub step does not replace those duties.
 
+## GitHub Marketplace webhook detection
+
+The production webhook path separates expected request rejection from DoneState operational failure:
+
+- invalid signatures, unsupported events, oversized bodies, malformed JSON and invalid Marketplace fields return bounded 4xx responses and do not create an operational incident record;
+- a missing production webhook secret is a configuration failure and returns HTTP 503 so GitHub can retry;
+- a signed, well-formed delivery that cannot be durably reconciled is a processing failure and returns HTTP 503;
+- configuration and processing failures are stored as bounded, privacy-minimal receipts containing category, delivery ID when valid, event name, status, bounded error detail and timestamps, without Marketplace account or plan identity;
+- successful signed pings clear unresolved configuration failures; successful or duplicate purchase delivery settles matching delivery-specific failures;
+- the hourly maintenance sweep reports unresolved failures observed in the previous 24 hours and emits a structured error event when operator attention is required;
+- operational failure receipts are retained for at most 30 days and capped at 500 rows.
+
+A 4xx rejection is not evidence of a DoneState outage. A 5xx operational receipt is not evidence that an entitlement was lost or corrupted; reconcile the exact GitHub delivery and current entitlement state before making that claim.
+
 ## Recovery gate
 
 Restore an affected path only after:

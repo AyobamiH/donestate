@@ -78,6 +78,26 @@ interface MarketplaceWebhookReceipt {
   currentEffectiveAt: string;
 }
 
+interface MarketplaceWebhookFailureRow extends Record<string, SqlStorageValue> {
+  id: number;
+  category: "configuration" | "processing";
+  delivery_id: string | null;
+  event_name: string;
+  status_code: number;
+  detail: string;
+  observed_at: string;
+  resolved_at: string | null;
+}
+
+export interface MarketplaceWebhookHealth {
+  schema: "donestate.marketplace-webhook-health.v1";
+  unresolvedRecent: number;
+  unresolvedConfiguration: number;
+  unresolvedProcessing: number;
+  latestObservedAt: string | null;
+  escalationRequired: boolean;
+}
+
 interface AccountRunRow extends Record<string, SqlStorageValue> {
   owner_login: string;
   run_id: string;
@@ -280,6 +300,18 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
         repository TEXT,
         received_at TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS marketplace_webhook_failures (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        category TEXT NOT NULL CHECK (category IN ('configuration', 'processing')),
+        delivery_id TEXT,
+        event_name TEXT NOT NULL,
+        status_code INTEGER NOT NULL,
+        detail TEXT NOT NULL,
+        observed_at TEXT NOT NULL,
+        resolved_at TEXT
+      );
+      CREATE INDEX IF NOT EXISTS idx_marketplace_webhook_failures_open
+        ON marketplace_webhook_failures(resolved_at, observed_at DESC);
       CREATE TABLE IF NOT EXISTS marketplace_entitlements (
         account_id INTEGER PRIMARY KEY,
         account_login TEXT NOT NULL,
@@ -692,6 +724,77 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     };
   }
 
+  async recordMarketplaceWebhookFailure(input: {
+    category: "configuration" | "processing";
+    deliveryId?: string | null;
+    eventName?: string | null;
+    statusCode: number;
+    detail: string;
+  }): Promise<void> {
+    const deliveryId = input.deliveryId?.trim() || null;
+    const eventName = input.eventName?.trim() || "unknown";
+    if (deliveryId !== null && !/^[A-Za-z0-9-]{1,100}$/.test(deliveryId)) throw new Error("invalid Marketplace delivery id");
+    if (!/^[A-Za-z0-9_.-]{1,80}$/.test(eventName)) throw new Error("invalid Marketplace event name");
+    if (!Number.isInteger(input.statusCode) || input.statusCode < 500 || input.statusCode > 599) {
+      throw new Error("Marketplace operational failure must use a 5xx status");
+    }
+    const detail = input.detail.trim().slice(0, 500) || "unknown operational failure";
+    const now = new Date().toISOString();
+    this.ctx.storage.sql.exec(
+      `INSERT INTO marketplace_webhook_failures (
+         category, delivery_id, event_name, status_code, detail, observed_at, resolved_at
+       ) VALUES (?, ?, ?, ?, ?, ?, NULL)`,
+      input.category, deliveryId, eventName, input.statusCode, detail, now,
+    );
+    this.ctx.storage.sql.exec(
+      "DELETE FROM marketplace_webhook_failures WHERE observed_at < ?",
+      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+    );
+    const rows = this.ctx.storage.sql.exec<{ id: number }>(
+      "SELECT id FROM marketplace_webhook_failures ORDER BY observed_at DESC LIMIT -1 OFFSET 500",
+    ).toArray();
+    for (const row of rows) this.ctx.storage.sql.exec("DELETE FROM marketplace_webhook_failures WHERE id = ?", row.id);
+  }
+
+  async resolveMarketplaceWebhookFailures(input: {
+    deliveryId?: string | null;
+    includeConfiguration?: boolean;
+  } = {}): Promise<void> {
+    const now = new Date().toISOString();
+    if (input.deliveryId) {
+      this.ctx.storage.sql.exec(
+        "UPDATE marketplace_webhook_failures SET resolved_at = ? WHERE resolved_at IS NULL AND delivery_id = ?",
+        now, input.deliveryId,
+      );
+    }
+    if (input.includeConfiguration) {
+      this.ctx.storage.sql.exec(
+        "UPDATE marketplace_webhook_failures SET resolved_at = ? WHERE resolved_at IS NULL AND category = 'configuration'",
+        now,
+      );
+    }
+  }
+
+  async marketplaceWebhookHealth(nowMs = Date.now()): Promise<MarketplaceWebhookHealth> {
+    const cutoff = new Date(nowMs - 24 * 60 * 60 * 1000).toISOString();
+    const rows = this.ctx.storage.sql.exec<MarketplaceWebhookFailureRow>(
+      `SELECT * FROM marketplace_webhook_failures
+       WHERE resolved_at IS NULL AND observed_at >= ?
+       ORDER BY observed_at DESC`,
+      cutoff,
+    ).toArray();
+    const configuration = rows.filter((row) => row.category === "configuration").length;
+    const processing = rows.length - configuration;
+    return {
+      schema: "donestate.marketplace-webhook-health.v1",
+      unresolvedRecent: rows.length,
+      unresolvedConfiguration: configuration,
+      unresolvedProcessing: processing,
+      latestObservedAt: rows[0]?.observed_at ?? null,
+      escalationRequired: rows.length > 0,
+    };
+  }
+
   async removeRepository(login: string, repository: string): Promise<{ repository: string; removed: boolean }> {
     assertRepository(repository);
     const existing = this.ctx.storage.sql.exec<RepositoryRow>(
@@ -953,7 +1056,14 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     return retired;
   }
 
-  async scheduledSweep(): Promise<{ repositories: number; findings: number; repairsQueued: number; branchesRetired: number; blocked: string[] }> {
+  async scheduledSweep(): Promise<{
+    repositories: number;
+    findings: number;
+    repairsQueued: number;
+    branchesRetired: number;
+    blocked: string[];
+    marketplaceWebhook: MarketplaceWebhookHealth;
+  }> {
     const selected = this.ctx.storage.sql.exec<RepositoryRow>(
       "SELECT * FROM selected_repositories WHERE schedule_enabled = 1 ORDER BY updated_at LIMIT ?",
       MAX_SCHEDULED_REPOSITORIES,
@@ -979,7 +1089,14 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
         blocked.push(`${repository.repository}: ${error instanceof Error ? error.message : "unknown error"}`);
       }
     }
-    return { repositories: selected.length, findings, repairsQueued, branchesRetired, blocked };
+    return {
+      repositories: selected.length,
+      findings,
+      repairsQueued,
+      branchesRetired,
+      blocked,
+      marketplaceWebhook: await this.marketplaceWebhookHealth(),
+    };
   }
 
   async ingestWebhook(input: { signature: string; deliveryId: string; eventName: string; body: string }): Promise<{ accepted: true; duplicate: boolean }> {

@@ -640,6 +640,12 @@ export default {
   },
   scheduled(_controller: ScheduledController, workerEnv: DoneStateEnv, ctx: ExecutionContext) {
     ctx.waitUntil(workerEnv.MAINTENANCE_REGISTRY.getByName("global").scheduledSweep().then((result) => {
+      if (result.marketplaceWebhook.escalationRequired) {
+        console.error(JSON.stringify({
+          message: "GitHub Marketplace webhook failures require attention",
+          ...result.marketplaceWebhook,
+        }));
+      }
       console.log(JSON.stringify({ message: "maintenance sweep completed", ...result }));
     }).catch((error) => {
       console.error(JSON.stringify({ message: "maintenance sweep failed", error: error instanceof Error ? error.message : "unknown error" }));
