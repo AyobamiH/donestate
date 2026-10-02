@@ -304,14 +304,15 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-09",
-      "nextAction": "Require exact-head core (22), core (24) and hosted-plugin acceptance on the generation-fenced account-console candidate, merge through protected main, deploy the owned Worker, then prove the existing credential-setup link opens the consolidated authenticated account console without changing the frozen 20-tool OpenAI MCP contract.",
-      "waitCondition": "The implementation now includes read-only credential status plus owner-registry and credential-vault deletion generations; exact-head CI, post-merge deployment and production readback are still required.",
-      "reentryCondition": "Close after exact-head CI, production deployment and readback prove the account console on the owned domain.",
+      "nextAction": "Perform one authenticated browser readback from a freshly issued production credential-setup URL and confirm the deployed account console renders identity, credential/quota status, selected repositories and indexed objectives. The implementation, exact-head CI, merge, post-merge CI, production deployment and live one-time setup-link issuance are already proven.",
+      "waitCondition": "Only the authenticated browser rendering remains unobserved. The available server-side HTTP fetchers cannot consume the one-time browser handoff, so do not substitute code inspection or tool output for that readback.",
+      "reentryCondition": "Close after a production authenticated browser readback proves the consolidated account console on the owned domain.",
       "dependencies": [
         "GOV-001"
       ],
       "evidenceIds": [
-        "E-043"
+        "E-043",
+        "E-044"
       ]
     },
     {
@@ -322,15 +323,16 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-09",
-      "nextAction": "Require exact-head CI on the dual-generation deletion candidate, deploy it, then prove a fresh post-cutover account deletion including stale-mutation rejection and safe retry after a simulated partial failure. Separately retain the bounded legacy-erasure path for direct objectives created before owner-level run indexing existed.",
-      "waitCondition": "The candidate purges indexed objectives, credential/quota/setup state, selected repositories, findings and user Marketplace entitlement data without adding MCP tools. It leaves only minimal deletion-generation fencing state; pre-index direct objectives remain an explicit legacy limitation.",
-      "reentryCondition": "Close only after a fresh clean-account deletion proves complete post-cutover erasure and the legacy direct-run path is documented and operational.",
+      "nextAction": "Use a disposable post-cutover account to prove the deployed delete-account journey end to end: index a fresh objective, exercise active-run refusal, complete deletion, verify stale pre-delete mutations are fenced, verify personal service state is gone, and exercise retry after a deliberately interrupted deletion in a non-production fixture. Do not use the publisher's current production account as the destructive acceptance fixture.",
+      "waitCondition": "The dual-generation implementation is merged, exact-head/post-merge CI is green and production deployment succeeded. A real disposable-account deletion receipt is still required; historical pre-index direct objectives remain an explicit legacy erasure limitation.",
+      "reentryCondition": "Close only after a fresh disposable-account production deletion proves the post-cutover path and the retained legacy-erasure procedure remains documented.",
       "dependencies": [
         "CUST-001",
         "LEGAL-001"
       ],
       "evidenceIds": [
-        "E-043"
+        "E-043",
+        "E-044"
       ]
     },
     {
@@ -358,14 +360,16 @@
       "owner": "Proof & State maintainers",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-16",
-      "nextAction": "Measure the owned-domain standalone funnel first: authenticated connection, repository selected, credential connected, objective started, PR opened, verifier decision, repeat use, support load, and conversion without unnecessary personal data. Add channel-specific attribution for OpenAI and Marketplace when they publish.",
-      "waitCondition": "Use bounded manual cohort evidence until the account/deletion surface is stable; external-directory approval is not required to begin measurement.",
+      "nextAction": "Measure controlled owned-domain access now that account controls are deployed: authenticated connection, setup-link issuance, account-console use, repository selection, objective start, PR open, verifier decision, deletion completion, repeat use, support load and conversion without unnecessary personal data. Keep OpenAI and Marketplace attribution separate when those channels publish.",
+      "waitCondition": "Begin with bounded manual cohort evidence; do not wait for external-directory approval. Destructive deletion measurement must use disposable/customer-authorised accounts only.",
       "reentryCondition": "Keep active through the first external standalone cohort and extend rather than replace it when additional channels go live.",
       "dependencies": [
         "CUST-001",
         "CUST-002"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-044"
+      ]
     },
     {
       "id": "VERIFY-001",
@@ -525,8 +529,8 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-09",
-      "nextAction": "Keep the owned-domain controlled launch live, land and deploy the generation-fenced account-controls candidate without changing the frozen 20-tool OpenAI contract, then prove one fresh clean-account create → execute → verify → inspect account → delete-account journey before unrestricted self-serve GA. Continue OpenAI and GitHub Marketplace publication independently.",
-      "waitCondition": "The owned service and product-page onboarding are deployed. Unrestricted GA still requires exact account-controls proof, publisher legal decisions and the fresh clean-account outcome; external-directory approval remains independent.",
+      "nextAction": "Keep controlled owned-domain access live. Complete the authenticated account-console browser readback, the disposable-account deletion acceptance, publisher legal decisions, and one fresh clean-account create → execute → verify → inspect → delete journey before unrestricted self-serve GA. Continue OpenAI and GitHub Marketplace publication independently.",
+      "waitCondition": "Account controls are merged and deployed on the owned service without changing the frozen OpenAI MCP contract. Unrestricted GA still depends on CUST-001, CUST-002 and LEGAL-001 plus the fresh customer outcome; external-directory approval remains independent.",
       "reentryCondition": "Advance from controlled standalone access to unrestricted GA when the owned-channel gates are satisfied; separately publish external channels when each provider approves them.",
       "dependencies": [
         "VERIFY-004",
@@ -537,7 +541,8 @@
       "evidenceIds": [
         "E-037",
         "E-038",
-        "E-041"
+        "E-041",
+        "E-044"
       ]
     },
     {
@@ -1512,6 +1517,23 @@
       "outcome": "The candidate now provides consolidated standalone account visibility plus retry-safe, generation-fenced indexed account deletion without changing the OpenAI-reviewed MCP tool inventory. Legacy pre-index direct-run erasure remains explicitly bounded.",
       "content": "Existing settings-session reuse, owner-level run indexing, maintenance backfill, synchronized run lifecycle, consolidated account view, dual deletion-generation fencing, read-only credential status, exact-login deletion confirmation, Marketplace personal-data handling, privacy/standalone documentation, frozen tool-count preservation and legacy-run limitation.",
       "measurement": "Zero new MCP tools; one internal account run index; one consolidated account console; one destructive account-data flow requiring exact-login confirmation; two independent monotonic deletion fences; zero plaintext GitHub logins in the shared deletion fence; active indexed runs block deletion; stale pre-delete admissions are rejected; partial destructive failures retain locks for retry; historical maintenance runs backfilled; pre-index direct-run enumeration not claimed."
+    },
+    {
+      "id": "E-044",
+      "date": "2026-10-02",
+      "identity": "Standalone account controls merged and deployed without changing the OpenAI tool contract",
+      "situation": "The owned-domain launch needed consolidated customer account visibility and indexed account deletion, but OpenAI review already froze the canonical MCP endpoint and tool snapshot. The implementation therefore reused the existing credential-setup browser session rather than adding MCP tools, and it added generation-fenced owner/run state behind that existing surface.",
+      "verification": "PR #125 exact head b1bea3d2e5af73e6b87e61fb2ac0170b952017e5 passed workflow 37006798507: core (22), core (24), hosted-plugin, and hosted node scripts/validate-plugin.mjs all succeeded. The PR merged through protected main as dab4ef8873d22218b5d9dcc1df5f11c3ed8a79ce. Post-merge workflow 37006922766 succeeded. Production deployment 37006923054 succeeded and deployed donestate.proofandstate.com with Worker version cab1ea01-5195-49ab-b921-a8fd0f810be7 and container digest sha256:3fb5083c07f82dd6e51d6276c149ec025c9b1d44c4f5d34ed071fc8f2ada5d86. After that deployment, a live authenticated get_openai_credential_status call succeeded with the existing user-funded credential connected and no active run, and create_openai_credential_setup issued a fresh short-lived URL on https://donestate.proofandstate.com/settings/openai. The bearer URL itself is intentionally not recorded. Available server-side HTTP fetchers could not consume the one-time authenticated browser handoff, so the rendered account-console page is not claimed as independently read back.",
+      "accountability": {
+        "owner": "DoneState maintainers and publisher owner",
+        "status": "active",
+        "nextAction": "Complete authenticated browser readback of the account console, then use a disposable post-cutover account for destructive deletion acceptance and a fresh clean-account customer outcome.",
+        "waitCondition": "Production runtime and setup-link issuance are proven. Browser rendering and destructive disposable-account acceptance remain intentionally unclaimed.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "The generation-fenced account-controls runtime is merged and live on the owned service, while unrestricted self-serve GA remains gated on real customer-facing browser/deletion acceptance and publisher legal decisions.",
+      "content": "Protected merge, exact-head and post-merge CI, successful production Worker/container deployment, live authenticated credential-status and setup-link issuance, zero-new-tool design, dual deletion generations, and explicit non-claim for unobserved browser/deletion acceptance.",
+      "measurement": "One protected merge; three exact-head required checks passed; one post-merge CI passed; one production deployment passed; one live authenticated status call passed; one fresh production setup URL issued; zero destructive production account actions performed; zero unrestricted-GA claims."
     }
   ]
 }
