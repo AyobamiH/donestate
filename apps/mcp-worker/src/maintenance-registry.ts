@@ -134,6 +134,37 @@ export interface AccountDataSummary {
   marketplaceOrganizationAuthorizations: number;
 }
 
+export const FUNNEL_EVENTS = [
+  "oauth_connection_completed",
+  "credential_setup_issued",
+  "account_console_opened",
+  "credential_connected",
+  "repository_selected",
+  "objective_created",
+  "objective_started",
+  "pull_request_opened",
+  "verification_verified",
+  "verification_failed",
+  "verification_uncertain",
+  "account_deletion_completed",
+] as const;
+
+export type FunnelEvent = (typeof FUNNEL_EVENTS)[number];
+
+interface FunnelDailyRow extends Record<string, SqlStorageValue> {
+  day_utc: string;
+  event_name: FunnelEvent;
+  event_count: number;
+  updated_at: string;
+}
+
+export interface FunnelDailySnapshot {
+  schema: "donestate.funnel-daily.v1";
+  dayUtc: string;
+  counts: Partial<Record<FunnelEvent, number>>;
+  totalEvents: number;
+}
+
 const MAX_SCHEDULED_REPOSITORIES = 20;
 const MAX_AUTOMATIC_REPAIRS_PER_SWEEP = 2;
 
@@ -340,7 +371,64 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
         generation INTEGER NOT NULL,
         updated_at TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS funnel_daily (
+        day_utc TEXT NOT NULL,
+        event_name TEXT NOT NULL,
+        event_count INTEGER NOT NULL CHECK (event_count >= 0),
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY (day_utc, event_name)
+      );
     `);
+  }
+
+  async recordFunnelEvent(event: FunnelEvent, nowMs = Date.now()): Promise<void> {
+    if (!FUNNEL_EVENTS.includes(event)) throw new Error("unsupported funnel event");
+    if (!Number.isFinite(nowMs) || nowMs < 0) throw new Error("funnel event time is invalid");
+    const dayUtc = new Date(nowMs).toISOString().slice(0, 10);
+    const now = new Date(nowMs).toISOString();
+    this.ctx.storage.sql.exec(
+      `INSERT INTO funnel_daily (day_utc, event_name, event_count, updated_at)
+       VALUES (?, ?, 1, ?)
+       ON CONFLICT(day_utc, event_name) DO UPDATE SET
+         event_count = funnel_daily.event_count + 1,
+         updated_at = excluded.updated_at`,
+      dayUtc, event, now,
+    );
+    this.ctx.storage.sql.exec(
+      "DELETE FROM funnel_daily WHERE day_utc < ?",
+      new Date(nowMs - 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+    );
+  }
+
+  async funnelDailySnapshot(dayUtc = new Date().toISOString().slice(0, 10)): Promise<FunnelDailySnapshot> {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dayUtc)) throw new Error("funnel day must be YYYY-MM-DD");
+    const rows = this.ctx.storage.sql.exec<FunnelDailyRow>(
+      "SELECT * FROM funnel_daily WHERE day_utc = ? ORDER BY event_name",
+      dayUtc,
+    ).toArray();
+    const counts: Partial<Record<FunnelEvent, number>> = {};
+    let totalEvents = 0;
+    for (const row of rows) {
+      if (!FUNNEL_EVENTS.includes(row.event_name)) continue;
+      counts[row.event_name] = row.event_count;
+      totalEvents += row.event_count;
+    }
+    return {
+      schema: "donestate.funnel-daily.v1",
+      dayUtc,
+      counts,
+      totalEvents,
+    };
+  }
+
+  private recordFunnelBestEffort(event: FunnelEvent): void {
+    this.ctx.waitUntil(this.recordFunnelEvent(event).catch((error) => {
+      console.error(JSON.stringify({
+        message: "DoneState funnel counter did not update",
+        event,
+        error: error instanceof Error ? error.message : "unknown error",
+      }));
+    }));
   }
 
   private assertPlatformOwner(login: string): void {
@@ -428,6 +516,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       login, input.repository, input.defaultBranch, installationId, input.mode, input.scheduleEnabled ? 1 : 0,
       input.autoRepair ? 1 : 0, JSON.stringify(input.requiredCheckNames), now, now,
     );
+    this.recordFunnelBestEffort("repository_selected");
     return this.repository(login, input.repository);
   }
 
@@ -1063,6 +1152,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     branchesRetired: number;
     blocked: string[];
     marketplaceWebhook: MarketplaceWebhookHealth;
+    funnel: FunnelDailySnapshot;
   }> {
     const selected = this.ctx.storage.sql.exec<RepositoryRow>(
       "SELECT * FROM selected_repositories WHERE schedule_enabled = 1 ORDER BY updated_at LIMIT ?",
@@ -1096,6 +1186,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       branchesRetired,
       blocked,
       marketplaceWebhook: await this.marketplaceWebhookHealth(),
+      funnel: await this.funnelDailySnapshot(),
     };
   }
 

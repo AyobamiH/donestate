@@ -363,15 +363,16 @@
       "owner": "Proof & State maintainers",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-16",
-      "nextAction": "Measure controlled owned-domain access now that account controls are deployed: authenticated connection, setup-link issuance, account-console use, repository selection, objective start, PR open, verifier decision, deletion completion, repeat use, support load and conversion without unnecessary personal data. Keep OpenAI and Marketplace attribution separate when those channels publish.",
-      "waitCondition": "Begin with bounded manual cohort evidence; do not wait for external-directory approval. Destructive deletion measurement must use disposable/customer-authorised accounts only.",
-      "reentryCondition": "Keep active through the first external standalone cohort and extend rather than replace it when additional channels go live.",
+      "nextAction": "Pass exact-head CI for the privacy-minimal funnel candidate, merge and deploy it, then use hourly UTC-day aggregate snapshots during controlled owned-domain access. Continue measuring unique/repeat use, support load and conversion only through bounded manual cohort evidence until a separately reviewed privacy-preserving identifier design exists.",
+      "waitCondition": "The candidate stores only UTC day, fixed event name, integer count and update timestamp for up to 90 days; no customer, repository, run, prompt, credential or channel identity is stored. Exact-head CI, protected merge, production deployment and initial real cohort observations remain.",
+      "reentryCondition": "Keep active through the first controlled external standalone cohort. Reopen the instrumentation design if counters collect an identifier, internal maintenance traffic contaminates customer objective/PR/verification counts, or a later channel needs separately scoped attribution.",
       "dependencies": [
         "CUST-001",
         "CUST-002"
       ],
       "evidenceIds": [
-        "E-044"
+        "E-044",
+        "E-047"
       ]
     },
     {
@@ -1571,6 +1572,23 @@
       "outcome": "Marketplace webhook operational-failure detection, retry semantics, bounded durable receipts, and hourly escalation are live in production while distribution-channel state remains unchanged.",
       "content": "Protected merge, exact-head and post-merge CI, production Worker/container deployment, 4xx-versus-5xx failure taxonomy, bounded durable failure health, hourly escalation, frozen 20-tool preservation and unchanged external review state.",
       "measurement": "Three exact-head required checks passed; one protected merge; one post-merge CI passed; one production deployment passed; one Worker version and one container digest recorded; hourly cron retained; zero new MCP tools; zero Marketplace listing mutations; zero synthetic production incidents."
+    },
+    {
+      "id": "E-047",
+      "date": "2026-10-02",
+      "identity": "Privacy-minimal owned-service funnel instrumentation candidate",
+      "situation": "GTM-001 required measurement of the owned-domain journey, but DoneState had no product analytics or telemetry layer. Adding user-level tracking would create unnecessary personal-data and attribution risk while OpenAI and GitHub Marketplace remain separate distribution channels.",
+      "verification": "The candidate adds a global Durable Object daily counter table keyed only by UTC day and one of twelve fixed event names. It counts successful owned-service OAuth completion, credential setup issuance, account-console open, credential connection, repository selection, customer objective creation/start, pull-request publication, independent verifier decisions, and completed account deletion. Internal maintenance_pr objectives are excluded from customer objective-start, pull-request and verification counters. The existing hourly sweep includes the current UTC-day aggregate snapshot. Records are retained for at most 90 days. There is no public analytics endpoint, no third-party analytics SDK and no new MCP tool. docs/PRIVACY.md and docs/MEASUREMENT.md state that the counters contain no GitHub login, account ID, repository, run ID, pull-request number, email, IP address, prompt/objective text, credential or Marketplace plan identity.",
+      "accountability": {
+        "owner": "Proof & State maintainers",
+        "status": "active",
+        "nextAction": "Require exact-head core (22), core (24), hosted-plugin and plugin validation, then merge, deploy and inspect the first real aggregate daily snapshot during controlled owned-domain use.",
+        "waitCondition": "Unique-user, repeat-use, retention and per-user conversion remain intentionally unmeasured by this store and must use bounded manual cohort evidence unless a separate privacy-preserving design is reviewed.",
+        "staleDate": "2026-10-16"
+      },
+      "outcome": "The candidate can measure service-stage volume without creating a customer analytics profile or mixing internal maintenance activity into customer execution outcomes.",
+      "content": "Twelve fixed aggregate events, UTC-day counts, 90-day retention, hourly snapshot logging, maintenance-run exclusion, no public endpoint, no new MCP tool, privacy notice update and explicit measurement limitations.",
+      "measurement": "12 fixed funnel event names; 90-day maximum retention; zero customer identifiers in the funnel table; zero third-party analytics providers; zero new MCP tools; one aggregate snapshot emitted through the existing hourly sweep."
     }
   ]
 }

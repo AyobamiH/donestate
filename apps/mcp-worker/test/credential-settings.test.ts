@@ -9,7 +9,11 @@ describe("execution credential setup", () => {
   });
 
   it("creates a short-lived one-time HTTPS setup flow without exposing a key", async () => {
+    const registry = env.MAINTENANCE_REGISTRY.getByName("global");
+    const before = await registry.funnelDailySnapshot();
     const setup = await createCredentialSetup(env, "setup-user", "https://done.example");
+    const afterIssue = await registry.funnelDailySnapshot();
+    expect(afterIssue.counts.credential_setup_issued ?? 0).toBe((before.counts.credential_setup_issued ?? 0) + 1);
     expect(setup.status.connected).toBe(false);
     expect(setup.setupUrl).toMatch(/^https:\/\/done\.example\/settings\/openai\?ticket=/);
 
@@ -20,6 +24,8 @@ describe("execution credential setup", () => {
     expect(stored).toContain("setup-user");
 
     const response = await credentialSettingsHandler.fetch(new Request(setup.setupUrl), env);
+    const afterOpen = await registry.funnelDailySnapshot();
+    expect(afterOpen.counts.account_console_opened ?? 0).toBe((afterIssue.counts.account_console_opened ?? 0) + 1);
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("no-store");
     expect(response.headers.get("Set-Cookie")).toContain("__Host-DONESTATE_CREDENTIAL=");
@@ -37,6 +43,8 @@ describe("execution credential setup", () => {
   });
 
   it("verifies, encrypts and connects a user key without returning it", async () => {
+    const registry = env.MAINTENANCE_REGISTRY.getByName("global");
+    const before = await registry.funnelDailySnapshot();
     const user = "connect-user";
     const userKey = "test-user-funded-credential-not-a-secret-1111111111";
     const setup = await createCredentialSetup(env, user, "https://done.example");
@@ -78,8 +86,12 @@ describe("execution credential setup", () => {
     expect(successPage).not.toContain(userKey);
     expect(openAiFetch).toHaveBeenCalledOnce();
     expect(await env.CREDENTIAL_VAULT.getByName(user).status(user)).toMatchObject({ connected: true });
+    const after = await registry.funnelDailySnapshot();
+    expect(after.counts.credential_connected ?? 0).toBe((before.counts.credential_connected ?? 0) + 1);
   });
   it("shows consolidated account state and deletes owner-scoped standalone data with exact-login confirmation", async () => {
+    const registry = env.MAINTENANCE_REGISTRY.getByName("global");
+    const before = await registry.funnelDailySnapshot();
     const user = "delete-account-user";
     const setup = await createCredentialSetup(env, user, "https://done.example");
     await env.CREDENTIAL_VAULT.getByName(user).storeCredential(
@@ -129,6 +141,8 @@ describe("execution credential setup", () => {
     expect(result).toContain("Deleted selected repositories: 1");
     expect(await env.CREDENTIAL_VAULT.getByName(user).status(user)).toMatchObject({ connected: false });
     expect(await env.MAINTENANCE_REGISTRY.getByName("global").listRepositories(user)).toEqual([]);
+    const after = await registry.funnelDailySnapshot();
+    expect(after.counts.account_deletion_completed ?? 0).toBe((before.counts.account_deletion_completed ?? 0) + 1);
   });
 
 });

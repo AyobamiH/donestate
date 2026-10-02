@@ -76,6 +76,12 @@ Production deployment `37006923054` succeeded. The owned service now runs Worker
 
 The deployed account-controls path reuses the existing credential-setup browser flow rather than adding MCP tools. After deployment, an authenticated production credential-status call succeeded with no active run, and the service issued a fresh short-lived setup URL on the canonical owned domain. The one-time browser page itself has not yet been independently read back with the available server-side fetchers, and no destructive production-account deletion was attempted. Therefore account-console rendering, disposable-account deletion acceptance and unrestricted self-serve GA remain explicit gates.
 
+## Owned-service aggregate measurement — 2 October 2026
+
+A candidate privacy-minimal funnel now records only UTC day, a fixed event name and aggregate count for successful owned-service stages. It introduces no third-party analytics SDK, public analytics endpoint or MCP tool, and internal maintenance runs are excluded from customer objective/PR/verification counters. The candidate retains aggregate rows for at most 90 days and emits the current UTC-day snapshot through the existing hourly maintenance sweep. See [Measurement boundary](MEASUREMENT.md).
+
+The counters measure stage volume only. They do not identify unique or repeat users and do not establish per-user conversion, retention cohorts or channel attribution. Those remain bounded manual-cohort measurements until a separately reviewed privacy-preserving design exists.
+
 ## GitHub Marketplace review
 
 The production Marketplace submission remains **Pending for publish** and has not been published. The owner-authenticated preview at `https://github.com/marketplace/donestate` displays provider `AyobamiH`, `Add`, `Install it for free`, a `$0` `Public repositories` plan, and `1 install`. The authenticated management page at `https://github.com/marketplace/manage` lists production and development inventory, which is owner inventory rather than public evidence. An **unauthenticated exact Marketplace search returned no result**.
