@@ -64,19 +64,55 @@ describe("CredentialVault", () => {
     });
   });
 
-  it("binds an empty vault to its first identity and atomically consumes setup tickets", async () => {
+  it("keeps status read-only, then binds the vault when a setup ticket is created", async () => {
     const stub = env.CREDENTIAL_VAULT.getByName("ticket-owner");
-    await stub.status("ticket-owner");
+    await expect(stub.status("ticket-owner")).resolves.toMatchObject({ connected: false, dailyRunsUsed: 0 });
+    await expect(stub.status("intruder")).resolves.toMatchObject({ connected: false, dailyRunsUsed: 0 });
+
     await runInDurableObject(stub, async (instance: CredentialVault) => {
-      await expect(instance.status("intruder")).rejects.toThrow("another identity");
       instance.registerSetupTicket(
         "ticket-owner",
         "a".repeat(64),
         "https://done.example",
         Date.now() + 60_000,
       );
+      await expect(instance.status("intruder")).rejects.toThrow("another identity");
       expect(instance.consumeSetupTicket("ticket-owner", "a".repeat(64), "https://done.example")).toBe(true);
       expect(instance.consumeSetupTicket("ticket-owner", "a".repeat(64), "https://done.example")).toBe(false);
+    });
+  });
+
+  it("fences stale credential writes across account deletion and retains only a generation tombstone", async () => {
+    const stub = env.CREDENTIAL_VAULT.getByName("fenced-delete-user");
+    await stub.storeCredential("fenced-delete-user", USER_KEY);
+
+    await runInDurableObject(stub, async (instance: CredentialVault, state) => {
+      const admission = instance.requireAccountWritable();
+      expect(admission).toEqual({ writable: true, generation: 0 });
+
+      const deletion = instance.beginAccountDeletion();
+      expect(deletion).toEqual({ deleting: true, generation: 1 });
+      expect(instance.beginAccountDeletion()).toEqual(deletion);
+
+      await expect(instance.storeCredential(
+        "fenced-delete-user",
+        USER_KEY,
+        admission.generation,
+      )).rejects.toThrow("account deletion is in progress");
+
+      await instance.purgeAccount("fenced-delete-user");
+      expect(await instance.status("fenced-delete-user")).toMatchObject({ connected: false, dailyRunsUsed: 0 });
+      expect(instance.requireAccountWritable()).toEqual({ writable: true, generation: 1 });
+      await expect(instance.storeCredential(
+        "fenced-delete-user",
+        USER_KEY,
+        admission.generation,
+      )).rejects.toThrow("account state changed during operation");
+
+      expect(state.storage.sql.exec<{ count: number }>("SELECT COUNT(*) AS count FROM owner").one().count).toBe(0);
+      expect(state.storage.sql.exec<{ count: number }>("SELECT COUNT(*) AS count FROM credential").one().count).toBe(0);
+      expect(state.storage.sql.exec<{ count: number }>("SELECT COUNT(*) AS count FROM quota").one().count).toBe(0);
+      expect(state.storage.sql.exec<{ count: number }>("SELECT COUNT(*) AS count FROM account_control").one().count).toBe(1);
     });
   });
 
