@@ -443,6 +443,7 @@ function createServer(): McpServer {
       };
       const stub = coordinator(runId);
       await stub.create(objective, githubToken);
+      await maintenanceRegistry().recordRun(identity.login, runId, input.repository, "operator");
       const run = input.autoStart ? await stub.start(identity.login) : await stub.get(identity.login);
       return textResult({ run, repositoryPrivate: access.private, credentialSource });
     },
@@ -502,7 +503,9 @@ function createServer(): McpServer {
       requireExecutionScope(context);
       const identity = authProps(context);
       requireWritableIdentity(identity);
-      return textResult(await coordinator(runId).purge(identity.login));
+      const result = await coordinator(runId).purge(identity.login);
+      await maintenanceRegistry().removeRun(identity.login, runId);
+      return textResult(result);
     },
   );
 
