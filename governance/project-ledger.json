@@ -324,8 +324,8 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-09",
-      "nextAction": "Use a disposable post-cutover account to prove the deployed delete-account journey end to end: index a fresh objective, exercise active-run refusal, complete deletion, verify stale pre-delete mutations are fenced, verify personal service state is gone, and exercise retry after a deliberately interrupted deletion in a non-production fixture. Do not use the publisher's current production account as the destructive acceptance fixture.",
-      "waitCondition": "The dual-generation implementation is merged, exact-head/post-merge CI is green and production deployment succeeded. A real disposable-account deletion receipt is still required; historical pre-index direct objectives remain an explicit legacy erasure limitation.",
+      "nextAction": "Use a disposable post-cutover production account to prove the deployed delete-account journey end to end: index a fresh objective, exercise active-run refusal, complete deletion, verify stale pre-delete mutations are fenced, and verify personal service state is gone. The deliberately interrupted non-production retry path is covered by E-051. Do not use the publisher's current production account as the destructive acceptance fixture.",
+      "waitCondition": "The dual-generation implementation, stale-write fencing, and interrupted-deletion retry fixture are covered by automated acceptance. A real disposable-account production deletion receipt is still required; historical pre-index direct objectives remain an explicit legacy erasure limitation.",
       "reentryCondition": "Close only after a fresh disposable-account production deletion proves the post-cutover path and the retained legacy-erasure procedure remains documented.",
       "dependencies": [
         "CUST-001",
@@ -333,7 +333,8 @@
       ],
       "evidenceIds": [
         "E-043",
-        "E-044"
+        "E-044",
+        "E-051"
       ]
     },
     {
@@ -1643,6 +1644,23 @@
       "outcome": "The parent governance repository now represents the secured current DoneState owned service and does not treat OpenAI or GitHub Marketplace as the sole route to market.",
       "content": "Exact parent PR, merge, post-merge governance checks, DoneState source/CI/deployment/Worker pins, publishing-disabled parent consequence, and three-channel state separation.",
       "measurement": "One parent reconciliation PR merged; two post-merge parent checks passed; one current DoneState source pin; one current runtime deployment pin; zero external provider states inferred or mutated."
+    },
+    {
+      "id": "E-051",
+      "date": "2026-10-02",
+      "identity": "Interrupted account deletion retries safely in the browser settings flow",
+      "situation": "Whole-account deletion already had generation fencing and low-level rollback tests, but the browser settings handler did not yet have an end-to-end fixture proving recovery after a partial deletion failure between per-user credential purge and owner-scoped registry purge.",
+      "verification": "A new Cloudflare test fixture uses the real /settings/openai delete_account handler. It creates an account credential and selected repository, starts the one-time account-console session, then injects one registry purge failure after the credential vault has already been purged. The first POST must return the account console with the explicit locked-for-retry message while the credential is already disconnected and the repository record remains. Repeating the same authenticated deletion POST must complete deletion, leave the credential disconnected, remove the repository state, and increment account_deletion_completed exactly once.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Run the exact-head hosted Worker suite and merge only if this partial-deletion retry fixture passes. Production disposable-account acceptance remains separately required.",
+        "waitCondition": "Exact-head CI has not yet run for this fixture branch.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "The intended test proves deletion retry semantics at the actual browser-handler orchestration boundary rather than only at individual Durable Object primitives.",
+      "content": "Account-console deletion session, credential-vault purge, simulated registry interruption, preserved deletion locks, idempotent retry, final owner-state purge and exactly-once aggregate completion counter.",
+      "measurement": "One deliberate interruption point; two deletion POST attempts in the same authenticated session; first attempt fails closed after vault purge; second completes; expected account_deletion_completed delta is exactly 1."
     }
   ]
 }
