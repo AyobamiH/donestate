@@ -305,15 +305,16 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-09",
-      "nextAction": "Perform one authenticated browser readback from a freshly issued production credential-setup URL and confirm the deployed account console renders identity, credential/quota status, selected repositories and indexed objectives. The current candidate also removes the last ChatGPT-only success-page instruction so standalone users are returned generically to their MCP client.",
-      "waitCondition": "Only the authenticated browser rendering remains unobserved. The available server-side HTTP fetchers cannot consume the one-time browser handoff, so do not substitute code inspection or tool output for that readback.",
-      "reentryCondition": "Close after a production authenticated browser readback proves the consolidated account console on the owned domain.",
+      "nextAction": "Pass exact-head CI and plugin validation for the cohesive owned-service shell, merge and deploy it through protected main, then perform one production browser readback of the public root plus one authenticated account-console readback from a freshly issued setup URL. Confirm the root, settings and success surfaces read as one DoneState/Proof & State product family while the frozen 20-tool MCP contract remains unchanged.",
+      "waitCondition": "The account controls are deployed and the public root is live but visually under-designed. The cohesive shell candidate is not yet merged. The authenticated account-console browser readback still requires a fresh one-time production setup URL.",
+      "reentryCondition": "Close after the cohesive root is deployed and production browser readback proves both the public entry point and authenticated account console without MCP metadata drift.",
       "dependencies": [
         "GOV-001"
       ],
       "evidenceIds": [
         "E-043",
-        "E-044"
+        "E-044",
+        "E-053"
       ]
     },
     {
@@ -1678,6 +1679,23 @@
       "outcome": "The candidate removes the last known ChatGPT-only instruction from the standalone account success journey without changing the frozen 20-tool contract.",
       "content": "Client-neutral browser copy, regression coverage, preserved OpenAI tool inventory and unchanged external provider states.",
       "measurement": "One visible standalone copy defect removed; one regression assertion added; zero MCP tools changed; zero external listing mutations."
+    },
+    {
+      "id": "E-053",
+      "date": "2026-10-02",
+      "identity": "Cohesive DoneState owned-service design candidate",
+      "situation": "The controlled standalone service and account controls were live, but a publisher-provided production browser screenshot showed the root endpoint rendering as sparse browser-default HTML with little hierarchy, no visual relationship to the account console, and excessive unused space. That made the owned-domain launch feel like an internal diagnostic endpoint rather than a coherent Proof & State product.",
+      "verification": "Current protected main is 18e8e59e1d79ffdc7c0afc6980d0b6663789ce86. Post-merge CI run 37032800083 passed and production deployment 37032800096 passed, deploying donestate.proofandstate.com as Worker version 9f1dff7b-aed1-4f97-92c9-5da9475174b2 with sandbox container digest sha256:8de0f3dc65f04998d685f711953a73a4818077618c985e3a7a3f353c76c826bb. The new candidate adds apps/mcp-worker/src/ui.ts, redesigns only the human-facing root/Marketplace-development HTML in auth.ts, adds regression coverage, and adds docs/DESIGN.md. The design contract uses the Google Labs DESIGN.md method and the parent Proof & State paper/carbon/graphite/steel material language: restrained system typography, warm neutral surfaces, semantic status colour, 44px interaction targets, 8px controls, 12px panels, progressive disclosure, responsive stacking and visible focus. The candidate does not add or remove an MCP tool, change OAuth scope, alter repository authority, change verifier semantics, or mutate either external provider listing.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Pass exact-head core (22), core (24), hosted-plugin and plugin validation; merge through protected main; deploy; then visually read back the production root at desktop and narrow width and confirm the authenticated account surface remains cohesive.",
+        "waitCondition": "The candidate is code-complete but exact-head CI, protected merge, deployment and production visual readback are still pending.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "The candidate converts the root from an unstyled protocol notice into a coherent DoneState entry point with clear owned-service status, setup action, canonical MCP endpoint, three-step workflow and authority boundary while preserving all runtime and provider-review contracts.",
+      "content": "Shared DoneState UI tokens, responsive root landing shell, accessible semantic hierarchy, explicit distribution-state separation, repository-local DESIGN.md contract, regression coverage and unchanged 20-tool MCP surface.",
+      "measurement": "One shared Worker UI token source; one public root redesigned; one provider-development surface brought into the same shell; one design contract added; zero MCP tools changed; zero OAuth scopes changed; zero authority classes changed; zero external provider listing mutations."
     }
   ]
 }
