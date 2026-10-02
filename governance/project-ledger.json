@@ -363,16 +363,17 @@
       "owner": "Proof & State maintainers",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-16",
-      "nextAction": "Pass exact-head CI for the privacy-minimal funnel candidate, merge and deploy it, then use hourly UTC-day aggregate snapshots during controlled owned-domain access. Continue measuring unique/repeat use, support load and conversion only through bounded manual cohort evidence until a separately reviewed privacy-preserving identifier design exists.",
-      "waitCondition": "The candidate stores only UTC day, fixed event name, integer count and update timestamp for up to 90 days; no customer, repository, run, prompt, credential or channel identity is stored. Exact-head CI, protected merge, production deployment and initial real cohort observations remain.",
-      "reentryCondition": "Keep active through the first controlled external standalone cohort. Reopen the instrumentation design if counters collect an identifier, internal maintenance traffic contaminates customer objective/PR/verification counts, or a later channel needs separately scoped attribution.",
+      "nextAction": "Use the deployed aggregate funnel during controlled owned-domain access. Inspect natural hourly UTC-day snapshots for stage volume and rough drop-off, and pair them with bounded manual cohort evidence for unique/repeat use, support load and conversion. Keep OpenAI and GitHub Marketplace attribution separate when those channels publish.",
+      "waitCondition": "Privacy-minimal production instrumentation is deployed and post-merge CI is green. Real customer/cohort observations do not yet exist, and aggregate counters intentionally cannot identify unique or repeat users.",
+      "reentryCondition": "Keep active through the first external standalone cohort. Reopen the implementation if counters fail to appear in natural scheduled snapshots, collect identifiers, include internal maintenance traffic in customer execution stages, or later channels require separate attribution.",
       "dependencies": [
         "CUST-001",
         "CUST-002"
       ],
       "evidenceIds": [
         "E-044",
-        "E-047"
+        "E-047",
+        "E-048"
       ]
     },
     {
@@ -1589,6 +1590,23 @@
       "outcome": "The candidate can measure service-stage volume without creating a customer analytics profile or mixing internal maintenance activity into customer execution outcomes.",
       "content": "Twelve fixed aggregate events, UTC-day counts, 90-day retention, hourly snapshot logging, maintenance-run exclusion, no public endpoint, no new MCP tool, privacy notice update and explicit measurement limitations.",
       "measurement": "12 fixed funnel event names; 90-day maximum retention; zero customer identifiers in the funnel table; zero third-party analytics providers; zero new MCP tools; one aggregate snapshot emitted through the existing hourly sweep."
+    },
+    {
+      "id": "E-048",
+      "date": "2026-10-02",
+      "identity": "Privacy-minimal owned-service funnel deployed to production",
+      "situation": "DoneState needed aggregate owned-domain funnel measurement without turning the service into a user-tracking system or changing the frozen OpenAI-reviewed MCP surface.",
+      "verification": "PR #129 final exact head bda6f3f1733f79cbe79d775dbd800b84addef208 passed workflow 37012714725 with core (22), core (24), hosted-plugin and plugin validation successful. It merged through protected main as 7b25b6ae288d02ab9a6354a740ec06681d3ffc49. Post-merge CI workflow 37012973935 completed successfully. Production deployment workflow 37012973974 completed successfully and deployed donestate.proofandstate.com with Worker version 31789414-8495-479b-9950-80f890cf29b4, sandbox container digest sha256:80e8a873c2039f2ed68bca41bf798ffb46d09da846386ce84e9bbb6a2d3787c6, and hourly schedule 0 * * * *. The plugin validator remained green, so no MCP tool metadata change was introduced.",
+      "accountability": {
+        "owner": "Proof & State maintainers",
+        "status": "active",
+        "nextAction": "Observe natural production hourly snapshots during controlled owned-domain use and pair aggregate stage counts with bounded manual cohort evidence for unique/repeat use, support load and conversion.",
+        "waitCondition": "Deployment is complete. Real cohort evidence has not yet accumulated, and aggregate counters deliberately cannot identify a person, repository or run.",
+        "staleDate": "2026-10-16"
+      },
+      "outcome": "Privacy-minimal aggregate funnel instrumentation is live in production while the OpenAI and GitHub Marketplace distribution tracks remain unchanged.",
+      "content": "Protected merge, exact-head and post-merge CI, production Worker/container identity, twelve fixed funnel counters, 90-day aggregate retention, hourly snapshot logging, internal-maintenance exclusion, zero new MCP tools and explicit measurement limitations.",
+      "measurement": "12 fixed event names; 90-day maximum aggregate retention; three required exact-head checks passed; plugin validation passed; one protected merge; one post-merge CI passed; one production deployment passed; zero customer identifiers in the funnel table; zero new MCP tools; zero external listing mutations."
     }
   ]
 }
