@@ -304,7 +304,9 @@ describe("MaintenanceRegistry", () => {
       indexedRuns: 1,
     });
 
-    await expect(registry.purgeAccount(login)).rejects.toThrow("account deletion lock is required");
+    await runInDurableObject(registry, async (instance: MaintenanceRegistry) => {
+      await expect(instance.purgeAccount(login)).rejects.toThrow("account deletion lock is required");
+    });
     await registry.beginAccountDeletion(login);
     const receipt = await registry.purgeAccount(login);
     expect(receipt).toMatchObject({ deleted: true, selectedRepositories: 1, indexedRuns: 1 });
