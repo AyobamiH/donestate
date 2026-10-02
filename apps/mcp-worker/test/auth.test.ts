@@ -109,6 +109,9 @@ describe("OAuth authorisation security policy", () => {
     expect(page).toContain("Owned service live");
     expect(page).toContain("https://donestate.proofandstate.com/mcp");
     expect(page).toContain("Set up DoneState");
+    expect(page).toContain("https://proofandstate.com/docs/donestate/get-started");
+    expect(page).toContain("Read documentation");
+    expect(page).toContain("https://proofandstate.com/docs/donestate");
     expect(page).toContain("OpenAI");
     expect(page).toContain("GitHub Marketplace");
     expect(page).toContain("Execution is not approval.");
