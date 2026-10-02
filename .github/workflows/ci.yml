@@ -44,6 +44,12 @@ jobs:
         run: |
           npm install --package-lock-only --ignore-scripts --no-audit
           git diff -- package-lock.json
+      - name: Preserve generated Worker lock
+        uses: actions/upload-artifact@v4
+        with:
+          name: worker-security-lock-${{ github.sha }}
+          path: apps/mcp-worker/package-lock.json
+          retention-days: 1
       - run: npm ci
         working-directory: apps/mcp-worker
       - name: Report Worker dependency advisories
