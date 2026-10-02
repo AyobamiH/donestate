@@ -127,7 +127,7 @@ function page(login: string, csrf: string, account: AccountView, message?: strin
 }
 
 function success(login: string, status: StoredCredentialStatus): Response {
-  return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OpenAI connected</title></head><body><main><h1>OpenAI connected</h1><p>The execution credential for <strong>${escapeHtml(login)}</strong> is encrypted and ready.</p><p>Credential fingerprint: <code>${escapeHtml(status.fingerprint ?? "unknown")}</code>.</p><p>You can close this tab and return to ChatGPT.</p></main></body></html>`, 200, [sessionCookie("", 0)]);
+  return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OpenAI connected</title></head><body><main><h1>OpenAI connected</h1><p>The execution credential for <strong>${escapeHtml(login)}</strong> is encrypted and ready.</p><p>Credential fingerprint: <code>${escapeHtml(status.fingerprint ?? "unknown")}</code>.</p><p>You can close this tab and return to your MCP client.</p></main></body></html>`, 200, [sessionCookie("", 0)]);
 }
 
 function parseTicket(value: string | null): SetupTicket | null {
