@@ -367,11 +367,17 @@ describe("GitHub Marketplace purchase webhook", () => {
     ), workerEnv);
 
     expect(response.status).toBe(503);
-    expect(await workerEnv.MAINTENANCE_REGISTRY.getByName("global").marketplaceWebhookHealth()).toMatchObject({
+    const registry = workerEnv.MAINTENANCE_REGISTRY.getByName("global");
+    expect(await registry.marketplaceWebhookHealth()).toMatchObject({
       unresolvedRecent: 1,
       unresolvedConfiguration: 1,
       unresolvedProcessing: 0,
       escalationRequired: true,
+    });
+    await registry.resolveMarketplaceWebhookFailures({ includeConfiguration: true });
+    expect(await registry.marketplaceWebhookHealth()).toMatchObject({
+      unresolvedRecent: 0,
+      escalationRequired: false,
     });
   });
 
