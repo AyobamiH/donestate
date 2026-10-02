@@ -156,6 +156,21 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
     return this.status(ownerLogin);
   }
 
+  async purgeAccount(ownerLogin: string): Promise<{ ownerLogin: string; deleted: true }> {
+    this.assertOwner(ownerLogin);
+    const nowMs = Date.now();
+    this.ensureQuota(ownerLogin, nowMs);
+    const quota = this.quota(ownerLogin);
+    if (quota?.active_run_id && quota.active_until_ms && quota.active_until_ms > nowMs) {
+      throw new Error("cancel the active objective before deleting DoneState account data");
+    }
+    this.ctx.storage.sql.exec("DELETE FROM setup_ticket;");
+    this.ctx.storage.sql.exec("DELETE FROM credential WHERE owner_login = ?", ownerLogin);
+    this.ctx.storage.sql.exec("DELETE FROM quota WHERE owner_login = ?", ownerLogin);
+    this.ctx.storage.sql.exec("DELETE FROM owner WHERE owner_login = ?", ownerLogin);
+    return { ownerLogin, deleted: true };
+  }
+
   async acquire(ownerLogin: string, runId: string, leaseDurationMs: number): Promise<string> {
     this.assertOwner(ownerLogin);
     if (!runId) throw new Error("run id is required");
