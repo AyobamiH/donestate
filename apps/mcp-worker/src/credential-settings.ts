@@ -114,7 +114,7 @@ function page(login: string, csrf: string, account: AccountView, message?: strin
 <style>body{font-family:system-ui,sans-serif;background:#f5f6f8;color:#15171a;margin:0}.card{max-width:760px;margin:6vh auto;background:#fff;padding:32px;border:1px solid #dfe3e8;border-radius:14px;box-shadow:0 10px 32px #0001}h1,h2{margin-top:0}h2{margin-top:32px;font-size:1.05rem}label{display:block;font-weight:650;margin:18px 0 8px}input{box-sizing:border-box;width:100%;font:inherit;padding:12px;border:1px solid #aeb6c0;border-radius:8px}button{font:inherit;border:0;background:#15171a;color:#fff;padding:11px 18px;border-radius:8px;margin-top:18px}.danger{background:#8b1e1e}.muted{color:#59636e}.error{padding:12px;border-radius:8px;background:#fff0f0;color:#8b1e1e}code{font-family:ui-monospace,monospace}ul{padding-left:20px}</style></head>
 <body><main class="card"><h1>DoneState account settings</h1><p>Signed in as <strong>${escapeHtml(login)}</strong>.</p>${notice}
 <h2>Execution credential</h2><p>${state}</p>
-<p class="muted">The key goes directly to DoneState over HTTPS. It is encrypted at rest, never returned to your MCP client or ChatGPT and used only for your isolated autonomous runs. OpenAI charges usage to your API account.</p>
+<p class="muted">The key goes directly to DoneState over HTTPS. It is encrypted at rest, never returned to ChatGPT or any other MCP client, and used only for your isolated autonomous runs. OpenAI charges usage to your API account.</p>
 <p class="muted">Daily autonomous runs: ${status.dailyRunsUsed}/${status.dailyRunLimit}. Active run: ${escapeHtml(status.activeRunId ?? "none")}.</p>
 <form method="post" action="/settings/openai"><input type="hidden" name="csrf" value="${escapeHtml(csrf)}"><input type="hidden" name="action" value="connect_openai"><label for="api_key">OpenAI API key</label><input id="api_key" name="api_key" type="password" required minlength="20" maxlength="512" autocomplete="off" autocapitalize="none" spellcheck="false"><button type="submit">Verify and connect</button></form>
 <h2>Repository access</h2>${repositories}
@@ -289,9 +289,11 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
     }
     try {
       await registry(env).beginAccountDeletion(pending.login);
+      await vault(env, pending.login).beginAccountDeletion();
       const account = await accountView(env, pending.login);
       const active = account.runs.filter((item) => item.state !== "MISSING" && !DELETABLE_RUN_STATES.has(item.state));
       if (active.length > 0) {
+        await vault(env, pending.login).endAccountDeletion();
         await registry(env).endAccountDeletion(pending.login);
         return accountPage(
           env,
@@ -302,7 +304,6 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
       }
       for (const item of account.runs) {
         if (item.state !== "MISSING") await runCoordinator(env, item.runId).purge(pending.login);
-        await registry(env).removeRun(pending.login, item.runId);
       }
       await vault(env, pending.login).purgeAccount(pending.login);
       const registryReceipt = await registry(env).purgeAccount(pending.login);
@@ -313,22 +314,29 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
         [sessionCookie("", 0)],
       );
     } catch (error) {
-      try {
-        await registry(env).endAccountDeletion(pending.login);
-      } catch {
-        // A failed cleanup remains fail-closed: future account mutations stay blocked until reconciled.
-      }
       const message = error instanceof Error ? error.message : "Account data could not be deleted";
-      return accountPage(env, pending.login, csrf, message);
+      return accountPage(
+        env,
+        pending.login,
+        csrf,
+        `${message}. Account deletion remains locked so you can retry safely.`,
+      );
     }
   }
 
   const apiKey = form.get("api_key");
   if (typeof apiKey !== "string") return accountPage(env, pending.login, csrf, "Enter an OpenAI API key");
   try {
-    await registry(env).requireAccountWritable(pending.login);
+    const registryAdmission = await registry(env).requireAccountWritable(pending.login);
+    const vaultAdmission = await vault(env, pending.login).requireAccountWritable();
     const verifiedKey = await verifyOpenAIApiKey(apiKey);
-    const status = await vault(env, pending.login).storeCredential(pending.login, verifiedKey);
+    await registry(env).requireAccountWritable(pending.login, registryAdmission.generation);
+    await vault(env, pending.login).requireAccountWritable(vaultAdmission.generation);
+    const status = await vault(env, pending.login).storeCredential(
+      pending.login,
+      verifiedKey,
+      vaultAdmission.generation,
+    );
     await env.OAUTH_KV.delete(sessionKey);
     return success(pending.login, status);
   } catch (error) {
