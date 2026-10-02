@@ -68,6 +68,14 @@ DoneState is proceeding with the owned Proof & State service as a first-class st
 
 The canonical owned endpoint is `https://donestate.proofandstate.com/mcp`. Controlled standalone access does not wait for OpenAI review or GitHub Marketplace publication. Those external provider states gate only their respective distribution channels. Unrestricted self-serve GA still requires the owned-channel customer account/deletion work, the publisher-level legal decisions tracked in `LEGAL-001`, and one fresh clean-account end-to-end acceptance result.
 
+## Standalone account controls — 2 October 2026
+
+PR #125 merged to protected `main` as `dab4ef8873d22218b5d9dcc1df5f11c3ed8a79ce` after exact-head workflow `37006798507` passed `core (22)`, `core (24)`, `hosted-plugin`, and plugin validation. Post-merge CI `37006922766` also passed.
+
+Production deployment `37006923054` succeeded. The owned service now runs Worker version `cab1ea01-5195-49ab-b921-a8fd0f810be7` with sandbox container digest `sha256:3fb5083c07f82dd6e51d6276c149ec025c9b1d44c4f5d34ed071fc8f2ada5d86`.
+
+The deployed account-controls path reuses the existing credential-setup browser flow rather than adding MCP tools. After deployment, an authenticated production credential-status call succeeded with no active run, and the service issued a fresh short-lived setup URL on the canonical owned domain. The one-time browser page itself has not yet been independently read back with the available server-side fetchers, and no destructive production-account deletion was attempted. Therefore account-console rendering, disposable-account deletion acceptance and unrestricted self-serve GA remain explicit gates.
+
 ## GitHub Marketplace review
 
 The production Marketplace submission remains **Pending for publish** and has not been published. The owner-authenticated preview at `https://github.com/marketplace/donestate` displays provider `AyobamiH`, `Add`, `Install it for free`, a `$0` `Public repositories` plan, and `1 install`. The authenticated management page at `https://github.com/marketplace/manage` lists production and development inventory, which is owner inventory rather than public evidence. An **unauthenticated exact Marketplace search returned no result**.
