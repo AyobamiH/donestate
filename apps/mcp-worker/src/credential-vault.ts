@@ -30,6 +30,12 @@ interface QuotaRow extends Record<string, SqlStorageValue> {
   active_until_ms: number | null;
 }
 
+interface AccountControlRow extends Record<string, SqlStorageValue> {
+  deleting: number;
+  generation: number;
+  updated_at: string;
+}
+
 export interface CredentialStatus {
   connected: boolean;
   fingerprint: string | null;
@@ -91,12 +97,23 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
         active_run_id TEXT,
         active_until_ms INTEGER
       );
+      CREATE TABLE IF NOT EXISTS account_control (
+        singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
+        deleting INTEGER NOT NULL CHECK (deleting IN (0, 1)),
+        generation INTEGER NOT NULL,
+        updated_at TEXT NOT NULL
+      );
       INSERT OR IGNORE INTO _sql_schema_migrations (id, applied_at)
       VALUES (1, datetime('now'));
     `);
   }
 
-  async storeCredential(ownerLogin: string, openaiApiKey: string): Promise<CredentialStatus> {
+  async storeCredential(
+    ownerLogin: string,
+    openaiApiKey: string,
+    expectedGeneration?: number,
+  ): Promise<CredentialStatus> {
+    const accountGeneration = this.assertAccountWritable(expectedGeneration);
     this.assertOwner(ownerLogin);
     if (!openaiApiKey) throw new Error("OpenAI API key is required");
     const now = new Date().toISOString();
@@ -104,6 +121,7 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
     const fingerprint = (await digest(openaiApiKey)).slice(0, 12);
     const existing = this.credential();
     if (existing && existing.owner_login !== ownerLogin) throw new Error("credential vault belongs to another identity");
+    this.assertAccountWritable(accountGeneration);
     this.ctx.storage.sql.exec(
       `INSERT INTO credential (
         owner_login, sealed_openai_key, fingerprint, created_at, updated_at, last_used_at
@@ -160,8 +178,42 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
     return this.status(ownerLogin);
   }
 
+  requireAccountWritable(expectedGeneration?: number): { writable: true; generation: number } {
+    const generation = this.assertAccountWritable(expectedGeneration);
+    return { writable: true, generation };
+  }
+
+  beginAccountDeletion(): { deleting: true; generation: number } {
+    const existing = this.accountControl();
+    if (existing?.deleting === 1) return { deleting: true, generation: existing.generation };
+    const generation = (existing?.generation ?? 0) + 1;
+    this.ctx.storage.sql.exec(
+      `INSERT INTO account_control (singleton, deleting, generation, updated_at)
+       VALUES (1, 1, ?, ?)
+       ON CONFLICT(singleton) DO UPDATE SET
+         deleting = 1,
+         generation = excluded.generation,
+         updated_at = excluded.updated_at`,
+      generation,
+      new Date().toISOString(),
+    );
+    return { deleting: true, generation };
+  }
+
+  endAccountDeletion(): { deleting: false; generation: number } {
+    const existing = this.accountControl();
+    const generation = existing?.generation ?? 0;
+    this.ctx.storage.sql.exec(
+      "UPDATE account_control SET deleting = 0, updated_at = ? WHERE singleton = 1",
+      new Date().toISOString(),
+    );
+    return { deleting: false, generation };
+  }
+
   async purgeAccount(ownerLogin: string): Promise<{ ownerLogin: string; deleted: true }> {
     this.assertOwner(ownerLogin);
+    const control = this.accountControl();
+    if (control?.deleting !== 1) throw new Error("DoneState account deletion lock is required");
     const nowMs = Date.now();
     this.ensureQuota(ownerLogin, nowMs);
     const quota = this.quota(ownerLogin);
@@ -172,10 +224,15 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
     this.ctx.storage.sql.exec("DELETE FROM credential WHERE owner_login = ?", ownerLogin);
     this.ctx.storage.sql.exec("DELETE FROM quota WHERE owner_login = ?", ownerLogin);
     this.ctx.storage.sql.exec("DELETE FROM owner WHERE owner_login = ?", ownerLogin);
+    this.ctx.storage.sql.exec(
+      "UPDATE account_control SET deleting = 0, updated_at = ? WHERE singleton = 1",
+      new Date().toISOString(),
+    );
     return { ownerLogin, deleted: true };
   }
 
   async acquire(ownerLogin: string, runId: string, leaseDurationMs: number): Promise<string> {
+    this.assertAccountWritable();
     this.assertOwner(ownerLogin);
     if (!runId) throw new Error("run id is required");
     if (!Number.isSafeInteger(leaseDurationMs) || leaseDurationMs < 60_000 || leaseDurationMs > 10_800_000) {
@@ -232,6 +289,7 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
     origin: string,
     expiresAtMs: number,
   ): void {
+    this.assertAccountWritable();
     this.assertOwner(ownerLogin);
     if (!/^[a-f0-9]{64}$/.test(ticketDigest)) throw new Error("setup ticket digest is invalid");
     const parsedOrigin = new URL(origin);
@@ -268,6 +326,22 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
     );
     if (valid) this.ctx.storage.sql.exec("DELETE FROM setup_ticket WHERE singleton = 1");
     return valid;
+  }
+
+  private accountControl(): AccountControlRow | null {
+    return this.ctx.storage.sql.exec<AccountControlRow>(
+      "SELECT deleting, generation, updated_at FROM account_control WHERE singleton = 1",
+    ).toArray()[0] ?? null;
+  }
+
+  private assertAccountWritable(expectedGeneration?: number): number {
+    const row = this.accountControl();
+    const generation = row?.generation ?? 0;
+    if (row?.deleting === 1) throw new Error("DoneState account deletion is in progress");
+    if (expectedGeneration !== undefined && generation !== expectedGeneration) {
+      throw new Error("DoneState account state changed during operation");
+    }
+    return generation;
   }
 
   private credential(): CredentialRow | null {
