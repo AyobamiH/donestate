@@ -333,8 +333,8 @@ function home(env: DoneStateEnv): Response {
         <h1 id="page-title">Give an agent an outcome. Keep the boundary.</h1>
         <p class="lede">DoneState executes authorised repository work, publishes a reviewable branch or pull request, and stops for independent verification. You keep merge authority.</p>
         <div class="actions">
-          <a class="button" href="https://github.com/AyobamiH/donestate/blob/main/docs/STANDALONE-MCP.md">Set up DoneState</a>
-          <a class="button secondary" href="https://proofandstate.com/donestate">See how it works</a>
+          <a class="button" href="https://proofandstate.com/docs/donestate/get-started">Set up DoneState</a>
+          <a class="button secondary" href="https://proofandstate.com/docs/donestate">Read documentation</a>
         </div>
         <div class="endpoint" aria-label="Canonical MCP endpoint">
           <span class="endpoint-label">Canonical MCP endpoint</span>
@@ -381,7 +381,7 @@ function home(env: DoneStateEnv): Response {
 
     <footer class="footer">
       <span>DoneState by Proof &amp; State</span>
-      <span><a href="https://github.com/AyobamiH/donestate">Source &amp; docs</a> · <a href="https://proofandstate.com/donestate">Proof &amp; State</a></span>
+      <span><a href="https://proofandstate.com/docs/donestate">Documentation</a> · <a href="https://github.com/AyobamiH/donestate">Source</a> · <a href="https://proofandstate.com/donestate">Product overview</a></span>
     </footer>
   </main>
 </div>
