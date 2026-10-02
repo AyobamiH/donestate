@@ -1650,17 +1650,17 @@
       "date": "2026-10-02",
       "identity": "Durable partial account deletion resumes safely through the browser settings flow",
       "situation": "Whole-account deletion already had generation fencing and low-level rollback tests, but the browser settings handler did not yet have an end-to-end fixture proving that it can resume from the exact durable state left by an interruption after per-user credential purge and before owner-scoped registry purge.",
-      "verification": "A Cloudflare test fixture uses the real /settings/openai delete_account handler. It creates an account credential and selected repository, opens the one-time account-console session, then constructs the durable interruption boundary by acquiring both deletion locks and purging the credential vault while deliberately leaving the owner-scoped registry state intact. The same authenticated deletion POST is then issued as the retry. It must complete deletion, leave the credential disconnected, remove the selected repository, and increment account_deletion_completed exactly once.",
+      "verification": "A Cloudflare test fixture uses the real /settings/openai delete_account handler. It creates an account credential and selected repository, opens the one-time account-console session, then constructs the durable interruption boundary by acquiring both deletion locks and purging the credential vault while deliberately leaving the owner-scoped registry state intact. The same authenticated deletion POST is then issued as the retry. It must complete deletion, leave the credential disconnected, remove the selected repository, and increment account_deletion_completed exactly once. Exact-head CI run 37029459689 then passed core (22), core (24), hosted-plugin, the permanent high-severity dependency audit gate, the complete Worker test suite including this recovery fixture, and plugin validation.",
       "accountability": {
         "owner": "DoneState maintainers",
-        "status": "active",
-        "nextAction": "Run exact-head hosted Worker CI and merge only if the durable partial-deletion retry fixture passes. Production disposable-account acceptance remains separately required.",
-        "waitCondition": "Exact-head CI has not yet passed for the corrected durable-state fixture.",
-        "staleDate": "2026-10-09"
+        "status": "complete",
+        "nextAction": "Preserve this durable partial-deletion retry acceptance. Production disposable-account deletion remains separately required under CUST-002.",
+        "waitCondition": "None.",
+        "staleDate": "2026-12-01"
       },
-      "outcome": "The corrected fixture exercises the actual durable recovery boundary without monkey-patching Durable Object RPC methods: the handler must resume safely from post-vault/pre-registry partial deletion state.",
+      "outcome": "The browser settings deletion handler is now covered by an exact-head passing recovery fixture for the durable post-vault/pre-registry interruption boundary; retry completes without double-counting the completion metric.",
       "content": "Account-console session, deletion-generation locks, credential-vault purge, intentionally retained registry state, real delete_account retry, final owner-state purge and exactly-once aggregate completion counter.",
-      "measurement": "One exact durable interruption boundary; one authenticated browser-handler retry from that state; expected final credential connected=false; selected repositories=0; account_deletion_completed delta=1."
+      "measurement": "Exact-head run 37029459689 passed all three required jobs; one durable interruption boundary; one authenticated handler retry; final credential connected=false; selected repositories=0; account_deletion_completed delta=1; zero MCP tool changes."
     }
   ]
 }
