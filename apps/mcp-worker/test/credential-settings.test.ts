@@ -83,6 +83,8 @@ describe("execution credential setup", () => {
 
     expect(finish.status).toBe(200);
     expect(successPage).toContain("OpenAI connected");
+    expect(successPage).toContain("return to your MCP client");
+    expect(successPage).not.toContain("return to ChatGPT");
     expect(successPage).not.toContain(userKey);
     expect(openAiFetch).toHaveBeenCalledOnce();
     expect(await env.CREDENTIAL_VAULT.getByName(user).status(user)).toMatchObject({ connected: true });
