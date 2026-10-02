@@ -201,6 +201,7 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
     const run = this.assertOwner(ownerLogin);
     if (run.state === "RECEIVED") {
       await this.transition("QUEUED", "run_queued");
+      this.recordOperatorFunnelBestEffort("objective_started");
       await this.ctx.storage.setAlarm(Date.now() + 1);
     }
     return this.get(ownerLogin);
@@ -342,6 +343,13 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
     } else {
       await this.recordStateEvent("independent_attestation_recorded", attestation.decision);
     }
+    this.recordOperatorFunnelBestEffort(
+      attestation.decision === "verified"
+        ? "verification_verified"
+        : attestation.decision === "failed"
+          ? "verification_failed"
+          : "verification_uncertain",
+    );
     return this.get(ownerLogin);
   }
 
@@ -427,6 +435,13 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
       );
       this.insertEvent(event);
     });
+    this.recordOperatorFunnelBestEffort(
+      response.report.decision === "verified"
+        ? "verification_verified"
+        : response.report.decision === "failed"
+          ? "verification_failed"
+          : "verification_uncertain",
+    );
     return this.get(ownerLogin);
   }
 
@@ -824,6 +839,33 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
       values.pullRequestNumber ?? null,
       values.pullRequestUrl ?? null,
       new Date().toISOString(),
+    );
+    if (values.pullRequestNumber !== undefined) {
+      this.recordOperatorFunnelBestEffort("pull_request_opened");
+    }
+  }
+
+  private recordOperatorFunnelBestEffort(
+    event:
+      | "objective_started"
+      | "pull_request_opened"
+      | "verification_verified"
+      | "verification_failed"
+      | "verification_uncertain",
+  ): void {
+    const run = this.runRow();
+    if (!run) return;
+    const objective = JSON.parse(run.objective_json) as HostedObjective;
+    if (objective.objectiveClass === "maintenance_pr") return;
+    this.ctx.waitUntil(
+      this.env.MAINTENANCE_REGISTRY.getByName("global").recordFunnelEvent(event).catch((error) => {
+        console.error(JSON.stringify({
+          message: "DoneState funnel counter did not update",
+          event,
+          runId: run.id,
+          error: error instanceof Error ? error.message : "unknown error",
+        }));
+      }),
     );
   }
 
