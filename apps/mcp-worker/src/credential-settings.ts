@@ -2,7 +2,7 @@ import { digest } from "./canonical";
 import type { DoneStateEnv } from "./environment";
 import type { AccountDataSummary, AccountRunRecord } from "./maintenance-registry";
 import { verifyOpenAIApiKey } from "./openai";
-import type { StoredCredentialStatus as StoredStoredCredentialStatus } from "./credential-vault";
+import type { CredentialStatus as StoredCredentialStatus } from "./credential-vault";
 import type { RunState, SelectedRepository } from "./types";
 
 interface SetupTicket {
