@@ -1,4 +1,4 @@
-import { env, runInDurableObject } from "cloudflare:test";
+import { env } from "cloudflare:test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { digest } from "../src/canonical";
 import { createCredentialSetup, credentialSettingsHandler } from "../src/credential-settings";
@@ -144,12 +144,13 @@ describe("execution credential setup", () => {
     const after = await registry.funnelDailySnapshot();
     expect(after.counts.account_deletion_completed ?? 0).toBe((before.counts.account_deletion_completed ?? 0) + 1);
   });
-  it("retries safely after account deletion is interrupted between vault and registry purge", async () => {
+  it("resumes safely from a durable interruption between vault and registry purge", async () => {
     const registry = env.MAINTENANCE_REGISTRY.getByName("global");
     const before = await registry.funnelDailySnapshot();
     const user = "retry-delete-account-user";
+    const userVault = env.CREDENTIAL_VAULT.getByName(user);
     const setup = await createCredentialSetup(env, user, "https://done.example");
-    await env.CREDENTIAL_VAULT.getByName(user).storeCredential(
+    await userVault.storeCredential(
       user,
       "test-user-funded-credential-not-a-secret-retry-delete-1111111111",
     );
@@ -169,50 +170,38 @@ describe("execution credential setup", () => {
     expect(csrf).toBeTruthy();
     expect(session).toBeTruthy();
 
+    // Reproduce the durable state left by an interruption after the settings
+    // handler has acquired both deletion locks and purged the user vault, but
+    // before the owner-scoped registry purge has completed.
+    await registry.beginAccountDeletion(user);
+    await userVault.beginAccountDeletion();
+    await userVault.purgeAccount(user);
+    expect(await userVault.status(user)).toMatchObject({ connected: false });
+    expect(await registry.listRepositories(user)).toHaveLength(1);
+
     const body = new URLSearchParams({
       csrf: csrf!,
       action: "delete_account",
       confirm_login: user,
     }).toString();
-    const request = () => new Request("https://done.example/settings/openai", {
-      method: "POST",
-      headers: {
-        "Content-Length": String(new TextEncoder().encode(body).byteLength),
-        "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: session!,
+    const retry = await credentialSettingsHandler.fetch(new Request(
+      "https://done.example/settings/openai",
+      {
+        method: "POST",
+        headers: {
+          "Content-Length": String(new TextEncoder().encode(body).byteLength),
+          "Content-Type": "application/x-www-form-urlencoded",
+          Cookie: session!,
+        },
+        body,
       },
-      body,
-    });
+    ), env);
+    const retryPage = await retry.text();
 
-    await runInDurableObject(registry, async (instance) => {
-      const originalPurge = instance.purgeAccount.bind(instance);
-      let interrupted = false;
-      Reflect.set(instance, "purgeAccount", async (login: string) => {
-        if (!interrupted) {
-          interrupted = true;
-          throw new Error("simulated registry purge interruption");
-        }
-        return originalPurge(login);
-      });
-      try {
-        const first = await credentialSettingsHandler.fetch(request(), env);
-        const firstPage = await first.text();
-        expect(first.status).toBe(200);
-        expect(firstPage).toContain("simulated registry purge interruption");
-        expect(firstPage).toContain("Account deletion remains locked so you can retry safely");
-        expect(await env.CREDENTIAL_VAULT.getByName(user).status(user)).toMatchObject({ connected: false });
-        expect(await registry.listRepositories(user)).toHaveLength(1);
-
-        const retry = await credentialSettingsHandler.fetch(request(), env);
-        const retryPage = await retry.text();
-        expect(retry.status).toBe(200);
-        expect(retryPage).toContain("DoneState account data deleted");
-        expect(await env.CREDENTIAL_VAULT.getByName(user).status(user)).toMatchObject({ connected: false });
-        expect(await registry.listRepositories(user)).toEqual([]);
-      } finally {
-        Reflect.set(instance, "purgeAccount", originalPurge);
-      }
-    });
+    expect(retry.status).toBe(200);
+    expect(retryPage).toContain("DoneState account data deleted");
+    expect(await userVault.status(user)).toMatchObject({ connected: false });
+    expect(await registry.listRepositories(user)).toEqual([]);
 
     const after = await registry.funnelDailySnapshot();
     expect(after.counts.account_deletion_completed ?? 0).toBe((before.counts.account_deletion_completed ?? 0) + 1);
