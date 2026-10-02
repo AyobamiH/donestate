@@ -1614,17 +1614,17 @@
       "date": "2026-10-02",
       "identity": "DoneState fast-uri security lock refresh",
       "situation": "DoneState CI installation logs reported a high-severity npm audit finding while both the root and hosted Worker lock trees resolved AJV's fast-uri dependency to 3.1.6. Public security advisories published after that lock identify 3.1.6 as affected by host-confusion/authority handling defects, and a later September advisory affects 3.x releases below 3.1.8.",
-      "verification": "The candidate changes only package-lock.json and apps/mcp-worker/package-lock.json, replacing fast-uri 3.1.6 with 3.1.8 at the existing AJV-compatible dependency slot. The exact artifact is https://registry.npmjs.org/fast-uri/-/fast-uri-3.1.8.tgz with integrity sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg==. No direct production dependency, MCP tool, product authority, OAuth scope, provider listing, or publication state is added or changed. Exact-head npm ci, core tests, hosted Worker tests, plugin validation and observed npm audit output remain the acceptance gate.",
+      "verification": "The candidate changes only package-lock.json and apps/mcp-worker/package-lock.json, replacing fast-uri 3.1.6 with 3.1.8 at the existing AJV-compatible dependency slot. The exact artifact is https://registry.npmjs.org/fast-uri/-/fast-uri-3.1.8.tgz with integrity sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg==. No direct production dependency, MCP tool, product authority, OAuth scope, provider listing, or publication state is added or changed. Exact-head npm ci, core tests, hosted Worker tests, plugin validation and observed npm audit output remain the acceptance gate. After the first exact-head run showed the root tree clean but the Worker npm tree still reporting 8 advisories (3 moderate, 5 high), the candidate adds a non-gating CI diagnostic step scoped to apps/mcp-worker that emits npm audit package/severity/via metadata while preserving the existing core, hosted Worker and plugin-validation gates. The diagnostic exists only to identify the remaining transitive advisory subjects; it does not suppress or reinterpret them.",
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Require exact-head core (22), core (24), hosted-plugin and plugin validation. Inspect installation audit output and merge only if the patched locks install deterministically without introducing a new advisory or contract drift.",
+        "nextAction": "Use the branch-only Worker audit diagnostic to identify the remaining 5 high and 3 moderate advisory subjects, patch them narrowly, then require exact-head core (22), core (24), hosted-plugin and plugin validation plus a Worker audit with zero high findings before merge.",
         "waitCondition": "The lock update is prepared; CI/audit evidence is not yet complete.",
         "staleDate": "2026-10-09"
       },
       "outcome": "The candidate removes the known vulnerable fast-uri 3.1.6 resolution from both DoneState npm lock trees without broad dependency upgrades.",
-      "content": "Root and Worker lock refresh, fast-uri 3.1.8 registry artifact/integrity, advisory-bound rationale, unchanged runtime/tool/provider authority, and exact-head audit acceptance criteria.",
-      "measurement": "Two lockfile entries updated; one transitive package version changed; zero direct dependencies added; zero MCP tools changed; zero provider/listing mutations."
+      "content": "Root and Worker lock refresh, fast-uri 3.1.8 registry artifact/integrity, advisory-bound rationale, unchanged runtime/tool/provider authority, and exact-head audit acceptance criteria. Branch-only Worker audit diagnostic emits advisory metadata without weakening existing CI gates.",
+      "measurement": "Two lockfile entries updated; one transitive package version changed; root npm audit is 0 vulnerabilities on Node 22 and 24; Worker tree still reports 8 advisories (3 moderate, 5 high) pending exact diagnosis; zero direct dependencies added; zero MCP tools changed; zero provider/listing mutations."
     }
   ]
 }
