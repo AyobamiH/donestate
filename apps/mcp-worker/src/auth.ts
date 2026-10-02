@@ -16,6 +16,18 @@ export const EXECUTION_SCOPE = "donestate:execute";
 
 export type AuthEnv = DoneStateEnv & { OAUTH_PROVIDER: OAuthHelpers };
 
+async function recordFunnelBestEffort(env: AuthEnv, event: "oauth_connection_completed"): Promise<void> {
+  try {
+    await env.MAINTENANCE_REGISTRY.getByName("global").recordFunnelEvent(event);
+  } catch (error) {
+    console.error(JSON.stringify({
+      message: "DoneState funnel counter did not update",
+      event,
+      error: error instanceof Error ? error.message : "unknown error",
+    }));
+  }
+}
+
 const OPENAI_APPS_CHALLENGE_PATH = "/.well-known/openai-apps-challenge";
 const OAUTH_APPROVAL_SCHEMA = "donestate.oauth-approval.v1" as const;
 const OAUTH_APPROVAL_TTL_MS = 10 * 60 * 1_000;
@@ -293,6 +305,7 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
     scope: grantedScopes,
     props,
   });
+  await recordFunnelBestEffort(env, "oauth_connection_completed");
   return Response.redirect(redirectTo, 302);
 }
 
