@@ -277,9 +277,11 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
       return accountPage(env, pending.login, csrf, "Type the exact GitHub login to confirm account-data deletion");
     }
     try {
+      await registry(env).beginAccountDeletion(pending.login);
       const account = await accountView(env, pending.login);
       const active = account.runs.filter((item) => item.state !== "MISSING" && !DELETABLE_RUN_STATES.has(item.state));
       if (active.length > 0) {
+        await registry(env).endAccountDeletion(pending.login);
         return accountPage(
           env,
           pending.login,
@@ -291,8 +293,8 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
         if (item.state !== "MISSING") await env.RUN_COORDINATOR.getByName(item.runId).purge(pending.login);
         await registry(env).removeRun(pending.login, item.runId);
       }
-      const registryReceipt = await registry(env).purgeAccount(pending.login);
       await vault(env, pending.login).purgeAccount(pending.login);
+      const registryReceipt = await registry(env).purgeAccount(pending.login);
       await env.OAUTH_KV.delete(sessionKey);
       return html(
         `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState account data deleted</title></head><body><main><h1>DoneState account data deleted</h1><p>Indexed DoneState service data for <strong>${escapeHtml(pending.login)}</strong> was deleted.</p><p>Deleted indexed objectives: ${registryReceipt.indexedRuns}. Deleted selected repositories: ${registryReceipt.selectedRepositories}. Deleted maintenance findings: ${registryReceipt.findings}.</p><p>If you used direct DoneState objectives before the account-controls release and a historical run was not listed in the account console, delete it using its known run ID or submit a privacy request.</p></main></body></html>`,
@@ -300,6 +302,11 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
         [sessionCookie("", 0)],
       );
     } catch (error) {
+      try {
+        await registry(env).endAccountDeletion(pending.login);
+      } catch {
+        // A failed cleanup remains fail-closed: future account mutations stay blocked until reconciled.
+      }
       const message = error instanceof Error ? error.message : "Account data could not be deleted";
       return accountPage(env, pending.login, csrf, message);
     }
@@ -308,6 +315,7 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
   const apiKey = form.get("api_key");
   if (typeof apiKey !== "string") return accountPage(env, pending.login, csrf, "Enter an OpenAI API key");
   try {
+    await registry(env).requireAccountWritable(pending.login);
     const verifiedKey = await verifyOpenAIApiKey(apiKey);
     const status = await vault(env, pending.login).storeCredential(pending.login, verifiedKey);
     await env.OAUTH_KV.delete(sessionKey);
