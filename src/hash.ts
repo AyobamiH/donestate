@@ -23,7 +23,7 @@ export function digest(value: unknown): string {
 }
 
 export function createRunId(): string {
-  return `run_${randomUUID()}`;
+  return randomUUID();
 }
 
 export function createOwnerId(): string {
