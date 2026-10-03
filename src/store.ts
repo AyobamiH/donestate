@@ -71,6 +71,21 @@ CREATE TABLE IF NOT EXISTS donestate_leases (
   updated_at TEXT NOT NULL,
   FOREIGN KEY (run_id) REFERENCES donestate_runs(id)
 );
+CREATE TABLE IF NOT EXISTS donestate_maintenance_findings (
+  id TEXT PRIMARY KEY,
+  repository TEXT NOT NULL,
+  source TEXT NOT NULL CHECK (source IN ('github_issue', 'workflow_run')),
+  source_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  detail TEXT NOT NULL,
+  url TEXT NOT NULL,
+  repair_eligible INTEGER NOT NULL CHECK (repair_eligible IN (0, 1)),
+  state TEXT NOT NULL CHECK (state IN ('OPEN', 'REPAIR_QUEUED', 'CLOSED')),
+  run_id TEXT,
+  discovered_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (repository, source, source_id)
+);
 `;
 
 interface RunRow {
@@ -280,6 +295,110 @@ export class DoneStateStore {
       database.close();
     }
     return { runId, deleted: true };
+  }
+
+  async upsertMaintenanceFinding(finding: {
+    id: string;
+    repository: string;
+    source: "github_issue" | "workflow_run";
+    sourceId: string;
+    title: string;
+    detail: string;
+    url: string;
+    repairEligible: boolean;
+  }): Promise<void> {
+    await this.initialize();
+    const database = this.open();
+    const now = this.clock().toISOString();
+    try {
+      database.prepare(`
+        INSERT INTO donestate_maintenance_findings (
+          id, repository, source, source_id, title, detail, url, repair_eligible, state, run_id, discovered_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'OPEN', NULL, ?, ?)
+        ON CONFLICT(repository, source, source_id) DO UPDATE SET
+          title=excluded.title,
+          detail=excluded.detail,
+          url=excluded.url,
+          repair_eligible=excluded.repair_eligible,
+          updated_at=excluded.updated_at
+      `).run(
+        finding.id,
+        finding.repository,
+        finding.source,
+        finding.sourceId,
+        finding.title,
+        finding.detail,
+        finding.url,
+        finding.repairEligible ? 1 : 0,
+        now,
+        now,
+      );
+    } finally {
+      database.close();
+    }
+  }
+
+  async listMaintenanceFindings(repository?: string): Promise<Array<{
+    id: string;
+    repository: string;
+    source: "github_issue" | "workflow_run";
+    sourceId: string;
+    title: string;
+    detail: string;
+    url: string;
+    repairEligible: boolean;
+    state: "OPEN" | "REPAIR_QUEUED" | "CLOSED";
+    runId: string | null;
+    discoveredAt: string;
+    updatedAt: string;
+  }>> {
+    await this.initialize();
+    const database = this.open();
+    try {
+      const rows = (repository
+        ? database.prepare("SELECT * FROM donestate_maintenance_findings WHERE repository = ? ORDER BY updated_at DESC").all(repository)
+        : database.prepare("SELECT * FROM donestate_maintenance_findings ORDER BY updated_at DESC").all()
+      ) as unknown as Array<Record<string, unknown>>;
+      return rows.map((row) => ({
+        id: row.id as string,
+        repository: row.repository as string,
+        source: row.source as "github_issue" | "workflow_run",
+        sourceId: row.source_id as string,
+        title: row.title as string,
+        detail: row.detail as string,
+        url: row.url as string,
+        repairEligible: row.repair_eligible === 1,
+        state: row.state as "OPEN" | "REPAIR_QUEUED" | "CLOSED",
+        runId: row.run_id as string | null,
+        discoveredAt: row.discovered_at as string,
+        updatedAt: row.updated_at as string,
+      }));
+    } finally {
+      database.close();
+    }
+  }
+
+  async getMaintenanceFinding(id: string): Promise<Awaited<ReturnType<DoneStateStore["listMaintenanceFindings"]>>[number]> {
+    const finding = (await this.listMaintenanceFindings()).find((item) => item.id === id);
+    if (!finding) throw new DoneStateError("NOT_FOUND", `Maintenance finding not found: ${id}`);
+    return finding;
+  }
+
+  async markMaintenanceRepairQueued(id: string, runId: string): Promise<void> {
+    await this.initialize();
+    const database = this.open();
+    try {
+      const result = database.prepare(`
+        UPDATE donestate_maintenance_findings
+        SET state = 'REPAIR_QUEUED', run_id = ?, updated_at = ?
+        WHERE id = ? AND state = 'OPEN' AND repair_eligible = 1
+      `).run(runId, this.clock().toISOString(), id);
+      if (Number(result.changes) !== 1) {
+        throw new DoneStateError("STATE_CONFLICT", `Maintenance finding ${id} is not open and repair-eligible.`);
+      }
+    } finally {
+      database.close();
+    }
   }
 
   async listActions(runId: string): Promise<PersistedAction[]> {
