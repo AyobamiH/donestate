@@ -826,11 +826,11 @@
       "stream": "release",
       "status": "active",
       "owner": "DoneState maintainers",
-      "nextAction": "Complete the remaining external acceptance: exercise one real local CLI publication → sealed v2 handoff → OpsTruth verification loop on the Cloudflare-backed test apparatus, then close after the Proof & State public docs merge and post-merge evidence are clean.",
-      "waitCondition": "Portable parity is merged, donestate@0.2.0 is published and freshly installable, and all 20 commands are present. Only the real external local publication/verifier loop and final public-docs merge/readback remain.",
+      "nextAction": "Merge and run the bounded Cloudflare Sandbox acceptance harness for published donestate@0.2.0. It must install the registry package inside the existing Sandbox image, publish one real branch from AyobamiH/donestate, receive an independently-created PR and exact-head CI, then submit the sealed v2 handoff to production OpsTruth and reach VERIFIED before CLI-002 closes.",
+      "waitCondition": "No owner shell authentication is required. The acceptance lane reuses repository Cloudflare deployment credentials, one ephemeral Cloudflare Worker/Sandbox, the workflow-scoped GitHub token for branch publication, the existing GitHub integration for PR creation, and production OpsTruth. The deterministic implementation stub isolates CLI control-plane/publication/verification behaviour; real Codex execution is already separately proven by the hosted Cloudflare RunCoordinator canary.",
       "reentryCondition": "Close after exact-head CI, real local publication/verifier acceptance, exhaustive docs closure, and a published minor CLI release are all proven.",
       "lastUpdated": "2026-10-03",
-      "staleDate": "2026-10-17",
+      "staleDate": "2026-10-10",
       "dependencies": [
         "GOV-001",
         "CLI-001"

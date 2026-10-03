@@ -1,0 +1,208 @@
+name: Cloudflare CLI 0.2.0 acceptance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/mcp-worker/src/cli-acceptance-worker.ts
+      - apps/mcp-worker/wrangler.cli-acceptance.jsonc
+      - .github/workflows/cli-cloudflare-acceptance.yml
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: donestate-cli-cloudflare-acceptance
+  cancel-in-progress: false
+
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: apps/mcp-worker/package-lock.json
+
+      - run: npm ci
+        working-directory: apps/mcp-worker
+
+      - id: auth
+        name: Generate one-run acceptance token
+        shell: bash
+        run: |
+          token="$(openssl rand -hex 32)"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+
+      - id: deploy
+        name: Deploy ephemeral acceptance Worker
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/mcp-worker
+          wranglerVersion: 4.127.1
+          packageManager: npm
+          command: deploy --config wrangler.cli-acceptance.jsonc
+          secrets: |
+            CLI_ACCEPTANCE_TOKEN
+            GH_TOKEN
+        env:
+          CLI_ACCEPTANCE_TOKEN: ${{ steps.auth.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
+
+      - id: start
+        name: Start published CLI inside Cloudflare Sandbox
+        env:
+          ACCEPTANCE_ORIGIN: ${{ steps.deploy.outputs.deployment-url }}
+          ACCEPTANCE_TOKEN: ${{ steps.auth.outputs.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          response="$(curl --fail --silent --show-error             --request POST             --header "Authorization: Bearer $ACCEPTANCE_TOKEN"             "$ACCEPTANCE_ORIGIN/start")"
+          printf '%s\n' "$response"
+          acceptance_id="$(node -e 'const j=JSON.parse(process.argv[1]);if(!j.acceptanceId)process.exit(2);process.stdout.write(j.acceptanceId)' "$response")"
+          echo "acceptance_id=$acceptance_id" >> "$GITHUB_OUTPUT"
+          echo "origin=$ACCEPTANCE_ORIGIN" >> "$GITHUB_OUTPUT"
+
+      - id: published
+        name: Wait for real branch publication
+        env:
+          ACCEPTANCE_ORIGIN: ${{ steps.start.outputs.origin }}
+          ACCEPTANCE_TOKEN: ${{ steps.auth.outputs.token }}
+          ACCEPTANCE_ID: ${{ steps.start.outputs.acceptance_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 180); do
+            body="$(curl --silent --show-error               --header "Authorization: Bearer $ACCEPTANCE_TOKEN"               "$ACCEPTANCE_ORIGIN/status?id=$ACCEPTANCE_ID")"
+            phase="$(node -e 'const j=JSON.parse(process.argv[1]);process.stdout.write(String(j.phase||"unknown"))' "$body")"
+            if [ "$phase" = "published" ]; then
+              printf '%s\n' "$body" | tee "$RUNNER_TEMP/cli-acceptance-published.json"
+              branch_name="$(node -e 'const j=JSON.parse(process.argv[1]);process.stdout.write(j.branchName)' "$body")"
+              head_sha="$(node -e 'const j=JSON.parse(process.argv[1]);process.stdout.write(j.headSha)' "$body")"
+              run_id="$(node -e 'const j=JSON.parse(process.argv[1]);process.stdout.write(j.runId)' "$body")"
+              echo "branch_name=$branch_name" >> "$GITHUB_OUTPUT"
+              echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
+              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+              {
+                echo "### Cloudflare published CLI subject"
+                echo "- acceptance: `$ACCEPTANCE_ID`"
+                echo "- DoneState run: `$run_id`"
+                echo "- branch: `$branch_name`"
+                echo "- exact head: `$head_sha`"
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            if [ "$phase" = "failed" ]; then
+              printf '%s\n' "$body" >&2
+              exit 1
+            fi
+            sleep 5
+          done
+          echo "Timed out waiting for Cloudflare CLI branch publication" >&2
+          exit 1
+
+      - id: pr
+        name: Wait for independently-created acceptance PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH_NAME: ${{ steps.published.outputs.branch_name }}
+          EXPECTED_HEAD: ${{ steps.published.outputs.head_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 180); do
+            if gh pr view "$BRANCH_NAME" --repo AyobamiH/donestate --json number,url,headRefOid > "$RUNNER_TEMP/acceptance-pr.json" 2>/dev/null; then
+              head="$(node -e 'const j=require(process.argv[1]);process.stdout.write(j.headRefOid)' "$RUNNER_TEMP/acceptance-pr.json")"
+              test "$head" = "$EXPECTED_HEAD"
+              cat "$RUNNER_TEMP/acceptance-pr.json"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Timed out waiting for acceptance PR for $BRANCH_NAME" >&2
+          exit 1
+
+      - name: Require exact-head repository checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH_NAME: ${{ steps.published.outputs.branch_name }}
+        shell: bash
+        run: gh pr checks "$BRANCH_NAME" --repo AyobamiH/donestate --watch --fail-fast --interval 10
+
+      - name: Start OpsTruth v2 verification in the same Cloudflare Sandbox
+        env:
+          ACCEPTANCE_ORIGIN: ${{ steps.start.outputs.origin }}
+          ACCEPTANCE_TOKEN: ${{ steps.auth.outputs.token }}
+          ACCEPTANCE_ID: ${{ steps.start.outputs.acceptance_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error             --request POST             --header "Authorization: Bearer $ACCEPTANCE_TOKEN"             "$ACCEPTANCE_ORIGIN/verify?id=$ACCEPTANCE_ID"
+
+      - name: Require terminal VERIFIED
+        env:
+          ACCEPTANCE_ORIGIN: ${{ steps.start.outputs.origin }}
+          ACCEPTANCE_TOKEN: ${{ steps.auth.outputs.token }}
+          ACCEPTANCE_ID: ${{ steps.start.outputs.acceptance_id }}
+          EXPECTED_HEAD: ${{ steps.published.outputs.head_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 120); do
+            body="$(curl --silent --show-error               --header "Authorization: Bearer $ACCEPTANCE_TOKEN"               "$ACCEPTANCE_ORIGIN/status?id=$ACCEPTANCE_ID")"
+            phase="$(node -e 'const j=JSON.parse(process.argv[1]);process.stdout.write(String(j.phase||"unknown"))' "$body")"
+            if [ "$phase" = "verified" ]; then
+              printf '%s\n' "$body" | tee "$RUNNER_TEMP/cli-acceptance-final.json"
+              node -e '
+                const j=JSON.parse(process.argv[1]);
+                if(j.state!=="VERIFIED") throw new Error("DoneState did not reach VERIFIED");
+                if(j.verifierDecision!=="verified") throw new Error("OpsTruth decision was not verified");
+                if(j.observedHeadSha!==process.env.EXPECTED_HEAD) throw new Error("OpsTruth observed a different head");
+                if(j.eventChainValid!==true) throw new Error("DoneState event chain is invalid");
+              ' "$body"
+              {
+                echo "### DoneState CLI 0.2.0 Cloudflare acceptance"
+                echo "- state: **VERIFIED**"
+                echo "- exact head: `$EXPECTED_HEAD`"
+                echo "- OpsTruth decision: **verified**"
+                echo "- Cloudflare Sandbox: published npm CLI exercised end to end"
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            if [ "$phase" = "failed" ]; then
+              printf '%s\n' "$body" >&2
+              exit 1
+            fi
+            sleep 5
+          done
+          echo "Timed out waiting for terminal VERIFIED" >&2
+          exit 1
+
+      - name: Cleanup Cloudflare acceptance sandbox
+        if: always() && steps.start.outputs.acceptance_id != ''
+        env:
+          ACCEPTANCE_ORIGIN: ${{ steps.start.outputs.origin }}
+          ACCEPTANCE_TOKEN: ${{ steps.auth.outputs.token }}
+          ACCEPTANCE_ID: ${{ steps.start.outputs.acceptance_id }}
+        shell: bash
+        run: |
+          curl --silent --show-error             --request POST             --header "Authorization: Bearer $ACCEPTANCE_TOKEN"             "$ACCEPTANCE_ORIGIN/cleanup?id=$ACCEPTANCE_ID" || true
+
+      - name: Delete ephemeral acceptance Worker
+        if: always()
+        working-directory: apps/mcp-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          printf 'y\n' | npx wrangler delete --name donestate-cli-acceptance --config wrangler.cli-acceptance.jsonc || true
