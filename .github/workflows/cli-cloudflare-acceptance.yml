@@ -39,6 +39,7 @@ jobs:
         shell: bash
         run: |
           token="$(openssl rand -hex 32)"
+          echo "::add-mask::$token"
           echo "token=$token" >> "$GITHUB_OUTPUT"
 
       - name: Remove one-run acceptance secrets from production Worker
@@ -51,7 +52,12 @@ jobs:
           set +e
           printf 'y\n' | npx wrangler secret delete CLI_ACCEPTANCE_TOKEN --name donestate-mcp --config wrangler.jsonc
           printf 'y\n' | npx wrangler secret delete GH_TOKEN --name donestate-mcp --config wrangler.jsonc
-          exit 0
+          secrets="$(npx wrangler secret list --name donestate-mcp --config wrangler.jsonc --format json)"
+          jq -e '
+            ([.[].name] | index("CLI_ACCEPTANCE_TOKEN")) == null and
+            ([.[].name] | index("GH_TOKEN")) == null
+          ' <<<"$secrets"
+          exit $?
 
       - id: deploy
         name: Deploy ephemeral acceptance Worker
