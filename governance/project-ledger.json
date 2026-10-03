@@ -307,8 +307,8 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-03",
       "staleDate": "2026-10-09",
-      "nextAction": "Land account navigation and expandable objective details, then repeat production desktop and mobile acceptance.",
-      "waitCondition": "Desktop production readback succeeded; corrective UI deployment and mobile visual acceptance remain pending.",
+      "nextAction": "Complete production mobile visual acceptance at 390 and 768px, including long identifiers, keyboard focus and deletion-section layout. Desktop production readback is complete.",
+      "waitCondition": "PR #155 is merged and deployed; desktop navigation and objective expansion verified. Current cloud-browser controls do not expose viewport resizing, so mobile visual acceptance is unproven.",
       "reentryCondition": "Close after production browser evidence proves both the public entry point and authenticated account console at the deployed version.",
       "dependencies": [
         "GOV-001"
@@ -1851,17 +1851,17 @@
       "date": "2026-10-03",
       "identity": "Customer-console readback and corrective UI candidate",
       "situation": "Production desktop audit found missing navigation and raw objective lists. Root/docs and authenticated state rendered successfully.",
-      "verification": "Live console showed credential connected, quota 0/12, two repositories, 24 indexed objectives and 199 findings. Candidate adds shared styles, home/docs navigation and expandable state guidance. Validation pending. Local Worker check passed: 19 test files and 136 tests, including injection escaping and unavailable-record guidance. Documentation/governance checks passed. Production deployment and mobile acceptance remain pending.",
+      "verification": "PR #155 head 07f68d3c94d44b7c7e5e5ab5c8954ebf81c6bf01 passed CI 37122570285 (core 22, core 24, hosted-plugin). Merged as 54c42029a71d5362087c293d8d9b16d9c0e5e34f; post-merge CI 37122637500 passed. Cloudflare deployment 37122637553 succeeded, Worker version 1062d52e-2168-4a0a-84d0-5b3679c472ad. Fresh authenticated production browser readback showed shared branding, home/docs and section navigation, unchanged credential/quota and repository state. Clicking Objectives and expanding a run displayed its plain-language ambiguous-effect guidance and get_objective reference. Mobile viewport readback remains unproven because current browser controls lack resizing. Local Worker check passed 136 tests across 19 files, including injection escaping and missing-record guidance.",
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Validate, merge and deploy candidate; repeat production desktop/mobile readback.",
-        "waitCondition": "CI, deployment and responsive evidence pending.",
+        "nextAction": "Complete production mobile visual acceptance at 390 and 768px, including long identifiers, keyboard focus and deletion-section layout. Desktop production readback is complete.",
+        "waitCondition": "PR #155 is merged and deployed; desktop navigation and objective expansion verified. Current cloud-browser controls do not expose viewport resizing, so mobile visual acceptance is unproven.",
         "staleDate": "2026-10-10"
       },
-      "outcome": "CUST-001 stays active until production responsive acceptance.",
+      "outcome": "Account navigation and expandable objective guidance are deployed and verified on desktop; CUST-001 remains active for mobile visual acceptance.",
       "content": "Presentation only; credential, CSRF, deletion, MCP and independent-verifier boundaries unchanged.",
-      "measurement": "One production desktop audit; no destructive acceptance or credential changes."
+      "measurement": "Three exact-head CI jobs passed; three post-merge CI jobs passed; one successful production deployment; desktop objective navigation and expansion confirmed; zero authority or credential changes."
     }
   ]
 }
