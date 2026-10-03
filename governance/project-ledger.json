@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-10-02",
+  "updatedAt": "2026-10-03",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {
@@ -71,6 +71,7 @@
       "title": "Release and grow only through explicit gates",
       "workItemIds": [
         "RELEASE-001",
+        "CLI-001",
         "MKT-005",
         "MKT-006",
         "MKT-007",
@@ -797,6 +798,24 @@
         "VERIFY-003"
       ],
       "evidenceIds": []
+    },
+    {
+      "id": "CLI-001",
+      "title": "Publish the maintained local CLI release train",
+      "stream": "release",
+      "status": "active",
+      "owner": "DoneState maintainers",
+      "nextAction": "Require the 0.1.3 release candidate to pass exact-head Node 22, Node 24, hosted-plugin, governance, verification-contract and npm pack checks. Merge through protected main only when clean; then publish donestate@0.1.3 only with explicit npm publication authority and verify the registry artifact before updating Proof & State to call 0.1.3 the latest published CLI.",
+      "waitCondition": "Hosted MCP 0.3.0 is an independent release train and does not need to match the CLI version. npm publication requires explicit publisher authority and a registry receipt; merge alone must not be represented as publication.",
+      "reentryCondition": "Close after npm reports donestate@0.1.3, a fresh install reports 0.1.3, the expected package contents are present, and Proof & State documentation is updated from published CLI 0.1.2 to 0.1.3. Reopen on registry, install, package-content or documentation drift.",
+      "lastUpdated": "2026-10-03",
+      "staleDate": "2026-10-10",
+      "dependencies": [
+        "GOV-001"
+      ],
+      "evidenceIds": [
+        "E-056"
+      ]
     }
   ],
   "evidenceStories": [
@@ -1734,6 +1753,23 @@
       "outcome": "The owned-service home will provide direct Get started, complete MCP tool reference, product overview, documentation and source paths while preserving the existing runtime and external review contracts.",
       "content": "Developer navigation and discovery only; no MCP tool, secret, provider credential, reviewer credential, authority model or execution semantics change.",
       "measurement": "Three high-intent developer paths from the service hero, one explicit Documentation footer path, zero MCP tool-count changes and zero OAuth/verification-contract changes."
+    },
+    {
+      "id": "E-056",
+      "date": "2026-10-03",
+      "identity": "Local CLI 0.1.3 release candidate isolated from the hosted MCP version train",
+      "situation": "The public Proof & State documentation correctly distinguishes Hosted MCP 0.3.0 from the latest published npm CLI 0.1.2, but the installable CLI has not been released since 27 August while protected main contains a small set of local-controller fixes alongside a much larger hosted-service development history.",
+      "verification": "GitHub comparison v0.1.2...main is 451 commits ahead. The installable controller command surface is unchanged. The release-relevant core behavior change keeps an independent verifier uncertain decision in AWAITING_VERIFICATION rather than mapping it to AMBIGUOUS_EFFECT, and the store no longer records uncertainty as an execution error. The local store also gained a deterministic clock seam without changing its default runtime clock. Current package metadata already includes contracts and the v2 verification schema/vector artifacts. GitHub Releases still identifies v0.1.2, published 27 August 2026, as the latest CLI release. This candidate therefore advances only the local npm package to 0.1.3 and records CLI-specific release notes; it does not copy the hosted MCP 0.3.0 version.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Pass the exact-head protected CI/governance/package gates, merge the bounded 0.1.3 candidate, then publish only through explicit npm release authority and verify the actual registry artifact before changing public published-version claims.",
+        "waitCondition": "Do not infer npm publication from a Git merge and do not widen the frozen hosted MCP tool contract, OAuth scopes, runtime authority or external provider states as part of this CLI release.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "A CLI-specific 0.1.3 candidate is defined without conflating the local controller with Hosted MCP 0.3.0 or either external marketplace channel.",
+      "content": "Root npm package and lock version, CLI-specific changelog, canonical project ledger and generated project state only; no hosted Worker source, plugin manifest, MCP tool registration, OAuth scope or provider listing mutation.",
+      "measurement": "451 commits separate v0.1.2 from current main; zero CLI commands added or removed; one user-visible verification-state correction; one CLI release version increment; zero hosted MCP tools changed; zero external provider states changed."
     }
   ]
 }
