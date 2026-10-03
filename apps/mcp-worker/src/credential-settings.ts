@@ -190,14 +190,15 @@ function runCoordinator(env: CredentialSettingsEnv, runId: string) {
   // Wrangler's generated DurableObjectNamespace method surface can narrow the
   // custom RPC `get()` method to `never` because the stub itself also has
   // platform methods. Keep this adapter local to the settings surface and
-  // describe only the two RPC methods used here.
+  // describe only the RPC methods used here.
   return env.RUN_COORDINATOR.getByName(runId) as unknown as {
     get(ownerLogin: string): Promise<{ state: RunState; updatedAt: string }>;
+    accountDeletionState(ownerLogin: string): Promise<{ state: RunState; updatedAt: string } | null>;
     purge(ownerLogin: string): Promise<{ runId: string; deleted: true }>;
   };
 }
 
-async function accountView(env: CredentialSettingsEnv, login: string): Promise<AccountView> {
+async function accountView(env: CredentialSettingsEnv, login: string, forDeletion = false): Promise<AccountView> {
   const [credential, repositories, runs, summary] = await Promise.all([
     vault(env, login).status(login),
     registry(env).listRepositories(login),
@@ -205,6 +206,10 @@ async function accountView(env: CredentialSettingsEnv, login: string): Promise<A
     registry(env).accountDataSummary(login),
   ]);
   const runViews = await Promise.all(runs.map(async (item): Promise<AccountRunView> => {
+    if (forDeletion) {
+      const run = await runCoordinator(env, item.runId).accountDeletionState(login);
+      return { ...item, state: run?.state ?? "MISSING", updatedAt: run?.updatedAt ?? item.updatedAt };
+    }
     try {
       const run = await runCoordinator(env, item.runId).get(login);
       return { ...item, state: run.state, updatedAt: run.updatedAt };
@@ -307,7 +312,7 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
     try {
       await registry(env).beginAccountDeletion(pending.login);
       await vault(env, pending.login).beginAccountDeletion();
-      const account = await accountView(env, pending.login);
+      const account = await accountView(env, pending.login, true);
       const active = account.runs.filter((item) => item.state !== "MISSING" && !DELETABLE_RUN_STATES.has(item.state));
       if (active.length > 0) {
         await vault(env, pending.login).endAccountDeletion();

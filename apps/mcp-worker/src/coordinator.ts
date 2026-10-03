@@ -243,6 +243,14 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
     return this.publicRun(run);
   }
 
+  async accountDeletionState(ownerLogin: string): Promise<{ state: RunState; updatedAt: string } | null> {
+    // Only a successful storage read proving absence permits a retry to skip
+    // an already-purged run. Transport, storage and ownership errors propagate.
+    if (!this.runRow()) return null;
+    const run = this.assertOwner(ownerLogin);
+    return { state: run.state, updatedAt: run.updated_at };
+  }
+
   async purge(ownerLogin: string): Promise<{ runId: string; deleted: true }> {
     const run = this.assertOwner(ownerLogin);
     if (!TERMINAL_STATES.has(run.state) && run.state !== "AWAITING_VERIFICATION") {
