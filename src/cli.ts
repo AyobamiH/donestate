@@ -444,7 +444,7 @@ async function go(args: ParsedArguments): Promise<void> {
       publicationRepository!,
       baseRef,
       publicationBaseHeadSha!,
-      publication,
+      publication as "branch" | "pull_request",
     );
   }
   console.log(JSON.stringify({ ...run, publicationSubject }, null, 2));
