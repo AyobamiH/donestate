@@ -10,7 +10,7 @@ import { DoneStateError } from "./errors.js";
 import { createVerificationHandoff } from "./handoff.js";
 import { defaultPolicy } from "./policy.js";
 import { DoneStateStore } from "./store.js";
-import type { ExecutionPolicy, ObjectiveSpec, VerificationAttestation } from "./types.js";
+import { RUN_STATES, type ExecutionPolicy, type ObjectiveSpec, type VerificationAttestation } from "./types.js";
 import { recordIndependentAttestation } from "./verification.js";
 import { PACKAGE_VERSION } from "./version.js";
 
@@ -19,12 +19,18 @@ const HELP = `DoneState ${PACKAGE_VERSION}
 Usage:
   donestate init [--repo PATH] [--force]
   donestate go "GOAL" [--repo PATH] [--accept TEXT] [--state-dir PATH]
+  donestate create --objective FILE --policy FILE [--state-dir PATH]
+  donestate start RUN_ID [--state-dir PATH]
   donestate run --objective FILE --policy FILE [--state-dir PATH]
   donestate resume RUN_ID [--state-dir PATH]
+  donestate cancel RUN_ID [--state-dir PATH]
+  donestate delete RUN_ID --confirm [--state-dir PATH]
+  donestate list [--state STATE] [--limit N] [--state-dir PATH]
   donestate status RUN_ID [--state-dir PATH]
   donestate handoff RUN_ID [--state-dir PATH] [--out FILE]
   donestate attest --file FILE [--state-dir PATH]
   donestate verify-log RUN_ID [--state-dir PATH]
+  donestate capabilities
   donestate demo
 
 DoneState completes authorised work. Independent verifiers such as OpsTruth prove it.
@@ -217,11 +223,57 @@ async function go(args: ParsedArguments): Promise<void> {
   console.log(JSON.stringify(await new DoneStateController(storeFor(args)).start(objective, policy), null, 2));
 }
 
+async function createObjective(args: ParsedArguments): Promise<void> {
+  const objective = await readJson<ObjectiveSpec>(flag(args, "objective", true)!);
+  const policy = await readJson<ExecutionPolicy>(flag(args, "policy", true)!);
+  const controller = new DoneStateController(storeFor(args));
+  console.log(JSON.stringify(await controller.create(objective, policy), null, 2));
+}
+
+async function startObjective(args: ParsedArguments): Promise<void> {
+  const runId = args.positionals[0];
+  if (!runId) throw new DoneStateError("INVALID_INPUT", "start requires a run id.");
+  console.log(JSON.stringify(await new DoneStateController(storeFor(args)).startExisting(runId), null, 2));
+}
+
 async function runObjective(args: ParsedArguments): Promise<void> {
   const objective = await readJson<ObjectiveSpec>(flag(args, "objective", true)!);
   const policy = await readJson<ExecutionPolicy>(flag(args, "policy", true)!);
   const controller = new DoneStateController(storeFor(args));
   console.log(JSON.stringify(await controller.start(objective, policy), null, 2));
+}
+
+async function cancel(args: ParsedArguments): Promise<void> {
+  const runId = args.positionals[0];
+  if (!runId) throw new DoneStateError("INVALID_INPUT", "cancel requires a run id.");
+  console.log(JSON.stringify(await new DoneStateController(storeFor(args)).cancel(runId), null, 2));
+}
+
+async function deleteRun(args: ParsedArguments): Promise<void> {
+  const runId = args.positionals[0];
+  if (!runId) throw new DoneStateError("INVALID_INPUT", "delete requires a run id.");
+  if (args.flags.get("confirm") !== true) {
+    throw new DoneStateError("INVALID_INPUT", "delete requires --confirm.");
+  }
+  console.log(JSON.stringify(await storeFor(args).deleteRun(runId), null, 2));
+}
+
+async function listRuns(args: ParsedArguments): Promise<void> {
+  const state = flag(args, "state");
+  if (state && !RUN_STATES.includes(state as (typeof RUN_STATES)[number])) {
+    throw new DoneStateError("INVALID_INPUT", `Unknown run state: ${state}`);
+  }
+  const rawLimit = flag(args, "limit") ?? "100";
+  const limit = Number(rawLimit);
+  if (!Number.isInteger(limit) || limit < 1 || limit > 1000) {
+    throw new DoneStateError("INVALID_INPUT", "--limit must be an integer from 1 to 1000.");
+  }
+  const runs = await storeFor(args).listRuns(limit);
+  console.log(JSON.stringify({
+    runs: state ? runs.filter((run) => run.state === state) : runs,
+    count: state ? runs.filter((run) => run.state === state).length : runs.length,
+    filter: state ? { state } : null,
+  }, null, 2));
 }
 
 async function resume(args: ParsedArguments): Promise<void> {
@@ -266,6 +318,43 @@ async function verifyLog(args: ParsedArguments): Promise<void> {
   const result = await storeFor(args).verifyEventChain(runId);
   console.log(JSON.stringify(result, null, 2));
   if (!result.valid) process.exitCode = 1;
+}
+
+async function capabilities(): Promise<void> {
+  console.log(JSON.stringify({
+    schema: "donestate.cli-capabilities.v1",
+    version: PACKAGE_VERSION,
+    audience: ["human", "agent"],
+    output: "structured-json",
+    portable: {
+      objectives: ["create", "start", "run", "resume", "cancel", "delete", "list", "status"],
+      verification: ["handoff", "attest", "verify-log"],
+      bootstrap: ["init", "go", "demo"],
+      authorityClasses: [
+        "local_read",
+        "local_write",
+        "test",
+        "commit",
+        "push",
+        "open_pr",
+        "merge",
+        "deploy",
+        "publish",
+        "secret_access",
+        "destructive",
+      ],
+    },
+    deliberatelyHostedOnly: [
+      "GitHub OAuth browser identity",
+      "multi-user encrypted execution credential vault",
+      "Cloudflare Durable Object coordination",
+      "Cloudflare Sandbox allocation",
+      "OpenAI directory reviewer identity",
+      "GitHub Marketplace lifecycle and entitlement",
+      "hosted account indexing and whole-account deletion",
+    ],
+    note: "Hosted-only infrastructure is not a missing CLI capability. Portable consequence capabilities remain governed by objective and policy files.",
+  }, null, 2));
 }
 
 async function demo(): Promise<void> {
@@ -316,12 +405,18 @@ async function main(): Promise<void> {
   switch (args.command) {
     case "init": await initialise(args); break;
     case "go": await go(args); break;
+    case "create": await createObjective(args); break;
+    case "start": await startObjective(args); break;
     case "run": await runObjective(args); break;
     case "resume": await resume(args); break;
+    case "cancel": await cancel(args); break;
+    case "delete": await deleteRun(args); break;
+    case "list": await listRuns(args); break;
     case "status": await status(args); break;
     case "handoff": await handoff(args); break;
     case "attest": await attest(args); break;
     case "verify-log": await verifyLog(args); break;
+    case "capabilities": await capabilities(); break;
     case "demo": await demo(); break;
     case "help":
     case "--help":
