@@ -235,10 +235,10 @@
       "stream": "legal",
       "status": "blocked",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-02",
-      "staleDate": "2026-10-09",
-      "nextAction": "Complete the remaining publisher-level decisions for unrestricted public onboarding: record a legitimate service address, complete the ICO fee self-assessment, record offered territories, and confirm the public support/privacy contact path. This is a human publisher gate, not an OpenAI or GitHub Marketplace launch gate.",
-      "waitCondition": "Requires real publisher decisions; private contact data must not be invented or copied into the repository.",
+      "lastUpdated": "2026-10-03",
+      "staleDate": "2026-10-17",
+      "nextAction": "Preserve the publisher decision that DoneState is intended for worldwide availability where legally permitted. Before unrestricted public onboarding, add a legitimate public business/service address, confirm branded public support/privacy email routes, and retake the ICO fee self-assessment when the sole-trader business actually begins trading or carrying out business activity.",
+      "waitCondition": "Launch territory is decided: worldwide where legally permitted. Current ICO self-assessment says no fee is due yet because the sole trader has genuinely not started trading/carrying out activity. Remaining human publisher gates are a legitimate public geographic business/service address and the branded support/privacy contact routes; private home address and UTR must not be copied into the repository.",
       "reentryCondition": "Resume as soon as the publisher decisions are available. Controlled technical early access on the owned service does not constitute legal clearance.",
       "dependencies": [
         "GOV-001"
