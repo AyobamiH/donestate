@@ -233,7 +233,7 @@ function createServer(): McpServer {
   server.registerTool(
     "create_openai_credential_setup",
     {
-      description: "Create a single-use HTTPS setup link where the authenticated user can connect or replace their own OpenAI API key without placing it in ChatGPT.",
+      description: "Create a short-lived, single-use HTTPS link to the authenticated DoneState account console. The external console lets the user inspect account state and manage their execution credential, selected repositories and eligible account-data deletion. This tool creates the access link only: it does not change a credential or delete account data, accepts no passwords or API keys, and never returns a stored secret. Any credential entry happens on the HTTPS website outside ChatGPT.",
       inputSchema: {},
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     },
@@ -513,9 +513,9 @@ function createServer(): McpServer {
   server.registerTool(
     "cancel_objective",
     {
-      description: "Cancel a queued or active objective. Completed, blocked and verification states are not rewritten.",
+      description: "Cancel a queued or active objective, stopping future execution for that run. This is a consequential cancellation; already published GitHub changes are not undone. Completed, blocked and verification states are not rewritten.",
       inputSchema: { runId: z.string().uuid() },
-      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+      annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: false },
     },
     async ({ runId }, context) => {
       requireExecutionScope(context);
