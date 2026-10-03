@@ -88,6 +88,27 @@ donestate go "Fix issue 214 and preserve the public API" \
 
 `--publish branch` creates and pushes only the bounded `donestate/RUN_ID` branch. `--publish pull_request` additionally uses the locally authenticated `gh` CLI to open a pull request. Publication is off by default, refuses a dirty starting workspace, excludes `.donestate` runtime state from staging, checks the changed-file budget before the first publication effect, and grants `push`/`open_pr` authority only because the operator explicitly requested that consequence.
 
+Manual local maintenance uses the same boundary without importing the hosted scheduler:
+
+```bash
+donestate maintenance-discover --repo owner/repository
+donestate maintenance-list --repo owner/repository
+donestate maintenance-repair FINDING_ID --repo .
+```
+
+Only explicitly labelled `donestate:repair` issues are repair-eligible. Failing workflow runs are recorded as evidence but never become repair authority by themselves.
+
+Published local runs can use the same versioned independent-verification contract as hosted DoneState:
+
+```bash
+donestate handoff RUN_ID --out verification-handoff.json
+donestate verify-response --file opstruth-response.json
+# or ask an OpsTruth MCP endpoint directly:
+donestate verify-opstruth RUN_ID --endpoint https://YOUR-OPSTRUTH-MCP-ENDPOINT
+```
+
+For a verifier to return terminal `VERIFIED`, the objective must contain machine-checkable verification requirements covering its acceptance criteria and the policy must pin the verifier fingerprint. The prose paths accept `--verification-requirements FILE` and `--trusted-verifiers HEX[,HEX...]`.
+
 Hosted identity, multi-user credential storage, Cloudflare sandbox allocation, provider-review identity and Marketplace lifecycle remain hosted-service concerns rather than artificial local CLI features.
 
 Run the bounded local demonstration:
