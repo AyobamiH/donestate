@@ -543,13 +543,13 @@
       "id": "RELEASE-001",
       "title": "Gate DoneState standalone launch and future channel releases",
       "stream": "release",
-      "status": "active",
+      "status": "blocked",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-02",
+      "lastUpdated": "2026-10-03",
       "staleDate": "2026-10-09",
-      "nextAction": "Keep controlled owned-domain access live. Complete the production visual readback, disposable-account deletion acceptance, publisher legal decisions, and one fresh clean-account create \u2192 execute \u2192 verify \u2192 inspect \u2192 delete journey before unrestricted self-serve GA. Continue OpenAI and GitHub Marketplace publication independently.",
-      "waitCondition": "The cohesive owned-service shell is merged and deployed without changing the frozen OpenAI MCP contract. Unrestricted GA still depends on CUST-001, CUST-002 and LEGAL-001 plus the fresh customer outcome; external-directory approval remains independent.",
-      "reentryCondition": "Advance from controlled standalone access to unrestricted GA when the owned-channel gates are satisfied; separately publish external channels when each provider approves them.",
+      "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up → connect → select repo → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
+      "waitCondition": "CUST-001 and CUST-002 are satisfied prerequisites, complete in merged PR #164 (E-064/E-065); they are no longer launch blockers. Remaining gates are LEGAL-001 and a fresh complete customer outcome. E-066 observed the empty disposable OneClickPostFactory account but stopped at connect because its execution credential is absent (BLOCKED_CAPABILITY); signup/OAuth, selection, execution, PR, verification and post-result deletion are unproven in this attempt. External-directory approval remains independent.",
+      "reentryCondition": "Resume the fresh customer acceptance when a usable customer-owned execution credential is connected and the selected repository and verifier authority are confirmed. Advance to unrestricted GA only after fresh full-path evidence and the remaining LEGAL-001 publisher decisions are recorded; advance external channels only on their own provider evidence.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -563,7 +563,10 @@
         "E-044",
         "E-049",
         "E-054",
-        "E-055"
+        "E-055",
+        "E-064",
+        "E-065",
+        "E-066"
       ]
     },
     {
@@ -1953,6 +1956,23 @@
       "outcome": "CUST-001 and CUST-002 complete: consistent account completion pages are deployed; E-064 real-user deletion plus E-065 production controlled generation-fence rehearsal cover the acceptance boundary. This does not claim arbitrary race stress testing, provider approval or unrestricted GA.",
       "content": "Shared account layout, scoped ephemeral acceptance Worker/config/workflow, controller failure-path tests and documented boundaries.",
       "measurement": "142 tests in 21 files; 16 local responsive page checks; live deletion confirmation at four widths; two production stale-write rejections; zero restored indexed runs/credentials; temporary Worker deleted and test token removed."
+    },
+    {
+      "id": "E-066",
+      "date": "2026-10-03",
+      "identity": "Standalone release reconciliation and fresh disposable-customer attempt",
+      "situation": "PR #164 completed CUST-001 and CUST-002, but RELEASE-001 still described them as unresolved gates. A fresh full customer outcome was requested rather than reuse of historical canaries.",
+      "verification": "Main bb16c68d3a9a28ccc2b7c5b7042d4b4a440d34bf and GitHub PR #164 readback confirm both customer prerequisites complete. Fresh production MCP credential status returned disconnected with null credential metadata, 0/12 usage and no active run; selected-repository list returned empty. A newly issued secure owned-domain account-console handoff visibly identified OneClickPostFactory and confirmed zero indexed objectives, zero findings and no credential or repositories. This proves an empty disposable service-state baseline through an existing authenticated connection, not fresh signup/OAuth or a completed customer outcome. The attempt stopped at credential connection; no model execution, objective, customer branch/PR, verifier request or account deletion was attempted. Step-by-step sanitised receipt: evidence/clean-customer-20261003/acceptance.json.",
+      "accountability": {
+        "owner": "DoneState maintainers and publisher owner",
+        "status": "blocked",
+        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up → connect → select repo → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
+        "waitCondition": "Customer execution credential must be reconnected securely. LEGAL-001 remains blocked on its existing publisher requirements.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "RELEASE-001 remains blocked. CUST-001/CUST-002 are completed prerequisites, not open blockers; LEGAL-001 and the fresh complete customer outcome remain launch gates. No unrestricted GA, new signup, fresh execution or VERIFIED claim is made. Historical receipts retain their original scope.",
+      "content": "Canonical RELEASE-001 ledger reconciliation, generated project state, current standalone status and a credential-free acceptance attempt receipt. No runtime, MCP contract, verifier scope or authority changes.",
+      "measurement": "One fresh credential-status call, one empty repository-list readback and one live authenticated console baseline; zero new customer objectives, model runs, customer PRs, verifier outcomes or destructive actions."
     }
   ]
 }

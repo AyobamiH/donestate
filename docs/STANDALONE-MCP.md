@@ -61,4 +61,12 @@ The same account console can delete indexed DoneState account data. Deletion req
 
 The owner-level run index is new. Historical maintenance runs are backfilled from maintenance findings, but a direct objective created before the account-controls release may not be discoverable automatically. Delete any such historical run with `delete_objective` using its known run ID or submit a privacy request.
 
-A fresh clean-account end-to-end customer acceptance remains required before describing the owned-domain service as unrestricted self-serve GA.
+## Current owned-channel release gates — 3 October 2026
+
+CUST-001 and CUST-002 are complete following [PR #164](https://github.com/AyobamiH/donestate/pull/164), with account-layout, real disposable-account deletion and controlled production stale-write-fencing evidence in E-064/E-065. They remain satisfied prerequisites in the dependency graph, not open launch blockers.
+
+Unrestricted self-serve GA still requires both the unresolved publisher requirements in LEGAL-001 and one fresh complete customer journey: sign up → connect → select repository → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account. Each step needs fresh evidence; earlier maintenance, CLI and deletion canaries do not establish this outcome.
+
+Fresh attempt E-066 observed the emptied disposable OneClickPostFactory service account through its existing authenticated MCP connection. The live account console and fresh MCP status both showed no execution credential, zero usage and no selected repositories; the console showed zero objectives and findings. The attempt stopped at **BLOCKED_CAPABILITY** during credential connection. New signup/OAuth, repository selection, execution, publication, independent verification and post-result deletion were not exercised. See [the step-by-step receipt](../evidence/clean-customer-20261003/acceptance.json). Reconnect the customer-owned credential securely before resuming; never put the key in conversation or repository evidence.
+
+Controlled owned-domain access continues. This reconciliation is not legal clearance, external-directory approval or unrestricted GA.
