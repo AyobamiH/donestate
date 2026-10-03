@@ -38,6 +38,16 @@ All notable changes follow Keep a Changelog. This project uses Semantic Versioni
 - Deny autonomous changes to authority, security, workflow, contract, plugin and deployment configuration paths.
 - Keep failing workflows as evidence only; they cannot trigger repair without an explicitly labeled issue.
 
+## [0.1.3] - 2026-10-03
+
+### Added
+
+- Ship the current public verification contract metadata and v2 verification schema/vector artifacts with the npm package.
+
+### Fixed
+
+- Keep an independent verifier `uncertain` decision in `AWAITING_VERIFICATION` so a fresh verification attempt can retry without misclassifying the execution as `AMBIGUOUS_EFFECT`.
+
 ## [0.1.2] - 2026-08-27
 
 ### Fixed
