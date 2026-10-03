@@ -11,8 +11,8 @@ import type {
   RunRecord,
   RunState,
   VerificationAttestation,
-  type PublicationSubject,
-  type VerificationResponseV2,
+  PublicationSubject,
+  VerificationResponseV2,
 } from "./types.js";
 import type { AdmittedObjective } from "./policy.js";
 
