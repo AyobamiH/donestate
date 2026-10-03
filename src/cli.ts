@@ -416,6 +416,7 @@ async function capabilities(): Promise<void> {
     output: "structured-json",
     portable: {
       objectives: ["create", "start", "run", "resume", "cancel", "delete", "list", "status"],
+      publication: ["go --publish branch", "go --publish pull_request"],
       verification: ["handoff", "attest", "verify-log"],
       bootstrap: ["init", "go", "demo"],
       authorityClasses: [
@@ -432,6 +433,11 @@ async function capabilities(): Promise<void> {
         "destructive",
       ],
     },
+    pendingPortableParity: [
+      "manual maintenance discovery and bounded repair",
+      "versioned v2 verifier-response submission",
+      "direct OpsTruth verification request for a sealed local publication subject",
+    ],
     deliberatelyHostedOnly: [
       "GitHub OAuth browser identity",
       "multi-user encrypted execution credential vault",
