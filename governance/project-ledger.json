@@ -305,10 +305,10 @@
       "stream": "customer-readiness",
       "status": "active",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-02",
+      "lastUpdated": "2026-10-03",
       "staleDate": "2026-10-09",
-      "nextAction": "Perform production browser readback of the owned-service root and authenticated account console. Confirm the branded hierarchy, responsive layout, direct Get started / full MCP reference navigation, visible channel-status separation, focus treatment, credential/quota state, selected repositories and indexed objectives.",
-      "waitCondition": "The cohesive root is already deployed. This candidate only routes the public root into the first-class Proof & State documentation without changing the frozen 20-tool MCP contract; visual/browser readback remains required after merge/deploy.",
+      "nextAction": "Land account navigation and expandable objective details, then repeat production desktop and mobile acceptance.",
+      "waitCondition": "Desktop production readback succeeded; corrective UI deployment and mobile visual acceptance remain pending.",
       "reentryCondition": "Close after production browser evidence proves both the public entry point and authenticated account console at the deployed version.",
       "dependencies": [
         "GOV-001"
@@ -318,7 +318,8 @@
         "E-044",
         "E-053",
         "E-054",
-        "E-055"
+        "E-055",
+        "E-060"
       ]
     },
     {
@@ -541,7 +542,7 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-02",
       "staleDate": "2026-10-09",
-      "nextAction": "Keep controlled owned-domain access live. Complete the production visual readback, disposable-account deletion acceptance, publisher legal decisions, and one fresh clean-account create → execute → verify → inspect → delete journey before unrestricted self-serve GA. Continue OpenAI and GitHub Marketplace publication independently.",
+      "nextAction": "Keep controlled owned-domain access live. Complete the production visual readback, disposable-account deletion acceptance, publisher legal decisions, and one fresh clean-account create \u2192 execute \u2192 verify \u2192 inspect \u2192 delete journey before unrestricted self-serve GA. Continue OpenAI and GitHub Marketplace publication independently.",
       "waitCondition": "The cohesive owned-service shell is merged and deployed without changing the frozen OpenAI MCP contract. Unrestricted GA still depends on CUST-001, CUST-002 and LEGAL-001 plus the fresh customer outcome; external-directory approval remains independent.",
       "reentryCondition": "Advance from controlled standalone access to unrestricted GA when the owned-channel gates are satisfied; separately publish external channels when each provider approves them.",
       "dependencies": [
@@ -1820,7 +1821,7 @@
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication → v2 handoff → OpsTruth verification loop, then reconcile the final public documentation state.",
+        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication \u2192 v2 handoff \u2192 OpsTruth verification loop, then reconcile the final public documentation state.",
         "waitCondition": "The npm publication itself is complete. Remaining work is external product acceptance and public documentation closure, not package publication.",
         "staleDate": "2026-10-10"
       },
@@ -1844,6 +1845,23 @@
       "outcome": "The published npm CLI is externally proven as a first-class human-and-agent control surface: it can execute in Cloudflare Sandbox, publish a bounded real Git subject, wait for exact-head repository checks, hand the sealed v2 subject to production OpsTruth, and accept the independent verified result without self-verification.",
       "content": "Published npm package, Cloudflare Sandbox execution, real Git branch and PR, exact-head CI, sealed v2 handoff, production OpsTruth response, terminal DoneState VERIFIED state, and successful ephemeral-compute cleanup.",
       "measurement": "donestate@0.2.0; one bounded changed file; three required exact-head checks successful; OpsTruth decision verified; observedHeadSha equals expected head; eventChainValid=true; acceptance workflow 37111801210 success."
+    },
+    {
+      "id": "E-060",
+      "date": "2026-10-03",
+      "identity": "Customer-console readback and corrective UI candidate",
+      "situation": "Production desktop audit found missing navigation and raw objective lists. Root/docs and authenticated state rendered successfully.",
+      "verification": "Live console showed credential connected, quota 0/12, two repositories, 24 indexed objectives and 199 findings. Candidate adds shared styles, home/docs navigation and expandable state guidance. Validation pending. Local Worker check passed: 19 test files and 136 tests, including injection escaping and unavailable-record guidance. Documentation/governance checks passed. Production deployment and mobile acceptance remain pending.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Validate, merge and deploy candidate; repeat production desktop/mobile readback.",
+        "waitCondition": "CI, deployment and responsive evidence pending.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "CUST-001 stays active until production responsive acceptance.",
+      "content": "Presentation only; credential, CSRF, deletion, MCP and independent-verifier boundaries unchanged.",
+      "measurement": "One production desktop audit; no destructive acceptance or credential changes."
     }
   ]
 }

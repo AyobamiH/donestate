@@ -367,6 +367,21 @@ button.danger { border-color: var(--danger); background: var(--danger); color: #
   line-height: 22px;
 }
 .list li:last-child { border-bottom: 0; }
+
+.settings-card { overflow-wrap: anywhere; line-height: 1.5; }
+.account-nav { display:flex; flex-wrap:wrap; gap:8px 16px; }
+.account-nav a { display:inline-flex; min-height:44px; align-items:center; }
+.skip-link { position:absolute; left:16px; top:-100px; padding:12px; background:var(--paper); z-index:2; }
+.skip-link:focus { top:8px; }
+summary { min-height:44px; cursor:pointer; padding:8px 0; }
+summary:focus-visible { outline:2px solid var(--focus); outline-offset:3px; }
+summary code { display:block; margin-top:8px; font-size:12px; }
+.run-state { display:inline-block; margin-left:12px; padding:2px 8px; background:var(--surface-active); border-radius:4px; }
+.objective-detail { margin-top:12px; border-top:1px solid var(--line); padding-top:16px; }
+.objective-detail pre { white-space:pre-wrap; overflow-wrap:anywhere; padding:12px; background:var(--surface); }
+.objective-detail a { display:inline-flex; min-height:44px; align-items:center; }
+.danger-zone { margin-top:24px; border-top:2px solid var(--danger); }
+@media(max-width:480px) { .run-state { display:table; margin:8px 0; } }
 .success-card {
   width: min(640px, calc(100% - 40px));
   margin: 10vh auto;
