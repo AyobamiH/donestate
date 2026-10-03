@@ -211,6 +211,77 @@ export class DoneStateStore {
     }
   }
 
+  async listRuns(limit = 100): Promise<RunRecord[]> {
+    await this.initialize();
+    if (!Number.isInteger(limit) || limit < 1 || limit > 1000) {
+      throw new DoneStateError("INVALID_INPUT", "Run list limit must be an integer from 1 to 1000.");
+    }
+    const database = this.open();
+    try {
+      const rows = database.prepare(
+        "SELECT * FROM donestate_runs ORDER BY created_at DESC, id DESC LIMIT ?",
+      ).all(limit) as unknown as RunRow[];
+      return rows.map(runFromRow);
+    } finally {
+      database.close();
+    }
+  }
+
+  async hasActiveLease(runId: string): Promise<boolean> {
+    await this.initialize();
+    const database = this.open();
+    try {
+      const row = database.prepare(
+        "SELECT expires_at FROM donestate_leases WHERE run_id = ?",
+      ).get(runId) as { expires_at: string } | undefined;
+      return Boolean(row && new Date(row.expires_at).getTime() > this.clock().getTime());
+    } finally {
+      database.close();
+    }
+  }
+
+  async deleteRun(runId: string): Promise<{ runId: string; deleted: true }> {
+    await this.initialize();
+    const database = this.open();
+    const deletableStates: RunState[] = [
+      "VERIFIED",
+      "BLOCKED_AUTHORITY",
+      "BLOCKED_SAFETY",
+      "BLOCKED_CAPABILITY",
+      "AMBIGUOUS_EFFECT",
+      "FAILED_SAFE",
+      "CANCELLED",
+      "AWAITING_VERIFICATION",
+    ];
+    try {
+      database.exec("BEGIN IMMEDIATE");
+      try {
+        const row = database.prepare("SELECT state FROM donestate_runs WHERE id = ?").get(runId) as { state: RunState } | undefined;
+        if (!row) throw new DoneStateError("NOT_FOUND", `Run not found: ${runId}`);
+        if (!deletableStates.includes(row.state)) {
+          throw new DoneStateError("STATE_CONFLICT", `Run ${runId} is ${row.state}; cancel active work before deleting it.`);
+        }
+        const lease = database.prepare(
+          "SELECT expires_at FROM donestate_leases WHERE run_id = ?",
+        ).get(runId) as { expires_at: string } | undefined;
+        if (lease && new Date(lease.expires_at).getTime() > this.clock().getTime()) {
+          throw new DoneStateError("STATE_CONFLICT", `Run ${runId} still has an active worker lease.`);
+        }
+        database.prepare("DELETE FROM donestate_leases WHERE run_id = ?").run(runId);
+        database.prepare("DELETE FROM donestate_actions WHERE run_id = ?").run(runId);
+        database.prepare("DELETE FROM donestate_events WHERE run_id = ?").run(runId);
+        database.prepare("DELETE FROM donestate_runs WHERE id = ?").run(runId);
+        database.exec("COMMIT");
+      } catch (error) {
+        database.exec("ROLLBACK");
+        throw error;
+      }
+    } finally {
+      database.close();
+    }
+    return { runId, deleted: true };
+  }
+
   async listActions(runId: string): Promise<PersistedAction[]> {
     await this.initialize();
     const database = this.open();
