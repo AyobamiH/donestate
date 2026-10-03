@@ -303,13 +303,13 @@
       "id": "CUST-001",
       "title": "Add standalone customer account and service visibility",
       "stream": "customer-readiness",
-      "status": "active",
+      "status": "complete",
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-03",
       "staleDate": "2026-10-09",
-      "nextAction": "Complete production mobile visual acceptance at 390 and 768px, including long identifiers, keyboard focus and deletion-section layout. Desktop production readback is complete.",
-      "waitCondition": "PR #155 is merged and deployed; desktop navigation and objective expansion verified. Current cloud-browser controls do not expose viewport resizing, so mobile visual acceptance is unproven.",
-      "reentryCondition": "Close after production browser evidence proves both the public entry point and authenticated account console at the deployed version.",
+      "nextAction": "Preserve responsive production evidence; reopen on customer-console layout or navigation regression.",
+      "waitCondition": "None.",
+      "reentryCondition": "Reopen if production account visibility, navigation, keyboard focus or responsive layout regresses.",
       "dependencies": [
         "GOV-001"
       ],
@@ -319,7 +319,8 @@
         "E-053",
         "E-054",
         "E-055",
-        "E-060"
+        "E-060",
+        "E-061"
       ]
     },
     {
@@ -1862,6 +1863,23 @@
       "outcome": "Account navigation and expandable objective guidance are deployed and verified on desktop; CUST-001 remains active for mobile visual acceptance.",
       "content": "Presentation only; credential, CSRF, deletion, MCP and independent-verifier boundaries unchanged.",
       "measurement": "Three exact-head CI jobs passed; three post-merge CI jobs passed; one successful production deployment; desktop objective navigation and expansion confirmed; zero authority or credential changes."
+    },
+    {
+      "id": "E-061",
+      "date": "2026-10-03",
+      "identity": "Production responsive customer acceptance",
+      "situation": "CUST-001 had deployed desktop evidence but mobile production acceptance remained unproven.",
+      "verification": "Live Playwright Chromium checks at 2026-10-03T12:46:23Z: public root at 390/768/1280/1920px and docs at 390px had no horizontal overflow. Authenticated production console at 390/768px had no overflow; inputs measured 46px high. Objective expansion succeeded. Mobile root, objective detail and deletion presentation screenshots inspected; no deletion or credential mutation performed. Production version remains 1062d52e-2168-4a0a-84d0-5b3679c472ad from PR #155. Public screenshots/video and machine-readable results accompany this record; account captures remain private.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "complete",
+        "nextAction": "Continue CUST-002 disposable-account acceptance and LEGAL-001; retain CUST-001 regression evidence.",
+        "waitCondition": "None.",
+        "staleDate": "2026-12-01"
+      },
+      "outcome": "CUST-001 complete. This does not close account-deletion acceptance, publisher legal readiness or unrestricted GA.",
+      "content": "Production responsive layout checks, public PNG/video, private authenticated readback; no authority or runtime changes.",
+      "measurement": "Four root widths, one docs mobile width, two account widths, zero horizontal overflow, 46px inputs and successful objective expansion."
     }
   ]
 }
