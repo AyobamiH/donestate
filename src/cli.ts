@@ -26,7 +26,7 @@ const HELP = `DoneState ${PACKAGE_VERSION}
 
 Usage:
   donestate init [--repo PATH] [--force]
-  donestate go "GOAL" [--repo PATH] [--accept TEXT] [--publish none|branch|pull_request] [--base REF] [--state-dir PATH]
+  donestate go "GOAL" [--repo PATH] [--accept TEXT] [--publish none|branch|pull_request] [--base REF] [--verification-requirements FILE] [--trusted-verifiers HEX[,HEX...]] [--state-dir PATH]
   donestate create --objective FILE --policy FILE [--state-dir PATH]
   donestate start RUN_ID [--state-dir PATH]
   donestate run --objective FILE --policy FILE [--state-dir PATH]
@@ -42,7 +42,7 @@ Usage:
   donestate verify-log RUN_ID [--state-dir PATH]
   donestate maintenance-discover [--repo OWNER/NAME] [--state-dir PATH]
   donestate maintenance-list [--repo OWNER/NAME] [--state-dir PATH]
-  donestate maintenance-repair FINDING_ID [--repo PATH] [--base REF] [--state-dir PATH]
+  donestate maintenance-repair FINDING_ID [--repo PATH] [--base REF] [--verification-requirements FILE] [--trusted-verifiers HEX[,HEX...]] [--state-dir PATH]
   donestate capabilities
   donestate demo
 
@@ -412,6 +412,10 @@ async function go(args: ParsedArguments): Promise<void> {
       });
     }
   }
+  const verificationRequirementsFile = flag(args, "verification-requirements");
+  const verificationRequirements = verificationRequirementsFile
+    ? await readJson<NonNullable<ObjectiveSpec["verificationRequirements"]>>(verificationRequirementsFile)
+    : undefined;
   const objective: ObjectiveSpec = {
     schema: "donestate.objective.v1",
     goal,
@@ -423,12 +427,17 @@ async function go(args: ParsedArguments): Promise<void> {
       "The exact execution snapshot is independently verifiable.",
     ],
     actions,
+    ...(verificationRequirements ? { verificationRequirements } : {}),
   };
   const policy = defaultPolicy(
     repositoryRoot,
     publication === "pull_request" ? ["codex", "npm", "git", "gh"] : ["codex", "npm", "git"],
   );
   policy.allowedEnvironmentKeys = Object.keys(configuredHomeEnvironment());
+  const trustedVerifiers = flag(args, "trusted-verifiers");
+  if (trustedVerifiers) {
+    policy.trustedVerifierFingerprints = trustedVerifiers.split(",").map((item) => item.trim()).filter(Boolean);
+  }
   if (publication !== "none") {
     policy.authority.grants.push({ class: "push", granted: true });
     if (publication === "pull_request") policy.authority.grants.push({ class: "open_pr", granted: true });
@@ -772,6 +781,10 @@ async function maintenanceRepair(args: ParsedArguments): Promise<void> {
       },
     },
   );
+  const verificationRequirementsFile = flag(args, "verification-requirements");
+  const verificationRequirements = verificationRequirementsFile
+    ? await readJson<NonNullable<ObjectiveSpec["verificationRequirements"]>>(verificationRequirementsFile)
+    : undefined;
   const objective: ObjectiveSpec = {
     schema: "donestate.objective.v1",
     goal,
@@ -783,9 +796,14 @@ async function maintenanceRepair(args: ParsedArguments): Promise<void> {
       "The exact published result is independently verifiable.",
     ],
     actions,
+    ...(verificationRequirements ? { verificationRequirements } : {}),
   };
   const policy = defaultPolicy(repositoryRoot, ["codex", "npm", "git", "gh"]);
   policy.allowedEnvironmentKeys = Object.keys(configuredHomeEnvironment());
+  const trustedVerifiers = flag(args, "trusted-verifiers");
+  if (trustedVerifiers) {
+    policy.trustedVerifierFingerprints = trustedVerifiers.split(",").map((item) => item.trim()).filter(Boolean);
+  }
   policy.authority.grants.push({ class: "push", granted: true }, { class: "open_pr", granted: true });
   const store = storeFor(args);
   const run = await new DoneStateController(store).start(objective, policy);
