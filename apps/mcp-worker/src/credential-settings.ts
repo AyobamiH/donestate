@@ -1,3 +1,5 @@
+import { DONESTATE_UI_CSS } from "./ui";
+import { renderAccountRuns } from "./account-presentation";
 import { digest } from "./canonical";
 import type { DoneStateEnv } from "./environment";
 import type { AccountDataSummary, AccountRunRecord } from "./maintenance-registry";
@@ -103,27 +105,25 @@ function page(login: string, csrf: string, account: AccountView, message?: strin
   const state = status.connected
     ? `Connected credential <code>${escapeHtml(status.fingerprint ?? "unknown")}</code>. Submitting replaces it.`
     : "No OpenAI credential is connected.";
-  const notice = message ? `<p class="error" role="alert">${escapeHtml(message)}</p>` : "";
+  const notice = message ? `<p class="notice" role="alert">${escapeHtml(message)}</p>` : "";
   const repositories = account.repositories.length > 0
-    ? `<ul>${account.repositories.map((item) => `<li><code>${escapeHtml(item.repository)}</code> — ${escapeHtml(item.mode)}</li>`).join("")}</ul>`
+    ? `<ul class="list">${account.repositories.map((item) => `<li><code>${escapeHtml(item.repository)}</code> — ${escapeHtml(item.mode)}</li>`).join("")}</ul>`
     : "<p class=\"muted\">No maintenance repositories are selected.</p>";
-  const runs = account.runs.length > 0
-    ? `<ul>${account.runs.map((item) => `<li><code>${escapeHtml(item.runId)}</code> — ${escapeHtml(item.repository)} — ${escapeHtml(item.state)}</li>`).join("")}</ul>`
-    : "<p class=\"muted\">No indexed objectives are recorded for this account.</p>";
+  const runs = renderAccountRuns(account.runs);
   return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState account settings</title>
-<style>body{font-family:system-ui,sans-serif;background:#f5f6f8;color:#15171a;margin:0}.card{max-width:760px;margin:6vh auto;background:#fff;padding:32px;border:1px solid #dfe3e8;border-radius:14px;box-shadow:0 10px 32px #0001}h1,h2{margin-top:0}h2{margin-top:32px;font-size:1.05rem}label{display:block;font-weight:650;margin:18px 0 8px}input{box-sizing:border-box;width:100%;font:inherit;padding:12px;border:1px solid #aeb6c0;border-radius:8px}button{font:inherit;border:0;background:#15171a;color:#fff;padding:11px 18px;border-radius:8px;margin-top:18px}.danger{background:#8b1e1e}.muted{color:#59636e}.error{padding:12px;border-radius:8px;background:#fff0f0;color:#8b1e1e}code{font-family:ui-monospace,monospace}ul{padding-left:20px}</style></head>
-<body><main class="card"><h1>DoneState account settings</h1><p>Signed in as <strong>${escapeHtml(login)}</strong>.</p>${notice}
-<h2>Execution credential</h2><p>${state}</p>
+<style>${DONESTATE_UI_CSS}</style></head>
+<body><a class="skip-link" href="#account">Skip to account</a><header class="topbar"><nav class="topbar-inner" aria-label="Product"><a class="brand-lockup" href="/" aria-label="DoneState home"><span class="brand-mark" aria-hidden="true">DS</span><span class="brand-copy"><span class="eyebrow">Proof &amp; State</span><span class="brand-name">DoneState</span></span></a><a class="topbar-link" href="https://proofandstate.com/docs/donestate">Documentation</a></nav></header><main id="account" class="settings-page"><div class="settings-card"><div class="settings-intro"><h1>DoneState account settings</h1><p>Signed in as <strong>${escapeHtml(login)}</strong>.</p></div>${notice}<nav class="account-nav" aria-label="Account sections"><a href="#execution">Execution</a><a href="#repositories">Repositories</a><a href="#objectives">Objectives</a><a href="#deletion">Data controls</a></nav>
+<section id="execution" class="settings-section"><h2>Execution credential</h2><p>${state}</p>
 <p class="muted">The key goes directly to DoneState over HTTPS. It is encrypted at rest, never returned to ChatGPT or any other MCP client, and used only for your isolated autonomous runs. OpenAI charges usage to your API account.</p>
 <p class="muted">Daily autonomous runs: ${status.dailyRunsUsed}/${status.dailyRunLimit}. Active run: ${escapeHtml(status.activeRunId ?? "none")}.</p>
-<form method="post" action="/settings/openai"><input type="hidden" name="csrf" value="${escapeHtml(csrf)}"><input type="hidden" name="action" value="connect_openai"><label for="api_key">OpenAI API key</label><input id="api_key" name="api_key" type="password" required minlength="20" maxlength="512" autocomplete="off" autocapitalize="none" spellcheck="false"><button type="submit">Verify and connect</button></form>
-<h2>Repository access</h2>${repositories}
-<h2>Known objectives</h2>${runs}
+<form method="post" action="/settings/openai"><input type="hidden" name="csrf" value="${escapeHtml(csrf)}"><input type="hidden" name="action" value="connect_openai"><label class="field-label" for="api_key">OpenAI API key</label><input id="api_key" name="api_key" type="password" required minlength="20" maxlength="512" autocomplete="off" autocapitalize="none" spellcheck="false"><button type="submit">Verify and connect</button></form>
+</section><section id="repositories" class="settings-section"><h2>Repository access</h2>${repositories}<p>To change your selection, ask your connected MCP client to use <code>select_maintenance_repository</code> or <code>remove_maintenance_repository</code>. <a href="https://proofandstate.com/docs/donestate/maintenance">Repository access guide</a>.</p></section>
+<section id="objectives" class="settings-section"><h2>Known objectives</h2><p>Expand an objective to inspect its state and find the next step. This inventory does not start or retry work.</p>${runs}
 <p class="muted">Indexed runs: ${account.summary.indexedRuns}; maintenance findings: ${account.summary.findings}. Run inventory covers objectives indexed by the account-controls release plus historical maintenance runs recoverable from findings. A direct objective created before this release may require deletion by its known run ID or a privacy request if it is not listed.</p>
-<h2>Delete account data</h2>
+</section><section id="deletion" class="settings-section danger-zone"><h2>Delete account data</h2>
 <p class="muted">Deletion removes every indexed deletable objective, the stored OpenAI credential, selected-repository state, maintenance findings and user Marketplace entitlement records. Organization entitlement records keep the organization state but remove this login as authorizer. Active objectives must be cancelled first. Minimal opaque deletion-generation state remains only to fence stale in-flight writes; the global fence does not store your plaintext GitHub login.</p>
-<form method="post" action="/settings/openai"><input type="hidden" name="csrf" value="${escapeHtml(csrf)}"><input type="hidden" name="action" value="delete_account"><label for="confirm_login">Type your GitHub login to confirm</label><input id="confirm_login" name="confirm_login" required autocomplete="off"><button class="danger" type="submit">Delete indexed DoneState account data</button></form>
-</main></body></html>`);
+<form method="post" action="/settings/openai"><input type="hidden" name="csrf" value="${escapeHtml(csrf)}"><input type="hidden" name="action" value="delete_account"><label class="field-label" for="confirm_login">Type your GitHub login to confirm</label><input id="confirm_login" name="confirm_login" required autocomplete="off"><button class="danger" type="submit">Delete indexed DoneState account data</button></form>
+</section></div></main></body></html>`);
 }
 
 function success(login: string, status: StoredCredentialStatus): Response {
