@@ -180,9 +180,50 @@ jobs:
       - name: Require exact-head repository checks
         env:
           GH_TOKEN: ${{ github.token }}
-          BRANCH_NAME: ${{ steps.published.outputs.branch_name }}
+          EXPECTED_HEAD: ${{ steps.published.outputs.head_sha }}
         shell: bash
-        run: gh pr checks "$BRANCH_NAME" --repo AyobamiH/donestate --watch --fail-fast --interval 10
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 180); do
+            body="$(gh api "repos/AyobamiH/donestate/commits/$EXPECTED_HEAD/check-runs?per_page=100")"
+            state="$(node - "$body" <<'NODE'
+const payload = JSON.parse(process.argv[2]);
+const required = ["core (22)", "core (24)", "hosted-plugin"];
+for (const name of required) {
+  const matches = (payload.check_runs ?? [])
+    .filter((run) => run.name === name)
+    .sort((a, b) => String(a.started_at ?? "").localeCompare(String(b.started_at ?? "")));
+  if (matches.length === 0) {
+    process.stdout.write("waiting");
+    process.exit(0);
+  }
+  const latest = matches.at(-1);
+  if (latest.status !== "completed") {
+    process.stdout.write("waiting");
+    process.exit(0);
+  }
+  if (latest.conclusion !== "success") {
+    console.error(name + " concluded " + latest.conclusion);
+    process.stdout.write("failed");
+    process.exit(0);
+  }
+}
+process.stdout.write("ready");
+NODE
+)"
+            case "$state" in
+              ready)
+                echo "All required checks succeeded on exact head $EXPECTED_HEAD"
+                exit 0
+                ;;
+              failed)
+                exit 1
+                ;;
+            esac
+            sleep 5
+          done
+          echo "Timed out waiting for required checks on exact head $EXPECTED_HEAD" >&2
+          exit 1
 
       - name: Start OpsTruth v2 verification in the same Cloudflare Sandbox
         env:
