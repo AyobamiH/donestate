@@ -805,8 +805,8 @@
       "stream": "release",
       "status": "active",
       "owner": "DoneState maintainers",
-      "nextAction": "Publish donestate@0.1.3 only through explicit npm publisher authority, verify the registry metadata and packed artifact, perform a fresh install that reports 0.1.3, then update Proof & State to identify 0.1.3 as the latest published CLI.",
-      "waitCondition": "PR #138 is merged and exact-head plus post-merge CI are green. The remaining gate is external npm publication authority and a registry receipt; a Git merge is not publication. Hosted MCP 0.3.0 remains an independent release train.",
+      "nextAction": "Require the stage-only npm OIDC workflow candidate to pass exact-head CI and merge through protected main. Then configure npm's trusted publisher for release-cli.yml with stage-only authority, dispatch version 0.1.3 from main, review the staged artifact with 2FA, verify the published registry/install artifact, and update Proof & State only after publication is proven.",
+      "waitCondition": "The 0.1.3 source subject is already green on main. npm trusted-publisher configuration is an external package-owner action requiring npm authentication and 2FA; the repository release lane intentionally has stage-only authority and no long-lived npm write token.",
       "reentryCondition": "Close after npm reports donestate@0.1.3, a fresh install reports 0.1.3, the expected package contents are present, and Proof & State documentation is updated from published CLI 0.1.2 to 0.1.3. Reopen on registry, install, package-content or documentation drift.",
       "lastUpdated": "2026-10-03",
       "staleDate": "2026-10-10",
@@ -814,7 +814,8 @@
         "GOV-001"
       ],
       "evidenceIds": [
-        "E-056"
+        "E-056",
+        "E-057"
       ]
     }
   ],
@@ -1770,6 +1771,23 @@
       "outcome": "DoneState main now contains a CI-proven CLI 0.1.3 release subject, kept independent from Hosted MCP 0.3.0; only actual npm publication, registry/install verification and downstream public-version reconciliation remain.",
       "content": "Root npm package and lock version, CLI-specific changelog, canonical project ledger and generated project state only; no hosted Worker source, plugin manifest, MCP tool registration, OAuth scope or provider listing mutation.",
       "measurement": "PR #138 exact-head CI 37101537703 passed all three jobs; protected merge 32e80e1b392a37609c0e0502b4f82cacaef9ee7d; post-merge CI 37101581267 passed all three jobs; zero CLI commands added or removed; zero hosted Worker/runtime files changed; zero hosted MCP tools, OAuth scopes or external provider states changed; zero npm publication receipts recorded."
+    },
+    {
+      "id": "E-057",
+      "date": "2026-10-03",
+      "identity": "Stage-only npm OIDC release lane candidate",
+      "situation": "DoneState 0.1.3 is release-ready on protected main, but the repository had no npm publication workflow and this environment has no npm publishing connector or registry publication receipt. A token-based manual publish would add long-lived credential risk and make release evidence harder to reproduce.",
+      "verification": "Current npm documentation supports GitHub Actions trusted publishing with short-lived OIDC credentials and requires id-token: write on a GitHub-hosted runner. npm also supports staged publishing, where npm stage publish places an existing package version in a review area and final public release requires a maintainer's explicit 2FA approval. The candidate adds a manual-dispatch, main-only workflow that pins npm 11.19.0, validates the exact package/version, reads the registry to reject an already-published version, runs npm ci plus the repository's complete npm run check gate, and performs npm stage publish only. It adds no NODE_AUTH_TOKEN or direct npm publish step. docs/CLI-RELEASE.md records the one-time trust command and fail-closed release procedure.",
+      "accountability": {
+        "owner": "DoneState maintainers and npm package owner",
+        "status": "active",
+        "nextAction": "Pass exact-head CI, merge the stage-only workflow, configure npm trusted publishing for release-cli.yml with npm stage publish permission only, then stage 0.1.3 and approve it only after inspecting the staged artifact.",
+        "waitCondition": "Trusted-publisher creation or replacement requires authenticated npm package-owner access and account 2FA. Repository code can prepare the lane but cannot truthfully claim that external npm trust relationship exists until npm records it.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "The candidate replaces an implicit token/manual release path with a reproducible stage-only GitHub OIDC path while preserving a separate human 2FA publication decision.",
+      "content": "One manual GitHub Actions workflow, one CLI release runbook, canonical governance state, no npm secret, no direct publish action, no Hosted MCP/runtime/tool/OAuth/provider changes.",
+      "measurement": "One new workflow with id-token:write and contents:read only; one exact-version guard; one already-published-version guard; one full npm run check gate; one npm stage publish consequence; zero npm publish commands; zero long-lived npm write tokens introduced."
     }
   ]
 }
