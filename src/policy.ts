@@ -222,8 +222,8 @@ export function admitObjective(objective: ObjectiveSpec, policy: ExecutionPolicy
     throw new DoneStateError("INVALID_INPUT", "At least one action is required.");
   }
   validateVerificationRequirements(objective.verificationRequirements, objective.acceptanceCriteria.length);
-  if (policy.trustedVerifierFingerprints.length > 0) {
-    const covered = new Set((objective.verificationRequirements ?? []).map((item) => item.criterionIndex));
+  if (policy.trustedVerifierFingerprints.length > 0 && objective.verificationRequirements !== undefined) {
+    const covered = new Set(objective.verificationRequirements.map((item) => item.criterionIndex));
     if (covered.size !== objective.acceptanceCriteria.length) {
       throw new DoneStateError(
         "POLICY_REJECTED",
