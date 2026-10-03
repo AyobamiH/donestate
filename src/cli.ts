@@ -10,10 +10,15 @@ import { DoneStateController } from "./controller.js";
 import { digest } from "./hash.js";
 import { DoneStateError } from "./errors.js";
 import { createVerificationHandoff } from "./handoff.js";
+import {
+  createVerificationHandoffV2,
+  recordVerificationResponseV2,
+  requestOpsTruthVerificationV2,
+} from "./verification-v2.js";
 import { defaultPolicy } from "./policy.js";
 import { DoneStateStore } from "./store.js";
 import { inspectWorkspace } from "./workspace.js";
-import { RUN_STATES, type ExecutionPolicy, type ObjectiveSpec, type VerificationAttestation } from "./types.js";
+import { RUN_STATES, type ExecutionPolicy, type ObjectiveSpec, type PublicationSubject, type VerificationAttestation, type VerificationResponseV2 } from "./types.js";
 import { recordIndependentAttestation } from "./verification.js";
 import { PACKAGE_VERSION } from "./version.js";
 
@@ -31,6 +36,8 @@ Usage:
   donestate list [--state STATE] [--limit N] [--state-dir PATH]
   donestate status RUN_ID [--state-dir PATH]
   donestate handoff RUN_ID [--state-dir PATH] [--out FILE]
+  donestate verify-response --file FILE [--state-dir PATH]
+  donestate verify-opstruth RUN_ID --endpoint URL [--state-dir PATH]
   donestate attest --file FILE [--state-dir PATH]
   donestate verify-log RUN_ID [--state-dir PATH]
   donestate maintenance-discover [--repo OWNER/NAME] [--state-dir PATH]
@@ -146,6 +153,67 @@ function ghJson<T>(args: string[], cwd = process.cwd()): T {
   }
 }
 
+function git(args: string[], cwd = process.cwd()): string {
+  const result = spawnSync("git", args, {
+    cwd,
+    encoding: "utf8",
+    shell: false,
+    windowsHide: true,
+    env: process.env,
+    timeout: 120_000,
+    maxBuffer: 4 * 1024 * 1024,
+  });
+  if (result.error || result.status !== 0) {
+    throw new DoneStateError(
+      "CAPABILITY_MISSING",
+      `git failed: ${result.error?.message ?? (result.stderr || result.stdout || `exit ${result.status}`).trim()}`,
+    );
+  }
+  return result.stdout.trim();
+}
+
+async function recordLocalPublicationSubject(
+  store: DoneStateStore,
+  runId: string,
+  repositoryRoot: string,
+  repository: string,
+  baseRef: string,
+  baseHeadSha: string,
+  publication: "branch" | "pull_request",
+): Promise<PublicationSubject> {
+  const branchName = git(["branch", "--show-current"], repositoryRoot);
+  const headSha = git(["rev-parse", "HEAD"], repositoryRoot);
+  if (branchName !== `donestate/${runId}` || !/^[a-f0-9]{40}$/.test(headSha)) {
+    throw new DoneStateError("AMBIGUOUS_EFFECT", "Published local Git subject does not match the expected DoneState branch.");
+  }
+  let pullRequestNumber: number | null = null;
+  let pullRequestUrl: string | null = null;
+  if (publication === "pull_request") {
+    const pull = ghJson<{ number: number; url: string; headRefName: string; headRefOid: string; baseRefName: string }>([
+      "pr", "view", branchName,
+      "--json", "number,url,headRefName,headRefOid,baseRefName",
+    ], repositoryRoot);
+    if (pull.headRefName !== branchName || pull.headRefOid !== headSha || pull.baseRefName !== baseRef) {
+      throw new DoneStateError("AMBIGUOUS_EFFECT", "Pull request subject does not match the exact local publication.");
+    }
+    pullRequestNumber = pull.number;
+    pullRequestUrl = pull.url;
+  }
+  const subject: PublicationSubject = {
+    schema: "donestate.local-publication-subject.v1",
+    repository,
+    baseRef,
+    baseHeadSha,
+    branchName,
+    headSha,
+    publication,
+    pullRequestNumber,
+    pullRequestUrl,
+  };
+  await store.setPublicationSubject(runId, subject);
+  return subject;
+}
+
 async function readJson<T>(filePath: string): Promise<T> {
   return JSON.parse(await readFile(path.resolve(filePath), "utf8")) as T;
 }
@@ -223,6 +291,8 @@ async function go(args: ParsedArguments): Promise<void> {
     throw new DoneStateError("INVALID_INPUT", "--publish must be none, branch, or pull_request.");
   }
   const baseRef = flag(args, "base") ?? "main";
+  let publicationRepository: string | null = null;
+  let publicationBaseHeadSha: string | null = null;
   if (publication !== "none") {
     const workspace = inspectWorkspace(repositoryRoot);
     if (!workspace.gitRepository) {
@@ -233,6 +303,11 @@ async function go(args: ParsedArguments): Promise<void> {
         "POLICY_REJECTED",
         `Refusing publication from a dirty workspace: ${workspace.changedFiles.join(", ")}`,
       );
+    }
+    publicationRepository = localGitHubRepository(repositoryRoot);
+    publicationBaseHeadSha = git(["rev-parse", baseRef], repositoryRoot);
+    if (!/^[a-f0-9]{40}$/.test(publicationBaseHeadSha)) {
+      throw new DoneStateError("CAPABILITY_MISSING", `Could not resolve base ref ${baseRef} to an exact commit.`);
     }
   }
   const actions: ObjectiveSpec["actions"] = [
@@ -358,7 +433,21 @@ async function go(args: ParsedArguments): Promise<void> {
     policy.authority.grants.push({ class: "push", granted: true });
     if (publication === "pull_request") policy.authority.grants.push({ class: "open_pr", granted: true });
   }
-  console.log(JSON.stringify(await new DoneStateController(storeFor(args)).start(objective, policy), null, 2));
+  const store = storeFor(args);
+  const run = await new DoneStateController(store).start(objective, policy);
+  let publicationSubject: PublicationSubject | null = null;
+  if (publication !== "none" && run.state === "AWAITING_VERIFICATION") {
+    publicationSubject = await recordLocalPublicationSubject(
+      store,
+      run.id,
+      repositoryRoot,
+      publicationRepository!,
+      baseRef,
+      publicationBaseHeadSha!,
+      publication,
+    );
+  }
+  console.log(JSON.stringify({ ...run, publicationSubject }, null, 2));
 }
 
 async function createObjective(args: ParsedArguments): Promise<void> {
@@ -435,14 +524,37 @@ async function status(args: ParsedArguments): Promise<void> {
 async function handoff(args: ParsedArguments): Promise<void> {
   const runId = args.positionals[0];
   if (!runId) throw new DoneStateError("INVALID_INPUT", "handoff requires a run id.");
-  const document = await createVerificationHandoff(storeFor(args), runId);
+  const store = storeFor(args);
+  const document = await store.getPublicationSubject(runId)
+    ? await createVerificationHandoffV2(store, runId)
+    : await createVerificationHandoff(store, runId);
   const out = flag(args, "out");
   if (out) {
     await writeFile(path.resolve(out), `${JSON.stringify(document, null, 2)}\n`, { mode: 0o600 });
-    console.log(JSON.stringify({ state: "HANDOFF_WRITTEN", file: path.resolve(out), runId }, null, 2));
+    console.log(JSON.stringify({ state: "HANDOFF_WRITTEN", file: path.resolve(out), runId, schema: document.schema }, null, 2));
   } else {
     console.log(JSON.stringify(document, null, 2));
   }
+}
+
+async function verifyResponse(args: ParsedArguments): Promise<void> {
+  const response = await readJson<VerificationResponseV2>(flag(args, "file", true)!);
+  const runId = response.report?.runId;
+  if (!runId) throw new DoneStateError("INVALID_INPUT", "Verification response does not contain a run id.");
+  console.log(JSON.stringify(await recordVerificationResponseV2(storeFor(args), runId, response), null, 2));
+}
+
+async function verifyOpsTruth(args: ParsedArguments): Promise<void> {
+  const runId = args.positionals[0];
+  if (!runId) throw new DoneStateError("INVALID_INPUT", "verify-opstruth requires a run id.");
+  const endpoint = flag(args, "endpoint", true)!;
+  const store = storeFor(args);
+  const handoffDocument = await createVerificationHandoffV2(store, runId);
+  const response = await requestOpsTruthVerificationV2(endpoint, handoffDocument);
+  console.log(JSON.stringify({
+    run: await recordVerificationResponseV2(store, runId, response),
+    response,
+  }, null, 2));
 }
 
 async function attest(args: ParsedArguments): Promise<void> {
@@ -558,6 +670,7 @@ async function maintenanceRepair(args: ParsedArguments): Promise<void> {
     throw new DoneStateError("POLICY_REJECTED", "Maintenance repair requires a clean Git repository.");
   }
   const baseRef = flag(args, "base") ?? localDefaultBranch(repositoryRoot);
+  const baseHeadSha = git(["rev-parse", baseRef], repositoryRoot);
   const goal = [
     `Repair GitHub issue #${finding.sourceId}: ${finding.title}`,
     "",
@@ -674,9 +787,22 @@ async function maintenanceRepair(args: ParsedArguments): Promise<void> {
   const policy = defaultPolicy(repositoryRoot, ["codex", "npm", "git", "gh"]);
   policy.allowedEnvironmentKeys = Object.keys(configuredHomeEnvironment());
   policy.authority.grants.push({ class: "push", granted: true }, { class: "open_pr", granted: true });
-  const run = await new DoneStateController(storeFor(args)).start(objective, policy);
-  await storeFor(args).markMaintenanceRepairQueued(findingId, run.id);
-  console.log(JSON.stringify({ finding, run }, null, 2));
+  const store = storeFor(args);
+  const run = await new DoneStateController(store).start(objective, policy);
+  let publicationSubject: PublicationSubject | null = null;
+  if (run.state === "AWAITING_VERIFICATION") {
+    publicationSubject = await recordLocalPublicationSubject(
+      store,
+      run.id,
+      repositoryRoot,
+      finding.repository,
+      baseRef,
+      baseHeadSha,
+      "pull_request",
+    );
+  }
+  await store.markMaintenanceRepairQueued(findingId, run.id);
+  console.log(JSON.stringify({ finding, run, publicationSubject }, null, 2));
 }
 
 async function capabilities(): Promise<void> {
@@ -689,7 +815,7 @@ async function capabilities(): Promise<void> {
       objectives: ["create", "start", "run", "resume", "cancel", "delete", "list", "status"],
       publication: ["go --publish branch", "go --publish pull_request"],
       maintenance: ["maintenance-discover", "maintenance-list", "maintenance-repair"],
-      verification: ["handoff", "attest", "verify-log"],
+      verification: ["handoff", "verify-response", "verify-opstruth", "attest", "verify-log"],
       bootstrap: ["init", "go", "demo"],
       authorityClasses: [
         "local_read",
@@ -705,10 +831,7 @@ async function capabilities(): Promise<void> {
         "destructive",
       ],
     },
-    pendingPortableParity: [
-      "versioned v2 verifier-response submission",
-      "direct OpsTruth verification request for a sealed local publication subject",
-    ],
+    pendingPortableParity: [],
     deliberatelyHostedOnly: [
       "GitHub OAuth browser identity",
       "multi-user encrypted execution credential vault",
@@ -779,6 +902,8 @@ async function main(): Promise<void> {
     case "list": await listRuns(args); break;
     case "status": await status(args); break;
     case "handoff": await handoff(args); break;
+    case "verify-response": await verifyResponse(args); break;
+    case "verify-opstruth": await verifyOpsTruth(args); break;
     case "attest": await attest(args); break;
     case "verify-log": await verifyLog(args); break;
     case "maintenance-discover": await maintenanceDiscover(args); break;
