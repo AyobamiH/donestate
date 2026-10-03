@@ -1,0 +1,70 @@
+{
+  "observedAt": "2026-10-03T12:46:23.917Z",
+  "origin": "https://donestate.proofandstate.com",
+  "checks": [
+    {
+      "surface": "public",
+      "width": 390,
+      "overflow": false,
+      "title": "Give an agent an outcome. Keep the boundary."
+    },
+    {
+      "surface": "public",
+      "width": 768,
+      "overflow": false,
+      "title": "Give an agent an outcome. Keep the boundary."
+    },
+    {
+      "surface": "public",
+      "width": 1280,
+      "overflow": false,
+      "title": "Give an agent an outcome. Keep the boundary."
+    },
+    {
+      "surface": "public",
+      "width": 1920,
+      "overflow": false,
+      "title": "Give an agent an outcome. Keep the boundary."
+    },
+    {
+      "surface": "docs",
+      "width": 390,
+      "url": "https://proofandstate.com/docs/donestate/get-started",
+      "overflow": false
+    },
+    {
+      "surface": "account",
+      "width": 390,
+      "overflow": false,
+      "inputs": [
+        {
+          "height": 46,
+          "width": 316
+        },
+        {
+          "height": 46,
+          "width": 316
+        }
+      ]
+    },
+    {
+      "surface": "account",
+      "width": 768,
+      "overflow": false,
+      "inputs": [
+        {
+          "height": 46,
+          "width": 678
+        },
+        {
+          "height": 46,
+          "width": 678
+        }
+      ]
+    },
+    {
+      "surface": "objective-details",
+      "expanded": true
+    }
+  ]
+}
