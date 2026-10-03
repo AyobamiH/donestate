@@ -331,9 +331,9 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-03",
       "staleDate": "2026-10-09",
-      "nextAction": "Use a disposable post-cutover production account to prove the deployed delete-account journey end to end: index a fresh objective, exercise active-run refusal, complete deletion, verify stale pre-delete mutations are fenced, and verify personal service state is gone. The deliberately interrupted non-production retry path is covered by E-051. Do not use the publisher's current production account as the destructive acceptance fixture.",
-      "waitCondition": "Strict deletion reads are merged and deployed with passing exact-head and post-merge CI (E-063). A separate disposable authenticated production account is still required for destructive acceptance; the connected publisher account must not be used.",
-      "reentryCondition": "Close only after a fresh disposable-account production deletion proves the post-cutover path and the retained legacy-erasure procedure remains documented.",
+      "nextAction": "Complete a bounded production stale in-flight mutation fencing rehearsal. The disposable-account production refusal, cancellation, deletion, credential erasure, missing-objective readback and stale-session rejection passed in E-064. Preserve the legacy erasure limitation; do not repeat deletion on the publisher account.",
+      "waitCondition": "Disposable production account acceptance completed for the ordinary deletion journey. An already-admitted stale in-flight mutation was not injected in production; generation fencing remains supported by automated tests E-051/E-063, not a production race receipt.",
+      "reentryCondition": "Close when production stale in-flight mutation fencing is evidenced or explicitly reviewed as an automated-only acceptance boundary, with the legacy erasure procedure retained.",
       "dependencies": [
         "CUST-001",
         "LEGAL-001"
@@ -342,7 +342,8 @@
         "E-043",
         "E-044",
         "E-051",
-        "E-063"
+        "E-063",
+        "E-064"
       ]
     },
     {
@@ -1916,6 +1917,23 @@
       "outcome": "The deletion false-success risk is repaired, merged and deployed. CUST-002 remains open for disposable-account production acceptance.",
       "content": "Coordinator read RPC, strict deletion read path and three isolated Durable Object acceptance tests. No public MCP tool, OAuth scope or authority expansion.",
       "measurement": "139 tests across 20 files passed, including three new deletion scenarios; no production account deletion performed."
+    },
+    {
+      "id": "E-064",
+      "date": "2026-10-03",
+      "identity": "Disposable production account deletion journey",
+      "situation": "The owner authorised use of OneClickPostFactory as the disposable DoneState identity and connected an execution credential through the secure form. Initial account inventory contained zero objectives and repositories.",
+      "verification": "On 2026-10-03, production created objective 6e456711-13a7-4010-81fc-e4dde3d468bd at 17:49:24Z with autoStart false. It remained RECEIVED with zero actions. Account deletion at 17:50:22Z refused and retained the indexed objective and credential. Cancellation at 17:50:29Z yielded CANCELLED, zero actions and no publication. Account deletion at 17:50:45Z returned success and deleted one indexed objective. Subsequent MCP readback returned run not found and disconnected credential with null fingerprint/timestamps; replay of the old deletion session at 17:51:05Z returned HTTP 401 Setup session expired. A fresh console read showed zero objectives, repositories and findings, no execution credential and 0/12 usage. See evidence/account-deletion-20261003/acceptance.json.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Complete a bounded production stale in-flight mutation fencing rehearsal. The disposable-account production refusal, cancellation, deletion, credential erasure, missing-objective readback and stale-session rejection passed in E-064. Preserve the legacy erasure limitation; do not repeat deletion on the publisher account.",
+        "waitCondition": "Disposable production account acceptance completed for the ordinary deletion journey. An already-admitted stale in-flight mutation was not injected in production; generation fencing remains supported by automated tests E-051/E-063, not a production race receipt.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "Production deletion journey passed without model execution or repository changes. CUST-002 remains active only for the distinct production stale in-flight write boundary.",
+      "content": "Sanitised production acceptance receipt. No key, ticket, cookie or credential fingerprint is published. The publisher account and GitHub account were not deleted.",
+      "measurement": "One disposable identity, one unstarted objective, one active-state refusal, one cancellation, one completed deletion, missing objective readback, removed credential and one HTTP 401 stale-session rejection; zero model runs, commits or pushes."
     }
   ]
 }
