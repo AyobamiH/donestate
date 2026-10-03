@@ -45,7 +45,7 @@ for (const command of cliManifest.commands) {
   }
 }
 for (const requiredTopic of [
-  "human and agent",
+  "humans and agents",
   "AMBIGUOUS_EFFECT",
   "BLOCKED_AUTHORITY",
   "BLOCKED_CAPABILITY",
