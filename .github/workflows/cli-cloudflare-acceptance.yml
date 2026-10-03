@@ -59,6 +59,21 @@ jobs:
           ' <<<"$secrets"
           exit $?
 
+      - name: Delete stale acceptance container application
+        working-directory: apps/mcp-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx wrangler containers list --json \
+            | jq -r '.[] | select(.name == "donestate-cli-acceptance-sandbox") | .id' \
+            | while read -r application_id; do
+                test -n "$application_id"
+                npx wrangler containers delete "$application_id"
+              done
+
       - id: deploy
         name: Deploy ephemeral acceptance Worker
         uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd
@@ -228,7 +243,7 @@ jobs:
         run: |
           curl --silent --show-error             --request POST             --header "Authorization: Bearer $ACCEPTANCE_TOKEN"             "$ACCEPTANCE_ORIGIN/cleanup?id=$ACCEPTANCE_ID" || true
 
-      - name: Delete ephemeral acceptance Worker
+      - name: Delete ephemeral acceptance Worker and container application
         if: always()
         working-directory: apps/mcp-worker
         env:
@@ -236,4 +251,12 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         shell: bash
         run: |
-          printf 'y\n' | npx wrangler delete --name donestate-cli-acceptance --config wrangler.cli-acceptance.jsonc || true
+          set +e
+          printf 'y\n' | npx wrangler delete --name donestate-cli-acceptance --config wrangler.cli-acceptance.jsonc
+          npx wrangler containers list --json \
+            | jq -r '.[] | select(.name == "donestate-cli-acceptance-sandbox") | .id' \
+            | while read -r application_id; do
+                test -n "$application_id"
+                npx wrangler containers delete "$application_id"
+              done
+          exit 0
