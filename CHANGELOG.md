@@ -6,7 +6,6 @@ All notable changes follow Keep a Changelog. This project uses Semantic Versioni
 
 ### Added
 
-- Portable local CLI lifecycle controls for create-without-run, explicit start, cancellation, safe deletion, run listing, machine-readable capability discovery, opt-in branch/pull-request publication from a clean local Git workspace, local maintenance discovery/PR-only repair, sealed v2 publication handoffs, strict v2 verifier-response acceptance, and direct OpsTruth verification requests.
 - ChatGPT and Codex plugin package with objective, monitoring and independent-verification skills.
 - OAuth-protected MCP Worker for public GitHub repositories.
 - One durable coordinator and isolated Cloudflare Sandbox per hosted run.
@@ -38,6 +37,20 @@ All notable changes follow Keep a Changelog. This project uses Semantic Versioni
 - Stop uncertain remote effects at `AMBIGUOUS_EFFECT` instead of retrying them.
 - Deny autonomous changes to authority, security, workflow, contract, plugin and deployment configuration paths.
 - Keep failing workflows as evidence only; they cannot trigger repair without an explicitly labeled issue.
+
+## [0.2.0] - 2026-10-03
+
+### Added
+
+- First-class human-and-agent CLI lifecycle: create, explicit start, cancel, delete, list, and machine-readable capability discovery.
+- Opt-in local branch and pull-request publication from a clean worktree with explicit push/open-PR authority and pre-effect changed-file budget enforcement.
+- Local maintenance discovery, findings, and PR-only repair using existing local GitHub CLI authentication.
+- Sealed publication subjects, v2 verification handoffs, strict v2 response validation, replay protection, and direct OpsTruth verification requests.
+- Canonical CLI command manifest, exhaustive command reference, workflow guide, troubleshooting guide, and CI documentation-closure checks.
+
+### Changed
+
+- The CLI remains a separate release train from Hosted MCP 0.3.0, but now provides the portable MCP-equivalent consequence capabilities that do not require hosted identity or multi-tenant infrastructure.
 
 ## [0.1.3] - 2026-10-03
 
