@@ -1,0 +1,27 @@
+{
+  "schema": "donestate.production-deletion-fence.v1",
+  "observedAt": "2026-10-03T18:15:56.845Z",
+  "fixture": "acceptance:deletion:ad8b10a2-b21e-4641-b9a9-755488f1eb5c",
+  "productionWorker": "donestate-mcp",
+  "ordering": [
+    "admit",
+    "pause",
+    "delete",
+    "resume",
+    "reject",
+    "readback"
+  ],
+  "registryRejected": true,
+  "vaultRejected": true,
+  "registryGeneration": 0,
+  "vaultGeneration": 0,
+  "registryDeletionGeneration": 1,
+  "vaultDeletionGeneration": 1,
+  "indexedRunsAfter": 0,
+  "credentialConnectedAfter": false,
+  "boundary": "Production storage guards; synthetic identity. Real authenticated account journey recorded separately in E-064.",
+  "workflowRun": 37143489929,
+  "sourceCommit": "a0e0c5c82e2979697a45da24e3e908d9382d309e",
+  "ephemeralWorkerDeleted": true,
+  "misplacedProductionTestTokenRemoved": true
+}

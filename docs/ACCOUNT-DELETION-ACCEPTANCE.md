@@ -3,7 +3,7 @@
 Two complementary receipts establish the boundary:
 
 - E-064: a real authenticated disposable account created an unstarted objective, observed deletion refusal, cancelled it, deleted account data, then confirmed missing objective, removed credential and rejected old session.
-- E-065: the production storage guard rehearsal and consistent account-page completion states. Its live receipt must pass before this part is treated as complete.
+- E-065: the production storage guard rehearsal and consistent account-page completion states. Live workflow 37143489929 passed on 3 October 2026: both stale writes were rejected, empty-state readback passed and the ephemeral Worker was removed. The sanitised result is in `evidence/account-deletion-20261003/production-fence.json`.
 
 The `Production deletion fence acceptance` workflow deploys an ephemeral Worker bound explicitly to `donestate-mcp`'s existing `MaintenanceRegistry` and `CredentialVault` classes. It does not deploy copies of those classes or change the public DoneState MCP surface.
 
