@@ -1942,12 +1942,12 @@
       "date": "2026-10-03",
       "identity": "Shared account completion layout and production deletion fence rehearsal",
       "situation": "The customer screenshot showed raw connection-success HTML. The ordinary production deletion journey passed, but the production stale in-flight write guard had no receipt.",
-      "verification": "Candidate unifies account forms, connection/deletion success and error pages using shared DoneState tokens/header/navigation. Local rendered setup/connected/deleted/expired pages passed 390/768/1280/1920px overflow checks; mobile images visually inspected. Worker check passed 142 tests across 21 files. The acceptance Worker uses explicit production Durable Object bindings, an expiring random token and a synthetic non-GitHub fixture identity. A promise barrier pauses admitted writes across deletion, then requires both registry and vault generation rejection and empty-state readback. Live deployment and acceptance receipts remain pending.",
+      "verification": "Candidate unifies account forms, connection/deletion success and error pages using shared DoneState tokens/header/navigation. Local rendered setup/connected/deleted/expired pages passed 390/768/1280/1920px overflow checks; mobile images visually inspected. Worker check passed 142 tests across 21 files. The acceptance Worker uses explicit production Durable Object bindings, an expiring random token and a synthetic non-GitHub fixture identity. A promise barrier pauses admitted writes across deletion, then requires both registry and vault generation rejection and empty-state readback. Live deployment and acceptance receipts remain pending. PR #162 exact-head CI 37143176579 passed and merged as c984744c732f598db8859b5b9d4367d1f8da2aef. Post-merge CI 37143245986 passed. First production rehearsal 37143246110 failed before fixture admission: wrangler-action secret upload ignored the custom deploy config and targeted donestate-mcp, leaving the ephemeral Worker without its token. Request returned 404; ephemeral cleanup succeeded. Follow-up explicitly targets secret put to the ephemeral Worker and removes/verifies absence of the misplaced production test token.",
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
         "nextAction": "Require exact-head CI, merge, production UI deployment and successful production fence/cleanup receipt.",
-        "waitCondition": "Candidate not yet deployed; no production fence receipt claimed.",
+        "waitCondition": "Workflow correction pending; first rehearsal made no fixture mutations and is not a passing fence receipt.",
         "staleDate": "2026-10-10"
       },
       "outcome": "Implementation and local checks complete; live acceptance pending.",
