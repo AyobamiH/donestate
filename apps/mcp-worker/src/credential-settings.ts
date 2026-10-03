@@ -1,4 +1,4 @@
-import { DONESTATE_UI_CSS } from "./ui";
+import { accountNextSteps, renderAccountDocument } from "./account-layout";
 import { renderAccountRuns } from "./account-presentation";
 import { digest } from "./canonical";
 import type { DoneStateEnv } from "./environment";
@@ -97,7 +97,11 @@ function html(body: string, status = 200, cookies: string[] = []): Response {
     "X-Frame-Options": "DENY",
   });
   cookies.forEach((value) => headers.append("Set-Cookie", value));
-  return new Response(body, { status, headers });
+  const document = body.startsWith("<!doctype html>") ? body : renderAccountDocument(
+    "DoneState account settings",
+    `<div class="settings-intro">${body}</div>${accountNextSteps()}`,
+  );
+  return new Response(document, { status, headers });
 }
 
 function page(login: string, csrf: string, account: AccountView, message?: string): Response {
@@ -110,9 +114,7 @@ function page(login: string, csrf: string, account: AccountView, message?: strin
     ? `<ul class="list">${account.repositories.map((item) => `<li><code>${escapeHtml(item.repository)}</code> — ${escapeHtml(item.mode)}</li>`).join("")}</ul>`
     : "<p class=\"muted\">No maintenance repositories are selected.</p>";
   const runs = renderAccountRuns(account.runs);
-  return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState account settings</title>
-<style>${DONESTATE_UI_CSS}</style></head>
-<body><a class="skip-link" href="#account">Skip to account</a><header class="topbar"><nav class="topbar-inner" aria-label="Product"><a class="brand-lockup" href="/" aria-label="DoneState home"><span class="brand-mark" aria-hidden="true">DS</span><span class="brand-copy"><span class="eyebrow">Proof &amp; State</span><span class="brand-name">DoneState</span></span></a><a class="topbar-link" href="https://proofandstate.com/docs/donestate">Documentation</a></nav></header><main id="account" class="settings-page"><div class="settings-card"><div class="settings-intro"><h1>DoneState account settings</h1><p>Signed in as <strong>${escapeHtml(login)}</strong>.</p></div>${notice}<nav class="account-nav" aria-label="Account sections"><a href="#execution">Execution</a><a href="#repositories">Repositories</a><a href="#objectives">Objectives</a><a href="#deletion">Data controls</a></nav>
+  return html(renderAccountDocument("DoneState account settings", `<div class="settings-intro"><h1>DoneState account settings</h1><p>Signed in as <strong>${escapeHtml(login)}</strong>.</p></div>${notice}<nav class="account-nav" aria-label="Account sections"><a href="#execution">Execution</a><a href="#repositories">Repositories</a><a href="#objectives">Objectives</a><a href="#deletion">Data controls</a></nav>
 <section id="execution" class="settings-section"><h2>Execution credential</h2><p>${state}</p>
 <p class="muted">The key goes directly to DoneState over HTTPS. It is encrypted at rest, never returned to ChatGPT or any other MCP client, and used only for your isolated autonomous runs. OpenAI charges usage to your API account.</p>
 <p class="muted">Daily autonomous runs: ${status.dailyRunsUsed}/${status.dailyRunLimit}. Active run: ${escapeHtml(status.activeRunId ?? "none")}.</p>
@@ -123,11 +125,19 @@ function page(login: string, csrf: string, account: AccountView, message?: strin
 </section><section id="deletion" class="settings-section danger-zone"><h2>Delete account data</h2>
 <p class="muted">Deletion removes every indexed deletable objective, the stored OpenAI credential, selected-repository state, maintenance findings and user Marketplace entitlement records. Organization entitlement records keep the organization state but remove this login as authorizer. Active objectives must be cancelled first. Minimal opaque deletion-generation state remains only to fence stale in-flight writes; the global fence does not store your plaintext GitHub login.</p>
 <form method="post" action="/settings/openai"><input type="hidden" name="csrf" value="${escapeHtml(csrf)}"><input type="hidden" name="action" value="delete_account"><label class="field-label" for="confirm_login">Type your GitHub login to confirm</label><input id="confirm_login" name="confirm_login" required autocomplete="off"><button class="danger" type="submit">Delete indexed DoneState account data</button></form>
-</section></div></main></body></html>`);
+</section>`));
 }
 
 function success(login: string, status: StoredCredentialStatus): Response {
-  return html(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OpenAI connected</title></head><body><main><h1>OpenAI connected</h1><p>The execution credential for <strong>${escapeHtml(login)}</strong> is encrypted and ready.</p><p>Credential fingerprint: <code>${escapeHtml(status.fingerprint ?? "unknown")}</code>.</p><p>You can close this tab and return to your MCP client.</p></main></body></html>`, 200, [sessionCookie("", 0)]);
+  return html(renderAccountDocument("OpenAI connected", `<div class="settings-intro"><span class="eyebrow">Execution credential</span><h1>OpenAI connected</h1><p>The execution credential for <strong>${escapeHtml(login)}</strong> is encrypted and ready.</p></div><section class="settings-section"><h2>Connection details</h2><p>Credential fingerprint: <code>${escapeHtml(status.fingerprint ?? "unknown")}</code>.</p><p class="muted">Connecting a key does not start an objective. Execution begins only when you authorise it through your MCP client.</p></section>${accountNextSteps()}`), 200, [sessionCookie("", 0)]);
+}
+
+function deletionSuccess(login: string, receipt: Pick<AccountDataSummary, "indexedRuns" | "selectedRepositories" | "findings">): Response {
+  return html(
+    renderAccountDocument("DoneState account data deleted", `<div class="settings-intro"><span class="eyebrow">Account data</span><h1>DoneState account data deleted</h1><p>Indexed DoneState service data for <strong>${escapeHtml(login)}</strong> was deleted.</p></div><section class="settings-section"><h2>Deletion summary</h2><p>Deleted indexed objectives: ${receipt.indexedRuns}. Deleted selected repositories: ${receipt.selectedRepositories}. Deleted maintenance findings: ${receipt.findings}.</p><p class="muted">Your GitHub account and repositories have not been deleted.</p></section><section class="settings-section"><h2>Earlier objectives</h2><p>If you used direct DoneState objectives before the account-controls release and a historical run was not listed in the account console, delete it using its known run ID or submit a privacy request.</p></section>${accountNextSteps()}`),
+    200,
+    [sessionCookie("", 0)],
+  );
 }
 
 function parseTicket(value: string | null): SetupTicket | null {
@@ -331,11 +341,7 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
       const registryReceipt = await registry(env).purgeAccount(pending.login);
       await recordFunnelBestEffort(env, "account_deletion_completed");
       await env.OAUTH_KV.delete(sessionKey);
-      return html(
-        `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoneState account data deleted</title></head><body><main><h1>DoneState account data deleted</h1><p>Indexed DoneState service data for <strong>${escapeHtml(pending.login)}</strong> was deleted.</p><p>Deleted indexed objectives: ${registryReceipt.indexedRuns}. Deleted selected repositories: ${registryReceipt.selectedRepositories}. Deleted maintenance findings: ${registryReceipt.findings}.</p><p>If you used direct DoneState objectives before the account-controls release and a historical run was not listed in the account console, delete it using its known run ID or submit a privacy request.</p></main></body></html>`,
-        200,
-        [sessionCookie("", 0)],
-      );
+      return deletionSuccess(pending.login, registryReceipt);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Account data could not be deleted";
       return accountPage(

@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "donestate-deletion-acceptance",
+  "main": "src/deletion-acceptance-worker.ts",
+  "compatibility_date": "2026-08-28",
+  "workers_dev": true,
+  "preview_urls": false,
+  "durable_objects": {
+    "bindings": [
+      { "name": "CREDENTIAL_VAULT", "class_name": "CredentialVault", "script_name": "donestate-mcp" },
+      { "name": "MAINTENANCE_REGISTRY", "class_name": "MaintenanceRegistry", "script_name": "donestate-mcp" }
+    ]
+  }
+}

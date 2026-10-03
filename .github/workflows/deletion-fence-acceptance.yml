@@ -1,0 +1,64 @@
+name: Production deletion fence acceptance
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/mcp-worker/src/deletion-acceptance-worker.ts
+      - apps/mcp-worker/wrangler.deletion-acceptance.jsonc
+      - .github/workflows/deletion-fence-acceptance.yml
+permissions:
+  contents: read
+concurrency:
+  group: donestate-deletion-acceptance
+  cancel-in-progress: false
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: apps/mcp-worker/package-lock.json
+      - run: npm ci
+        working-directory: apps/mcp-worker
+      - run: npm run check
+        working-directory: apps/mcp-worker
+      - id: auth
+        name: Create expiring acceptance token
+        run: |
+          token="$(openssl rand -hex 32)"
+          echo "::add-mask::$token"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+          echo "expires=$(node -e 'process.stdout.write(String(Date.now()+300000))')" >> "$GITHUB_OUTPUT"
+      - id: deploy
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/mcp-worker
+          wranglerVersion: 4.127.1
+          command: deploy --config wrangler.deletion-acceptance.jsonc --var ACCEPTANCE_EXPIRES_AT:${{ steps.auth.outputs.expires }}
+          secrets: |
+            ACCEPTANCE_TOKEN
+        env:
+          ACCEPTANCE_TOKEN: ${{ steps.auth.outputs.token }}
+      - name: Run bounded production fence rehearsal once
+        env:
+          ACCEPTANCE_TOKEN: ${{ steps.auth.outputs.token }}
+          ACCEPTANCE_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error --max-time 60 \
+            -X POST -H "Authorization: Bearer $ACCEPTANCE_TOKEN" \
+            "${ACCEPTANCE_URL%/}/run" > "$RUNNER_TEMP/deletion-fence.json"
+          node -e 'const fs=require("fs");const r=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));if(r.registryRejected!==true||r.vaultRejected!==true||r.indexedRunsAfter!==0||r.credentialConnectedAfter!==false)process.exit(1);console.log(JSON.stringify(r,null,2))' "$RUNNER_TEMP/deletion-fence.json"
+      - name: Remove ephemeral acceptance Worker
+        if: always()
+        working-directory: apps/mcp-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: printf 'y\n' | npx wrangler delete --name donestate-deletion-acceptance --config wrangler.deletion-acceptance.jsonc
