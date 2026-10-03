@@ -54,15 +54,30 @@ donestate run \
   --policy .donestate/policy.json
 ```
 
-Inspect, resume and hand off a run:
+Create without executing when a human or agent needs a review point before work starts:
 
 ```bash
+donestate create \
+  --objective .donestate/objective.json \
+  --policy .donestate/policy.json
+donestate start RUN_ID
+```
+
+Inspect, list, resume, cancel, delete and hand off local runs with structured JSON output:
+
+```bash
+donestate list --state AWAITING_VERIFICATION
 donestate status RUN_ID
 donestate resume RUN_ID
+donestate cancel RUN_ID
+donestate delete RUN_ID --confirm
 donestate handoff RUN_ID --out verification-handoff.json
 donestate attest --file signed-attestation.json
 donestate verify-log RUN_ID
+donestate capabilities
 ```
+
+The CLI is a first-class interface for both humans and agents. Hosted identity, multi-user credential storage, Cloudflare sandbox allocation, provider-review identity and Marketplace lifecycle remain hosted-service concerns rather than artificial local CLI features.
 
 Run the bounded local demonstration:
 
