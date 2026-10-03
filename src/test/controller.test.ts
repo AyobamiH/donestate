@@ -200,3 +200,40 @@ test("refuses local cancellation while another worker lease is active", async ()
   );
   assert.equal((await store.getRun(created.id)).state, "RECEIVED");
 });
+
+test("blocks publication before external effects when the changed-file budget is exceeded", async () => {
+  const root = await temporaryRoot();
+  assert.equal(spawnSync("git", ["init", "-q", root]).status, 0);
+  assert.equal(spawnSync("git", ["-C", root, "config", "user.name", "DoneState Test"]).status, 0);
+  assert.equal(spawnSync("git", ["-C", root, "config", "user.email", "test@example.invalid"]).status, 0);
+  await writeFile(path.join(root, "seed.txt"), "seed\n");
+  assert.equal(spawnSync("git", ["-C", root, "add", "seed.txt"]).status, 0);
+  assert.equal(spawnSync("git", ["-C", root, "commit", "-qm", "seed"]).status, 0);
+
+  const objective = simpleObjective(root);
+  objective.actions[0]!.command.args = [
+    "-e",
+    "require('fs').writeFileSync('one.txt','1');require('fs').writeFileSync('two.txt','2')",
+  ];
+  objective.actions.push({
+    id: "publish",
+    name: "Publication sentinel",
+    kind: "publication",
+    authority: "push",
+    dependsOn: [objective.actions[0]!.id],
+    command: {
+      executable: process.execPath,
+      args: ["-e", "require('fs').writeFileSync('published.txt','should-not-run')"],
+    },
+  });
+  const policy = policyFor(root);
+  policy.allowedExecutables.push(process.execPath);
+  policy.authority.grants.push({ class: "push", granted: true });
+  policy.budgets.maxChangedFiles = 1;
+
+  const store = new DoneStateStore(path.join(root, ".donestate", "state.sqlite"));
+  const run = await new DoneStateController(store).start(objective, policy);
+  assert.equal(run.state, "BLOCKED_SAFETY");
+  assert.match(run.lastError ?? "", /before publication/);
+  assert.equal((await store.listActions(run.id)).find((action) => action.actionId === "publish")?.state, "PENDING");
+});
