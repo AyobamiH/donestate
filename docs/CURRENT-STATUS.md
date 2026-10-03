@@ -14,7 +14,7 @@ Provider enforcement was proven by governance-only PR #118. Exact head `15e32611
 
 ## Hosted service and production maintenance runtime
 
-- public local npm/CLI version: `0.1.2`
+- public local npm/CLI version: `0.2.0`
 - historical hosted baseline source: `179e02c1a99dab780cabe09c4f5882e7e492ad18`
 - historical hosted baseline workflow: `33210941821`
 - historical hosted run: `631d8a08-d337-4bae-bd18-b55c31f48a8b` (`VERIFIED`)
@@ -31,6 +31,16 @@ Provider enforcement was proven by governance-only PR #118. Exact head `15e32611
 - Codex CLI: `0.150.1`
 - implementation mode: one `startProcess` launch using the tracked waiter and terminal receipt, followed by a fixed 30-second post-receipt runtime-quiescence window before validation
 - publication authority: PR-only; DoneState has no merge authority
+
+## Published CLI 0.2.0 Cloudflare acceptance — 3 October 2026
+
+The published npm CLI is now externally accepted as a first-class human-and-agent control surface, not merely code merged on `main`.
+
+Acceptance workflow `37111801210` completed successfully using the existing Cloudflare Sandbox apparatus. It installed public `donestate@0.2.0`, executed the installed CLI, and published a real bounded branch `donestate/85c188b4-a985-4c1d-86d3-26ee033cc6de` at exact head `543dfac251911e840856893cc3ca17ba1d0a45d7` from base `392ec4ae2a1e97fe7dcad724b9094437c024c0ea`. The diff contained exactly one acceptance evidence file. PR #152 was opened for the subject.
+
+Exact-head CI run `37111963403` passed `core (22)`, `core (24)`, and `hosted-plugin`. The CLI generated sealed v2 handoff digest `0a10843eed1e87eabe6261c06386a7daa9f9a233c03f0d2fb82191e785938c4a`. Production OpsTruth independently observed the same exact head and returned decision `verified`; DoneState accepted the strict v2 response into terminal `VERIFIED` with `eventChainValid=true`.
+
+The ephemeral acceptance Sandbox, Worker and container application were then cleaned up successfully. This acceptance did not require owner shell authentication and did not grant DoneState merge authority.
 
 ## Production DoneState-to-OpsTruth v2 milestone
 
