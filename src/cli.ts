@@ -40,7 +40,7 @@ Usage:
   donestate verify-opstruth RUN_ID --endpoint URL [--state-dir PATH]
   donestate attest --file FILE [--state-dir PATH]
   donestate verify-log RUN_ID [--state-dir PATH]
-  donestate maintenance-discover [--repo OWNER/NAME] [--state-dir PATH]
+  donestate maintenance-discover [--repo OWNER/NAME] [--repo-path PATH] [--state-dir PATH]
   donestate maintenance-list [--repo OWNER/NAME] [--state-dir PATH]
   donestate maintenance-repair FINDING_ID [--repo PATH] [--base REF] [--verification-requirements FILE] [--trusted-verifiers HEX[,HEX...]] [--state-dir PATH]
   donestate capabilities

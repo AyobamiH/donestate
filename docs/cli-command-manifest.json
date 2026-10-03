@@ -1,0 +1,187 @@
+{
+  "schema": "donestate.cli-command-manifest.v1",
+  "version": "0.2.0",
+  "commands": [
+    {
+      "name": "init",
+      "syntax": "donestate init [--repo PATH] [--force]",
+      "purpose": "Create starter objective and policy files.",
+      "flags": [
+        "--repo PATH",
+        "--force"
+      ]
+    },
+    {
+      "name": "go",
+      "syntax": "donestate go \"GOAL\" [--repo PATH] [--accept TEXT] [--publish none|branch|pull_request] [--base REF] [--verification-requirements FILE] [--trusted-verifiers HEX[,HEX...]] [--state-dir PATH]",
+      "purpose": "Execute the prose-first local workflow, optionally publish a branch or pull request, and seal the result for independent verification.",
+      "flags": [
+        "--repo PATH",
+        "--accept TEXT",
+        "--publish none|branch|pull_request",
+        "--base REF",
+        "--verification-requirements FILE",
+        "--trusted-verifiers HEX[,HEX...]",
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "create",
+      "syntax": "donestate create --objective FILE --policy FILE [--state-dir PATH]",
+      "purpose": "Durably create an objective without starting execution.",
+      "flags": [
+        "--objective FILE",
+        "--policy FILE",
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "start",
+      "syntax": "donestate start RUN_ID [--state-dir PATH]",
+      "purpose": "Start a previously created RECEIVED objective.",
+      "flags": [
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "run",
+      "syntax": "donestate run --objective FILE --policy FILE [--state-dir PATH]",
+      "purpose": "Create and immediately execute an explicit objective under an explicit policy.",
+      "flags": [
+        "--objective FILE",
+        "--policy FILE",
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "resume",
+      "syntax": "donestate resume RUN_ID [--state-dir PATH]",
+      "purpose": "Resume a recoverable local run from durable state.",
+      "flags": [
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "cancel",
+      "syntax": "donestate cancel RUN_ID [--state-dir PATH]",
+      "purpose": "Cancel eligible local work without rewriting settled or ambiguous history.",
+      "flags": [
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "delete",
+      "syntax": "donestate delete RUN_ID --confirm [--state-dir PATH]",
+      "purpose": "Delete a settled or cancelled local run and its durable local records.",
+      "flags": [
+        "--confirm",
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "list",
+      "syntax": "donestate list [--state STATE] [--limit N] [--state-dir PATH]",
+      "purpose": "List durable local runs as structured JSON.",
+      "flags": [
+        "--state STATE",
+        "--limit N",
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "status",
+      "syntax": "donestate status RUN_ID [--state-dir PATH]",
+      "purpose": "Inspect one run, its actions, and event-chain validity.",
+      "flags": [
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "handoff",
+      "syntax": "donestate handoff RUN_ID [--state-dir PATH] [--out FILE]",
+      "purpose": "Create the exact verification handoff; emits v2 for sealed published subjects and v1 for historical/local-only runs.",
+      "flags": [
+        "--state-dir PATH",
+        "--out FILE"
+      ]
+    },
+    {
+      "name": "verify-response",
+      "syntax": "donestate verify-response --file FILE [--state-dir PATH]",
+      "purpose": "Validate and record a complete v2 independent-verifier response.",
+      "flags": [
+        "--file FILE",
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "verify-opstruth",
+      "syntax": "donestate verify-opstruth RUN_ID --endpoint URL [--state-dir PATH]",
+      "purpose": "Request independent OpsTruth verification of a sealed local published subject and record the returned v2 response.",
+      "flags": [
+        "--endpoint URL",
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "attest",
+      "syntax": "donestate attest --file FILE [--state-dir PATH]",
+      "purpose": "Record a signed legacy v1 independent-verifier attestation.",
+      "flags": [
+        "--file FILE",
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "verify-log",
+      "syntax": "donestate verify-log RUN_ID [--state-dir PATH]",
+      "purpose": "Verify the tamper-evident event chain and fail non-zero if invalid.",
+      "flags": [
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "maintenance-discover",
+      "syntax": "donestate maintenance-discover [--repo OWNER/NAME] [--repo-path PATH] [--state-dir PATH]",
+      "purpose": "Discover explicitly labelled repair issues plus failing workflow evidence using locally authenticated GitHub CLI access.",
+      "flags": [
+        "--repo OWNER/NAME",
+        "--repo-path PATH",
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "maintenance-list",
+      "syntax": "donestate maintenance-list [--repo OWNER/NAME] [--state-dir PATH]",
+      "purpose": "List locally recorded bounded maintenance findings.",
+      "flags": [
+        "--repo OWNER/NAME",
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "maintenance-repair",
+      "syntax": "donestate maintenance-repair FINDING_ID [--repo PATH] [--base REF] [--verification-requirements FILE] [--trusted-verifiers HEX[,HEX...]] [--state-dir PATH]",
+      "purpose": "Run one eligible labelled-issue repair and publish it as a PR-only change.",
+      "flags": [
+        "--repo PATH",
+        "--base REF",
+        "--verification-requirements FILE",
+        "--trusted-verifiers HEX[,HEX...]",
+        "--state-dir PATH"
+      ]
+    },
+    {
+      "name": "capabilities",
+      "syntax": "donestate capabilities",
+      "purpose": "Return machine-readable CLI capability discovery for humans and agents.",
+      "flags": []
+    },
+    {
+      "name": "demo",
+      "syntax": "donestate demo",
+      "purpose": "Run a bounded local demonstration that intentionally stops at AWAITING_VERIFICATION.",
+      "flags": []
+    }
+  ]
+}
