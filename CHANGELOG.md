@@ -6,7 +6,7 @@ All notable changes follow Keep a Changelog. This project uses Semantic Versioni
 
 ### Added
 
-- Portable local CLI lifecycle controls for create-without-run, explicit start, cancellation, safe deletion, run listing, and machine-readable capability discovery.
+- Portable local CLI lifecycle controls for create-without-run, explicit start, cancellation, safe deletion, run listing, machine-readable capability discovery, and opt-in branch/pull-request publication from a clean local Git workspace.
 - ChatGPT and Codex plugin package with objective, monitoring and independent-verification skills.
 - OAuth-protected MCP Worker for public GitHub repositories.
 - One durable coordinator and isolated Cloudflare Sandbox per hosted run.
