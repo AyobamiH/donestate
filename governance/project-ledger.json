@@ -303,13 +303,13 @@
       "id": "CUST-001",
       "title": "Add standalone customer account and service visibility",
       "stream": "customer-readiness",
-      "status": "complete",
+      "status": "active",
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-03",
-      "staleDate": "2026-10-09",
-      "nextAction": "Preserve responsive production evidence; reopen on customer-console layout or navigation regression.",
-      "waitCondition": "None.",
-      "reentryCondition": "Reopen if production account visibility, navigation, keyboard focus or responsive layout regresses.",
+      "staleDate": "2026-10-10",
+      "nextAction": "Deploy shared layout for account setup, connection success, deletion success and expired-link states; verify production page readback.",
+      "waitCondition": "User screenshot exposed an unstyled connection confirmation despite the earlier main-console acceptance. Candidate E-065 unifies these surfaces.",
+      "reentryCondition": "Complete after exact-head CI, deployment and production layout readback.",
       "dependencies": [
         "GOV-001"
       ],
@@ -320,7 +320,8 @@
         "E-054",
         "E-055",
         "E-060",
-        "E-062"
+        "E-062",
+        "E-065"
       ]
     },
     {
@@ -330,9 +331,9 @@
       "status": "active",
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-03",
-      "staleDate": "2026-10-09",
-      "nextAction": "Complete a bounded production stale in-flight mutation fencing rehearsal. The disposable-account production refusal, cancellation, deletion, credential erasure, missing-objective readback and stale-session rejection passed in E-064. Preserve the legacy erasure limitation; do not repeat deletion on the publisher account.",
-      "waitCondition": "Disposable production account acceptance completed for the ordinary deletion journey. An already-admitted stale in-flight mutation was not injected in production; generation fencing remains supported by automated tests E-051/E-063, not a production race receipt.",
+      "staleDate": "2026-10-10",
+      "nextAction": "Run the bounded production deletion-fence workflow, inspect both stale-write rejections and cleanup, then reconcile E-064 and E-065.",
+      "waitCondition": "Real disposable account journey passed. Production controlled stale-write rehearsal is implemented but has not yet run.",
       "reentryCondition": "Close when production stale in-flight mutation fencing is evidenced or explicitly reviewed as an automated-only acceptance boundary, with the legacy erasure procedure retained.",
       "dependencies": [
         "CUST-001",
@@ -343,7 +344,8 @@
         "E-044",
         "E-051",
         "E-063",
-        "E-064"
+        "E-064",
+        "E-065"
       ]
     },
     {
@@ -1934,6 +1936,23 @@
       "outcome": "Production deletion journey passed without model execution or repository changes. CUST-002 remains active only for the distinct production stale in-flight write boundary.",
       "content": "Sanitised production acceptance receipt. No key, ticket, cookie or credential fingerprint is published. The publisher account and GitHub account were not deleted.",
       "measurement": "One disposable identity, one unstarted objective, one active-state refusal, one cancellation, one completed deletion, missing objective readback, removed credential and one HTTP 401 stale-session rejection; zero model runs, commits or pushes."
+    },
+    {
+      "id": "E-065",
+      "date": "2026-10-03",
+      "identity": "Shared account completion layout and production deletion fence rehearsal",
+      "situation": "The customer screenshot showed raw connection-success HTML. The ordinary production deletion journey passed, but the production stale in-flight write guard had no receipt.",
+      "verification": "Candidate unifies account forms, connection/deletion success and error pages using shared DoneState tokens/header/navigation. Local rendered setup/connected/deleted/expired pages passed 390/768/1280/1920px overflow checks; mobile images visually inspected. Worker check passed 142 tests across 21 files. The acceptance Worker uses explicit production Durable Object bindings, an expiring random token and a synthetic non-GitHub fixture identity. A promise barrier pauses admitted writes across deletion, then requires both registry and vault generation rejection and empty-state readback. Live deployment and acceptance receipts remain pending.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Require exact-head CI, merge, production UI deployment and successful production fence/cleanup receipt.",
+        "waitCondition": "Candidate not yet deployed; no production fence receipt claimed.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "Implementation and local checks complete; live acceptance pending.",
+      "content": "Shared account layout, scoped ephemeral acceptance Worker/config/workflow, controller failure-path tests and documented boundaries.",
+      "measurement": "16 responsive page/width checks; 142 tests in 21 files; no new public MCP tools or production test route."
     }
   ]
 }
