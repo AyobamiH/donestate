@@ -329,10 +329,10 @@
       "stream": "customer-readiness",
       "status": "active",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-02",
+      "lastUpdated": "2026-10-03",
       "staleDate": "2026-10-09",
       "nextAction": "Use a disposable post-cutover production account to prove the deployed delete-account journey end to end: index a fresh objective, exercise active-run refusal, complete deletion, verify stale pre-delete mutations are fenced, and verify personal service state is gone. The deliberately interrupted non-production retry path is covered by E-051. Do not use the publisher's current production account as the destructive acceptance fixture.",
-      "waitCondition": "The dual-generation implementation, stale-write fencing, and interrupted-deletion retry fixture are covered by automated acceptance. A real disposable-account production deletion receipt is still required; historical pre-index direct objectives remain an explicit legacy erasure limitation.",
+      "waitCondition": "Deletion now distinguishes positively absent objective records from unreadable state. Candidate failure-path coverage recorded in E-063; exact-head CI and deployment remain pending. A separate disposable authenticated production account is required for destructive acceptance; the connected publisher account must not be used.",
       "reentryCondition": "Close only after a fresh disposable-account production deletion proves the post-cutover path and the retained legacy-erasure procedure remains documented.",
       "dependencies": [
         "CUST-001",
@@ -341,7 +341,8 @@
       "evidenceIds": [
         "E-043",
         "E-044",
-        "E-051"
+        "E-051",
+        "E-063"
       ]
     },
     {
@@ -1898,6 +1899,23 @@
       "outcome": "CUST-001 complete. This does not close account-deletion acceptance, publisher legal readiness or unrestricted GA.",
       "content": "Production responsive layout checks, public PNG/video, private authenticated readback; no authority or runtime changes.",
       "measurement": "Four root widths, one docs mobile width, two account widths, zero horizontal overflow, 46px inputs and successful objective expansion."
+    },
+    {
+      "id": "E-063",
+      "date": "2026-10-03",
+      "identity": "Fail-closed account deletion state reads",
+      "situation": "Account presentation catches objective read errors as MISSING. Deletion reused that fallback and could skip an unreadable objective before removing its index.",
+      "verification": "Candidate adds a coordinator accountDeletionState RPC that returns null only after a successful read proves absence, preserves ownership checks, and propagates read failures. Account deletion uses this strict path while display rendering retains its fallback. Automated acceptance exercises active refusal, cancellation and deletion, stale admission rejection, session invalidation, transient read failure with retained index and lock, safe retry, partial objective purge recovery, and wrong-owner rejection. Exact-head CI and production deployment pending. Local Worker check passed: type generation, TypeScript, 139 tests across 20 files. Documentation/governance checks and git diff --check passed.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Require exact-head CI and production deployment, then run destructive acceptance only with a separate disposable authenticated account.",
+        "waitCondition": "No disposable production account is connected. Do not delete the publisher account.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "A concrete deletion false-success risk is repaired in the candidate. CUST-002 remains open for production acceptance.",
+      "content": "Coordinator read RPC, strict deletion read path and three isolated Durable Object acceptance tests. No public MCP tool, OAuth scope or authority expansion.",
+      "measurement": "139 tests across 20 files passed, including three new deletion scenarios; no production account deletion performed."
     }
   ]
 }
