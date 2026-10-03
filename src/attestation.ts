@@ -1,11 +1,11 @@
 import { createHash, createPublicKey, verify } from "node:crypto";
 import { DoneStateError } from "./errors.js";
 import { canonicalJson } from "./hash.js";
-import type { ExecutionPolicy, VerificationAttestation } from "./types.js";
+import type { ExecutionPolicy, VerificationAttestationV1 } from "./types.js";
 
 const DOMAIN = "donestate.verification-attestation.v1\0";
 
-export type UnsignedAttestation = Omit<VerificationAttestation, "signature">;
+export type UnsignedAttestation = Omit<VerificationAttestationV1, "signature">;
 
 export function attestationSigningInput(attestation: UnsignedAttestation): Buffer {
   return Buffer.from(`${DOMAIN}${canonicalJson(attestation)}`, "utf8");
@@ -18,7 +18,7 @@ export function verifierFingerprint(publicKeyPem: string): string {
 }
 
 export function validateAttestation(
-  attestation: VerificationAttestation,
+  attestation: VerificationAttestationV1,
   runId: string,
   snapshotDigest: string,
   policy: ExecutionPolicy,
