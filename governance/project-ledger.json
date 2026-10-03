@@ -805,8 +805,8 @@
       "stream": "release",
       "status": "active",
       "owner": "DoneState maintainers",
-      "nextAction": "Require the 0.1.3 release candidate to pass exact-head Node 22, Node 24, hosted-plugin, governance, verification-contract and npm pack checks. Merge through protected main only when clean; then publish donestate@0.1.3 only with explicit npm publication authority and verify the registry artifact before updating Proof & State to call 0.1.3 the latest published CLI.",
-      "waitCondition": "Hosted MCP 0.3.0 is an independent release train and does not need to match the CLI version. npm publication requires explicit publisher authority and a registry receipt; merge alone must not be represented as publication.",
+      "nextAction": "Publish donestate@0.1.3 only through explicit npm publisher authority, verify the registry metadata and packed artifact, perform a fresh install that reports 0.1.3, then update Proof & State to identify 0.1.3 as the latest published CLI.",
+      "waitCondition": "PR #138 is merged and exact-head plus post-merge CI are green. The remaining gate is external npm publication authority and a registry receipt; a Git merge is not publication. Hosted MCP 0.3.0 remains an independent release train.",
       "reentryCondition": "Close after npm reports donestate@0.1.3, a fresh install reports 0.1.3, the expected package contents are present, and Proof & State documentation is updated from published CLI 0.1.2 to 0.1.3. Reopen on registry, install, package-content or documentation drift.",
       "lastUpdated": "2026-10-03",
       "staleDate": "2026-10-10",
@@ -1759,17 +1759,17 @@
       "date": "2026-10-03",
       "identity": "Local CLI 0.1.3 release candidate isolated from the hosted MCP version train",
       "situation": "The public Proof & State documentation correctly distinguishes Hosted MCP 0.3.0 from the latest published npm CLI 0.1.2, but the installable CLI has not been released since 27 August while protected main contains a small set of local-controller fixes alongside a much larger hosted-service development history.",
-      "verification": "GitHub comparison v0.1.2...main is 451 commits ahead. The installable controller command surface is unchanged. The release-relevant core behavior change keeps an independent verifier uncertain decision in AWAITING_VERIFICATION rather than mapping it to AMBIGUOUS_EFFECT, and the store no longer records uncertainty as an execution error. The local store also gained a deterministic clock seam without changing its default runtime clock. Current package metadata already includes contracts and the v2 verification schema/vector artifacts. GitHub Releases still identifies v0.1.2, published 27 August 2026, as the latest CLI release. This candidate therefore advances only the local npm package to 0.1.3 and records CLI-specific release notes; it does not copy the hosted MCP 0.3.0 version.",
+      "verification": "GitHub comparison v0.1.2...main was 451 commits ahead before the release candidate. The installable controller command surface is unchanged. The release-relevant core behavior change keeps an independent verifier uncertain decision in AWAITING_VERIFICATION rather than mapping it to AMBIGUOUS_EFFECT, and the store no longer records uncertainty as an execution error. The local store also gained a deterministic clock seam without changing its default runtime clock, and package contents include the current public contract metadata plus v2 verification schema/vector artifacts. PR #138 exact head 15c937dbf7bf592e61ad55f85a15d8800d52cf80 passed CI run 37101537703: core (22), core (24), hosted-plugin, governance impact, root package checks, the permanent high-severity Worker audit and plugin validation all succeeded. The exact diff changed only package.json, package-lock.json, CHANGELOG.md, governance/project-ledger.json and generated docs/PROJECT-STATE.md. PR #138 then merged through protected main as 32e80e1b392a37609c0e0502b4f82cacaef9ee7d. Post-merge CI run 37101581267 passed the same three jobs. No Worker/runtime source changed, so no owned-service deployment was required by this release-candidate merge. GitHub Releases previously identified v0.1.2, published 27 August 2026, as the latest CLI release; no npm registry publication receipt for 0.1.3 is yet recorded.",
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Pass the exact-head protected CI/governance/package gates, merge the bounded 0.1.3 candidate, then publish only through explicit npm release authority and verify the actual registry artifact before changing public published-version claims.",
-        "waitCondition": "Do not infer npm publication from a Git merge and do not widen the frozen hosted MCP tool contract, OAuth scopes, runtime authority or external provider states as part of this CLI release.",
+        "nextAction": "Publish donestate@0.1.3 only through explicit npm publisher authority, verify the registry metadata and package artifact, perform a fresh install, then update the Proof & State public version claim.",
+        "waitCondition": "Repository release preparation is complete and green. npm publication remains an external publisher action and must not be inferred from the merge; Hosted MCP 0.3.0, OAuth scopes, runtime authority and external provider states remain unchanged.",
         "staleDate": "2026-10-10"
       },
-      "outcome": "A CLI-specific 0.1.3 candidate is defined without conflating the local controller with Hosted MCP 0.3.0 or either external marketplace channel.",
+      "outcome": "DoneState main now contains a CI-proven CLI 0.1.3 release subject, kept independent from Hosted MCP 0.3.0; only actual npm publication, registry/install verification and downstream public-version reconciliation remain.",
       "content": "Root npm package and lock version, CLI-specific changelog, canonical project ledger and generated project state only; no hosted Worker source, plugin manifest, MCP tool registration, OAuth scope or provider listing mutation.",
-      "measurement": "451 commits separate v0.1.2 from current main; zero CLI commands added or removed; one user-visible verification-state correction; one CLI release version increment; zero hosted MCP tools changed; zero external provider states changed."
+      "measurement": "PR #138 exact-head CI 37101537703 passed all three jobs; protected merge 32e80e1b392a37609c0e0502b4f82cacaef9ee7d; post-merge CI 37101581267 passed all three jobs; zero CLI commands added or removed; zero hosted Worker/runtime files changed; zero hosted MCP tools, OAuth scopes or external provider states changed; zero npm publication receipts recorded."
     }
   ]
 }
