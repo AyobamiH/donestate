@@ -32,10 +32,57 @@ export class DoneStateController {
     readonly owner = createOwnerId(),
   ) {}
 
-  async start(objective: ObjectiveSpec, policy: ExecutionPolicy): Promise<RunRecord> {
+  async create(objective: ObjectiveSpec, policy: ExecutionPolicy): Promise<RunRecord> {
     const admitted = admitObjective(objective, policy);
-    const run = await this.store.createRun(createRunId(), admitted);
+    return this.store.createRun(createRunId(), admitted);
+  }
+
+  async start(objective: ObjectiveSpec, policy: ExecutionPolicy): Promise<RunRecord> {
+    const run = await this.create(objective, policy);
     return this.resume(run.id);
+  }
+
+  async startExisting(runId: string): Promise<RunRecord> {
+    const run = await this.store.getRun(runId);
+    if (run.state !== "RECEIVED") {
+      throw new DoneStateError("STATE_CONFLICT", `Run ${runId} is ${run.state}; only RECEIVED runs can be started.`);
+    }
+    return this.resume(runId);
+  }
+
+  async cancel(runId: string): Promise<RunRecord> {
+    const run = await this.store.getRun(runId);
+    const immutableStates: RunState[] = [
+      "VERIFIED",
+      "BLOCKED_AUTHORITY",
+      "BLOCKED_SAFETY",
+      "BLOCKED_CAPABILITY",
+      "AMBIGUOUS_EFFECT",
+      "FAILED_SAFE",
+      "CANCELLED",
+      "AWAITING_VERIFICATION",
+    ];
+    if (immutableStates.includes(run.state)) return run;
+    if (await this.store.hasActiveLease(runId)) {
+      throw new DoneStateError(
+        "STATE_CONFLICT",
+        `Run ${runId} has an active worker lease; stop the worker before cancelling local execution.`,
+      );
+    }
+    const running = (await this.store.listActions(runId)).find((action) => action.state === "RUNNING");
+    if (running) {
+      throw new DoneStateError(
+        "AMBIGUOUS_EFFECT",
+        `Action ${running.actionId} is still RUNNING without an active lease; inspect the effect before cancellation.`,
+      );
+    }
+    return this.store.transition(
+      runId,
+      run.state,
+      "CANCELLED",
+      "operator_cancelled",
+      "Cancelled by the local operator.",
+    );
   }
 
   async resume(runId: string): Promise<RunRecord> {
