@@ -63,6 +63,14 @@ export interface ActionSpec {
   idempotencyKey?: string;
 }
 
+export type VerificationRequirement =
+  | { id: string; criterionIndex: number; kind: "path_exists"; path: string }
+  | { id: string; criterionIndex: number; kind: "path_absent"; path: string }
+  | { id: string; criterionIndex: number; kind: "file_contains"; path: string; values: string[] }
+  | { id: string; criterionIndex: number; kind: "json_equals"; path: string; pointer: string; expected: unknown }
+  | { id: string; criterionIndex: number; kind: "changed_files"; max: number; allowedPaths: string[] }
+  | { id: string; criterionIndex: number; kind: "github_checks_pass"; requiredNames: string[] };
+
 export interface ObjectiveSpec {
   schema: "donestate.objective.v1";
   goal: string;
@@ -70,6 +78,7 @@ export interface ObjectiveSpec {
   requestedBy: string;
   acceptanceCriteria: string[];
   actions: ActionSpec[];
+  verificationRequirements?: VerificationRequirement[];
 }
 
 export interface AuthorityGrant {
@@ -175,7 +184,7 @@ export interface VerificationHandoff {
   eventChainHead: string;
 }
 
-export interface VerificationAttestation {
+export interface VerificationAttestationV1 {
   schema: "donestate.verification-attestation.v1";
   runId: string;
   executionSnapshotDigest: string;
@@ -190,6 +199,109 @@ export interface VerificationAttestation {
     signerFingerprint: string;
     signatureBase64: string;
   };
+}
+
+export interface PublicationSubject {
+  schema: "donestate.local-publication-subject.v1";
+  repository: string;
+  baseRef: string;
+  baseHeadSha: string;
+  branchName: string;
+  headSha: string;
+  publication: "branch" | "pull_request";
+  pullRequestNumber: number | null;
+  pullRequestUrl: string | null;
+}
+
+export interface VerificationHandoffV2 {
+  schema: "donestate.verification-handoff.v2";
+  runId: string;
+  generatedAt: string;
+  objectiveDigest: string;
+  executionSnapshotDigest: string;
+  verificationNonce: string;
+  handoffDigest: string;
+  repositoryRoot: string;
+  subject: {
+    repository: string;
+    baseRef: string;
+    baseHeadSha: string;
+    branchName: string;
+    headSha: string;
+    publication: "branch" | "pull_request";
+    pullRequestNumber: number | null;
+    pullRequestUrl: string | null;
+  };
+  acceptanceCriteria: string[];
+  verificationRequirements: VerificationRequirement[];
+  actions: Array<{
+    id: string;
+    state: ActionState;
+    authority: AuthorityClass;
+    idempotencyKey: string;
+    intentDigest: string | null;
+    resultDigest: string | null;
+  }>;
+  eventChainHead: string;
+}
+
+export interface VerificationAttestationV2 {
+  schema: "donestate.verification-attestation.v2";
+  runId: string;
+  executionSnapshotDigest: string;
+  verificationNonce: string;
+  handoffDigest: string;
+  verificationReportDigest: string;
+  decision: "verified" | "failed" | "uncertain";
+  issuedBy: string;
+  issuedAt: string;
+  evidenceRefs: string[];
+  signature: {
+    algorithm: "ed25519";
+    publicKeyPem: string;
+    signerFingerprint: string;
+    signatureBase64: string;
+  };
+}
+
+export type VerificationAttestation = VerificationAttestationV1 | VerificationAttestationV2;
+
+export interface VerificationRequirementResult {
+  requirementId: string;
+  criterionIndex: number;
+  kind: VerificationRequirement["kind"];
+  verdict: "VERIFIED" | "CONTRADICTED" | "UNPROVEN";
+  observed: unknown;
+  evidenceRefs: string[];
+  explanation: string;
+  reasonCode?: string;
+}
+
+export interface VerificationReportV1 {
+  schema: "opstruth.donestate-verification-report.v1";
+  runId: string;
+  handoffDigest: string;
+  verificationNonce: string;
+  observedAt: string;
+  subject: {
+    repository: string;
+    providerRepositoryId: number | null;
+    baseHeadSha: string;
+    expectedHeadSha: string;
+    observedHeadSha: string | null;
+  };
+  decision: "verified" | "failed" | "uncertain";
+  requirementResults: VerificationRequirementResult[];
+  subjectErrors: string[];
+  incompleteActions: Array<{ id: string; state: ActionState }>;
+  evidenceRefs: string[];
+  changedState: false;
+}
+
+export interface VerificationResponseV2 {
+  contractVersion: "donestate.verification-contract.v2";
+  report: VerificationReportV1;
+  attestation: VerificationAttestationV2;
 }
 
 export interface Lease {

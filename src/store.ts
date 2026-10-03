@@ -11,6 +11,8 @@ import type {
   RunRecord,
   RunState,
   VerificationAttestation,
+  PublicationSubject,
+  VerificationResponseV2,
 } from "./types.js";
 import type { AdmittedObjective } from "./policy.js";
 
@@ -70,6 +72,42 @@ CREATE TABLE IF NOT EXISTS donestate_leases (
   expires_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   FOREIGN KEY (run_id) REFERENCES donestate_runs(id)
+);
+CREATE TABLE IF NOT EXISTS donestate_publications (
+  run_id TEXT PRIMARY KEY,
+  subject_json TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (run_id) REFERENCES donestate_runs(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS donestate_verification_replays (
+  run_id TEXT NOT NULL,
+  verification_nonce TEXT NOT NULL,
+  handoff_digest TEXT NOT NULL,
+  accepted_at TEXT NOT NULL,
+  PRIMARY KEY (run_id, verification_nonce),
+  UNIQUE (handoff_digest),
+  FOREIGN KEY (run_id) REFERENCES donestate_runs(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS donestate_verification_responses (
+  run_id TEXT PRIMARY KEY,
+  response_json TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (run_id) REFERENCES donestate_runs(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS donestate_maintenance_findings (
+  id TEXT PRIMARY KEY,
+  repository TEXT NOT NULL,
+  source TEXT NOT NULL CHECK (source IN ('github_issue', 'workflow_run')),
+  source_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  detail TEXT NOT NULL,
+  url TEXT NOT NULL,
+  repair_eligible INTEGER NOT NULL CHECK (repair_eligible IN (0, 1)),
+  state TEXT NOT NULL CHECK (state IN ('OPEN', 'REPAIR_QUEUED', 'CLOSED')),
+  run_id TEXT,
+  discovered_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (repository, source, source_id)
 );
 `;
 
@@ -206,6 +244,291 @@ export class DoneStateStore {
       const row = database.prepare("SELECT * FROM donestate_runs WHERE id = ?").get(id) as RunRow | undefined;
       if (!row) throw new DoneStateError("NOT_FOUND", `Run not found: ${id}`);
       return runFromRow(row);
+    } finally {
+      database.close();
+    }
+  }
+
+  async listRuns(limit = 100): Promise<RunRecord[]> {
+    await this.initialize();
+    if (!Number.isInteger(limit) || limit < 1 || limit > 1000) {
+      throw new DoneStateError("INVALID_INPUT", "Run list limit must be an integer from 1 to 1000.");
+    }
+    const database = this.open();
+    try {
+      const rows = database.prepare(
+        "SELECT * FROM donestate_runs ORDER BY created_at DESC, id DESC LIMIT ?",
+      ).all(limit) as unknown as RunRow[];
+      return rows.map(runFromRow);
+    } finally {
+      database.close();
+    }
+  }
+
+  async hasActiveLease(runId: string): Promise<boolean> {
+    await this.initialize();
+    const database = this.open();
+    try {
+      const row = database.prepare(
+        "SELECT expires_at FROM donestate_leases WHERE run_id = ?",
+      ).get(runId) as { expires_at: string } | undefined;
+      return Boolean(row && new Date(row.expires_at).getTime() > this.clock().getTime());
+    } finally {
+      database.close();
+    }
+  }
+
+  async deleteRun(runId: string): Promise<{ runId: string; deleted: true }> {
+    await this.initialize();
+    const database = this.open();
+    const deletableStates: RunState[] = [
+      "VERIFIED",
+      "BLOCKED_AUTHORITY",
+      "BLOCKED_SAFETY",
+      "BLOCKED_CAPABILITY",
+      "AMBIGUOUS_EFFECT",
+      "FAILED_SAFE",
+      "CANCELLED",
+      "AWAITING_VERIFICATION",
+    ];
+    try {
+      database.exec("BEGIN IMMEDIATE");
+      try {
+        const row = database.prepare("SELECT state FROM donestate_runs WHERE id = ?").get(runId) as { state: RunState } | undefined;
+        if (!row) throw new DoneStateError("NOT_FOUND", `Run not found: ${runId}`);
+        if (!deletableStates.includes(row.state)) {
+          throw new DoneStateError("STATE_CONFLICT", `Run ${runId} is ${row.state}; cancel active work before deleting it.`);
+        }
+        const lease = database.prepare(
+          "SELECT expires_at FROM donestate_leases WHERE run_id = ?",
+        ).get(runId) as { expires_at: string } | undefined;
+        if (lease && new Date(lease.expires_at).getTime() > this.clock().getTime()) {
+          throw new DoneStateError("STATE_CONFLICT", `Run ${runId} still has an active worker lease.`);
+        }
+        database.prepare("DELETE FROM donestate_leases WHERE run_id = ?").run(runId);
+        database.prepare("DELETE FROM donestate_actions WHERE run_id = ?").run(runId);
+        database.prepare("DELETE FROM donestate_events WHERE run_id = ?").run(runId);
+        database.prepare("DELETE FROM donestate_runs WHERE id = ?").run(runId);
+        database.exec("COMMIT");
+      } catch (error) {
+        database.exec("ROLLBACK");
+        throw error;
+      }
+    } finally {
+      database.close();
+    }
+    return { runId, deleted: true };
+  }
+
+  async setPublicationSubject(runId: string, subject: PublicationSubject): Promise<void> {
+    await this.initialize();
+    const database = this.open();
+    const now = this.clock().toISOString();
+    try {
+      database.exec("BEGIN IMMEDIATE");
+      try {
+        const run = database.prepare("SELECT state FROM donestate_runs WHERE id = ?").get(runId) as { state: RunState } | undefined;
+        if (!run) throw new DoneStateError("NOT_FOUND", `Run not found: ${runId}`);
+        if (run.state !== "AWAITING_VERIFICATION") {
+          throw new DoneStateError("STATE_CONFLICT", `Run ${runId} is ${run.state}, not AWAITING_VERIFICATION.`);
+        }
+        database.prepare(`
+          INSERT INTO donestate_publications (run_id, subject_json, updated_at)
+          VALUES (?, ?, ?)
+          ON CONFLICT(run_id) DO UPDATE SET subject_json=excluded.subject_json, updated_at=excluded.updated_at
+        `).run(runId, canonicalJson(subject), now);
+        this.appendEvent(database, runId, "publication_subject_recorded", run.state, run.state, digest(subject), now);
+        database.exec("COMMIT");
+      } catch (error) {
+        database.exec("ROLLBACK");
+        throw error;
+      }
+    } finally {
+      database.close();
+    }
+  }
+
+  async getPublicationSubject(runId: string): Promise<PublicationSubject | null> {
+    await this.initialize();
+    const database = this.open();
+    try {
+      const row = database.prepare("SELECT subject_json FROM donestate_publications WHERE run_id = ?").get(runId) as { subject_json: string } | undefined;
+      return row ? JSON.parse(row.subject_json) as PublicationSubject : null;
+    } finally {
+      database.close();
+    }
+  }
+
+  async hasVerificationReplay(runId: string, verificationNonce: string, handoffDigest: string): Promise<boolean> {
+    await this.initialize();
+    const database = this.open();
+    try {
+      const row = database.prepare(
+        "SELECT run_id FROM donestate_verification_replays WHERE run_id = ? AND (verification_nonce = ? OR handoff_digest = ?) LIMIT 1",
+      ).get(runId, verificationNonce, handoffDigest);
+      return Boolean(row);
+    } finally {
+      database.close();
+    }
+  }
+
+  async saveVerificationResponse(
+    runId: string,
+    response: VerificationResponseV2,
+    nextState: RunState,
+  ): Promise<void> {
+    await this.initialize();
+    const database = this.open();
+    const now = this.clock().toISOString();
+    try {
+      database.exec("BEGIN IMMEDIATE");
+      try {
+        const row = database.prepare("SELECT state FROM donestate_runs WHERE id = ?").get(runId) as { state: RunState } | undefined;
+        if (!row) throw new DoneStateError("NOT_FOUND", `Run not found: ${runId}`);
+        if (row.state !== "AWAITING_VERIFICATION") {
+          throw new DoneStateError("STATE_CONFLICT", `Run is ${row.state}, not AWAITING_VERIFICATION.`);
+        }
+        const replay = database.prepare(
+          "SELECT run_id FROM donestate_verification_replays WHERE run_id = ? AND (verification_nonce = ? OR handoff_digest = ?) LIMIT 1",
+        ).get(runId, response.report.verificationNonce, response.report.handoffDigest);
+        if (replay) throw new DoneStateError("VERIFICATION_REJECTED", "Verification response was already accepted.");
+        database.prepare(
+          "INSERT INTO donestate_verification_replays (run_id, verification_nonce, handoff_digest, accepted_at) VALUES (?, ?, ?, ?)",
+        ).run(runId, response.report.verificationNonce, response.report.handoffDigest, now);
+        database.prepare(`
+          INSERT INTO donestate_verification_responses (run_id, response_json, updated_at)
+          VALUES (?, ?, ?)
+          ON CONFLICT(run_id) DO UPDATE SET response_json=excluded.response_json, updated_at=excluded.updated_at
+        `).run(runId, canonicalJson(response), now);
+        database.prepare(`
+          UPDATE donestate_runs
+          SET state = ?, attestation_json = ?, updated_at = ?, last_error = ?
+          WHERE id = ?
+        `).run(
+          nextState,
+          canonicalJson(response.attestation),
+          now,
+          nextState === "FAILED_SAFE" ? response.report.decision : null,
+          runId,
+        );
+        this.appendEvent(
+          database,
+          runId,
+          "independent_verification_response_recorded",
+          row.state,
+          nextState,
+          response.report.decision,
+          now,
+        );
+        database.exec("COMMIT");
+      } catch (error) {
+        database.exec("ROLLBACK");
+        throw error;
+      }
+    } finally {
+      database.close();
+    }
+  }
+
+  async upsertMaintenanceFinding(finding: {
+    id: string;
+    repository: string;
+    source: "github_issue" | "workflow_run";
+    sourceId: string;
+    title: string;
+    detail: string;
+    url: string;
+    repairEligible: boolean;
+  }): Promise<void> {
+    await this.initialize();
+    const database = this.open();
+    const now = this.clock().toISOString();
+    try {
+      database.prepare(`
+        INSERT INTO donestate_maintenance_findings (
+          id, repository, source, source_id, title, detail, url, repair_eligible, state, run_id, discovered_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'OPEN', NULL, ?, ?)
+        ON CONFLICT(repository, source, source_id) DO UPDATE SET
+          title=excluded.title,
+          detail=excluded.detail,
+          url=excluded.url,
+          repair_eligible=excluded.repair_eligible,
+          updated_at=excluded.updated_at
+      `).run(
+        finding.id,
+        finding.repository,
+        finding.source,
+        finding.sourceId,
+        finding.title,
+        finding.detail,
+        finding.url,
+        finding.repairEligible ? 1 : 0,
+        now,
+        now,
+      );
+    } finally {
+      database.close();
+    }
+  }
+
+  async listMaintenanceFindings(repository?: string): Promise<Array<{
+    id: string;
+    repository: string;
+    source: "github_issue" | "workflow_run";
+    sourceId: string;
+    title: string;
+    detail: string;
+    url: string;
+    repairEligible: boolean;
+    state: "OPEN" | "REPAIR_QUEUED" | "CLOSED";
+    runId: string | null;
+    discoveredAt: string;
+    updatedAt: string;
+  }>> {
+    await this.initialize();
+    const database = this.open();
+    try {
+      const rows = (repository
+        ? database.prepare("SELECT * FROM donestate_maintenance_findings WHERE repository = ? ORDER BY updated_at DESC").all(repository)
+        : database.prepare("SELECT * FROM donestate_maintenance_findings ORDER BY updated_at DESC").all()
+      ) as unknown as Array<Record<string, unknown>>;
+      return rows.map((row) => ({
+        id: row.id as string,
+        repository: row.repository as string,
+        source: row.source as "github_issue" | "workflow_run",
+        sourceId: row.source_id as string,
+        title: row.title as string,
+        detail: row.detail as string,
+        url: row.url as string,
+        repairEligible: row.repair_eligible === 1,
+        state: row.state as "OPEN" | "REPAIR_QUEUED" | "CLOSED",
+        runId: row.run_id as string | null,
+        discoveredAt: row.discovered_at as string,
+        updatedAt: row.updated_at as string,
+      }));
+    } finally {
+      database.close();
+    }
+  }
+
+  async getMaintenanceFinding(id: string): Promise<Awaited<ReturnType<DoneStateStore["listMaintenanceFindings"]>>[number]> {
+    const finding = (await this.listMaintenanceFindings()).find((item) => item.id === id);
+    if (!finding) throw new DoneStateError("NOT_FOUND", `Maintenance finding not found: ${id}`);
+    return finding;
+  }
+
+  async markMaintenanceRepairQueued(id: string, runId: string): Promise<void> {
+    await this.initialize();
+    const database = this.open();
+    try {
+      const result = database.prepare(`
+        UPDATE donestate_maintenance_findings
+        SET state = 'REPAIR_QUEUED', run_id = ?, updated_at = ?
+        WHERE id = ? AND state = 'OPEN' AND repair_eligible = 1
+      `).run(runId, this.clock().toISOString(), id);
+      if (Number(result.changes) !== 1) {
+        throw new DoneStateError("STATE_CONFLICT", `Maintenance finding ${id} is not open and repair-eligible.`);
+      }
     } finally {
       database.close();
     }

@@ -8,6 +8,7 @@ import {
   type AuthorityClass,
   type ExecutionPolicy,
   type ObjectiveSpec,
+  type VerificationRequirement,
 } from "./types.js";
 
 const SECRET_KEY_PATTERN = /(TOKEN|SECRET|PASSWORD|PASSWD|PRIVATE_KEY|API_KEY|CREDENTIAL)/i;
@@ -71,6 +72,56 @@ function validateAction(action: ActionSpec, index: number, seen: Set<string>): v
   if (action.command.env !== undefined && (!isRecord(action.command.env)
     || Object.values(action.command.env).some((item) => typeof item !== "string"))) {
     throw new DoneStateError("INVALID_INPUT", `Action ${action.id} environment values must be strings.`);
+  }
+}
+
+function validateVerificationRequirements(
+  requirements: VerificationRequirement[] | undefined,
+  acceptanceCriteriaCount: number,
+): void {
+  if (requirements === undefined) return;
+  if (!Array.isArray(requirements) || requirements.length > 100) {
+    throw new DoneStateError("INVALID_INPUT", "Verification requirements must be an array with at most 100 entries.");
+  }
+  const ids = new Set<string>();
+  for (const requirement of requirements) {
+    if (!requirement || typeof requirement !== "object" || Array.isArray(requirement)) {
+      throw new DoneStateError("INVALID_INPUT", "A verification requirement is malformed.");
+    }
+    if (!SAFE_ID_PATTERN.test(requirement.id) || ids.has(requirement.id)) {
+      throw new DoneStateError("INVALID_INPUT", `Invalid or duplicate verification requirement id: ${requirement.id}`);
+    }
+    ids.add(requirement.id);
+    if (!Number.isInteger(requirement.criterionIndex)
+      || requirement.criterionIndex < 0
+      || requirement.criterionIndex >= acceptanceCriteriaCount) {
+      throw new DoneStateError("INVALID_INPUT", `Verification requirement ${requirement.id} has an invalid criterionIndex.`);
+    }
+    if (!["path_exists", "path_absent", "file_contains", "json_equals", "changed_files", "github_checks_pass"].includes(requirement.kind)) {
+      throw new DoneStateError("INVALID_INPUT", `Verification requirement ${requirement.id} has an invalid kind.`);
+    }
+    if ("path" in requirement && (typeof requirement.path !== "string" || !requirement.path.trim()
+      || requirement.path.startsWith("/") || requirement.path.includes("\\")
+      || requirement.path.split("/").includes(".."))) {
+      throw new DoneStateError("INVALID_INPUT", `Verification requirement ${requirement.id} has an invalid path.`);
+    }
+    if (requirement.kind === "file_contains"
+      && (!Array.isArray(requirement.values) || requirement.values.length < 1 || requirement.values.length > 20
+        || requirement.values.some((value) => typeof value !== "string" || !value))) {
+      throw new DoneStateError("INVALID_INPUT", `Verification requirement ${requirement.id} values are invalid.`);
+    }
+    if (requirement.kind === "changed_files"
+      && (!Number.isInteger(requirement.max) || requirement.max < 0 || requirement.max > 300
+        || !Array.isArray(requirement.allowedPaths) || requirement.allowedPaths.length < 1 || requirement.allowedPaths.length > 300
+        || new Set(requirement.allowedPaths).size !== requirement.allowedPaths.length)) {
+      throw new DoneStateError("INVALID_INPUT", `Verification requirement ${requirement.id} changed-file rule is invalid.`);
+    }
+    if (requirement.kind === "github_checks_pass"
+      && (!Array.isArray(requirement.requiredNames) || requirement.requiredNames.length > 50
+        || new Set(requirement.requiredNames).size !== requirement.requiredNames.length
+        || requirement.requiredNames.some((name) => typeof name !== "string" || !name.trim() || name.length > 200))) {
+      throw new DoneStateError("INVALID_INPUT", `Verification requirement ${requirement.id} check names are invalid.`);
+    }
   }
 }
 
@@ -169,6 +220,16 @@ export function admitObjective(objective: ObjectiveSpec, policy: ExecutionPolicy
   }
   if (!Array.isArray(objective.actions) || objective.actions.length === 0) {
     throw new DoneStateError("INVALID_INPUT", "At least one action is required.");
+  }
+  validateVerificationRequirements(objective.verificationRequirements, objective.acceptanceCriteria.length);
+  if (policy.trustedVerifierFingerprints.length > 0 && objective.verificationRequirements !== undefined) {
+    const covered = new Set(objective.verificationRequirements.map((item) => item.criterionIndex));
+    if (covered.size !== objective.acceptanceCriteria.length) {
+      throw new DoneStateError(
+        "POLICY_REJECTED",
+        "Every acceptance criterion requires a machine-checkable verification requirement when a trusted verifier is pinned.",
+      );
+    }
   }
   if (objective.actions.length > policy.budgets.maxActions) {
     throw new DoneStateError("POLICY_REJECTED", "The objective exceeds the maximum action budget.");

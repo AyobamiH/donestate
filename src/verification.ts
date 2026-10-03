@@ -1,10 +1,10 @@
 import { validateAttestation } from "./attestation.js";
 import type { DoneStateStore } from "./store.js";
-import type { RunRecord, RunState, VerificationAttestation } from "./types.js";
+import type { RunRecord, RunState, VerificationAttestationV1 } from "./types.js";
 
 export async function recordIndependentAttestation(
   store: DoneStateStore,
-  attestation: VerificationAttestation,
+  attestation: VerificationAttestationV1,
 ): Promise<RunRecord> {
   const run = await store.getRun(attestation.runId);
   if (!run.verificationSnapshotDigest) throw new Error("Run has no sealed verification snapshot.");

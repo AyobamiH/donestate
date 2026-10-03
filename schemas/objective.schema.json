@@ -3,53 +3,378 @@
   "$id": "https://github.com/AyobamiH/donestate/schemas/objective.schema.json",
   "title": "DoneState objective",
   "type": "object",
-  "required": ["schema", "goal", "repositoryRoot", "requestedBy", "acceptanceCriteria", "actions"],
+  "required": [
+    "schema",
+    "goal",
+    "repositoryRoot",
+    "requestedBy",
+    "acceptanceCriteria",
+    "actions"
+  ],
   "additionalProperties": false,
   "properties": {
-    "schema": { "const": "donestate.objective.v1" },
-    "goal": { "type": "string", "minLength": 1 },
-    "repositoryRoot": { "type": "string", "minLength": 1 },
-    "requestedBy": { "type": "string", "minLength": 1 },
+    "schema": {
+      "const": "donestate.objective.v1"
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repositoryRoot": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requestedBy": {
+      "type": "string",
+      "minLength": 1
+    },
     "acceptanceCriteria": {
       "type": "array",
       "minItems": 1,
-      "items": { "type": "string", "minLength": 1 }
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     },
     "actions": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/$defs/action" }
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "verificationRequirements": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/pathExists"
+          },
+          {
+            "$ref": "#/$defs/pathAbsent"
+          },
+          {
+            "$ref": "#/$defs/fileContains"
+          },
+          {
+            "$ref": "#/$defs/jsonEquals"
+          },
+          {
+            "$ref": "#/$defs/changedFiles"
+          },
+          {
+            "$ref": "#/$defs/githubChecksPass"
+          }
+        ]
+      }
     }
   },
   "$defs": {
     "command": {
       "type": "object",
-      "required": ["executable", "args"],
+      "required": [
+        "executable",
+        "args"
+      ],
       "additionalProperties": false,
       "properties": {
-        "executable": { "type": "string", "minLength": 1 },
-        "args": { "type": "array", "items": { "type": "string" } },
-        "cwd": { "type": "string" },
-        "env": { "type": "object", "additionalProperties": { "type": "string" } },
-        "timeoutMs": { "type": "integer", "minimum": 1 },
-        "maxOutputBytes": { "type": "integer", "minimum": 1 }
+        "executable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cwd": {
+          "type": "string"
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "timeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxOutputBytes": {
+          "type": "integer",
+          "minimum": 1
+        }
       }
     },
     "action": {
       "type": "object",
-      "required": ["id", "name", "kind", "authority", "command"],
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "authority",
+        "command"
+      ],
       "additionalProperties": false,
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$" },
-        "name": { "type": "string", "minLength": 1 },
-        "kind": { "enum": ["harness", "command", "validation", "publication"] },
-        "authority": {
-          "enum": ["local_read", "local_write", "test", "commit", "push", "open_pr", "merge", "deploy", "publish", "secret_access", "destructive"]
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
         },
-        "command": { "$ref": "#/$defs/command" },
-        "dependsOn": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
-        "idempotencyKey": { "type": "string", "minLength": 1 }
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "harness",
+            "command",
+            "validation",
+            "publication"
+          ]
+        },
+        "authority": {
+          "enum": [
+            "local_read",
+            "local_write",
+            "test",
+            "commit",
+            "push",
+            "open_pr",
+            "merge",
+            "deploy",
+            "publish",
+            "secret_access",
+            "destructive"
+          ]
+        },
+        "command": {
+          "$ref": "#/$defs/command"
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1
+        }
       }
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[^\\u0000]+$"
+    },
+    "requirementBase": {
+      "type": "object",
+      "required": [
+        "id",
+        "criterionIndex",
+        "kind"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "criterionIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 19
+        },
+        "kind": {
+          "type": "string"
+        }
+      }
+    },
+    "pathExists": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/requirementBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": true,
+            "criterionIndex": true,
+            "kind": {
+              "const": "path_exists"
+            },
+            "path": {
+              "$ref": "#/$defs/path"
+            }
+          }
+        }
+      ]
+    },
+    "pathAbsent": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/requirementBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": true,
+            "criterionIndex": true,
+            "kind": {
+              "const": "path_absent"
+            },
+            "path": {
+              "$ref": "#/$defs/path"
+            }
+          }
+        }
+      ]
+    },
+    "fileContains": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/requirementBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "path",
+            "values"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": true,
+            "criterionIndex": true,
+            "kind": {
+              "const": "file_contains"
+            },
+            "path": {
+              "$ref": "#/$defs/path"
+            },
+            "values": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 20,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            }
+          }
+        }
+      ]
+    },
+    "jsonEquals": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/requirementBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "path",
+            "pointer",
+            "expected"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": true,
+            "criterionIndex": true,
+            "kind": {
+              "const": "json_equals"
+            },
+            "path": {
+              "$ref": "#/$defs/path"
+            },
+            "pointer": {
+              "type": "string",
+              "maxLength": 1000,
+              "pattern": "^(?:|/(?:[^~/]|~[01])*)$"
+            },
+            "expected": true
+          }
+        }
+      ]
+    },
+    "changedFiles": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/requirementBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "max",
+            "allowedPaths"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": true,
+            "criterionIndex": true,
+            "kind": {
+              "const": "changed_files"
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 300
+            },
+            "allowedPaths": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 300,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/path"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "githubChecksPass": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/requirementBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "requiredNames"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": true,
+            "criterionIndex": true,
+            "kind": {
+              "const": "github_checks_pass"
+            },
+            "requiredNames": {
+              "type": "array",
+              "maxItems": 50,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              }
+            }
+          }
+        }
+      ]
     }
   }
 }

@@ -38,3 +38,22 @@ test("resume turns an unsettled mutating intent into AMBIGUOUS_EFFECT", async ()
   assert.equal(resumed.state, "AMBIGUOUS_EFFECT");
   assert.equal((await store.listActions(run.id))[0]!.state, "AMBIGUOUS");
 });
+
+test("lists recent runs and deletes only settled local run state", async () => {
+  const root = await temporaryRoot();
+  const store = new DoneStateStore(path.join(root, "state.sqlite"));
+  const controller = new DoneStateController(store);
+  const first = await controller.create(simpleObjective(root), policyFor(root));
+  const second = await controller.create(simpleObjective(root), policyFor(root));
+  const listed = await store.listRuns();
+  assert.deepEqual(new Set(listed.map((run) => run.id)), new Set([first.id, second.id]));
+
+  await assert.rejects(
+    () => store.deleteRun(first.id),
+    (error: unknown) => error instanceof Error && /cancel active work/.test(error.message),
+  );
+  await controller.cancel(first.id);
+  assert.deepEqual(await store.deleteRun(first.id), { runId: first.id, deleted: true });
+  await assert.rejects(() => store.getRun(first.id), /Run not found/);
+  assert.deepEqual((await store.listRuns()).map((run) => run.id), [second.id]);
+});

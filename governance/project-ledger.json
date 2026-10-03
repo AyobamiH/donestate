@@ -72,6 +72,7 @@
       "workItemIds": [
         "RELEASE-001",
         "CLI-001",
+        "CLI-002",
         "MKT-005",
         "MKT-006",
         "MKT-007",
@@ -817,6 +818,23 @@
         "E-056",
         "E-057"
       ]
+    },
+    {
+      "id": "CLI-002",
+      "title": "Bring portable DoneState capabilities to first-class CLI parity",
+      "stream": "release",
+      "status": "active",
+      "owner": "DoneState maintainers",
+      "nextAction": "Require the full portable-parity branch to pass exact-head Node 22, Node 24, hosted-plugin, governance, verification-contract and package checks. Then exercise one real local publication → v2 handoff → OpsTruth response loop on an eligible test repository, finish exhaustive public docs, and cut the capability expansion as the next CLI minor release.",
+      "waitCondition": "Implementation now covers the portable MCP-equivalent capability set. External end-to-end OpsTruth acceptance and the release/version transition remain evidence gates. Hosted OAuth, credential vaults, Cloudflare runtime allocation, Marketplace lifecycle and hosted account indexing remain intentionally excluded.",
+      "reentryCondition": "Close after exact-head CI, real local publication/verifier acceptance, exhaustive docs closure, and a published minor CLI release are all proven.",
+      "lastUpdated": "2026-10-03",
+      "staleDate": "2026-10-17",
+      "dependencies": [
+        "GOV-001",
+        "CLI-001"
+      ],
+      "evidenceIds": []
     }
   ],
   "evidenceStories": [
