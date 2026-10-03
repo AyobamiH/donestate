@@ -11,6 +11,8 @@ import type {
   RunRecord,
   RunState,
   VerificationAttestation,
+  type PublicationSubject,
+  type VerificationResponseV2,
 } from "./types.js";
 import type { AdmittedObjective } from "./policy.js";
 
@@ -70,6 +72,27 @@ CREATE TABLE IF NOT EXISTS donestate_leases (
   expires_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   FOREIGN KEY (run_id) REFERENCES donestate_runs(id)
+);
+CREATE TABLE IF NOT EXISTS donestate_publications (
+  run_id TEXT PRIMARY KEY,
+  subject_json TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (run_id) REFERENCES donestate_runs(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS donestate_verification_replays (
+  run_id TEXT NOT NULL,
+  verification_nonce TEXT NOT NULL,
+  handoff_digest TEXT NOT NULL,
+  accepted_at TEXT NOT NULL,
+  PRIMARY KEY (run_id, verification_nonce),
+  UNIQUE (handoff_digest),
+  FOREIGN KEY (run_id) REFERENCES donestate_runs(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS donestate_verification_responses (
+  run_id TEXT PRIMARY KEY,
+  response_json TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (run_id) REFERENCES donestate_runs(id) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS donestate_maintenance_findings (
   id TEXT PRIMARY KEY,
@@ -295,6 +318,116 @@ export class DoneStateStore {
       database.close();
     }
     return { runId, deleted: true };
+  }
+
+  async setPublicationSubject(runId: string, subject: PublicationSubject): Promise<void> {
+    await this.initialize();
+    const database = this.open();
+    const now = this.clock().toISOString();
+    try {
+      database.exec("BEGIN IMMEDIATE");
+      try {
+        const run = database.prepare("SELECT state FROM donestate_runs WHERE id = ?").get(runId) as { state: RunState } | undefined;
+        if (!run) throw new DoneStateError("NOT_FOUND", `Run not found: ${runId}`);
+        if (run.state !== "AWAITING_VERIFICATION") {
+          throw new DoneStateError("STATE_CONFLICT", `Run ${runId} is ${run.state}, not AWAITING_VERIFICATION.`);
+        }
+        database.prepare(`
+          INSERT INTO donestate_publications (run_id, subject_json, updated_at)
+          VALUES (?, ?, ?)
+          ON CONFLICT(run_id) DO UPDATE SET subject_json=excluded.subject_json, updated_at=excluded.updated_at
+        `).run(runId, canonicalJson(subject), now);
+        this.appendEvent(database, runId, "publication_subject_recorded", run.state, run.state, digest(subject), now);
+        database.exec("COMMIT");
+      } catch (error) {
+        database.exec("ROLLBACK");
+        throw error;
+      }
+    } finally {
+      database.close();
+    }
+  }
+
+  async getPublicationSubject(runId: string): Promise<PublicationSubject | null> {
+    await this.initialize();
+    const database = this.open();
+    try {
+      const row = database.prepare("SELECT subject_json FROM donestate_publications WHERE run_id = ?").get(runId) as { subject_json: string } | undefined;
+      return row ? JSON.parse(row.subject_json) as PublicationSubject : null;
+    } finally {
+      database.close();
+    }
+  }
+
+  async hasVerificationReplay(runId: string, verificationNonce: string, handoffDigest: string): Promise<boolean> {
+    await this.initialize();
+    const database = this.open();
+    try {
+      const row = database.prepare(
+        "SELECT run_id FROM donestate_verification_replays WHERE run_id = ? AND (verification_nonce = ? OR handoff_digest = ?) LIMIT 1",
+      ).get(runId, verificationNonce, handoffDigest);
+      return Boolean(row);
+    } finally {
+      database.close();
+    }
+  }
+
+  async saveVerificationResponse(
+    runId: string,
+    response: VerificationResponseV2,
+    nextState: RunState,
+  ): Promise<void> {
+    await this.initialize();
+    const database = this.open();
+    const now = this.clock().toISOString();
+    try {
+      database.exec("BEGIN IMMEDIATE");
+      try {
+        const row = database.prepare("SELECT state FROM donestate_runs WHERE id = ?").get(runId) as { state: RunState } | undefined;
+        if (!row) throw new DoneStateError("NOT_FOUND", `Run not found: ${runId}`);
+        if (row.state !== "AWAITING_VERIFICATION") {
+          throw new DoneStateError("STATE_CONFLICT", `Run is ${row.state}, not AWAITING_VERIFICATION.`);
+        }
+        const replay = database.prepare(
+          "SELECT run_id FROM donestate_verification_replays WHERE run_id = ? AND (verification_nonce = ? OR handoff_digest = ?) LIMIT 1",
+        ).get(runId, response.report.verificationNonce, response.report.handoffDigest);
+        if (replay) throw new DoneStateError("VERIFICATION_REJECTED", "Verification response was already accepted.");
+        database.prepare(
+          "INSERT INTO donestate_verification_replays (run_id, verification_nonce, handoff_digest, accepted_at) VALUES (?, ?, ?, ?)",
+        ).run(runId, response.report.verificationNonce, response.report.handoffDigest, now);
+        database.prepare(`
+          INSERT INTO donestate_verification_responses (run_id, response_json, updated_at)
+          VALUES (?, ?, ?)
+          ON CONFLICT(run_id) DO UPDATE SET response_json=excluded.response_json, updated_at=excluded.updated_at
+        `).run(runId, canonicalJson(response), now);
+        database.prepare(`
+          UPDATE donestate_runs
+          SET state = ?, attestation_json = ?, updated_at = ?, last_error = ?
+          WHERE id = ?
+        `).run(
+          nextState,
+          canonicalJson(response.attestation),
+          now,
+          nextState === "FAILED_SAFE" ? response.report.decision : null,
+          runId,
+        );
+        this.appendEvent(
+          database,
+          runId,
+          "independent_verification_response_recorded",
+          row.state,
+          nextState,
+          response.report.decision,
+          now,
+        );
+        database.exec("COMMIT");
+      } catch (error) {
+        database.exec("ROLLBACK");
+        throw error;
+      }
+    } finally {
+      database.close();
+    }
   }
 
   async upsertMaintenanceFinding(finding: {
