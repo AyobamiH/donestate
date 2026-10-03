@@ -76,7 +76,7 @@ The successful #114 canary leaves PR #115 open and unmerged specifically so the 
 
 DoneState is proceeding with the owned Proof & State service as a first-class standalone launch channel. This does **not** abandon either OpenAI/ChatGPT distribution or GitHub Marketplace. Both remain active parallel distribution tracks with their existing integration code and provider-state evidence preserved.
 
-The canonical owned endpoint is `https://donestate.proofandstate.com/mcp`. Controlled standalone access does not wait for OpenAI review or GitHub Marketplace publication. Those external provider states gate only their respective distribution channels. Unrestricted self-serve GA still requires the owned-channel customer account/deletion work, the publisher-level legal decisions tracked in `LEGAL-001`, and one fresh clean-account end-to-end acceptance result.
+The canonical owned endpoint is `https://donestate.proofandstate.com/mcp`. Controlled standalone access does not wait for OpenAI review or GitHub Marketplace publication. Those external provider states gate only their respective distribution channels. CUST-001 and CUST-002 are now satisfied prerequisites following PR #164 (E-064/E-065). Unrestricted self-serve GA still requires the unresolved publisher requirements tracked in `LEGAL-001` and one fresh complete clean-account end-to-end acceptance result.
 
 ## Standalone account controls — 2 October 2026
 
@@ -84,7 +84,9 @@ PR #125 merged to protected `main` as `dab4ef8873d22218b5d9dcc1df5f11c3ed8a79ce`
 
 Production deployment `37006923054` succeeded. The owned service now runs Worker version `cab1ea01-5195-49ab-b921-a8fd0f810be7` with sandbox container digest `sha256:3fb5083c07f82dd6e51d6276c149ec025c9b1d44c4f5d34ed071fc8f2ada5d86`.
 
-The deployed account-controls path reuses the existing credential-setup browser flow rather than adding MCP tools. After deployment, an authenticated production credential-status call succeeded with no active run, and the service issued a fresh short-lived setup URL on the canonical owned domain. The one-time browser page itself has not yet been independently read back with the available server-side fetchers, and no destructive production-account deletion was attempted. Therefore account-console rendering, disposable-account deletion acceptance and unrestricted self-serve GA remain explicit gates.
+The deployed account-controls path reuses the existing credential-setup browser flow rather than adding MCP tools. The initial 2 October observation proved status and link issuance only. Subsequent E-064/E-065 evidence completed production account-layout, real disposable-account deletion and controlled stale-write-fencing acceptance; PR #164 records CUST-001/CUST-002 complete.
+
+The fresh 3 October customer attempt E-066 independently observed the emptied OneClickPostFactory account through the existing authenticated connection, but its execution credential was absent. It stopped at credential connection with `BLOCKED_CAPABILITY`; no fresh customer objective, execution, PR, OpsTruth result or post-result deletion occurred. Fresh signup/OAuth was also not exercised. [The sanitised receipt](../evidence/clean-customer-20261003/acceptance.json) records each step. RELEASE-001 remains blocked on the fresh complete outcome and LEGAL-001, with controlled access continuing.
 
 ## Owned-service aggregate measurement — 2 October 2026
 

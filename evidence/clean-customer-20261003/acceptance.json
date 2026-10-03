@@ -1,0 +1,68 @@
+{
+  "schema": "donestate.clean-customer-acceptance.v1",
+  "attemptId": "clean-customer-20261003-01",
+  "recordedAt": "2026-10-03T20:31:46.233722Z",
+  "sourceCommit": "bb16c68d3a9a28ccc2b7c5b7042d4b4a440d34bf",
+  "serviceOrigin": "https://donestate.proofandstate.com",
+  "account": "OneClickPostFactory",
+  "accountPath": "Existing authorised disposable GitHub identity after account-data purge; not a newly created GitHub identity.",
+  "result": "BLOCKED_CAPABILITY",
+  "completeJourney": false,
+  "observations": [
+    {
+      "step": "sign up / sign in",
+      "status": "PARTIAL",
+      "evidence": "Fresh account-console handoff from the existing authenticated MCP connection visibly identifies OneClickPostFactory. New-customer signup and a fresh OAuth round trip were not exercised."
+    },
+    {
+      "step": "connect execution credential",
+      "status": "BLOCKED_CAPABILITY",
+      "evidence": "Fresh get_openai_credential_status reports connected=false, fingerprint=null, createdAt=null, updatedAt=null, lastUsedAt=null, dailyRunsUsed=0, dailyRunLimit=12, activeRunId=null. Live owned-domain console independently displays no connected OpenAI credential."
+    },
+    {
+      "step": "select repository",
+      "status": "NOT_RUN",
+      "evidence": "Fresh list_maintenance_repositories returns []; live console shows no maintenance repositories selected. No selection or repository write authority was granted in this attempt."
+    },
+    {
+      "step": "create objective",
+      "status": "NOT_RUN",
+      "evidence": "Live console shows zero indexed objectives and zero maintenance findings. No objective created in this attempt."
+    },
+    {
+      "step": "execute",
+      "status": "NOT_RUN",
+      "evidence": "No execution credential is connected; no model execution attempted."
+    },
+    {
+      "step": "publish PR",
+      "status": "NOT_RUN",
+      "evidence": "No customer objective branch, commit or PR produced in this attempt. Documentation reconciliation is separate."
+    },
+    {
+      "step": "OpsTruth VERIFIED",
+      "status": "NOT_RUN",
+      "evidence": "No fresh execution subject or sealed handoff exists. Earlier canaries are not acceptance evidence for this attempt."
+    },
+    {
+      "step": "inspect account",
+      "status": "BASELINE_ONLY",
+      "evidence": "Fresh live console shows OneClickPostFactory, no execution credential, 0/12 usage, no active run, zero selected repositories, zero indexed objectives and zero findings. Post-result inspection not exercised."
+    },
+    {
+      "step": "delete account",
+      "status": "NOT_RUN",
+      "evidence": "No destructive action performed. Earlier E-064/E-065 receipts remain scoped CUST evidence, not a fresh executed-customer deletion receipt."
+    }
+  ],
+  "remainingLaunchGates": [
+    "LEGAL-001 publisher requirements as recorded in the canonical ledger",
+    "One fresh complete clean-customer end-to-end outcome"
+  ],
+  "satisfiedPrerequisites": [
+    "CUST-001 via PR #164 and E-065",
+    "CUST-002 via PR #164 and E-064/E-065"
+  ],
+  "continuation": "Reconnect a usable customer-owned execution credential through the secure owned-domain form, then exercise fresh signup/OAuth evidence, explicit repository selection, one new bounded objective, execution, unmerged PR, exact-head independent OpsTruth verification, account inspection and deletion. Record new evidence at each step; do not reuse historical runs.",
+  "privacy": "No API key, credential fingerprint, cookie, ticket, setup URL or session value retained."
+}
