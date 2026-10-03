@@ -804,11 +804,11 @@
       "id": "CLI-001",
       "title": "Publish the maintained local CLI release train",
       "stream": "release",
-      "status": "deferred",
+      "status": "complete",
       "owner": "DoneState maintainers",
-      "nextAction": "Do not publish the superseded 0.1.3 candidate. Preserve its staging evidence as history while the capability-complete 0.2.0 candidate advances through exact-head CI, documentation closure, package audit, and npm publication authority.",
-      "waitCondition": "The 0.1.3 candidate was overtaken by merged portable CLI parity before npm publication. Publishing it now would expose an obsolete capability surface.",
-      "reentryCondition": "Reopen only if a deliberate historical 0.1.3 publication is required for compatibility; otherwise advance CLI-002.",
+      "nextAction": "Preserve npm publication provenance and fresh-install acceptance for donestate@0.2.0; reopen on registry, install, package-content, provenance, or documentation drift.",
+      "waitCondition": "None.",
+      "reentryCondition": "Reopen if npm no longer serves donestate@0.2.0 as expected, a fresh install does not report 0.2.0, package contents drift from the release contract, or public documentation reports a different latest CLI.",
       "lastUpdated": "2026-10-03",
       "staleDate": "2026-10-10",
       "dependencies": [
@@ -816,7 +816,8 @@
       ],
       "evidenceIds": [
         "E-056",
-        "E-057"
+        "E-057",
+        "E-058"
       ]
     },
     {
@@ -825,8 +826,8 @@
       "stream": "release",
       "status": "active",
       "owner": "DoneState maintainers",
-      "nextAction": "Require the 0.2.0 release candidate to pass exact-head Node 22, Node 24, hosted-plugin, governance, verification-contract, documentation-closure and npm pack checks. Then update the Proof & State public docs to the exhaustive 20-command surface, exercise one real local publication → v2 handoff → OpsTruth response loop on an eligible test repository, and publish only with explicit npm publication authority.",
-      "waitCondition": "Portable parity is merged on main and the 0.2.0 candidate now includes a canonical command manifest plus exhaustive in-repo reference/workflow/troubleshooting docs. External OpsTruth acceptance, Proof & State publication, and npm publication remain evidence gates.",
+      "nextAction": "Complete the remaining external acceptance: exercise one real local CLI publication → sealed v2 handoff → OpsTruth verification loop on the Cloudflare-backed test apparatus, then close after the Proof & State public docs merge and post-merge evidence are clean.",
+      "waitCondition": "Portable parity is merged, donestate@0.2.0 is published and freshly installable, and all 20 commands are present. Only the real external local publication/verifier loop and final public-docs merge/readback remain.",
       "reentryCondition": "Close after exact-head CI, real local publication/verifier acceptance, exhaustive docs closure, and a published minor CLI release are all proven.",
       "lastUpdated": "2026-10-03",
       "staleDate": "2026-10-17",
@@ -834,7 +835,9 @@
         "GOV-001",
         "CLI-001"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-058"
+      ]
     }
   ],
   "evidenceStories": [
@@ -1806,6 +1809,23 @@
       "outcome": "DoneState main now has a CI-proven, stage-only npm OIDC release lane with no long-lived npm write secret and no direct-publish authority; npm-side trusted-publisher setup and explicit 2FA approval remain the external release boundary.",
       "content": "One manual GitHub Actions workflow, one CLI release runbook, canonical governance state, no npm secret, no direct publish action, no Hosted MCP/runtime/tool/OAuth/provider changes.",
       "measurement": "PR #140 exact-head CI 37102102380 passed all three jobs; protected merge 50839cb133e095084433921f5b8165f559e8342c; post-merge CI 37102153454 passed all three jobs; one stage-only workflow present on main; zero npm publish commands; zero long-lived npm write tokens introduced; zero npm trust/stage/publication receipts claimed."
+    },
+    {
+      "id": "E-058",
+      "date": "2026-10-03",
+      "identity": "DoneState CLI 0.2.0 published and freshly installed from npm",
+      "situation": "Portable CLI parity had merged to main and the 0.2.0 release candidate needed an external package-registry receipt plus fresh-install proof before the release train could be called published.",
+      "verification": "The package owner authenticated to npm and reported `npm view donestate version` returning `0.2.0`. A fresh `npm install -g donestate@0.2.0` succeeded. The installed `donestate --help` reported `DoneState 0.2.0` and exposed 20 commands, while `donestate capabilities` reported schema `donestate.cli-capabilities.v1`, version `0.2.0`, audience `human` and `agent`, the portable objective/publication/maintenance/verification/bootstrap surfaces, and `pendingPortableParity: []`.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication → v2 handoff → OpsTruth verification loop, then reconcile the final public documentation state.",
+        "waitCondition": "The npm publication itself is complete. Remaining work is external product acceptance and public documentation closure, not package publication.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "donestate@0.2.0 is publicly published and the installed artifact exposes the complete portable CLI capability surface intended for humans and agents.",
+      "content": "npm registry publication, fresh global installation, built-in help, machine-readable capability inventory.",
+      "measurement": "Registry version 0.2.0; fresh install succeeded; help exposed 20 commands; capabilities reported zero pending portable-parity gaps."
     }
   ]
 }
