@@ -146,6 +146,27 @@ export class DoneStateController {
           `${action.actionId} depends on ${incompleteDependency}.`,
         );
       }
+      if (action.spec.kind === "publication") {
+        const publicationWorkspace = inspectWorkspace(run.objective.repositoryRoot);
+        if (!publicationWorkspace.gitRepository) {
+          return this.store.transition(
+            runId,
+            run.state,
+            "BLOCKED_CAPABILITY",
+            "publication_repository_missing",
+            "Publication requires a Git repository.",
+          );
+        }
+        if (publicationWorkspace.changedFiles.length > run.policy.budgets.maxChangedFiles) {
+          return this.store.transition(
+            runId,
+            run.state,
+            "BLOCKED_SAFETY",
+            "changed_file_budget_exhausted_before_publication",
+            `Workspace has ${publicationWorkspace.changedFiles.length} changed files; policy allows ${run.policy.budgets.maxChangedFiles} before publication.`,
+          );
+        }
+      }
       if (!hasAuthority(run.policy, action.spec.authority)) {
         return this.store.transition(
           runId,
