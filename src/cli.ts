@@ -10,6 +10,7 @@ import { DoneStateError } from "./errors.js";
 import { createVerificationHandoff } from "./handoff.js";
 import { defaultPolicy } from "./policy.js";
 import { DoneStateStore } from "./store.js";
+import { inspectWorkspace } from "./workspace.js";
 import { RUN_STATES, type ExecutionPolicy, type ObjectiveSpec, type VerificationAttestation } from "./types.js";
 import { recordIndependentAttestation } from "./verification.js";
 import { PACKAGE_VERSION } from "./version.js";
@@ -18,7 +19,7 @@ const HELP = `DoneState ${PACKAGE_VERSION}
 
 Usage:
   donestate init [--repo PATH] [--force]
-  donestate go "GOAL" [--repo PATH] [--accept TEXT] [--state-dir PATH]
+  donestate go "GOAL" [--repo PATH] [--accept TEXT] [--publish none|branch|pull_request] [--base REF] [--state-dir PATH]
   donestate create --objective FILE --policy FILE [--state-dir PATH]
   donestate start RUN_ID [--state-dir PATH]
   donestate run --objective FILE --policy FILE [--state-dir PATH]
@@ -167,6 +168,23 @@ async function go(args: ParsedArguments): Promise<void> {
   const goal = args.positionals.join(" ").trim();
   if (!goal) throw new DoneStateError("INVALID_INPUT", "go requires a prose goal.");
   const repositoryRoot = path.resolve(flag(args, "repo") ?? ".");
+  const publication = flag(args, "publish") ?? "none";
+  if (!["none", "branch", "pull_request"].includes(publication)) {
+    throw new DoneStateError("INVALID_INPUT", "--publish must be none, branch, or pull_request.");
+  }
+  const baseRef = flag(args, "base") ?? "main";
+  if (publication !== "none") {
+    const workspace = inspectWorkspace(repositoryRoot);
+    if (!workspace.gitRepository) {
+      throw new DoneStateError("CAPABILITY_MISSING", "Publication requires a Git repository.");
+    }
+    if (workspace.changedFiles.length > 0) {
+      throw new DoneStateError(
+        "POLICY_REJECTED",
+        `Refusing publication from a dirty workspace: ${workspace.changedFiles.join(", ")}`,
+      );
+    }
+  }
   const actions: ObjectiveSpec["actions"] = [
     {
       id: "implement",
@@ -206,6 +224,69 @@ async function go(args: ParsedArguments): Promise<void> {
     dependsOn: [actions.at(-1)!.id],
     command: { executable: "git", args: ["diff", "--check"] },
   });
+  if (publication !== "none") {
+    actions.push(
+      {
+        id: "create-publication-branch",
+        name: "Create the bounded DoneState publication branch",
+        kind: "publication",
+        authority: "commit",
+        dependsOn: ["diff-check"],
+        command: { executable: "git", args: ["checkout", "-b", "donestate/{{runId}}"] },
+      },
+      {
+        id: "stage-publication",
+        name: "Stage repository changes without DoneState runtime state",
+        kind: "publication",
+        authority: "commit",
+        dependsOn: ["create-publication-branch"],
+        command: { executable: "git", args: ["add", "-A", "--", ".", ":(exclude).donestate"] },
+      },
+      {
+        id: "create-commit",
+        name: "Create the bounded DoneState commit",
+        kind: "publication",
+        authority: "commit",
+        dependsOn: ["stage-publication"],
+        command: {
+          executable: "git",
+          args: [
+            "-c", "user.name=DoneState",
+            "-c", "user.email=bot@donestate.dev",
+            "commit", "-m", "DoneState objective {{runId}}",
+          ],
+        },
+      },
+      {
+        id: "push-branch",
+        name: "Publish the exact DoneState branch",
+        kind: "publication",
+        authority: "push",
+        dependsOn: ["create-commit"],
+        command: { executable: "git", args: ["push", "origin", "HEAD:refs/heads/donestate/{{runId}}"] },
+      },
+    );
+    if (publication === "pull_request") {
+      actions.push({
+        id: "open-pull-request",
+        name: "Open the DoneState pull request for review",
+        kind: "publication",
+        authority: "open_pr",
+        dependsOn: ["push-branch"],
+        command: {
+          executable: "gh",
+          args: [
+            "pr", "create",
+            "--base", baseRef,
+            "--head", "donestate/{{runId}}",
+            "--title", "DoneState objective {{runId}}",
+            "--body", "## DoneState objective\n\n{{goal}}\n\nThis change awaits independent verification. DoneState does not prove its own completion.",
+          ],
+          timeoutMs: 120_000,
+        },
+      });
+    }
+  }
   const objective: ObjectiveSpec = {
     schema: "donestate.objective.v1",
     goal,
@@ -218,8 +299,15 @@ async function go(args: ParsedArguments): Promise<void> {
     ],
     actions,
   };
-  const policy = defaultPolicy(repositoryRoot, ["codex", "npm", "git"]);
+  const policy = defaultPolicy(
+    repositoryRoot,
+    publication === "pull_request" ? ["codex", "npm", "git", "gh"] : ["codex", "npm", "git"],
+  );
   policy.allowedEnvironmentKeys = Object.keys(configuredHomeEnvironment());
+  if (publication !== "none") {
+    policy.authority.grants.push({ class: "push", granted: true });
+    if (publication === "pull_request") policy.authority.grants.push({ class: "open_pr", granted: true });
+  }
   console.log(JSON.stringify(await new DoneStateController(storeFor(args)).start(objective, policy), null, 2));
 }
 
