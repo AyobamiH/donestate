@@ -22,18 +22,18 @@ A capability stays hosted-only when its purpose is multi-user service identity, 
 | select_maintenance_repository | no direct equivalent | hosted registry/scheduler concern |
 | list_maintenance_repositories | no direct equivalent | hosted registry/scheduler concern |
 | remove_maintenance_repository | no direct equivalent | hosted registry/scheduler concern |
-| discover_maintenance_work | pending | portable maintenance capability |
-| list_maintenance_findings | pending | portable maintenance capability |
-| start_maintenance_repair | pending | portable bounded-repair capability |
+| discover_maintenance_work | `maintenance-discover` | portable and available |
+| list_maintenance_findings | `maintenance-list` | portable and available |
+| start_maintenance_repair | `maintenance-repair` | portable and available |
 | create_objective | `create` / `run` / `go` | portable and available |
 | start_objective | `start` | portable and available |
 | get_objective | `status` | portable and available |
 | cancel_objective | `cancel` | portable and available |
 | delete_objective | `delete --confirm` | portable and available |
-| create_verification_handoff | `handoff` | portable; local v1 exists, v2 published-subject parity remains |
+| create_verification_handoff | `handoff` | portable; v1 for historical/local-only runs and v2 for sealed published subjects |
 | submit_verifier_attestation | `attest` | portable legacy compatibility |
-| submit_verifier_response | pending | portable v2 verification capability |
-| request_opstruth_verification | pending | portable after local published-subject sealing |
+| submit_verifier_response | `verify-response` | portable and available |
+| request_opstruth_verification | `verify-opstruth` | portable and available for sealed published subjects |
 
 Hosted `create_objective` also includes publication policy. The CLI now exposes equivalent opt-in local publication through `go --publish branch|pull_request`. It uses existing local Git/GitHub authentication instead of recreating GitHub OAuth or the private hosted GitHub App.
 
@@ -51,8 +51,7 @@ The hosted service may use OAuth, a selected GitHub App installation, encrypted 
 
 ## Remaining work
 
-1. Design manual local maintenance discovery/findings/repair so it uses local GitHub authentication and does not import the hosted scheduler/registry.
-2. Add a local published-subject record sufficient to seal the versioned v2 verification handoff.
-3. Port strict v2 verification-response validation to the shared local package surface.
-4. Add direct OpsTruth request/submit commands after the v2 subject is exact and replay-safe.
-5. Keep process-level CLI acceptance tests for agent consumption and document every resulting command/argument before release.
+1. Complete exact-head CI and process-level acceptance for the full parity branch.
+2. Exercise one real local publication → v2 handoff → OpsTruth response loop against an eligible test repository before claiming external end-to-end acceptance.
+3. Finish the exhaustive public documentation and command-reference generation so every portable command, argument, state, recovery path, and deliberate hosted-only exclusion is discoverable and CI-checked.
+4. Cut this capability expansion as a new CLI minor release rather than rewriting the already-staged 0.1.3 release evidence.
