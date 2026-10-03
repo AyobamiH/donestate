@@ -320,7 +320,7 @@
         "E-054",
         "E-055",
         "E-060",
-        "E-061"
+        "E-062"
       ]
     },
     {
@@ -756,18 +756,19 @@
       "id": "OPENAI-001",
       "title": "Close the OpenAI review and legacy transport",
       "stream": "distribution",
-      "status": "blocked",
+      "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-02",
-      "staleDate": "2026-10-16",
-      "nextAction": "Continue resolving the historical app identity versus the observed 0.3.0 review app with OpenAI, preserve the existing submission, and publish that channel only after provider approval. Do not create a duplicate product and do not make this review a dependency of the owned-domain launch.",
-      "waitCondition": "0.3.0 remains externally controlled by provider review and identity continuity is unresolved; this blocks only the OpenAI distribution channel.",
-      "reentryCondition": "Resume immediately on provider identity confirmation, review feedback, approval, or any other state change.",
+      "lastUpdated": "2026-10-03",
+      "staleDate": "2026-10-10",
+      "nextAction": "Deploy the corrected cancellation annotation and accurate account-console link description, complete the owned-website privacy correction, rescan the canonical 0.3.2 draft and distinguish correctable findings from provider-required review before resubmission.",
+      "waitCondition": "The old publisher entry was deleted with explicit owner authority. The replacement 0.3.1 submission was withdrawn with owner approval to correct GitHub-facing links; 0.3.2 is currently a draft with reviewer information retained. Website privacy and MCP findings remain under correction; no approval or publication is claimed.",
+      "reentryCondition": "Advance on exact-head CI and production deployment, then record fresh publisher scan evidence and any explicit owner submission confirmation.",
       "dependencies": [],
       "evidenceIds": [
         "E-005",
         "E-040",
-        "E-041"
+        "E-041",
+        "E-061"
       ]
     },
     {
@@ -1866,6 +1867,23 @@
     },
     {
       "id": "E-061",
+      "date": "2026-10-03",
+      "identity": "Canonical OpenAI submission reset and review-warning corrections",
+      "situation": "The publisher owner authorised deleting the stale OpenAI publisher entry, recreating canonical donestate, submitting 0.3.1 and then withdrawing it to replace GitHub-facing website, support and legal links. The owned website privacy page excluded the live hosted service; cancellation was incorrectly annotated as non-destructive.",
+      "verification": "Live publisher plugin_asdk_app_6abf3b8d3cb08191b1b4e670a707e652 is configured and authorised with 20 discovered tools. The current 0.3.2 draft appsub_bd150ab18a9c8191ba83953d98af6b26 has proofandstate.com/donestate, /contact, /legal/privacy and /legal/terms links; reviewer details survived reupload. Website correction is proposed in AyobamiH/proof-and-state-website PR #19. OpenAI guidelines explicitly classify cancellation as destructive. This candidate changes cancel_objective.destructiveHint to true and accurately describes the external account-console link without adding secret inputs or exposing secret outputs.",
+      "accountability": {
+        "owner": "DoneState maintainers and publisher owner",
+        "status": "active",
+        "nextAction": "Require exact-head checks, protected merge and production deployment; rescan the configured publisher and record whether website privacy and cancellation findings clear. Treat any provider-required account-setup review separately.",
+        "waitCondition": "Candidate CI, merge, deployment and fresh publisher scan are pending. The 0.3.2 draft is not submitted or published.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "The candidate repairs a real cancellation annotation mismatch and clarifies the existing external account-console operation; historical provider entries are not represented as a currently approved product.",
+      "content": "MCP descriptions and cancellation annotation, canonical governance state and generated project state. No tool is added or removed; OAuth scopes, secret-entry boundaries, execution authority and independent verification are unchanged.",
+      "measurement": "20 MCP tools retained; one destructiveHint correction; one accurate console-link description; zero new secret inputs; zero stored secret outputs; zero approval or publication receipts claimed."
+    },
+    {
+      "id": "E-062",
       "date": "2026-10-03",
       "identity": "Production responsive customer acceptance",
       "situation": "CUST-001 had deployed desktop evidence but mobile production acceptance remained unproven.",
