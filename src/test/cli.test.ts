@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { writeFile } from "node:fs/promises";
+import { chmod, mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
@@ -8,13 +8,13 @@ import { policyFor, simpleObjective, temporaryRoot } from "./helpers.js";
 
 const cliPath = fileURLToPath(new URL("../../dist/cli.js", import.meta.url));
 
-function runCli(cwd: string, args: string[]) {
+function runCli(cwd: string, args: string[], env: NodeJS.ProcessEnv = process.env) {
   return spawnSync(process.execPath, [cliPath, ...args], {
     cwd,
     encoding: "utf8",
     shell: false,
     windowsHide: true,
-    env: { ...process.env },
+    env: { ...env },
   });
 }
 
@@ -59,3 +59,49 @@ test("CLI create/list/cancel/delete lifecycle is consumable as structured JSON",
   const empty = jsonOutput(runCli(root, ["list", "--state-dir", stateDir]));
   assert.equal(empty.count, 0);
 });
+
+test("CLI maintenance discovery persists labeled issues and keeps workflow failures evidence-only", async () => {
+  const root = await temporaryRoot();
+  const bin = path.join(root, "bin");
+  const stateDir = path.join(root, "state");
+  await mkdir(bin, { recursive: true });
+  const fakeGh = path.join(bin, "gh");
+  await writeFile(fakeGh, `#!/usr/bin/env node
+const args = process.argv.slice(2);
+if (args[0] !== "api") process.exit(2);
+const endpoint = args[1] || "";
+if (endpoint.includes("/issues?")) {
+  process.stdout.write(JSON.stringify([{
+    number: 17,
+    title: "Repair the bounded parser",
+    body: "The parser rejects a supported input.",
+    html_url: "https://github.com/owner/repo/issues/17"
+  }]));
+} else if (endpoint.includes("/actions/runs?")) {
+  process.stdout.write(JSON.stringify({workflow_runs:[{
+    id: 99,
+    name: "CI",
+    display_title: "tests",
+    html_url: "https://github.com/owner/repo/actions/runs/99",
+    head_sha: "0123456789012345678901234567890123456789"
+  }]}));
+} else process.exit(3);
+`);
+  await chmod(fakeGh, 0o700);
+  const env = { ...process.env, PATH: `${bin}:${process.env.PATH ?? ""}` };
+
+  const discovered = jsonOutput(runCli(root, [
+    "maintenance-discover", "--repo", "owner/repo", "--state-dir", stateDir,
+  ], env));
+  assert.equal(discovered.discovered, 2);
+  assert.equal(discovered.repairEligible, 1);
+
+  const listed = jsonOutput(runCli(root, [
+    "maintenance-list", "--repo", "owner/repo", "--state-dir", stateDir,
+  ], env));
+  assert.equal(listed.count, 2);
+  const findings = listed.findings as Array<{ source: string; repairEligible: boolean }>;
+  assert.equal(findings.find((item) => item.source === "github_issue")?.repairEligible, true);
+  assert.equal(findings.find((item) => item.source === "workflow_run")?.repairEligible, false);
+});
+
