@@ -1,7 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import { isDeepStrictEqual } from "node:util";
 
-for (const file of ["README.md", "CHANGELOG.md", "docs/CURRENT-STATUS.md", "docs/ROADMAP.md", "docs/HOSTED-PLUGIN.md", "docs/DIRECTORY-SUBMISSION.md", "docs/INCIDENT-RESPONSE.md", "docs/GITHUB-MARKETPLACE.md", "docs/GITHUB-MARKETPLACE-PREFLIGHT.md", "docs/GITHUB-MARKETPLACE-DEVELOPMENT.md", "governance/project-ledger.json", "AGENTS.md"]) {
+for (const file of ["README.md", "CHANGELOG.md", "docs/CURRENT-STATUS.md", "docs/ROADMAP.md", "docs/HOSTED-PLUGIN.md", "docs/DIRECTORY-SUBMISSION.md", "docs/INCIDENT-RESPONSE.md", "docs/GITHUB-MARKETPLACE.md", "docs/GITHUB-MARKETPLACE-PREFLIGHT.md", "docs/GITHUB-MARKETPLACE-DEVELOPMENT.md", "docs/CLI-REFERENCE.md", "docs/USER-WORKFLOW.md", "docs/TROUBLESHOOTING.md", "docs/cli-command-manifest.json", "governance/project-ledger.json", "AGENTS.md"]) {
   await access(new URL(`../${file}`, import.meta.url));
 }
 const [readme, hosted, status, roadmap, directory, marketplace, marketplacePreflight, marketplaceDevelopment, ledgerSource] = await Promise.all([
@@ -16,6 +16,55 @@ const [readme, hosted, status, roadmap, directory, marketplace, marketplacePrefl
   readFile(new URL("../governance/project-ledger.json", import.meta.url), "utf8"),
 ]);
 const ledger = JSON.parse(ledgerSource);
+
+const [cliSource, cliReference, cliManifestSource] = await Promise.all([
+  readFile(new URL("../src/cli.ts", import.meta.url), "utf8"),
+  readFile(new URL("../docs/CLI-REFERENCE.md", import.meta.url), "utf8"),
+  readFile(new URL("../docs/cli-command-manifest.json", import.meta.url), "utf8"),
+]);
+const cliManifest = JSON.parse(cliManifestSource);
+if (cliManifest.schema !== "donestate.cli-command-manifest.v1") {
+  throw new Error("CLI command manifest schema is invalid");
+}
+const switchCommands = [...cliSource.matchAll(/case "([^"]+)":/g)]
+  .map((match) => match[1])
+  .filter((name) => !["help", "--help", "-h"].includes(name));
+const manifestCommands = cliManifest.commands.map((command) => command.name);
+if (!isDeepStrictEqual([...new Set(switchCommands)].sort(), [...manifestCommands].sort())) {
+  throw new Error(`CLI command manifest drift: switch=${switchCommands.sort().join(",")} manifest=${manifestCommands.sort().join(",")}`);
+}
+for (const command of cliManifest.commands) {
+  if (!cliSource.includes(command.syntax)) {
+    throw new Error(`CLI help is missing manifest syntax for ${command.name}: ${command.syntax}`);
+  }
+  if (!cliReference.includes(`### \`donestate ${command.name}\``)) {
+    throw new Error(`CLI reference is missing command section: ${command.name}`);
+  }
+  if (!cliReference.includes(command.syntax)) {
+    throw new Error(`CLI reference is missing exact syntax for ${command.name}`);
+  }
+}
+for (const requiredTopic of [
+  "human and agent",
+  "AMBIGUOUS_EFFECT",
+  "BLOCKED_AUTHORITY",
+  "BLOCKED_CAPABILITY",
+  "BLOCKED_SAFETY",
+  "FAILED_SAFE",
+  "AWAITING_VERIFICATION",
+  "verify-opstruth",
+  "maintenance-repair",
+]) {
+  const documentation = (await Promise.all([
+    readFile(new URL("../docs/USER-WORKFLOW.md", import.meta.url), "utf8"),
+    readFile(new URL("../docs/TROUBLESHOOTING.md", import.meta.url), "utf8"),
+    Promise.resolve(cliReference),
+  ])).join("\n");
+  if (!documentation.toLowerCase().includes(requiredTopic.toLowerCase())) {
+    throw new Error(`CLI public documentation is missing required topic: ${requiredTopic}`);
+  }
+}
+
 if (/full hosted canary remain|required canaries before directory submission/.test(`${readme}\n${hosted}`)) {
   throw new Error("documentation still claims the completed hosted canary is pending");
 }
