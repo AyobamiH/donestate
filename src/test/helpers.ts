@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { attestationSigningInput, verifierFingerprint, type UnsignedAttestation } from "../attestation.js";
 import { defaultPolicy } from "../policy.js";
-import type { ExecutionPolicy, ObjectiveSpec, VerificationAttestation } from "../types.js";
+import type { ExecutionPolicy, ObjectiveSpec, VerificationAttestationV1 } from "../types.js";
 
 export async function temporaryRoot(prefix = "donestate-test-"): Promise<string> {
   return mkdtemp(path.join(os.tmpdir(), prefix));
@@ -35,7 +35,7 @@ export function policyFor(root: string, executable = process.execPath): Executio
 
 export function signedAttestation(
   unsigned: UnsignedAttestation,
-): { attestation: VerificationAttestation; fingerprint: string } {
+): { attestation: VerificationAttestationV1; fingerprint: string } {
   const pair = generateKeyPairSync("ed25519");
   const publicKeyPem = pair.publicKey.export({ type: "spki", format: "pem" }).toString();
   const fingerprint = verifierFingerprint(publicKeyPem);
