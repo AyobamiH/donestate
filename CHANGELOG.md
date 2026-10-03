@@ -4,6 +4,8 @@ All notable changes follow Keep a Changelog. This project uses Semantic Versioni
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-03
+
 ### Added
 
 - Portable local CLI lifecycle controls for create-without-run, explicit start, cancellation, safe deletion, run listing, machine-readable capability discovery, opt-in branch/pull-request publication from a clean local Git workspace, local maintenance discovery/PR-only repair, sealed v2 publication handoffs, strict v2 verifier-response acceptance, and direct OpsTruth verification requests.
