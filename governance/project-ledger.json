@@ -825,9 +825,9 @@
       "stream": "release",
       "status": "active",
       "owner": "DoneState maintainers",
-      "nextAction": "Verify the current portable-parity slice end to end: create/start/cancel/delete/list/capabilities plus opt-in clean-worktree branch/pull-request publication with pre-effect changed-file budget enforcement. Then reconcile local maintenance and the v2 OpsTruth response/request path without importing hosted identity, multi-tenant storage, Cloudflare runtime allocation, or provider-marketplace lifecycle.",
-      "waitCondition": "Do not merge this feature branch into the staged 0.1.3 release line until the package-version/release transition is explicit. Local publication requires existing git/gh authentication; hosted OAuth and GitHub App infrastructure remain intentionally excluded.",
-      "reentryCondition": "Continue until every MCP capability is classified as shared-portable or genuinely hosted-only, every shared-portable capability has a CLI path or explicit documented reason for exclusion, and both human and agent CLI acceptance are green.",
+      "nextAction": "Require the full portable-parity branch to pass exact-head Node 22, Node 24, hosted-plugin, governance, verification-contract and package checks. Then exercise one real local publication → v2 handoff → OpsTruth response loop on an eligible test repository, finish exhaustive public docs, and cut the capability expansion as the next CLI minor release.",
+      "waitCondition": "Implementation now covers the portable MCP-equivalent capability set. External end-to-end OpsTruth acceptance and the release/version transition remain evidence gates. Hosted OAuth, credential vaults, Cloudflare runtime allocation, Marketplace lifecycle and hosted account indexing remain intentionally excluded.",
+      "reentryCondition": "Close after exact-head CI, real local publication/verifier acceptance, exhaustive docs closure, and a published minor CLI release are all proven.",
       "lastUpdated": "2026-10-03",
       "staleDate": "2026-10-17",
       "dependencies": [
