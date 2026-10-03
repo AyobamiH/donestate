@@ -18,7 +18,7 @@ import {
 import { defaultPolicy } from "./policy.js";
 import { DoneStateStore } from "./store.js";
 import { inspectWorkspace } from "./workspace.js";
-import { RUN_STATES, type ExecutionPolicy, type ObjectiveSpec, type PublicationSubject, type VerificationAttestation, type VerificationResponseV2 } from "./types.js";
+import { RUN_STATES, type ExecutionPolicy, type ObjectiveSpec, type PublicationSubject, type VerificationAttestationV1, type VerificationResponseV2 } from "./types.js";
 import { recordIndependentAttestation } from "./verification.js";
 import { PACKAGE_VERSION } from "./version.js";
 
@@ -567,7 +567,7 @@ async function verifyOpsTruth(args: ParsedArguments): Promise<void> {
 }
 
 async function attest(args: ParsedArguments): Promise<void> {
-  const document = await readJson<VerificationAttestation>(flag(args, "file", true)!);
+  const document = await readJson<VerificationAttestationV1>(flag(args, "file", true)!);
   console.log(JSON.stringify(await recordIndependentAttestation(storeFor(args), document), null, 2));
 }
 
