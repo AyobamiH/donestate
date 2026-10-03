@@ -1,0 +1,39 @@
+{
+  "schema": "donestate.account-deletion-acceptance.v1",
+  "date": "2026-10-03",
+  "origin": "https://donestate.proofandstate.com",
+  "fixtureRunId": "6e456711-13a7-4010-81fc-e4dde3d468bd",
+  "fixtureRepository": "OneClickPostFactory/social-agents",
+  "baseHeadSha": "4081932b4061a6f5c85f035550a50272f4e50c57",
+  "autoStart": false,
+  "checks": {
+    "identityConfirmed": true,
+    "initialIndexedRuns": 0,
+    "refusedReceivedObjective": true,
+    "cancelledBeforeDeletion": true,
+    "deletedIndexedRuns": 1,
+    "objectiveReadback": "run not found",
+    "credentialConnectedAfter": false,
+    "credentialMetadataAfter": null,
+    "staleDeletionSessionHttpStatus": 401,
+    "freshConsoleIndexedRuns": 0,
+    "freshConsoleSelectedRepositories": 0,
+    "freshConsoleFindings": 0,
+    "dailyRunsUsed": 0,
+    "actions": 0,
+    "publication": null
+  },
+  "observedTimes": {
+    "created": "2026-10-03T17:49:24.818Z",
+    "refused": "2026-10-03T17:50:22.426Z",
+    "cancelled": "2026-10-03T17:50:29.297Z",
+    "deleted": "2026-10-03T17:50:45.116Z",
+    "staleSessionRejected": "2026-10-03T17:51:05.511Z"
+  },
+  "limits": [
+    "No production already-admitted stale in-flight mutation was injected. Session rejection is not equivalent to generation-fencing proof.",
+    "Historical unindexed objectives retain the known-run-ID/privacy-request erasure limitation.",
+    "This is account deletion acceptance, not independent verification of executed code."
+  ],
+  "transportNote": "An initial direct request failed DNS resolution before transmission. Browser transport was then used successfully."
+}
