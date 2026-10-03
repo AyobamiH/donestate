@@ -9,6 +9,7 @@ import type {
   VerificationHandoffV2,
   VerificationReportV1,
   VerificationRequirement,
+  RunRecord,
   VerificationRequirementResult,
   VerificationResponseV2,
 } from "./types.js";
@@ -98,7 +99,7 @@ export async function createVerificationHandoffV2(
   const payload = {
     schema: "donestate.verification-handoff.v2" as const,
     runId,
-    generatedAt: new Date().toISOString(),
+    generatedAt: run.updatedAt,
     objectiveDigest: run.objectiveDigest,
     executionSnapshotDigest: run.verificationSnapshotDigest,
     verificationNonce,
@@ -239,7 +240,7 @@ export async function recordVerificationResponseV2(
   store: DoneStateStore,
   runId: string,
   response: VerificationResponseV2,
-): Promise<ReturnType<DoneStateStore["getRun"]>> {
+): Promise<RunRecord> {
   const run = await store.getRun(runId);
   const handoff = await createVerificationHandoffV2(store, runId);
   await validateVerificationResponseV2(response, handoff, run.objective, run.policy.trustedVerifierFingerprints);
