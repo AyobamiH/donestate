@@ -77,7 +77,18 @@ donestate verify-log RUN_ID
 donestate capabilities
 ```
 
-The CLI is a first-class interface for both humans and agents. Hosted identity, multi-user credential storage, Cloudflare sandbox allocation, provider-review identity and Marketplace lifecycle remain hosted-service concerns rather than artificial local CLI features.
+The CLI is a first-class interface for both humans and agents. A clean local Git workspace can also opt into reviewable publication:
+
+```bash
+donestate go "Fix issue 214 and preserve the public API" \
+  --accept "The regression test passes and no public export changes" \
+  --publish pull_request \
+  --base main
+```
+
+`--publish branch` creates and pushes only the bounded `donestate/RUN_ID` branch. `--publish pull_request` additionally uses the locally authenticated `gh` CLI to open a pull request. Publication is off by default, refuses a dirty starting workspace, excludes `.donestate` runtime state from staging, checks the changed-file budget before the first publication effect, and grants `push`/`open_pr` authority only because the operator explicitly requested that consequence.
+
+Hosted identity, multi-user credential storage, Cloudflare sandbox allocation, provider-review identity and Marketplace lifecycle remain hosted-service concerns rather than artificial local CLI features.
 
 Run the bounded local demonstration:
 
