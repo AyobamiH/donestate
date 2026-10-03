@@ -39,7 +39,25 @@ jobs:
         shell: bash
         run: |
           token="$(openssl rand -hex 32)"
+          echo "::add-mask::$token"
           echo "token=$token" >> "$GITHUB_OUTPUT"
+
+      - name: Remove one-run acceptance secrets from production Worker
+        working-directory: apps/mcp-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          set +e
+          printf 'y\n' | npx wrangler secret delete CLI_ACCEPTANCE_TOKEN --name donestate-mcp --config wrangler.jsonc
+          printf 'y\n' | npx wrangler secret delete GH_TOKEN --name donestate-mcp --config wrangler.jsonc
+          secrets="$(npx wrangler secret list --name donestate-mcp --config wrangler.jsonc --format json)"
+          jq -e '
+            ([.[].name] | index("CLI_ACCEPTANCE_TOKEN")) == null and
+            ([.[].name] | index("GH_TOKEN")) == null
+          ' <<<"$secrets"
+          exit $?
 
       - id: deploy
         name: Deploy ephemeral acceptance Worker
@@ -51,12 +69,25 @@ jobs:
           wranglerVersion: 4.127.1
           packageManager: npm
           command: deploy --config wrangler.cli-acceptance.jsonc
-          secrets: |
-            CLI_ACCEPTANCE_TOKEN
-            GH_TOKEN
+
+      - name: Upload secrets to the ephemeral acceptance Worker
+        working-directory: apps/mcp-worker
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLI_ACCEPTANCE_TOKEN: ${{ steps.auth.outputs.token }}
           GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -n \
+            --arg acceptance_token "$CLI_ACCEPTANCE_TOKEN" \
+            --arg gh_token "$GH_TOKEN" \
+            '{CLI_ACCEPTANCE_TOKEN: $acceptance_token, GH_TOKEN: $gh_token}' \
+            | npx wrangler secret bulk --name donestate-cli-acceptance --config wrangler.cli-acceptance.jsonc
+
+          npx wrangler secret list --name donestate-cli-acceptance --config wrangler.cli-acceptance.jsonc --format json \
+            | jq -e '[.[].name] | sort == ["CLI_ACCEPTANCE_TOKEN", "GH_TOKEN"]'
 
       - id: start
         name: Start published CLI inside Cloudflare Sandbox

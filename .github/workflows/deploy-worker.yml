@@ -8,6 +8,8 @@ on:
       - feat/chatgpt-plugin-0.2.0
     paths:
       - apps/mcp-worker/**
+      - '!apps/mcp-worker/src/cli-acceptance-worker.ts'
+      - '!apps/mcp-worker/wrangler.cli-acceptance.jsonc'
       - .github/workflows/deploy-worker.yml
 
 permissions:
