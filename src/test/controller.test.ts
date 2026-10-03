@@ -164,3 +164,39 @@ test("reconciliation blocks a Git workspace that exceeds the changed-file budget
   assert.equal(run.state, "BLOCKED_SAFETY");
   assert.match(run.lastError ?? "", /2 changed files/);
 });
+
+test("creates a durable objective without executing until explicitly started", async () => {
+  const root = await temporaryRoot();
+  const store = new DoneStateStore(path.join(root, "state.sqlite"));
+  const controller = new DoneStateController(store);
+  const created = await controller.create(simpleObjective(root), policyFor(root));
+  assert.equal(created.state, "RECEIVED");
+  assert.deepEqual((await store.listActions(created.id)).map((action) => action.state), ["PENDING"]);
+
+  const started = await controller.startExisting(created.id);
+  assert.equal(started.state, "AWAITING_VERIFICATION");
+});
+
+test("cancels a created local objective before execution", async () => {
+  const root = await temporaryRoot();
+  const store = new DoneStateStore(path.join(root, "state.sqlite"));
+  const controller = new DoneStateController(store);
+  const created = await controller.create(simpleObjective(root), policyFor(root));
+  const cancelled = await controller.cancel(created.id);
+  assert.equal(cancelled.state, "CANCELLED");
+  assert.match(cancelled.lastError ?? "", /Cancelled by the local operator/);
+});
+
+test("refuses local cancellation while another worker lease is active", async () => {
+  const root = await temporaryRoot();
+  const store = new DoneStateStore(path.join(root, "state.sqlite"));
+  const controller = new DoneStateController(store);
+  const created = await controller.create(simpleObjective(root), policyFor(root));
+  const lease = await store.acquireLease(created.id, "worker-a", 60_000);
+  assert.equal(lease.acquired, true);
+  await assert.rejects(
+    () => controller.cancel(created.id),
+    (error: unknown) => error instanceof DoneStateError && error.code === "STATE_CONFLICT",
+  );
+  assert.equal((await store.getRun(created.id)).state, "RECEIVED");
+});
