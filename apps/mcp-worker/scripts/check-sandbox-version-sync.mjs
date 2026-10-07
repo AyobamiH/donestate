@@ -1,9 +1,14 @@
 import fs from "node:fs";
+import ts from "typescript";
+import { checkSandboxResources } from "./sandbox-resource-policy.mjs";
 
 const packageJson = JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const packageLock = JSON.parse(fs.readFileSync(new URL("../package-lock.json", import.meta.url), "utf8"));
 const dockerfile = fs.readFileSync(new URL("../Dockerfile", import.meta.url), "utf8");
 const wranglerConfig = fs.readFileSync(new URL("../wrangler.jsonc", import.meta.url), "utf8");
+const parsedConfig = ts.parseConfigFileTextToJson("wrangler.jsonc", wranglerConfig);
+if (parsedConfig.error) throw new Error("Production Wrangler configuration is invalid JSONC");
+const resources = checkSandboxResources(parsedConfig.config);
 
 const sdkVersion = packageJson.dependencies?.["@cloudflare/sandbox"];
 if (typeof sdkVersion !== "string" || !/^\d+\.\d+\.\d+$/.test(sdkVersion)) {
@@ -24,4 +29,4 @@ const transportMatch = wranglerConfig.match(/"SANDBOX_TRANSPORT"\s*:\s*"([^"]+)"
 if (!transportMatch || transportMatch[1] !== "rpc") {
   throw new Error(`Cloudflare Sandbox transport must be pinned to rpc; found ${transportMatch?.[1] ?? "unset"}`);
 }
-console.log(`Cloudflare Sandbox versions aligned at ${sdkVersion}; transport=rpc`);
+console.log(`Cloudflare Sandbox versions aligned at ${sdkVersion}; transport=rpc; instance=${resources.instanceType}; memory=${resources.memoryMib} MiB`);
