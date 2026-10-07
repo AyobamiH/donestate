@@ -6,6 +6,12 @@ The canonical recovery order, owners, wait conditions, stale dates, and Evidence
 
 As of 2026-09-04, the production DoneState-to-OpsTruth maintenance loop has one complete fresh end-to-end `VERIFIED` successor. This does not rewrite any historical `AWAITING_VERIFICATION`, `AMBIGUOUS_EFFECT`, `BLOCKED_CAPABILITY`, or failed-safe run.
 
+## Fresh customer continuation, 7 October 2026
+
+The disposable OneClickPostFactory execution credential is connected. The fresh attempt stopped before objective/model execution: admission rejected push access to `AyobamiH/donestate`, and independent GitHub readback confirms the customer identity has only `read` permission. The temporary customer maintenance selection was removed; the unused credential remains connected. E-067 and `evidence/clean-customer-20261007/acceptance.json` record each step.
+
+Continuation needs the owner's exact temporary write-access decision and accepted customer grant, then the public-repository OAuth objective, unmerged PR, exact-head CI, independent OpsTruth result and post-result inspection/deletion. No App or verifier scope was expanded. CUST-001/CUST-002 remain complete; RELEASE-001 remains blocked on the fresh complete customer outcome and LEGAL-001. Historical E-066 retains its original absent-credential observation.
+
 ## Default branch governance
 
 Current GitHub provider state is **PROTECTED**. Repository ruleset **22247029**, `DoneState main governance`, is active on `refs/heads/main`. It requires pull requests, exact checks `core (22)`, `core (24)`, and `hosted-plugin` pinned to GitHub Actions integration `15368`, strict target-branch freshness, resolved review conversations, deletion blocking, and non-fast-forward blocking, with zero required human approvals and one owner emergency bypass.
