@@ -1,0 +1,68 @@
+{
+  "schema": "proof-state.customer-account-cleanup.v1",
+  "observedAt": "2026-10-07T10:29:53.191Z",
+  "customer": "OneClickPostFactory",
+  "repository": "AyobamiH/donestate",
+  "authorization": "Existing explicit disposable-account deletion and exact post-result temporary Write removal, reaffirmed by the approved bounded continuation. No additional account, repository or permission scope.",
+  "before": {
+    "indexedRuns": [
+      "257bbf51-66d2-4cd0-838d-01bbe66e2608",
+      "c9586ced-df91-4c49-aa97-8d07c04af16b"
+    ],
+    "allIndexedStates": "FAILED_SAFE",
+    "activeRun": null,
+    "selectedRepositories": 0,
+    "maintenanceFindings": 0,
+    "credentialConnected": true,
+    "temporaryCollaboratorGitHubId": 281453754,
+    "repositoryPermission": "write"
+  },
+  "accountDeletion": {
+    "method": "First-party DoneState account console; exact confirm_login OneClickPostFactory; one delete_account submission.",
+    "visibleHeading": "DoneState account data deleted",
+    "deletedIndexedObjectives": 2,
+    "deletedSelectedRepositories": 0,
+    "deletedMaintenanceFindings": 0,
+    "scope": "Indexed DoneState service account data and stored execution credential; GitHub account and repositories retained.",
+    "knownLimits": "Minimal opaque deletion-generation fences remain by design. This receipt does not establish deletion of unknown pre-index historical objectives or unrelated provider/account data."
+  },
+  "after": {
+    "credentialConnected": false,
+    "activeRunId": null,
+    "lastUsedAt": null,
+    "dailyRunsUsed": 0,
+    "maintenanceRepositories": [],
+    "objectiveReadback": [
+      {
+        "runId": "c9586ced-df91-4c49-aa97-8d07c04af16b",
+        "error_code": "INVALID_ARGUMENT",
+        "message": "run not found"
+      },
+      {
+        "runId": "257bbf51-66d2-4cd0-838d-01bbe66e2608",
+        "error_code": "INVALID_ARGUMENT",
+        "message": "run not found"
+      }
+    ],
+    "repositoryPermission": "read",
+    "githubVisibleReceipt": "Removed OneClickPostFactory as a collaborator of AyobamiH/donestate"
+  },
+  "retainedEvidence": {
+    "customerRun": "attempt-04.json in DoneState; customer-attempt-04.json in portfolio, published before deletion.",
+    "priorRun": "attempt-03.json in DoneState and customer-attempt-03.json in portfolio remain immutable.",
+    "githubAccount": "Retained",
+    "customerPullRequest": "None created",
+    "historicalMaintenanceProof": "Unrelated existing owner canaries and unmerged PR #115 unchanged.",
+    "verifierScope": "DoneState-only verifier App scope and signing-key pin unchanged."
+  },
+  "futureExecution": {
+    "requires": [
+      "Owner-funded OpenAI API organization associated with the execution key.",
+      "A new key connection after this intentional service-data cleanup.",
+      "Explicitly authorised bounded repository Write and a new PR-only objective.",
+      "Successful exact-head required CI and independently pinned OpsTruth verification.",
+      "Fresh signup recorded separately and remaining legal operator decisions before unrestricted GA."
+    ],
+    "automaticRetry": false
+  }
+}
