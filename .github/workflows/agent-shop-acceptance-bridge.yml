@@ -1,0 +1,65 @@
+name: Agent Shop Acceptance Bridge
+
+on:
+  push:
+    branches:
+      - ops/agent-shop-acceptance-bridge
+    paths:
+      - ".github/workflows/agent-shop-acceptance-bridge.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agent-shop-acceptance-bridge
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      ACCEPTANCE_ORIGIN: https://agent-shop.woeinvests.workers.dev
+      VITE_SITE_ORIGIN: https://agent-shop.woeinvests.workers.dev
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      AGENT_SHOP_REVISION: fe423e5ae27f3043058a3674395eb4e757ba0248
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Verify Cloudflare credential custody
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+      - name: Fetch canonical agent shop
+        run: |
+          git clone --filter=blob:none https://github.com/AyobamiH/agent-shop-products.git agent-shop-products
+          cd agent-shop-products
+          git checkout "$AGENT_SHOP_REVISION"
+          test "$(git rev-parse HEAD)" = "$AGENT_SHOP_REVISION"
+      - name: Install and build
+        working-directory: agent-shop-products/frontend
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+      - name: Validate Cloudflare Worker bundle
+        working-directory: agent-shop-products/frontend
+        run: bunx wrangler@4.135.0 deploy --dry-run --config wrangler.jsonc --outdir /tmp/agent-shop-worker
+      - name: Deploy agent-shop Worker
+        working-directory: agent-shop-products/frontend
+        run: bunx wrangler@4.135.0 deploy --config wrangler.jsonc
+      - name: Wait for acceptance origin
+        run: |
+          for i in {1..60}; do
+            if curl --fail --silent --show-error --location "$ACCEPTANCE_ORIGIN/agents" >/dev/null; then
+              echo "Acceptance origin is reachable."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::Acceptance origin did not become reachable."
+          exit 1
+      - name: Outside-in agent and crawler acceptance
+        working-directory: agent-shop-products/frontend
+        run: node scripts/verify-deployed-surface.mjs
