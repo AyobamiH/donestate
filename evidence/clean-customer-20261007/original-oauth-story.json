@@ -1,0 +1,27 @@
+{
+  "schema": "donestate.original-unmerged-story.v1",
+  "originalPullRequest": 168,
+  "originalHead": "e27e8d8bcf88b4612c65c867212f30f053ea51b0",
+  "originalStory": {
+    "id": "E-069",
+    "date": "2026-10-07",
+    "identity": "Owner-approved rollout deployed; fresh customer GitHub OAuth rejected",
+    "situation": "The owner approved the three reviewed rollout merges and temporary Write for the exact disposable customer. The invitation was accepted before a new bounded public-OAuth objective admission attempt.",
+    "verification": "DoneState PR #166 merged as 5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4 after the exact-head gates passed. Post-merge CI 37577391832 and production deployment 37577391829 succeeded. Deployment job 112649238485 reports Worker 98d66425-8a2c-4caf-a2a4-dced459bdd40 and container sha256:89239658656b1fe3cef2db45058fb8c7fa02e01ee4d5ecc04c8fa7e6ada9a74e; the actual runner container build passed. Parent PR #29 merged as da9f01d7a5ad255920a2e99a3243976b509f3a6e and AgentProof PR #7 as 104b793e256c7f8f7f682891da2fa3817d3fc199, with their post-merge checks successful. AgentProof release workflow 37577387146 skipped publication steps; no new package or release is claimed. Exact GitHub permission readback returns write for OneClickPostFactory on AyobamiH/donestate and owner UI shows it as an accepted Collaborator. The customer registry remains empty. A new create_objective admission with autoStart=false, three documentation/evidence files and the existing pinned verifier returned GitHub 401 Bad credentials before run creation. Credential status remains connected at 2026-10-07T05:03:33.325Z with lastUsedAt=null, dailyRunsUsed=0, activeRunId=null. The public OpsTruth signing-key endpoint still reports the configured DoneState signer fingerprint 09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86; no attestation was requested. Sanitised continuation receipt: evidence/clean-customer-20261007/continuation-02.json.",
+    "accountability": {
+      "owner": "DoneState maintainers and repository owner",
+      "status": "blocked",
+      "nextAction": "Reconnect the DoneState GitHub OAuth connection as OneClickPostFactory. The approved temporary Write grant is independently confirmed; the connected OpenAI execution credential remains unused. Then run the bounded public-repository objective through an unmerged PR, exact-head required CI, pinned independent OpsTruth verification, account inspection and post-result deletion; remove the temporary Write grant after the result or abandonment. Record fresh signup/OAuth separately and complete the remaining LEGAL-001 publisher requirements before unrestricted GA.",
+      "waitCondition": "Owner-approved PR #166 is merged at 5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4; post-merge CI 37577391832 and production deployment 37577391829 succeeded. GitHub now confirms OneClickPostFactory has Write, but the fresh public-OAuth create_objective attempt returned GitHub 401 Bad credentials before any run ID, model use or publication. The GitHub connection, fresh complete journey and LEGAL-001 remain gates. The account, unused OpenAI key and temporary Write grant are retained for this bounded continuation; external-directory approval remains independent.",
+      "staleDate": "2026-10-09"
+    },
+    "outcome": "The reviewed rollout is merged and DoneState production deployment succeeded. The repository Write gate is resolved, but the customer attempt is blocked on the GitHub credential used by DoneState. No new run, customer PR, model use, independent VERIFIED, fresh signup/OAuth or post-result deletion is claimed. RELEASE-001 remains blocked.",
+    "content": "Exact merge/deployment/access receipts and current customer reconnection state. Historical E-066, E-067 and E-068 remain unchanged; this change adds evidence only and does not change runtime, verifier/App scope, policies or channel approval.",
+    "measurement": "Three approved merges; successful post-merge checks; one approved DoneState deployment and actual container rollout; one accepted temporary collaborator grant; one schema-valid objective attempt rejected at GitHub authentication before run creation. Zero fresh customer objectives, model runs, customer commits/PRs, verifier outcomes or account deletions."
+  },
+  "canonicalMain": "6fb1f4960d22d351902fe0eefa22f21d249dcd7f",
+  "canonicalEvidenceId": "E-069",
+  "canonicalIdentity": "AgentProof RC6 exact-source prerelease and release-boundary activation",
+  "reconciliationEvidenceId": "E-072",
+  "resolution": "The original OAuth admission story remains unchanged in this archive and its published Git object. Main independently allocated E-069 to AgentProof RC6 before PR #168 merged; the canonical story remains untouched. E-072 records the collision and separate rollout/authentication history."
+}
