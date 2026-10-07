@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "attempt": 7,
+  "status": "FAILED_SAFE",
+  "observedAt": "2026-10-07T21:46:05.162Z",
+  "customer": {
+    "login": "OneClickPostFactory",
+    "githubId": 281453754
+  },
+  "repository": "AyobamiH/donestate",
+  "actualRun": {
+    "id": "124f1517-c41c-4d67-bc32-016b3d0ba8e1",
+    "ownerLogin": "OneClickPostFactory",
+    "state": "FAILED_SAFE",
+    "objective": {
+      "acceptanceCriteria": [
+        "The candidate marker contains the sealed date, customer, repository, nonce and candidate-only outcome.",
+        "The ledger and generated state contain E-086 and its nonce; RELEASE-001 identity, blocked status and dependencies are preserved.",
+        "Only the three authorised marker, ledger and generated-state files change.",
+        "The published customer PR head passes core (22), core (24) and hosted-plugin before independent verification."
+      ],
+      "authorities": [
+        "local_read",
+        "local_write",
+        "test",
+        "commit",
+        "push",
+        "open_pr",
+        "secret_access"
+      ],
+      "baseHeadSha": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+      "baseRef": "main",
+      "goal": "RELEASE-001 is the selected item; follow AGENTS.md. Execute the single shell command below. The control plane owns dependency installation, further validation, commit, push and PR creation. Do not explore unrelated files, install tools, invoke another model or subagent, commit, push, read credentials, poll or run separate status checks. After this command finishes, end the turn with a brief result.\n\nnode <<'NODE_CANDIDATE'\nconst fs = require(\"node:fs\");\nconst p = \"governance/project-ledger.json\";\nconst ledger = JSON.parse(fs.readFileSync(p, \"utf8\"));\nconst work = ledger.workItems.find(x => x.id === \"RELEASE-001\");\nif (!work || work.status !== \"blocked\" || ledger.evidenceStories.some(x => x.id === \"E-086\")) throw Error(\"candidate precondition failed\");\nwork.evidenceIds.push(\"E-086\");\nObject.assign(work, {\"lastUpdated\":\"2026-10-07\",\"staleDate\":\"2026-10-09\",\"nextAction\":\"Await exact PR-head CI and pinned independent verification, then authorised result cleanup. Fresh signup and LEGAL-001 still gate GA.\",\"waitCondition\":\"This unmerged candidate is not independently verified. Earlier failures and separate GA gates remain unchanged.\",\"reentryCondition\":\"Use only the exact published PR head and established verifier pin; preserve every historical story and separate gate.\"});\nledger.evidenceStories.push({\"id\":\"E-086\",\"date\":\"2026-10-07\",\"identity\":\"Compact customer PR-only execution candidate\",\"situation\":\"One authorised compact customer candidate after a preserved terminal timeout.\",\"verification\":\"Candidate nonce e03acd15-042c-445d-9b78-3d5534144364 at evidence/clean-customer-20261007/execution-marker-07.json; exact PR-head CI and pinned independent verification are pending.\",\"accountability\":{\"owner\":\"Publisher owner\",\"status\":\"blocked\",\"nextAction\":\"Await required CI and pinned independent verification.\",\"waitCondition\":\"Unmerged candidate is not independently verified.\",\"staleDate\":\"2026-10-09\"},\"outcome\":\"Candidate only; no VERIFIED, fresh-signup, cleanup or GA claim.\",\"content\":\"Only marker, RELEASE-001 evidence tracking and generated state.\",\"measurement\":\"Three authorised files; no dollar-cap or self-certified completion claim.\"});\nfs.mkdirSync(\"evidence/clean-customer-20261007\", {recursive:true});\nfs.writeFileSync(\"evidence/clean-customer-20261007/execution-marker-07.json\", JSON.stringify({\"date\":\"2026-10-07\",\"customer\":\"OneClickPostFactory\",\"repository\":\"AyobamiH/donestate\",\"marker\":\"e03acd15-042c-445d-9b78-3d5534144364\",\"outcome\":\"customer-execution-candidate\"}, null, 2) + \"\\n\");\nfs.writeFileSync(p, JSON.stringify(ledger, null, 2) + \"\\n\");\nNODE_CANDIDATE\nnpm run governance:render && npm run governance:check && git diff --check",
+      "maxChangedFiles": 3,
+      "maxDurationMs": 120000,
+      "publication": "pull_request",
+      "repository": "AyobamiH/donestate",
+      "requestedBy": "OneClickPostFactory",
+      "runId": "124f1517-c41c-4d67-bc32-016b3d0ba8e1",
+      "schema": "donestate.hosted-objective.v1",
+      "trustedVerifierFingerprints": [
+        "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+      ],
+      "validationProfile": "node",
+      "verificationContractVersion": "donestate.verification-contract.v2",
+      "verificationRequirements": [
+        {
+          "criterionIndex": 0,
+          "expected": "2026-10-07",
+          "id": "marker-date",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-07.json",
+          "pointer": "/date"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "OneClickPostFactory",
+          "id": "marker-customer",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-07.json",
+          "pointer": "/customer"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "AyobamiH/donestate",
+          "id": "marker-repository",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-07.json",
+          "pointer": "/repository"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "e03acd15-042c-445d-9b78-3d5534144364",
+          "id": "marker-marker",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-07.json",
+          "pointer": "/marker"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "customer-execution-candidate",
+          "id": "marker-outcome",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-07.json",
+          "pointer": "/outcome"
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-ledger",
+          "kind": "file_contains",
+          "path": "governance/project-ledger.json",
+          "values": [
+            "E-086",
+            "Compact customer PR-only execution candidate",
+            "e03acd15-042c-445d-9b78-3d5534144364",
+            "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+          ]
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-generated",
+          "kind": "file_contains",
+          "path": "docs/PROJECT-STATE.md",
+          "values": [
+            "E-086",
+            "Compact customer PR-only execution candidate",
+            "e03acd15-042c-445d-9b78-3d5534144364"
+          ]
+        },
+        {
+          "allowedPaths": [
+            "evidence/clean-customer-20261007/execution-marker-07.json",
+            "governance/project-ledger.json",
+            "docs/PROJECT-STATE.md"
+          ],
+          "criterionIndex": 2,
+          "id": "only-authorised-files",
+          "kind": "changed_files",
+          "max": 3
+        },
+        {
+          "criterionIndex": 3,
+          "id": "required-pr-head-ci",
+          "kind": "github_checks_pass",
+          "requiredNames": [
+            "core (22)",
+            "core (24)",
+            "hosted-plugin"
+          ]
+        }
+      ]
+    },
+    "createdAt": "2026-10-07T21:40:12.701Z",
+    "updatedAt": "2026-10-07T21:44:34.535Z",
+    "lastError": "install-node failed with exit code 124",
+    "branchName": null,
+    "branchHeadSha": null,
+    "pullRequestNumber": null,
+    "pullRequestUrl": null,
+    "verificationSnapshotDigest": null,
+    "verifierDecisionSummary": null,
+    "actions": [
+      {
+        "id": "clone",
+        "authority": "local_read",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "124f1517-c41c-4d67-bc32-016b3d0ba8e1:clone:v1",
+        "intentDigest": "62a33b971e6997b323d02e8641459a70329f28000ad29a840714234982383c7a",
+        "result": {
+          "attempt": 1,
+          "attempts": 1,
+          "exitCode": 0,
+          "maxAttempts": 3,
+          "sandboxId": "run-124f1517-c41c-4d67-bc32-016b3d0ba8e1-clone-1",
+          "stderr": "Cloning into '/workspace/repo'...\n",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-07T21:40:28.013Z"
+      },
+      {
+        "id": "implement",
+        "authority": "local_write",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "124f1517-c41c-4d67-bc32-016b3d0ba8e1:implement:v1",
+        "intentDigest": "04a40ffdc5608cd9a0db8f1e3c6ef820aa97ad1512f95ec024c7cf374338aa7c",
+        "result": {
+          "controlRecovered": true,
+          "exitCode": 0,
+          "launchAcknowledged": true,
+          "launchError": null,
+          "postImplementationHead": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+          "receiptDeadlineMs": 1791409364115,
+          "receiptPollAttempt": 14,
+          "receiptSchema": "donestate.implementation-receipt.v1",
+          "receiptVerified": true,
+          "repositoryGovernanceRequired": false,
+          "sandboxId": "run-124f1517-c41c-4d67-bc32-016b3d0ba8e1-clone-1",
+          "success": true
+        },
+        "updatedAt": "2026-10-07T21:41:48.581Z"
+      },
+      {
+        "id": "diff-check",
+        "authority": "test",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "124f1517-c41c-4d67-bc32-016b3d0ba8e1:diff-check:v1",
+        "intentDigest": "331ca0552f994e5b2b2bbc12e2e2d941594f5e30f6bbb1bd593978143930355f",
+        "result": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-07T21:42:20.173Z"
+      },
+      {
+        "id": "install-node",
+        "authority": "test",
+        "state": "FAILED",
+        "idempotencyKey": "124f1517-c41c-4d67-bc32-016b3d0ba8e1:install-node:v1",
+        "intentDigest": "63b645ecfb40968e21bff83049148b498992fb9d3c4fbf6d88016e054c202aa3",
+        "result": {
+          "exitCode": 124,
+          "stderr": "Command timed out after 120000ms",
+          "stdout": "\n> donestate@0.2.0 prepare\n> npm run build\n\n\n> donestate@0.2.0 build\n> node scripts/clean.mjs dist && tsc\n\n",
+          "success": false,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-07T21:44:32.678Z"
+      }
+    ],
+    "events": [
+      {
+        "sequence": 1,
+        "eventType": "run_received",
+        "fromState": null,
+        "toState": "RECEIVED",
+        "detail": null,
+        "createdAt": "2026-10-07T21:40:12.701Z",
+        "previousDigest": null,
+        "digest": "e8e53684eb35d7837d4fa059c691811fabc6336115174e8b191fdfb0aa10a686"
+      },
+      {
+        "sequence": 2,
+        "eventType": "run_queued",
+        "fromState": "RECEIVED",
+        "toState": "QUEUED",
+        "detail": null,
+        "createdAt": "2026-10-07T21:40:24.710Z",
+        "previousDigest": "e8e53684eb35d7837d4fa059c691811fabc6336115174e8b191fdfb0aa10a686",
+        "digest": "1e489ec37d271e828edcf363a9d2212bdbe0a196c4460986cbc17d7a90103820"
+      },
+      {
+        "sequence": 3,
+        "eventType": "execution_started",
+        "fromState": "QUEUED",
+        "toState": "EXECUTING",
+        "detail": null,
+        "createdAt": "2026-10-07T21:40:24.722Z",
+        "previousDigest": "1e489ec37d271e828edcf363a9d2212bdbe0a196c4460986cbc17d7a90103820",
+        "digest": "459c65ff1865a48d3408cc84e82b4dbba240efd2cf3e2daa6a768b1f377134a1"
+      },
+      {
+        "sequence": 4,
+        "eventType": "validation_started",
+        "fromState": "EXECUTING",
+        "toState": "VALIDATING",
+        "detail": null,
+        "createdAt": "2026-10-07T21:42:18.608Z",
+        "previousDigest": "459c65ff1865a48d3408cc84e82b4dbba240efd2cf3e2daa6a768b1f377134a1",
+        "digest": "37619e77f74b886b0324b1a86a1341ffbd49fcaf7e7a0341368e1e3af6ef294c"
+      },
+      {
+        "sequence": 5,
+        "eventType": "execution_stopped",
+        "fromState": "VALIDATING",
+        "toState": "FAILED_SAFE",
+        "detail": "install-node failed with exit code 124",
+        "createdAt": "2026-10-07T21:44:34.511Z",
+        "previousDigest": "37619e77f74b886b0324b1a86a1341ffbd49fcaf7e7a0341368e1e3af6ef294c",
+        "digest": "e47509a52125623dd664ee08edf76f38b7d779bcd8285be543241b204d077fd1"
+      }
+    ]
+  },
+  "executionObservations": {
+    "createSubmissions": 1,
+    "startSubmissions": 1,
+    "automaticRetries": 0,
+    "cloneAttempts": 1,
+    "implementationStarts": 1,
+    "implementationExitCode": 0,
+    "terminalImplementationReceiptIdentityMatched": true,
+    "implementationReceiptIntegrityIsIndependentVerification": false,
+    "diffCheckExitCode": 0,
+    "dependencyInstallCommand": "npm ci",
+    "dependencyInstallExitCode": 124,
+    "dependencyInstallTimeoutMs": 120000,
+    "prepareBuildReached": true,
+    "publishedBranch": null,
+    "publishedPr": null,
+    "independentVerifierRequests": 0,
+    "eventChainCryptographicallyMatched": true,
+    "terminalEventDigest": "e47509a52125623dd664ee08edf76f38b7d779bcd8285be543241b204d077fd1"
+  },
+  "diagnosis": {
+    "observedBoundary": "npm ci entered the repository prepare lifecycle (npm run build -> node scripts/clean.mjs dist && tsc), then the validation command timed out.",
+    "preciseCause": "UNPROVEN: the preserved output does not establish whether compilation, lifecycle shutdown or the sandbox runtime stalled.",
+    "runtimeChanged": false,
+    "validationNotSkipped": true,
+    "sealedBoundsNotWidened": true,
+    "offlineSameBaseBuild": {
+      "exitCode": 0,
+      "elapsedSeconds": 1.522,
+      "subjectBaseSha": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+      "environment": "local workspace with existing pinned project dependencies",
+      "sandboxCauseProven": false,
+      "localHeadSha": "7f02b8738b81a3978ce22eb7edfd42279647d8c5",
+      "runtimeInputPaths": [
+        "src",
+        "scripts",
+        "tsconfig.json",
+        "package.json",
+        "package-lock.json"
+      ],
+      "runtimeInputDeltaFromSealedBase": []
+    }
+  },
+  "afterFailure": {
+    "credential": {
+      "connected": true,
+      "fingerprint": "44c7550c978b",
+      "createdAt": "2026-10-07T15:31:24.209Z",
+      "updatedAt": "2026-10-07T15:31:24.209Z",
+      "lastUsedAt": "2026-10-07T21:42:21.192Z",
+      "dailyRunsUsed": 2,
+      "dailyRunLimit": 12,
+      "activeRunId": null,
+      "billingOwner": "authenticated_user"
+    },
+    "actualBilledUsd": null,
+    "remainingProviderBalance": null,
+    "anotherPaidStartSubmitted": false
+  },
+  "historicalEvidence": "Every earlier terminal outcome and prepared contract remains unchanged.",
+  "cleanup": "Preserve this terminal receipt in the owner evidence PRs with required CI, then delete the known disposable objectives and stored execution key and remove the exact temporary Write. Full indexed account cleanup still requires its supported console.",
+  "separateUnprovenGates": [
+    "successful service publication",
+    "exact customer PR-head required CI",
+    "pinned independent verification",
+    "selected-repository GitHub App admission",
+    "fresh signup",
+    "LEGAL-001 GA gates"
+  ],
+  "secretsExcluded": true
+}
