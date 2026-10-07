@@ -527,17 +527,19 @@
       "id": "AGENTPROOF-001",
       "title": "Complete AgentProof consequence-receipt integration",
       "stream": "verification",
-      "status": "deferred",
+      "status": "active",
       "owner": "DoneState and AgentProof maintainers",
-      "lastUpdated": "2026-10-02",
-      "staleDate": "2027-01-15",
-      "nextAction": "Keep AgentProof consequence receipts outside the standalone launch critical path; resume when this integration becomes the selected next product priority.",
-      "waitCondition": "The production DoneState-to-OpsTruth completion boundary is already proven without AgentProof.",
-      "reentryCondition": "Resume after standalone customer readiness is established or when consequential-action receipts become a customer requirement.",
+      "lastUpdated": "2026-10-07",
+      "staleDate": "2026-10-14",
+      "nextAction": "Treat AgentProof RC6 as the active consequence-receipt track. Complete the first npm registry bootstrap from the exact GitHub RC6 artifact with maintainer review and 2FA, preserve clean-install evidence, then run the planned independent-installation cohort. After adoption evidence, add a production authority/signing provider and select exactly one DoneState lifecycle action for canary integration, with release.v1 preferred because its exact package/tag/provenance subject is deterministic.",
+      "waitCondition": "AgentProof RC6 is published on GitHub and the release lane is proven, but @oneclicksystems/agentproof is not yet published to npm. Production authority/signing and any DoneState merge/deploy/release runtime action remain separate gates; the existing DoneState-to-OpsTruth production path is unchanged.",
+      "reentryCondition": "Advance to the first DoneState runtime integration only after npm publication and clean-install/adoption evidence plus a production authority/signing provider. Do not enable merge, deployment or release consequence authority from RC6 alone.",
       "dependencies": [
         "VERIFY-004"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-069"
+      ]
     },
     {
       "id": "RELEASE-001",
@@ -1832,7 +1834,7 @@
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication \u2192 v2 handoff \u2192 OpsTruth verification loop, then reconcile the final public documentation state.",
+        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication → v2 handoff → OpsTruth verification loop, then reconcile the final public documentation state.",
         "waitCondition": "The npm publication itself is complete. Remaining work is external product acceptance and public documentation closure, not package publication.",
         "staleDate": "2026-10-10"
       },
@@ -1968,7 +1970,7 @@
       "accountability": {
         "owner": "DoneState maintainers and publisher owner",
         "status": "blocked",
-        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up \u2192 connect \u2192 select repo \u2192 create objective \u2192 execute \u2192 unmerged PR \u2192 OpsTruth VERIFIED \u2192 inspect account \u2192 delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
+        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up → connect → select repo → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
         "waitCondition": "Customer execution credential must be reconnected securely. LEGAL-001 remains blocked on its existing publisher requirements.",
         "staleDate": "2026-10-09"
       },
@@ -2009,6 +2011,23 @@
       "outcome": "The candidate resolves all nine affected package records to patched versions; local audit is zero and the full core/Worker/plugin checks pass. Exact-head CI, merge and production deployment remain separate states.",
       "content": "Narrow Worker package overrides and npm-generated lock refresh; existing audit gate remains unchanged. The E-067 customer repository-access blocker is independent.",
       "measurement": "Initial run 37575211329: core (22) and core (24) success, hosted-plugin failure at npm audit; nine affected package records (eight high, one critical), four advisory families; zero production deployments or authority expansions. Patched local npm audit reports zero vulnerabilities; 40 core and 142 Worker tests pass; 383 lock entries; zero MCP tools or authority classes changed."
+    },
+    {
+      "id": "E-069",
+      "date": "2026-10-07",
+      "identity": "AgentProof RC6 exact-source prerelease and release-boundary activation",
+      "situation": "AgentProof had a substantial RC5 implementation but remained deferred in DoneState governance and was publicly described as design-only. Current AgentProof main also contained post-RC5 packaged and repository-level changes, so publishing those bytes as RC5 would have created two different artifacts under one version.",
+      "verification": "AyobamiH/agentproof PR #6 cut 0.1.0-rc.6, preserved RC5 as immutable history, added exact-source GitHub prerelease creation and a stage-only npm OIDC lane, and passed exact-head CI at ce0edf867173e66e739b974e3fd410aea1dd6103. It merged as a0ee17a70d05bc3c339c0c15be6bb38b4517771a. Post-merge validation and release runs both succeeded. GitHub prerelease v0.1.0-rc.6 targets that exact merge and contains oneclicksystems-agentproof-0.1.0-rc.6.tgz with digest sha256:f9dd7eb65f5809c69584624272c0c7dc13a84209c4a2daee338dfee43f5050ca. Proof & State PR #22 reconciled the public AgentProof product story; follow-up #23 repaired the production acceptance assertion, and current website main 16b4e253a84f04847fe4afb08c1a5d673740ff0d passed verify, integration and deploy. npm publication is not claimed.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "active",
+        "nextAction": "Bootstrap the first npm RC6 publication from the exact GitHub artifact with authenticated maintainer staging, inspection and 2FA approval; verify registry/install evidence, then run the independent-installation cohort before production authority/signing or DoneState consequence-action activation.",
+        "waitCondition": "The first npm package still requires the publisher-maintainer bootstrap and 2FA. Production authority/signing and a DoneState action canary are intentionally not part of RC6.",
+        "staleDate": "2026-10-14"
+      },
+      "outcome": "AgentProof is no longer a deferred design-only track. RC6 is a real exact-source developer prerelease with a verified GitHub artifact and guarded release machinery. DoneState runtime consequence-receipt integration remains active but gated on npm/adoption and production authority evidence.",
+      "content": "AgentProof package/version, release workflows, release notes and public Proof & State status; DoneState governance activation only. No DoneState MCP tool, OAuth scope, merge/deploy/release authority or OpsTruth verifier contract changed.",
+      "measurement": "One new AgentProof release version, one exact GitHub prerelease, one 72,720-byte release asset, one recorded SHA-256 digest, two successful post-merge AgentProof workflows, three successful current Proof & State production workflows, zero npm publication claims and zero new DoneState consequence actions."
     }
   ]
 }
