@@ -61,7 +61,7 @@ The same account console can delete indexed DoneState account data. Deletion req
 
 The owner-level run index is new. Historical maintenance runs are backfilled from maintenance findings, but a direct objective created before the account-controls release may not be discoverable automatically. Delete any such historical run with `delete_objective` using its known run ID or submit a privacy request.
 
-## Current owned-channel release gates — 3 October 2026
+## Current owned-channel release gates — 7 October 2026
 
 CUST-001 and CUST-002 are complete following [PR #164](https://github.com/AyobamiH/donestate/pull/164), with account-layout, real disposable-account deletion and controlled production stale-write-fencing evidence in E-064/E-065. They remain satisfied prerequisites in the dependency graph, not open launch blockers.
 
@@ -69,8 +69,10 @@ Unrestricted self-serve GA still requires both the unresolved publisher requirem
 
 Historical attempt E-066 observed the emptied disposable OneClickPostFactory service account and stopped at **BLOCKED_CAPABILITY** during credential connection. Its [step-by-step receipt](../evidence/clean-customer-20261003/acceptance.json) retains that original scope.
 
-Fresh continuation E-067 on 7 October confirms the user connected the execution credential securely. An explicit PR-only selection of `AyobamiH/donestate` used the existing App installation with scheduling and automatic repair disabled, but `create_objective` rejected push access before any run or model execution. Independent GitHub permission readback confirms `OneClickPostFactory` has only `read` access to that repository. The temporary customer maintenance selection was removed; the new execution credential remains connected and unused. See [the current acceptance receipt](../evidence/clean-customer-20261007/acceptance.json).
+Earlier continuation E-067 on 7 October confirms the user connected the execution credential securely. An explicit PR-only selection of `AyobamiH/donestate` used the existing App installation with scheduling and automatic repair disabled, but `create_objective` rejected push access before any run or model execution. Its dated independent GitHub permission readback confirmed `OneClickPostFactory` then had only `read` access to that repository. The temporary customer maintenance selection was removed; the new execution credential remains connected and unused. See [the earlier acceptance receipt](../evidence/clean-customer-20261007/acceptance.json).
 
-Resume the bounded public-repository OAuth test only after the owner decides the exact temporary write grant, the disposable identity accepts any invitation, and actual push access is confirmed. Keep the App/verifier scope unchanged and preserve PR-only authority. Fresh signup/OAuth, execution, PR, independent verification and post-result deletion remain unproven; a valid key or registry selection does not establish them.
+The owner-approved dependency/evidence PR #166 is now merged at `5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4`. Post-merge CI `37577391832` and production deployment `37577391829` succeeded; the runner built and rolled out container `sha256:89239658656b1fe3cef2db45058fb8c7fa02e01ee4d5ecc04c8fa7e6ada9a74e` and Worker `98d66425-8a2c-4caf-a2a4-dced459bdd40`. Historical E-068 remains the original candidate observation.
+
+Fresh continuation E-069 independently confirms the accepted temporary Write grant for `OneClickPostFactory`, but the public-OAuth objective admission returned GitHub `401 Bad credentials` before creating a run. Reconnect **DoneState’s GitHub OAuth connection as OneClickPostFactory** before resuming the bounded test. The stored OpenAI key remains connected and unused; its provider funding is unproven. The customer maintenance registry is empty, and App/verifier scope stays unchanged. Account deletion and removal of this exact temporary grant remain post-result cleanup. [The continuation receipt](../evidence/clean-customer-20261007/continuation-02.json) records these separate states. Fresh signup/OAuth, execution, PR, independent verification and unrestricted GA remain unproven.
 
 Controlled owned-domain access continues. This reconciliation is not legal clearance, external-directory approval or unrestricted GA.
