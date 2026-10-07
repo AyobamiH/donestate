@@ -1,0 +1,279 @@
+{
+  "schema": "donestate.clean-customer-execution-attempt.v1",
+  "attemptId": "clean-customer-20261007-03",
+  "sourceCommit": "5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4",
+  "serviceOrigin": "https://donestate.proofandstate.com",
+  "account": "OneClickPostFactory",
+  "result": "FAILED_SAFE",
+  "completeJourney": false,
+  "credentialSource": "github_oauth",
+  "temporaryRepositoryPermission": "write",
+  "singleStart": true,
+  "run": {
+    "id": "257bbf51-66d2-4cd0-838d-01bbe66e2608",
+    "ownerLogin": "OneClickPostFactory",
+    "state": "FAILED_SAFE",
+    "objective": {
+      "acceptanceCriteria": [
+        "Create the exact customer marker JSON with the sealed nonce, date, customer, repository and candidate_only outcome.",
+        "Append E-070 as a candidate evidence story, reference its marker in the ledger, regenerate project state and keep RELEASE-001 blocked.",
+        "Change only the three authorised documentation/evidence files, at most three files.",
+        "Publish an unmerged pull request whose exact head passes core (22), core (24) and hosted-plugin checks."
+      ],
+      "authorities": [
+        "local_read",
+        "local_write",
+        "test",
+        "commit",
+        "push",
+        "open_pr",
+        "secret_access"
+      ],
+      "baseHeadSha": "5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4",
+      "baseRef": "main",
+      "goal": "Read AGENTS.md and select RELEASE-001 before work. Execute one bounded documentation-only customer objective for OneClickPostFactory. Create evidence/clean-customer-20261007/execution-marker.json as a JSON object with date=\"2026-10-07\", customer=\"OneClickPostFactory\", repository=\"AyobamiH/donestate\", marker=\"clean-customer-cd9de9b3-446b-469c-8cd3-873b1a963e99\", outcome=\"candidate_only\". Append a new Evidence Story Bank entry E-070, identity \"Fresh customer PR-only execution candidate\", including this exact marker and candidate scope. E-069 is already reserved by the separately authored open evidence PR #168 at e27e8d8bcf88b4612c65c867212f30f053ea51b0; do not reuse that ID or rewrite any historical story. A gap in evidence IDs is acceptable and the ledger validator permits it. Update RELEASE-001 to reference E-070 and describe the current bounded candidate action with owner, next action, wait condition, re-entry condition, lastUpdated 2026-10-07 and staleDate 2026-10-09. Retain status blocked, existing title, stream and dependencies. State only that the customer reconnected DoneState GitHub OAuth and the explicitly authorised temporary repository Write was independently confirmed. Do not claim VERIFIED, fresh signup, completed deletion, cleanup, unrestricted GA or closure of LEGAL-001. Wait for exact-head required CI and pinned independent OpsTruth verification, then post-result account inspection/deletion and removal of the temporary Write grant. Fresh sign-in/OAuth and remaining LEGAL-001 must be recorded separately for the full release journey. Preserve every existing evidence story verbatim. Format the ledger with two-space JSON indentation; keep the contiguous existing RELEASE-001 id/title/stream/status anchor unchanged. Run npm run governance:render to generate docs/PROJECT-STATE.md; never edit it by hand. Run npm run check. Change only evidence/clean-customer-20261007/execution-marker.json, governance/project-ledger.json, docs/PROJECT-STATE.md, at most three files. Commit and push this bounded change and open an unmerged pull request. No runtime, policies, workflows, App scope, verifier scope, deployment or channel-publication changes. Use only the configured injected OpenAI execution credential, never read or print ambient secrets. Do not retry any mutating action whose effect is uncertain.",
+      "maxChangedFiles": 3,
+      "maxDurationMs": 900000,
+      "publication": "pull_request",
+      "repository": "AyobamiH/donestate",
+      "requestedBy": "OneClickPostFactory",
+      "runId": "257bbf51-66d2-4cd0-838d-01bbe66e2608",
+      "schema": "donestate.hosted-objective.v1",
+      "trustedVerifierFingerprints": [
+        "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+      ],
+      "validationProfile": "node",
+      "verificationContractVersion": "donestate.verification-contract.v2",
+      "verificationRequirements": [
+        {
+          "criterionIndex": 0,
+          "expected": "2026-10-07",
+          "id": "marker-date",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker.json",
+          "pointer": "/date"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "OneClickPostFactory",
+          "id": "marker-customer",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker.json",
+          "pointer": "/customer"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "AyobamiH/donestate",
+          "id": "marker-repository",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker.json",
+          "pointer": "/repository"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "clean-customer-cd9de9b3-446b-469c-8cd3-873b1a963e99",
+          "id": "marker-marker",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker.json",
+          "pointer": "/marker"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "candidate_only",
+          "id": "marker-outcome",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker.json",
+          "pointer": "/outcome"
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-story",
+          "kind": "file_contains",
+          "path": "governance/project-ledger.json",
+          "values": [
+            "E-070",
+            "Fresh customer PR-only execution candidate",
+            "clean-customer-cd9de9b3-446b-469c-8cd3-873b1a963e99"
+          ]
+        },
+        {
+          "criterionIndex": 1,
+          "id": "release-stays-blocked",
+          "kind": "file_contains",
+          "path": "governance/project-ledger.json",
+          "values": [
+            "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+          ]
+        },
+        {
+          "criterionIndex": 1,
+          "id": "generated-story",
+          "kind": "file_contains",
+          "path": "docs/PROJECT-STATE.md",
+          "values": [
+            "E-070",
+            "Fresh customer PR-only execution candidate"
+          ]
+        },
+        {
+          "allowedPaths": [
+            "evidence/clean-customer-20261007/execution-marker.json",
+            "governance/project-ledger.json",
+            "docs/PROJECT-STATE.md"
+          ],
+          "criterionIndex": 2,
+          "id": "bounded-files",
+          "kind": "changed_files",
+          "max": 3
+        },
+        {
+          "criterionIndex": 3,
+          "id": "required-exact-head-ci",
+          "kind": "github_checks_pass",
+          "requiredNames": [
+            "core (22)",
+            "core (24)",
+            "hosted-plugin"
+          ]
+        }
+      ]
+    },
+    "createdAt": "2026-10-07T06:42:29.013Z",
+    "updatedAt": "2026-10-07T06:43:52.736Z",
+    "lastError": "implement failed with exit code 1",
+    "branchName": null,
+    "branchHeadSha": null,
+    "pullRequestNumber": null,
+    "pullRequestUrl": null,
+    "verificationSnapshotDigest": null,
+    "verifierDecisionSummary": null,
+    "actions": [
+      {
+        "id": "clone",
+        "authority": "local_read",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "257bbf51-66d2-4cd0-838d-01bbe66e2608:clone:v1",
+        "intentDigest": "2a7a34a089da0983d8d5351494aca25e63f0a87b812c81a677ab513ef8cadafe",
+        "result": {
+          "attempt": 1,
+          "attempts": 1,
+          "exitCode": 0,
+          "maxAttempts": 3,
+          "sandboxId": "run-257bbf51-66d2-4cd0-838d-01bbe66e2608-clone-1",
+          "stderr": "Cloning into '/workspace/repo'...\n",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-07T06:43:01.150Z"
+      },
+      {
+        "id": "implement",
+        "authority": "local_write",
+        "state": "FAILED",
+        "idempotencyKey": "257bbf51-66d2-4cd0-838d-01bbe66e2608:implement:v1",
+        "intentDigest": "30bf2fe2a05378e792701cf64fe36ba1ac413739b554b68aa6abbef129d8bc55",
+        "result": {
+          "exitCode": 1,
+          "launchAcknowledged": true,
+          "launchError": null,
+          "receiptPollAttempt": 9,
+          "receiptSchema": "donestate.implementation-receipt.v1",
+          "receiptVerified": true,
+          "sandboxId": "run-257bbf51-66d2-4cd0-838d-01bbe66e2608-clone-1",
+          "success": false
+        },
+        "updatedAt": "2026-10-07T06:43:51.777Z"
+      }
+    ],
+    "events": [
+      {
+        "sequence": 1,
+        "eventType": "run_received",
+        "fromState": null,
+        "toState": "RECEIVED",
+        "detail": null,
+        "createdAt": "2026-10-07T06:42:29.013Z",
+        "previousDigest": null,
+        "digest": "1229ef0b990fd09e735a353a883983ffdcddf48d033c2b52abe25aceab8973ca"
+      },
+      {
+        "sequence": 2,
+        "eventType": "run_queued",
+        "fromState": "RECEIVED",
+        "toState": "QUEUED",
+        "detail": null,
+        "createdAt": "2026-10-07T06:42:57.344Z",
+        "previousDigest": "1229ef0b990fd09e735a353a883983ffdcddf48d033c2b52abe25aceab8973ca",
+        "digest": "0bf15239640555fb493c8a4dcd53b000626bfb7f12a86b21ce2e880339ff904a"
+      },
+      {
+        "sequence": 3,
+        "eventType": "execution_started",
+        "fromState": "QUEUED",
+        "toState": "EXECUTING",
+        "detail": null,
+        "createdAt": "2026-10-07T06:42:57.357Z",
+        "previousDigest": "0bf15239640555fb493c8a4dcd53b000626bfb7f12a86b21ce2e880339ff904a",
+        "digest": "747bf3f2cb809d1e04afe2fba97d54e179a2dbbdd4b67eae8ba77d1d09b9537b"
+      },
+      {
+        "sequence": 4,
+        "eventType": "execution_stopped",
+        "fromState": "EXECUTING",
+        "toState": "FAILED_SAFE",
+        "detail": "implement failed with exit code 1",
+        "createdAt": "2026-10-07T06:43:52.736Z",
+        "previousDigest": "747bf3f2cb809d1e04afe2fba97d54e179a2dbbdd4b67eae8ba77d1d09b9537b",
+        "digest": "1640fefe8a75b136f9b967d705de91bca0b80c9a91be725ddcd66146b8f576d5"
+      }
+    ]
+  },
+  "credentialUsage": {
+    "connected": true,
+    "createdAt": "2026-10-07T05:03:33.325Z",
+    "updatedAt": "2026-10-07T05:03:33.325Z",
+    "lastUsedAt": "2026-10-07T06:43:51.285Z",
+    "dailyRunsUsed": 1,
+    "dailyRunLimit": 12,
+    "activeRunId": null,
+    "billingOwner": "authenticated_user"
+  },
+  "diagnostics": {
+    "implementationExitCode": 1,
+    "receiptVerified": true,
+    "logCaptured": false,
+    "sandboxCleanup": "terminal execution destroys the sandbox",
+    "cause": "unknown; the deployed failed-receipt path omits its log before teardown",
+    "providerFunding": "unproven",
+    "providerResponse": "unproven",
+    "tokensBilled": "unproven"
+  },
+  "cleanup": {
+    "accountDeletion": "pending while authorised recovery is prepared",
+    "temporaryWriteRemoval": "pending after bounded result or abandonment"
+  },
+  "freshSignup": "unproven; existing disposable identity reconnected OAuth",
+  "remainingGates": [
+    "bounded customer PR with exact-head CI",
+    "pinned independent OpsTruth verification",
+    "post-result account inspection and deletion",
+    "temporary Write removal",
+    "separately evidenced fresh signup",
+    "LEGAL-001"
+  ],
+  "historicalEvidencePreserved": [
+    "E-066",
+    "E-067",
+    "E-068",
+    "E-069"
+  ],
+  "notClaimed": [
+    "successful model response",
+    "customer branch or PR",
+    "VERIFIED",
+    "account deletion",
+    "complete customer journey",
+    "unrestricted GA"
+  ]
+}
