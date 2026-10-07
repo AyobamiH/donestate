@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "attempt": 6,
+  "status": "BLOCKED_CAPABILITY_BEFORE_RUN_CREATION",
+  "observedAt": "2026-10-07T15:48:32.705Z",
+  "customer": {
+    "login": "OneClickPostFactory",
+    "githubId": 281453754
+  },
+  "repository": "AyobamiH/donestate",
+  "preflight": {
+    "observedAt": "2026-10-07T15:31:54.475Z",
+    "credential": {
+      "connected": true,
+      "fingerprint": "44c7550c978b",
+      "createdAt": "2026-10-07T15:31:24.209Z",
+      "updatedAt": "2026-10-07T15:31:24.209Z",
+      "lastUsedAt": null,
+      "dailyRunsUsed": 0,
+      "dailyRunLimit": 12,
+      "activeRunId": null,
+      "billingOwner": "authenticated_user"
+    },
+    "githubPermission": {
+      "permission": "write"
+    },
+    "maintenanceRepositories": [],
+    "liveMainHeadSha": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+    "exactTemporaryInvitation": {
+      "id": 336586833,
+      "acceptanceIndependentlyEstablishedByPermission": "write"
+    }
+  },
+  "createSubmission": {
+    "submittedAt": "2026-10-07T15:34:58.301Z",
+    "calls": 1,
+    "autoStart": false,
+    "descriptor": "prepared-node-objective-06.json",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "GitHub request failed (401): {\r\n  \"message\": \"Bad credentials\",\r\n  \"documentation_url\": \"https://docs.github.com/rest\",\r\n  \"status\": \"401\"\r\n}"
+        }
+      ],
+      "structuredContent": {
+        "error_code": "INVALID_ARGUMENT"
+      },
+      "isError": true
+    },
+    "runIdReturned": null,
+    "sourceOrdering": "Approved source validates repository access with the customer GitHub OAuth token before generating the run ID or recording the run. The observed 401 is a pre-run admission refusal; no FAILED_SAFE execution state is claimed.",
+    "credentialSource": "public customer GitHub OAuth path; selected repository registry empty"
+  },
+  "afterRefusal": {
+    "credential": {
+      "connected": true,
+      "fingerprint": "44c7550c978b",
+      "createdAt": "2026-10-07T15:31:24.209Z",
+      "updatedAt": "2026-10-07T15:31:24.209Z",
+      "lastUsedAt": null,
+      "dailyRunsUsed": 0,
+      "dailyRunLimit": 12,
+      "activeRunId": null,
+      "billingOwner": "authenticated_user"
+    },
+    "newStartSubmitted": false,
+    "paidRunsStarted": 0,
+    "customerBranch": null,
+    "customerPr": null,
+    "independentVerifierRequest": null,
+    "requiredCustomerCi": null,
+    "remainingProviderBalance": null,
+    "actualBilledUsd": null
+  },
+  "setupRecovery": {
+    "agentOpenedReplacementOneTimeTicketBeforeUser": true,
+    "sourceBehavior": "A successful GET consumes the one-time setup ticket and creates a browser session. Agent inspection made that replacement unusable in the user's separate browser.",
+    "correction": "A subsequent untouched ticket was issued only for the user; secure user entry succeeded at 2026-10-07T15:31:24.209Z.",
+    "firstInvalidTicketCause": "not established; do not retroactively attribute the first reported invalid link to the replacement inspection",
+    "ticketAndKeyExcluded": true
+  },
+  "verificationTrust": {
+    "establishedPin": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86",
+    "pinChanged": false,
+    "freshIdentityReadback": "not obtained: direct read-only identity call was inaccessible in this execution environment and public signing-key fetch was inaccessible; existing approved descriptor pin was retained",
+    "independentDecision": null
+  },
+  "reentry": {
+    "required": "Refresh the DoneState customer GitHub OAuth connection as OneClickPostFactory; preserve the connected execution key and accepted exact Write.",
+    "oneBoundedStartOnly": true,
+    "beforeNextAdmission": [
+      "customer reconnection positively established and correct link selected",
+      "fresh credential idle and connected",
+      "exact temporary GitHub Write",
+      "live main still approved base",
+      "no replacement of an ambiguous objective"
+    ],
+    "beforeStart": [
+      "successful returned run identity and exact pinned base",
+      "all sealed semantic fields match descriptor"
+    ],
+    "noBlindCreateRetry": true
+  },
+  "separateUnprovenGates": [
+    "selected-repository GitHub App push admission",
+    "actual service execution and customer PR",
+    "required CI on exact customer PR head",
+    "pinned independent verification",
+    "post-result account/access cleanup for this re-entry",
+    "fresh signup",
+    "LEGAL-001 GA gates"
+  ],
+  "historicalEvidence": "Earlier funded timeout, no-credit failure, unknown failure and completed cleanup receipts remain unchanged."
+}

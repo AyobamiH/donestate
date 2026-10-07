@@ -549,9 +549,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-07",
       "staleDate": "2026-10-09",
-      "nextAction": "One fresh Node-only attempt-06 is authorised and prepared but uncreated. Accept the new exact OneClickPostFactory invitation to AyobamiH/donestate and reconnect the funded API key in the secure customer form. Independently confirm credential idle, exact temporary Write, live base be14e35514f0ee3d78ca2c121c2b236767f80ee4 and every sealed field before one start; then await exact customer PR-head required CI, pinned independent verification and authorised post-result cleanup.",
-      "waitCondition": "Re-entry readback showed disconnected execution key, no active run, selected repositories [] and customer GitHub permission read. New invitation 336586833 is pending; acceptance and key reconnection are not yet observed. Attempt-06 has no service run, PR or verifier result. Earlier timeout and cleanup receipts remain immutable. Actual API spend and remaining balance are unobserved; selected-repository App admission, fresh signup and LEGAL-001 remain separate gates.",
-      "reentryCondition": "Proceed only after fresh credential and independently confirmed exact Write; create autoStart false using the prepared Node-only descriptor, check exact base and all semantic fields, then submit at most one start. Preserve actual result durably before authorised cleanup. Do not restart a deleted terminal run, fabricate the customer candidate, retry an ambiguous mutation, infer a dollar cap, widen App/verifier scopes or claim GA.",
+      "nextAction": "Reconnect only the DoneState customer GitHub OAuth connection named oneclickpost factory as OneClickPostFactory after the explicit 401 Bad credentials admission refusal. The funded execution key is connected and unused, and exact temporary repository Write is accepted. After positive reconnection, confirm fresh idle key/Write/base, create the prepared Node-only contract autoStart false, verify every returned sealed field and approved base before at most one paid start. Await actual PR-head CI and the established pinned independent verifier before authorised result cleanup.",
+      "waitCondition": "Attempt-06 creation returned explicit GitHub 401 Bad credentials before any run ID or paid start. Post-refusal customer credential remains connected, lastUsedAt null, dailyRunsUsed 0 and activeRunId null; independent repository permission is Write and selected repositories []. There is no attempt-06 customer PR, required-CI subject or verifier decision. The saved key and accepted grant are intentionally retained while OAuth is refreshed. Selected App admission, fresh signup and LEGAL-001 remain separate gates.",
+      "reentryCondition": "Re-enter only with positively refreshed correct customer GitHub OAuth; do not substitute the owner connection, re-enter the API key unnecessarily, repeat a consumed setup ticket or blindly retry creation. Preserve the established verifier pin, semantic contract/base checks and single paid-start envelope. No historical outcomes, cleanup, deployment or GA gates are reclassified.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -579,7 +579,8 @@
         "E-077",
         "E-078",
         "E-079",
-        "E-081"
+        "E-081",
+        "E-082"
       ]
     },
     {
@@ -2190,6 +2191,23 @@
       "outcome": "Customer prerequisites are being restored. No new objective, paid start, customer PR or independent decision is claimed; remaining API balance and billed spend are unknown.",
       "content": "One dated preflight receipt and new story, selected work-item closure and regenerated state. Earlier failure, cleanup and deployment evidence remains unchanged.",
       "measurement": "One exact new invitation pending; zero new paid starts; maximum one start on this re-entry; 120000ms and three files are not a dollar cap. Selected App route, fresh signup and legal GA gates remain separate."
+    },
+    {
+      "id": "E-082",
+      "date": "2026-10-07",
+      "identity": "Customer prerequisites restored; GitHub OAuth rejects Node-only admission before execution",
+      "situation": "The user securely reconnected the funded OpenAI key and accepted the exact renewed repository invitation. One prepared Node-only create submission follows the verified preflight.",
+      "verification": "At 15:31:24.209Z the customer key connected. Fresh readback showed OneClickPostFactory Write to AyobamiH/donestate, idle connected key, selected repositories [] and approved main be14e35514f0ee3d78ca2c121c2b236767f80ee4. One create_objective call, autoStart false, returned explicit GitHub request failed (401): Bad credentials and no run ID. Source validates customer OAuth repository access before run-ID generation/recording. Post-refusal key lastUsedAt null, dailyRunsUsed 0 and activeRunId null establish zero new execution leases. Sanitised receipt: evidence/clean-customer-20261007/admission-06.json. A setup replacement inspected by the agent was consumed on first GET; a subsequent untouched user-only ticket succeeded. No ticket, raw key or OAuth token is retained in this public evidence. Fresh verifier identity lookup was inaccessible here; the previously approved pin remains unchanged and no verifier request occurred.",
+      "accountability": {
+        "owner": "DoneState maintainers and customer account holder",
+        "status": "blocked",
+        "nextAction": "Reconnect only the DoneState customer GitHub OAuth connection named oneclickpost factory as OneClickPostFactory after the explicit 401 Bad credentials admission refusal. The funded execution key is connected and unused, and exact temporary repository Write is accepted. After positive reconnection, confirm fresh idle key/Write/base, create the prepared Node-only contract autoStart false, verify every returned sealed field and approved base before at most one paid start. Await actual PR-head CI and the established pinned independent verifier before authorised result cleanup.",
+        "waitCondition": "Attempt-06 creation returned explicit GitHub 401 Bad credentials before any run ID or paid start. Post-refusal customer credential remains connected, lastUsedAt null, dailyRunsUsed 0 and activeRunId null; independent repository permission is Write and selected repositories []. There is no attempt-06 customer PR, required-CI subject or verifier decision. The saved key and accepted grant are intentionally retained while OAuth is refreshed. Selected App admission, fresh signup and LEGAL-001 remain separate gates.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Credential and exact temporary Write prerequisites are restored; execution remains blocked before run creation by a rejected customer GitHub OAuth token. No paid start, FAILED_SAFE run, customer PR or verifier result is claimed.",
+      "content": "One dated admission-refusal receipt, new story, selected blocked-item closure and regenerated state. The connected key and accepted Write remain in place for OAuth repair; historical failure/cleanup stories are immutable.",
+      "measurement": "One pre-run create submission rejected with explicit HTTP 401; zero run IDs/start calls/model leases/PRs/verifier requests; key connected and unused, exact Write accepted; original two-minute/three-file caps and independent verifier pin retained."
     }
   ]
 }
