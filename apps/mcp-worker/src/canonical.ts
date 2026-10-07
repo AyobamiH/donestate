@@ -29,7 +29,7 @@ export function boundedOutput(value: string, maxBytes = 64 * 1024): { text: stri
   const bytes = new TextEncoder().encode(value);
   if (bytes.byteLength <= maxBytes) return { text: value, truncated: false };
   return {
-    text: new TextDecoder().decode(bytes.slice(0, maxBytes)),
+    text: new TextDecoder().decode(bytes.slice(0, maxBytes), { stream: true }),
     truncated: true,
   };
 }

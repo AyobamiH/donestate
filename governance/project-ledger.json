@@ -549,9 +549,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-07",
       "staleDate": "2026-10-09",
-      "nextAction": "Validate and hand off the narrow Worker dependency refresh in E-068 through the existing required audit/core/hosted-plugin gates; owner merge and production deployment remain separate decisions. Keep controlled owned-domain access live. The disposable customer execution credential is now connected. Obtain the owner decision on temporary write access for OneClickPostFactory to AyobamiH/donestate, confirm the account accepts any invitation and has actual push permission, then run the fresh bounded public-repository OAuth objective through unmerged PR, exact-head CI, independent OpsTruth VERIFIED, account inspection and post-result deletion. Record fresh signup/OAuth separately. Complete remaining LEGAL-001 publisher requirements before unrestricted GA.",
-      "waitCondition": "Fresh required CI found new high/critical dependency advisories on the evidence branch. The patched candidate must pass the existing gate before owner review; the current deployed runtime is not changed by this branch. CUST-001/CUST-002 remain complete. E-067 confirms fresh credential connection, but objective creation stopped before any run/model execution because the selected repository admission rejected push access. Independent GitHub readback shows OneClickPostFactory has read-only access to AyobamiH/donestate. The temporary customer maintenance selection was removed; the credential is retained. Repository write authority, the fresh complete customer outcome and LEGAL-001 remain gates; external-directory approval is independent.",
-      "reentryCondition": "Resume dependency handoff after exact-head CI passes without weakening the high-severity audit gate. Resume after the owner grants the exact temporary repository authority and the disposable identity accepts it, with push permission independently confirmed. Use the existing public OAuth path without expanding App or verifier scope. Close unrestricted GA only after the fresh complete journey and remaining publisher decisions are evidenced.",
+      "nextAction": "Review the bounded failure-diagnostics repair after local checks and exact-head required CI. Obtain owner merge/deployment authority for that new candidate before resuming customer execution. After deployment, create a fresh bounded public-OAuth objective for OneClickPostFactory; keep its PR unmerged, wait for exact-head CI and pinned independent OpsTruth verification, then inspect/delete the disposable account and remove its exact temporary Write grant. Record fresh signup separately and complete the remaining LEGAL-001 requirements before unrestricted GA.",
+      "waitCondition": "The GitHub OAuth reconnection and Write gate are resolved: run 257bbf51-66d2-4cd0-838d-01bbe66e2608 was admitted as OneClickPostFactory and its clone succeeded on deployed source 5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4. One implementation launch produced a verified exit-code-1 receipt and terminal FAILED_SAFE, with no branch, PR or verifier request. The deployed failure path discarded its diagnostic log before sandbox teardown, so the cause and provider funding remain unknown. The repair is a review candidate, not deployed. The account, connected key and temporary Write are retained for authorised recovery; a fresh complete customer journey and LEGAL-001 remain separate gates.",
+      "reentryCondition": "Resume execution only after the diagnostics candidate passes exact-head required CI and an owner-approved merge/deployment is independently confirmed. Preserve the terminal failed run and its receipt; do not rewrite it, retry an ambiguous mutation, broaden App/verifier scope or infer provider funding from credential presence. Use a fresh three-file PR-only objective and keep unrestricted GA blocked until the full customer journey and remaining legal decisions are evidenced.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -570,7 +570,10 @@
         "E-065",
         "E-066",
         "E-067",
-        "E-068"
+        "E-068",
+        "E-070",
+        "E-071",
+        "E-072"
       ]
     },
     {
@@ -1834,7 +1837,7 @@
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication → v2 handoff → OpsTruth verification loop, then reconcile the final public documentation state.",
+        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication \u2192 v2 handoff \u2192 OpsTruth verification loop, then reconcile the final public documentation state.",
         "waitCondition": "The npm publication itself is complete. Remaining work is external product acceptance and public documentation closure, not package publication.",
         "staleDate": "2026-10-10"
       },
@@ -1970,7 +1973,7 @@
       "accountability": {
         "owner": "DoneState maintainers and publisher owner",
         "status": "blocked",
-        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up → connect → select repo → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
+        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up \u2192 connect \u2192 select repo \u2192 create objective \u2192 execute \u2192 unmerged PR \u2192 OpsTruth VERIFIED \u2192 inspect account \u2192 delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
         "waitCondition": "Customer execution credential must be reconnected securely. LEGAL-001 remains blocked on its existing publisher requirements.",
         "staleDate": "2026-10-09"
       },
@@ -2028,6 +2031,57 @@
       "outcome": "AgentProof is no longer a deferred design-only track. RC6 is a real exact-source developer prerelease with a verified GitHub artifact and guarded release machinery. DoneState runtime consequence-receipt integration remains active but gated on npm/adoption and production authority evidence.",
       "content": "AgentProof package/version, release workflows, release notes and public Proof & State status; DoneState governance activation only. No DoneState MCP tool, OAuth scope, merge/deploy/release authority or OpsTruth verifier contract changed.",
       "measurement": "One new AgentProof release version, one exact GitHub prerelease, one 72,720-byte release asset, one recorded SHA-256 digest, two successful post-merge AgentProof workflows, three successful current Proof & State production workflows, zero npm publication claims and zero new DoneState consequence actions."
+    },
+    {
+      "id": "E-070",
+      "date": "2026-10-07",
+      "identity": "Fresh customer OAuth run stopped safely before publication",
+      "situation": "The user confirmed DoneState reconnection as OneClickPostFactory after accepting the owner-approved temporary Write grant. A fresh public-OAuth objective was created with autoStart=false and started exactly once against deployed protected main. This owner-authored receipt records that real customer run; it is not a substitute implementation of the customer marker objective.",
+      "verification": "create_objective returned ownerLogin/requestedBy OneClickPostFactory with credentialSource github_oauth at 2026-10-07T06:42:29.013Z. Run 257bbf51-66d2-4cd0-838d-01bbe66e2608 pinned AyobamiH/donestate main at 5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4, three authorised documentation/evidence files, 900000 ms and PR-only publication. Start was acknowledged at 06:42:57.344Z; the anonymous public clone succeeded on attempt 1 at 06:43:01.150Z. Its single implementation launch produced an identity-verified donestate.implementation-receipt.v1 with exitCode 1, receiptPollAttempt 9 and launchAcknowledged true. Terminal FAILED_SAFE was recorded at 06:43:52.736Z and independently read back through the customer connection; branch/head/PR and verifier decision remain null. The event-chain terminal digest is 1640fefe8a75b136f9b967d705de91bca0b80c9a91be725ddcd66146b8f576d5. Credential usage advanced from 0 to 1 and lastUsedAt to 06:43:51.285Z, with activeRunId null; this proves one lease, not a funded or successful model response. Sanitised complete durable run and credential usage: evidence/clean-customer-20261007/attempt-03.json. Source inspection shows the verified nonzero-receipt path settles without implementationLog and then destroys the sandbox. The actual failure cause cannot be recovered from this public receipt.",
+      "accountability": {
+        "owner": "DoneState maintainers and repository owner",
+        "status": "blocked",
+        "nextAction": "Review the bounded failure-diagnostics repair after local checks and exact-head required CI. Obtain owner merge/deployment authority for that new candidate before resuming customer execution. After deployment, create a fresh bounded public-OAuth objective for OneClickPostFactory; keep its PR unmerged, wait for exact-head CI and pinned independent OpsTruth verification, then inspect/delete the disposable account and remove its exact temporary Write grant. Record fresh signup separately and complete the remaining LEGAL-001 requirements before unrestricted GA.",
+        "waitCondition": "The GitHub OAuth reconnection and Write gate are resolved: run 257bbf51-66d2-4cd0-838d-01bbe66e2608 was admitted as OneClickPostFactory and its clone succeeded on deployed source 5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4. One implementation launch produced a verified exit-code-1 receipt and terminal FAILED_SAFE, with no branch, PR or verifier request. The deployed failure path discarded its diagnostic log before sandbox teardown, so the cause and provider funding remain unknown. The repair is a review candidate, not deployed. The account, connected key and temporary Write are retained for authorised recovery; a fresh complete customer journey and LEGAL-001 remain separate gates.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Fresh customer OAuth admission and repository checkout succeeded. The implementation ended FAILED_SAFE before any customer branch, PR, required CI or independent verification. Fresh signup, a successful provider response, funding, post-result account deletion and the complete journey remain unproven; RELEASE-001 stays blocked.",
+      "content": "Immutable terminal failed-run receipt, actions and hash-chained events, plus separate credential-lease and pending cleanup observations. No retry, branch publication, account deletion or temporary permission removal occurred in this record. Historical E-066 through E-069 remain unchanged.",
+      "measurement": "One created customer objective, one start call, one successful public clone, one acknowledged implementation launch, one verified exit-code-1 receipt and one terminal FAILED_SAFE result. Zero customer branches/PRs, verifier requests or account deletions; one credential lease, provider success and billing unproven."
+    },
+    {
+      "id": "E-071",
+      "date": "2026-10-07",
+      "identity": "Failed implementation diagnostics retained before sandbox cleanup",
+      "situation": "The fresh E-070 customer run exposed a narrow diagnostic gap: terminal nonzero implementation receipts discarded Codex stdout/stderr before terminal sandbox teardown. The public run retained exit code 1 without an actionable cause.",
+      "verification": "The candidate reads the existing receipt log only after receipt run/command/nonce identity checks succeed, redacts both execution and publication credentials plus the private receipt nonce, bounds persisted output to 64 KiB and adds implementationLog to the failed action before settlement and cleanup. An unavailable log yields null without changing FAILED_SAFE. Receipt reconciliation is extracted into a focused module, retaining executor exports and unchanged one-launch/poll/deadline/success/ambiguity behaviour. The executor is below the 1000-line hard limit. UTF-8 truncation drops an incomplete trailing code point instead of emitting a replacement character beyond the byte budget. New failure-path tests drive executeObjective with an existing durable checkpoint and a controlled Sandbox adapter; local full checks and exact-head required CI remain candidate acceptance gates. Local root npm run check passed (40 tests, shared-contract lock, governance, knowledge-base/documentation closure and pack dry-run); Worker npm run check passed (149 tests across 22 files), including all seven new execution-path regressions. npm audit --audit-level=high reports zero vulnerabilities; plugin validation and changed-source/evidence secret-pattern scan passed. Exact-head CI and owner merge/deployment remain separate gates. Worker bundle dry-run passed with --containers-rollout=none; no container build or deployment was attempted for this candidate.",
+      "accountability": {
+        "owner": "DoneState maintainers and repository owner",
+        "status": "active",
+        "nextAction": "Wait for exact-head required CI, then present the exact tested repair for owner merge/deployment review. Resume with a fresh authorised customer run after deployment without rewriting E-070.",
+        "waitCondition": "This is an undeployed candidate. The first customer failure cause remains unknown because its sandbox log was not preserved. Existing deployment source and independent verifier pins remain unchanged.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Candidate failure receipts now preserve bounded redacted diagnostics before cleanup. No merge, deployment, new model run or successful customer outcome is claimed.",
+      "content": "Worker receipt-reconciliation extraction, one failure-log capture, UTF-8 output-bound correction and meaningful execution-path regression tests. No auth/provider, model, authority, App scope, verifier scope, workflow, dependency or container change.",
+      "measurement": "Seven execution-path tests cover redacted failure capture before settlement/cleanup, 64 KiB UTF-8 truncation, log-read failure, successful quiescence, mismatched-receipt ambiguity, missing-receipt deadline ambiguity and pre-deadline polling. Local checks: 40 core tests and 149 Worker tests across 22 files passed; audit zero; plugin/governance/docs/pack checks passed. No production deployment or new customer execution occurred."
+    },
+    {
+      "id": "E-072",
+      "date": "2026-10-07",
+      "identity": "Preserve rollout and OAuth admission evidence across concurrent ledger history",
+      "situation": "After the original owner-authored OAuth admission record was published in unmerged PR #168 under E-069 at e27e8d8bcf88b4612c65c867212f30f053ea51b0, separate governance PR #167 merged onto main and independently allocated E-069 to AgentProof RC6. The diagnostic candidate must preserve both histories without a duplicate ID or overwriting canonical evidence.",
+      "verification": "Main advanced to 6fb1f4960d22d351902fe0eefa22f21d249dcd7f through PR #167; exact-main CI 37583831139 passed. Its only changes are governance/project-ledger.json and generated docs/PROJECT-STATE.md, including the active but gated AGENTPROOF-001 track and the canonical AgentProof E-069. All incoming stories and that work item are preserved verbatim. The original unmerged customer OAuth E-069 story is archived verbatim with its published head in evidence/clean-customer-20261007/original-oauth-story.json, and its sanitised deployment/access/authentication receipt remains unchanged at evidence/clean-customer-20261007/continuation-02.json. The earlier record proves the approved PR #166 merge/deploy (source 5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4, CI 37577391832, deploy 37577391829, Worker 98d66425-8a2c-4caf-a2a4-dced459bdd40, container sha256:89239658656b1fe3cef2db45058fb8c7fa02e01ee4d5ecc04c8fa7e6ada9a74e), parent #29 and AgentProof #7 merges, accepted temporary Write, then GitHub 401 refusal before run creation. The subsequent E-070 failed run and E-071 repair remain separate records. PR #167 does not match the Worker deployment path filter; no exact-6fb1f49 production deployment is claimed. The diagnostic candidate incorporates this main through a normal merge, without a force push or authority expansion.",
+      "accountability": {
+        "owner": "DoneState maintainers and repository owner",
+        "status": "blocked",
+        "nextAction": "Review the bounded failure-diagnostics repair after local checks and exact-head required CI. Obtain owner merge/deployment authority for that new candidate before resuming customer execution. After deployment, create a fresh bounded public-OAuth objective for OneClickPostFactory; keep its PR unmerged, wait for exact-head CI and pinned independent OpsTruth verification, then inspect/delete the disposable account and remove its exact temporary Write grant. Record fresh signup separately and complete the remaining LEGAL-001 requirements before unrestricted GA.",
+        "waitCondition": "Both dated histories are preserved with distinct canonical identities. The failed customer run remains terminal FAILED_SAFE and the tested repair remains an undeployed candidate awaiting exact-head CI and owner review.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Current main AgentProof activation is preserved, and the earlier approved rollout/OAuth refusal remains independently inspectable. E-070 and E-071 retain their failed-run and repair scope. No new customer success, merge/deployment of the repair or complete journey is claimed.",
+      "content": "Verbatim original unmerged OAuth story archive, unchanged continuation receipt and reconciliation with exact incoming main/CI. Canonical AgentProof E-069 and all pre-existing main evidence are untouched.",
+      "measurement": "One independent governance-only main merge and successful CI; one original unmerged story archived verbatim; zero story outcomes rewritten, force pushes, diagnostic deployments or customer retries."
     }
   ]
 }

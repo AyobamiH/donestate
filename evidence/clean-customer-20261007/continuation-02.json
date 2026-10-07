@@ -1,0 +1,127 @@
+{
+  "schema": "donestate.clean-customer-continuation.v1",
+  "attemptId": "clean-customer-20261007-02",
+  "recordedAt": "2026-10-07T06:26:06.912083+00:00",
+  "sourceCommit": "5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4",
+  "serviceOrigin": "https://donestate.proofandstate.com",
+  "account": "OneClickPostFactory",
+  "result": "BLOCKED_CAPABILITY",
+  "boundary": "GitHub OAuth authentication during create_objective admission; no run ID or durable objective was created",
+  "completeJourney": false,
+  "ownerAuthorisedRollout": {
+    "donestate": {
+      "pr": 166,
+      "mergedCommit": "5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4",
+      "ciRun": 37577391832,
+      "ciConclusion": "success",
+      "deploymentRun": 37577391829,
+      "deploymentConclusion": "success",
+      "deploymentJob": 112649238485,
+      "workerVersion": "98d66425-8a2c-4caf-a2a4-dced459bdd40",
+      "containerDigest": "sha256:89239658656b1fe3cef2db45058fb8c7fa02e01ee4d5ecc04c8fa7e6ada9a74e"
+    },
+    "proofAndState": {
+      "pr": 29,
+      "mergedCommit": "da9f01d7a5ad255920a2e99a3243976b509f3a6e",
+      "governanceRun": 37577384348,
+      "gtmRun": 37577384282,
+      "conclusion": "success"
+    },
+    "agentproof": {
+      "pr": 7,
+      "mergedCommit": "104b793e256c7f8f7f682891da2fa3817d3fc199",
+      "ciRun": 37577387142,
+      "ciConclusion": "success",
+      "releaseWorkflowRun": 37577387146,
+      "releaseWorkflowConclusion": "success",
+      "publicationSteps": "skipped",
+      "newPublication": false
+    }
+  },
+  "observations": [
+    {
+      "step": "temporary repository authority",
+      "status": "PASS",
+      "repository": "AyobamiH/donestate",
+      "recipient": "OneClickPostFactory",
+      "recipientGitHubId": 281453754,
+      "permission": "write",
+      "evidence": "User reports invitation accepted; independent purpose-built GitHub API confirms Write; owner GitHub UI shows one accepted collaborator."
+    },
+    {
+      "step": "sign up / fresh OAuth",
+      "status": "UNPROVEN",
+      "evidence": "Existing authenticated MCP connection used. Owner browser session remains AyobamiH; no customer browser signup/OAuth is claimed."
+    },
+    {
+      "step": "execution credential",
+      "status": "CONNECTED_UNUSED",
+      "connected": true,
+      "createdAt": "2026-10-07T05:03:33.325Z",
+      "lastUsedAt": null,
+      "dailyRunsUsed": 0,
+      "dailyRunLimit": 12,
+      "activeRunId": null,
+      "evidence": "Stored-key presence is confirmed. Model-provider funding and execution are unproven."
+    },
+    {
+      "step": "repository selection",
+      "status": "EXPLICIT_OBJECTIVE_TARGET",
+      "repository": "AyobamiH/donestate",
+      "selectedMaintenanceRepositories": [],
+      "credentialSourceIntended": "github_oauth"
+    },
+    {
+      "step": "create objective",
+      "status": "BLOCKED_CAPABILITY",
+      "autoStart": false,
+      "maxChangedFiles": 3,
+      "maxDurationMs": 900000,
+      "publication": "pull_request",
+      "toolErrorCode": "INVALID_ARGUMENT",
+      "upstreamStatus": 401,
+      "upstreamMessage": "Bad credentials",
+      "runId": null,
+      "evidence": "An initial nested JSON-pointer input was rejected by schema validation; the corrected sealed requirement used a contiguous blocked-state ledger anchor. The single subsequent valid tool request failed on the upstream GitHub credential before coordinator/model execution."
+    },
+    {
+      "step": "execute / PR / independent verification",
+      "status": "NOT_RUN",
+      "modelRuns": 0,
+      "customerPullRequests": 0,
+      "verifierRequests": 0,
+      "verifierPin": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+    },
+    {
+      "step": "account inspection / deletion",
+      "status": "PENDING_POST_RESULT",
+      "accountDeleted": false,
+      "evidence": "The unused execution key and service account are retained for authorised continuation; post-result account cleanup was not performed."
+    },
+    {
+      "step": "temporary repository access cleanup",
+      "status": "PENDING_POST_RESULT",
+      "permissionRetained": "write",
+      "evidence": "Remove this exact temporary grant after the bounded result or abandonment; no other repository authority was expanded."
+    }
+  ],
+  "historicalEvidencePreserved": [
+    "E-066",
+    "E-067",
+    "E-068"
+  ],
+  "remainingGates": [
+    "DoneState GitHub OAuth reconnection for OneClickPostFactory",
+    "fresh complete customer journey",
+    "LEGAL-001"
+  ],
+  "notClaimed": [
+    "fresh signup/OAuth",
+    "funded model execution",
+    "customer PR",
+    "independent VERIFIED",
+    "account deletion",
+    "unrestricted GA",
+    "external provider approval"
+  ]
+}
