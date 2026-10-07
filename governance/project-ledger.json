@@ -549,9 +549,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-07",
       "staleDate": "2026-10-09",
-      "nextAction": "The funded attempt-05 timeout and complete authorised cleanup are recorded. Review the prepared Node-only attempt-06 descriptor; it is not created or started. A future bounded customer test requires reconnecting the funded key and confirming exact temporary Write after intentional cleanup, with actual-head required CI and the established independent verifier pin. Selected-repository App admission, fresh signup and remaining LEGAL-001 public address/branded contact routes still gate unrestricted GA.",
-      "waitCondition": "The single funded run ed9c1146-1fe7-425b-9524-3d138af8552f is historically FAILED_SAFE with verified exit 124 and complete redacted diagnostics, preserved before deletion. Its indexed service state is now deleted, the execution key disconnected, selected repositories empty and GitHub customer permission independently read. No customer PR or verifier decision exists. The prepared Node-only payload passes a stubbed in-memory dry run but no second paid run has started; actual billed USD and remaining provider balance are unobserved.",
-      "reentryCondition": "Keep the timeout, admission and cleanup receipts immutable. Re-enter using the prepared Node-only descriptor only after a fresh funded credential connection and exact customer Write under a bounded execution envelope. Independently confirm the created base commit and every sealed field before one start. Do not restart the deleted terminal run, manufacture a customer marker/PR, infer dollar spend from elapsed time, widen App/verifier scopes or infer GA.",
+      "nextAction": "One fresh Node-only attempt-06 is authorised and prepared but uncreated. Accept the new exact OneClickPostFactory invitation to AyobamiH/donestate and reconnect the funded API key in the secure customer form. Independently confirm credential idle, exact temporary Write, live base be14e35514f0ee3d78ca2c121c2b236767f80ee4 and every sealed field before one start; then await exact customer PR-head required CI, pinned independent verification and authorised post-result cleanup.",
+      "waitCondition": "Re-entry readback showed disconnected execution key, no active run, selected repositories [] and customer GitHub permission read. New invitation 336586833 is pending; acceptance and key reconnection are not yet observed. Attempt-06 has no service run, PR or verifier result. Earlier timeout and cleanup receipts remain immutable. Actual API spend and remaining balance are unobserved; selected-repository App admission, fresh signup and LEGAL-001 remain separate gates.",
+      "reentryCondition": "Proceed only after fresh credential and independently confirmed exact Write; create autoStart false using the prepared Node-only descriptor, check exact base and all semantic fields, then submit at most one start. Preserve actual result durably before authorised cleanup. Do not restart a deleted terminal run, fabricate the customer candidate, retry an ambiguous mutation, infer a dollar cap, widen App/verifier scopes or claim GA.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -578,7 +578,8 @@
         "E-075",
         "E-077",
         "E-078",
-        "E-079"
+        "E-079",
+        "E-081"
       ]
     },
     {
@@ -1842,7 +1843,7 @@
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication → v2 handoff → OpsTruth verification loop, then reconcile the final public documentation state.",
+        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication \u2192 v2 handoff \u2192 OpsTruth verification loop, then reconcile the final public documentation state.",
         "waitCondition": "The npm publication itself is complete. Remaining work is external product acceptance and public documentation closure, not package publication.",
         "staleDate": "2026-10-10"
       },
@@ -1978,7 +1979,7 @@
       "accountability": {
         "owner": "DoneState maintainers and publisher owner",
         "status": "blocked",
-        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up → connect → select repo → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
+        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up \u2192 connect \u2192 select repo \u2192 create objective \u2192 execute \u2192 unmerged PR \u2192 OpsTruth VERIFIED \u2192 inspect account \u2192 delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
         "waitCondition": "Customer execution credential must be reconnected securely. LEGAL-001 remains blocked on its existing publisher requirements.",
         "staleDate": "2026-10-09"
       },
@@ -2172,6 +2173,23 @@
       "outcome": "The authorised disposable indexed-service-account and exact temporary-access cleanup are complete. The funded customer execution remains a preserved timeout without a published PR or independent decision; Node-only re-entry is prepared but unstarted, and GA remains blocked.",
       "content": "One immutable cleanup receipt and new evidence story; current blocked work-item closure and generated state. Earlier admission, timeout, cleanup and rollout records remain unchanged.",
       "measurement": "One exact-login deletion; one indexed terminal objective deleted; key disconnected; zero selected repositories/findings; one known run not found; one exact collaborator removed with independent read permission; zero further paid runs or verifier requests."
+    },
+    {
+      "id": "E-081",
+      "date": "2026-10-07",
+      "identity": "Customer Node-only re-entry prepared; exact new invitation pending",
+      "situation": "The user resumes customer acceptance after the funded timeout and completed disposable cleanup. One corrected Node-only attempt is prepared under the same two-minute, three-file, PR-only envelope.",
+      "verification": "Fresh read-only preflight confirmed main be14e35514f0ee3d78ca2c121c2b236767f80ee4, disconnected customer key, idle account, selected repositories [] and OneClickPostFactory permission read. Owner GitHub UI submitted the exact new invitation once; invitation 336586833 visibly awaits OneClickPostFactory. Owner evidence PRs #169/#31 are open and unmerged at a0782eac216fec874742ec5963c1c5c2c76ff189/c648b5b4fc02e310185400bccde3425e8278eac7. The prepared Node payload was checked without actual customer repository writes. Sanitised receipt: evidence/clean-customer-20261007/reentry-preflight-06.json. Secure credential ticket and key are excluded.",
+      "accountability": {
+        "owner": "DoneState maintainers and repository owner",
+        "status": "blocked",
+        "nextAction": "One fresh Node-only attempt-06 is authorised and prepared but uncreated. Accept the new exact OneClickPostFactory invitation to AyobamiH/donestate and reconnect the funded API key in the secure customer form. Independently confirm credential idle, exact temporary Write, live base be14e35514f0ee3d78ca2c121c2b236767f80ee4 and every sealed field before one start; then await exact customer PR-head required CI, pinned independent verification and authorised post-result cleanup.",
+        "waitCondition": "Re-entry readback showed disconnected execution key, no active run, selected repositories [] and customer GitHub permission read. New invitation 336586833 is pending; acceptance and key reconnection are not yet observed. Attempt-06 has no service run, PR or verifier result. Earlier timeout and cleanup receipts remain immutable. Actual API spend and remaining balance are unobserved; selected-repository App admission, fresh signup and LEGAL-001 remain separate gates.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Customer prerequisites are being restored. No new objective, paid start, customer PR or independent decision is claimed; remaining API balance and billed spend are unknown.",
+      "content": "One dated preflight receipt and new story, selected work-item closure and regenerated state. Earlier failure, cleanup and deployment evidence remains unchanged.",
+      "measurement": "One exact new invitation pending; zero new paid starts; maximum one start on this re-entry; 120000ms and three files are not a dollar cap. Selected App route, fresh signup and legal GA gates remain separate."
     }
   ]
 }
