@@ -549,8 +549,8 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-07",
       "staleDate": "2026-10-09",
-      "nextAction": "Reconnect the customer execution key and confirm the exact temporary OneClickPostFactory Write invitation, then create/start the fresh prepared three-file PR-only objective once after base, identity and idle checks. Require service publication, exact-head CI and the pinned independent decision, then inspect/delete the disposable account and remove Write. Preserve separate signup, App and LEGAL-001 gates.",
-      "waitCondition": "Capacity repair PR 170 is owner-authorised and merged at fbaa060dfc6680516dfb7a1195801d1f8ab58d9d. Post-merge CI 37698109881 and production deployment 37698109840 succeeded; logs confirm basic container capacity and Worker 10c14fb2-8536-4af3-91f2-8ecd5bae94d9. Customer key is disconnected and permission is read; the exact invitation is prepared but unsubmitted. Live repaired validation, customer PR and independent verification remain unproven.",
+      "nextAction": "Confirm and submit only the prepared temporary OneClickPostFactory Write invitation for AyobamiH/donestate. Then independently check accepted Write, customer identity, idle connected key and unchanged deployed base before one fresh prepared three-file PR-only create/start. Require service publication, exact-head CI, pinned independent verification and cleanup; preserve separate signup, App, full indexed purge and LEGAL-001 gates.",
+      "waitCondition": "Capacity repair is merged/deployed at fbaa060dfc6680516dfb7a1195801d1f8ab58d9d with successful post-merge CI and rollout. The user restored the customer key through secure setup; connected true, activeRunId null, dailyRunsUsed 2. Exact customer repository permission remains read and the invitation is selected but unsubmitted. Browser action-time Write confirmation is the remaining pre-start blocker; no fresh objective exists.",
       "reentryCondition": "Proceed under the new user instruction to implement the unblockers and complete one fresh bounded attempt. Retain 120000ms, three changed files, PR-only effects, the established verifier pin and no automatic retry. Recheck current base and customer prerequisites immediately before create/start. Browser security-sensitive Write expansion requires action-time confirmation. Do not rewrite earlier failures, infer full account erasure or self-certify completion.",
       "dependencies": [
         "VERIFY-004",
@@ -576,7 +576,8 @@
         "E-072",
         "E-090",
         "E-091",
-        "E-092"
+        "E-092",
+        "E-093"
       ]
     },
     {
@@ -2136,6 +2137,23 @@
       "outcome": "Prepared and locally checked only; no service objective was created or started. E-086 remains reserved for actual service execution and is absent from this owner evidence branch.",
       "content": "One fresh marker, ledger and generated-state candidate, autoStart false, public OAuth customer path and exact PR-head required CI. Secure key setup ticket and all credential values are excluded from public evidence.",
       "measurement": "Offline command exit 0 in 0.305s; exactly three candidate paths; maxDurationMs 120000; maxChangedFiles 3; no hard dollar cap or paid outcome claim; zero automatic retries."
+    },
+    {
+      "id": "E-093",
+      "date": "2026-10-07",
+      "identity": "Customer execution key restored securely with repository Write still pending",
+      "situation": "After deployment, the user connected the customer key through the single-use secure setup link without exposing it in chat.",
+      "verification": "evidence/clean-customer-20261007/customer-prerequisites-08.json preserves connected-true idle credential readback and exact permission-read state. The prepared invitation screenshot shows the unsent OneClickPostFactory action. Earlier disconnected snapshots remain historical observations.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Confirm and submit only the prepared temporary OneClickPostFactory Write invitation for AyobamiH/donestate. Then independently check accepted Write, customer identity, idle connected key and unchanged deployed base before one fresh prepared three-file PR-only create/start. Require service publication, exact-head CI, pinned independent verification and cleanup; preserve separate signup, App, full indexed purge and LEGAL-001 gates.",
+        "waitCondition": "Capacity repair is merged/deployed at fbaa060dfc6680516dfb7a1195801d1f8ab58d9d with successful post-merge CI and rollout. The user restored the customer key through secure setup; connected true, activeRunId null, dailyRunsUsed 2. Exact customer repository permission remains read and the invitation is selected but unsubmitted. Browser action-time Write confirmation is the remaining pre-start blocker; no fresh objective exists.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "The key blocker is removed. Temporary repository Write still requires the browser action-time confirmation, invitation submission and accepted-access readback before any create/start.",
+      "content": "Only credential metadata is recorded; no raw key or setup ticket. Credential presence is not funding verification, model success, service publication or independent outcome proof.",
+      "measurement": "connected true; fingerprint 44c7550c978b; created 2026-10-07T22:59:33.539Z; activeRunId null; dailyRunsUsed 2; permission read; zero fresh creates, starts or automatic retries."
     }
   ]
 }
