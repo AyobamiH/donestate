@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-07T13:43:11.752Z",
+  "attempt": "05",
+  "source": {
+    "deployedSourceCommit": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+    "ciRun": 37595968023,
+    "deploymentRun": 37595968046
+  },
+  "customer": {
+    "githubLogin": "OneClickPostFactory",
+    "githubId": 281453754,
+    "credentialSource": "github_oauth"
+  },
+  "admission": {
+    "requestsRejectedBeforeRunCreation": 2,
+    "initialNormalisedResponse": "INVALID_ARGUMENT",
+    "initialDetailedCauseObserved": false,
+    "knownSelectedRepositoryResponse": "authenticated GitHub user cannot push to this repository",
+    "selectedRepositoryRemovedBeforeOAuthAdmission": true,
+    "rawCommitRefIndependentlyReturned404": true,
+    "admittedBaseRef": "main",
+    "admittedBaseHeadSha": "be14e35514f0ee3d78ca2c121c2b236767f80ee4"
+  },
+  "budget": {
+    "availableUsdReportedByOwner": 5,
+    "maxDurationMs": 120000,
+    "maxChangedFiles": 3,
+    "implementationLaunches": 1,
+    "paidRetries": 0,
+    "hardDollarCapAvailable": false,
+    "finalCliUsageEventObserved": false,
+    "providerBalanceOrActualBilledUsdObserved": false
+  },
+  "credentialAtTerminal": {
+    "connected": true,
+    "createdAt": "2026-10-07T12:50:30.797Z",
+    "lastUsedAt": "2026-10-07T13:01:18.945Z",
+    "activeRunId": null,
+    "dailyRunsUsed": 1
+  },
+  "outcome": {
+    "state": "FAILED_SAFE",
+    "lastError": "implement failed with exit code 124",
+    "cloneSucceeded": true,
+    "receiptIdentityVerified": true,
+    "exitCode": 124,
+    "serviceImplementationLaunchAcknowledged": true,
+    "pythonAndPython3UnavailableInSandbox": true,
+    "nodeFallbackObserved": true,
+    "sandboxMarkerFileChangeReported": true,
+    "finalNodeEditCommandCompletionObserved": false,
+    "branchPublished": false,
+    "pullRequestPublished": false,
+    "independentVerifierInvoked": false,
+    "fullCustomerJourneyComplete": false,
+    "cleanupComplete": false
+  },
+  "run": {
+    "id": "ed9c1146-1fe7-425b-9524-3d138af8552f",
+    "ownerLogin": "OneClickPostFactory",
+    "state": "FAILED_SAFE",
+    "objective": {
+      "acceptanceCriteria": [
+        "The new customer execution marker has the exact date, customer, repository, unique marker and candidate-only outcome sealed in this objective.",
+        "The ledger and generated state contain E-076 \"Funded customer PR-only execution candidate\" and the unique marker; RELEASE-001 retains its exact identity and blocked status.",
+        "Only the three authorised marker, ledger and generated-state files change.",
+        "The exact published PR head passes core (22), core (24) and hosted-plugin GitHub checks before independent verification."
+      ],
+      "authorities": [
+        "local_read",
+        "local_write",
+        "test",
+        "commit",
+        "push",
+        "open_pr",
+        "secret_access"
+      ],
+      "baseHeadSha": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+      "baseRef": "main",
+      "goal": "Make one minimal documentation/evidence candidate for the funded customer acceptance test. The customer has only USD 5 available; the implementation timeout is 120 seconds. Read AGENTS.md and select RELEASE-001 before editing. Use a short Python edit; do not dump the whole ledger or generated document into model context, explore unrelated source, use subagents, or launch another model.\nChange exactly these three files: evidence/clean-customer-20261007/execution-marker-05.json, governance/project-ledger.json, docs/PROJECT-STATE.md.\nCreate the marker as this JSON object: {\"date\":\"2026-10-07\",\"customer\":\"OneClickPostFactory\",\"repository\":\"AyobamiH/donestate\",\"marker\":\"8f46f5b9-5c5e-40f4-9961-f7562458fcd8\",\"outcome\":\"customer-execution-candidate\"}.\nPreserve every existing evidence story verbatim and all other work items. Append E-076, date 2026-10-07, identity \"Funded customer PR-only execution candidate\". Include nonce 8f46f5b9-5c5e-40f4-9961-f7562458fcd8 and marker path evidence/clean-customer-20261007/execution-marker-05.json in its verification text. Supply the normal situation, verification, accountability, outcome, content and measurement fields. Accountability: owner Publisher owner, status blocked, nextAction await exact-head CI and pinned independent OpsTruth verification of this unmerged candidate, waitCondition candidate is not independently verified yet, staleDate 2026-10-09. Its outcome must say this is only a candidate: no VERIFIED, fresh-signup, cleanup or GA claim.\nKeep RELEASE-001 title, stream, status blocked and dependencies unchanged. Add E-076 to its evidenceIds, set lastUpdated 2026-10-07 and staleDate 2026-10-09, and update nextAction/waitCondition/reentryCondition to await exact-head CI and pinned independent verification before authorised post-result cleanup; fresh signup and LEGAL-001 still gate GA. Approved diagnostics are already deployed at be14e35514f0ee3d78ca2c121c2b236767f80ee4; the previous no-credit failure is historical and immutable. Do not alter legal decisions or AgentProof stories.\nRun npm run governance:render, npm run governance:check and git diff --check. The control plane installs dependencies, runs npm test, commits and opens the authorised PR after your implementation. Do not commit, push, open a PR, deploy, publish or read credentials yourself. Finish with a brief result.",
+      "maxChangedFiles": 3,
+      "maxDurationMs": 120000,
+      "publication": "pull_request",
+      "repository": "AyobamiH/donestate",
+      "requestedBy": "OneClickPostFactory",
+      "runId": "ed9c1146-1fe7-425b-9524-3d138af8552f",
+      "schema": "donestate.hosted-objective.v1",
+      "trustedVerifierFingerprints": [
+        "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+      ],
+      "validationProfile": "node",
+      "verificationContractVersion": "donestate.verification-contract.v2",
+      "verificationRequirements": [
+        {
+          "criterionIndex": 0,
+          "expected": "2026-10-07",
+          "id": "marker-date",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-05.json",
+          "pointer": "/date"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "OneClickPostFactory",
+          "id": "marker-customer",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-05.json",
+          "pointer": "/customer"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "AyobamiH/donestate",
+          "id": "marker-repository",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-05.json",
+          "pointer": "/repository"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "8f46f5b9-5c5e-40f4-9961-f7562458fcd8",
+          "id": "marker-marker",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-05.json",
+          "pointer": "/marker"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "customer-execution-candidate",
+          "id": "marker-outcome",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-05.json",
+          "pointer": "/outcome"
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-ledger",
+          "kind": "file_contains",
+          "path": "governance/project-ledger.json",
+          "values": [
+            "\"id\": \"E-076\"",
+            "Funded customer PR-only execution candidate",
+            "8f46f5b9-5c5e-40f4-9961-f7562458fcd8",
+            "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+          ]
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-generated",
+          "kind": "file_contains",
+          "path": "docs/PROJECT-STATE.md",
+          "values": [
+            "E-076",
+            "Funded customer PR-only execution candidate",
+            "8f46f5b9-5c5e-40f4-9961-f7562458fcd8"
+          ]
+        },
+        {
+          "allowedPaths": [
+            "evidence/clean-customer-20261007/execution-marker-05.json",
+            "governance/project-ledger.json",
+            "docs/PROJECT-STATE.md"
+          ],
+          "criterionIndex": 2,
+          "id": "only-authorised-files",
+          "kind": "changed_files",
+          "max": 3
+        },
+        {
+          "criterionIndex": 3,
+          "id": "exact-head-required-ci",
+          "kind": "github_checks_pass",
+          "requiredNames": [
+            "core (22)",
+            "core (24)",
+            "hosted-plugin"
+          ]
+        }
+      ]
+    },
+    "createdAt": "2026-10-07T12:58:10.556Z",
+    "updatedAt": "2026-10-07T13:01:22.138Z",
+    "lastError": "implement failed with exit code 124",
+    "branchName": null,
+    "branchHeadSha": null,
+    "pullRequestNumber": null,
+    "pullRequestUrl": null,
+    "verificationSnapshotDigest": null,
+    "verifierDecisionSummary": null,
+    "actions": [
+      {
+        "id": "clone",
+        "authority": "local_read",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "ed9c1146-1fe7-425b-9524-3d138af8552f:clone:v1",
+        "intentDigest": "4dea5cbbc11a7e5b5b9bfc92984203fead504fdc5a9acb219ee489652a13b2ba",
+        "result": {
+          "attempt": 1,
+          "attempts": 1,
+          "exitCode": 0,
+          "maxAttempts": 3,
+          "sandboxId": "run-ed9c1146-1fe7-425b-9524-3d138af8552f-clone-1",
+          "stderr": "Cloning into '/workspace/repo'...\n",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-07T12:59:15.711Z"
+      },
+      {
+        "id": "implement",
+        "authority": "local_write",
+        "state": "FAILED",
+        "idempotencyKey": "ed9c1146-1fe7-425b-9524-3d138af8552f:implement:v1",
+        "intentDigest": "a465317377dac6fce33c7003784c41e2e07cd67e0be8162fa1421bb5379de86a",
+        "result": {
+          "exitCode": 124,
+          "implementationLog": {
+            "text": "Reading additional input from stdin...\n{\"type\":\"thread.started\",\"thread_id\":\"01a11672-65b4-7891-a41d-bf59162039ef\"}\n{\"type\":\"turn.started\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_0\",\"type\":\"agent_message\",\"text\":\"I’ll inspect the repository instructions and only the targeted RELEASE-001/story structure, then make the three-file candidate update and run the requested checks.\"}}\n{\"type\":\"item.started\",\"item\":{\"id\":\"item_1\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc \\\"pwd && sed -n '1,240p' AGENTS.md && git status --short && python - <<'PY'\\nimport json\\nfrom pathlib import Path\\np=Path('governance/project-ledger.json')\\ndata=json.loads(p.read_text())\\nprint('top-level:', list(data))\\nitems=data.get('workItems', data.get('items', []))\\nfor i,item in enumerate(items):\\n    if item.get('id')=='RELEASE-001':\\n        print('RELEASE-001 index', i)\\n        print(json.dumps(item, indent=2))\\nstories=data.get('evidenceStoryBank', data.get('evidenceStories', []))\\nprint('stories key/count:', 'evidenceStoryBank' if 'evidenceStoryBank' in data else 'evidenceStories', len(stories))\\nfor story in stories[-2:]:\\n    print(json.dumps(story, indent=2))\\nPY\\\"\",\"aggregated_output\":\"\",\"exit_code\":null,\"status\":\"in_progress\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_1\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc \\\"pwd && sed -n '1,240p' AGENTS.md && git status --short && python - <<'PY'\\nimport json\\nfrom pathlib import Path\\np=Path('governance/project-ledger.json')\\ndata=json.loads(p.read_text())\\nprint('top-level:', list(data))\\nitems=data.get('workItems', data.get('items', []))\\nfor i,item in enumerate(items):\\n    if item.get('id')=='RELEASE-001':\\n        print('RELEASE-001 index', i)\\n        print(json.dumps(item, indent=2))\\nstories=data.get('evidenceStoryBank', data.get('evidenceStories', []))\\nprint('stories key/count:', 'evidenceStoryBank' if 'evidenceStoryBank' in data else 'evidenceStories', len(stories))\\nfor story in stories[-2:]:\\n    print(json.dumps(story, indent=2))\\nPY\\\"\",\"aggregated_output\":\"/workspace/repo\\n# DoneState agent instructions\\n\\n## Product invariant\\n\\nDoneState completes authorised work. It never proves its own completion. Preserve the independent-verifier boundary in every change.\\n\\n## Authority\\n\\nAsk for authority over consequences, not every local tool call. Local inspection, editing, testing and commits are ordinary execution. Pushes, pull requests, merges, deployments, package publication, secret access and destructive actions require their named authority classes.\\n\\nNever widen an authority envelope silently. Treat missing credentials or executables as `BLOCKED_CAPABILITY`, policy rejection as `BLOCKED_SAFETY`, and uncertain effects after a crash as `AMBIGUOUS_EFFECT`.\\n\\n## Deterministic ownership\\n\\nDeterministic code owns:\\n\\n- admission and policy checks;\\n- idempotency keys;\\n- leases and fencing tokens;\\n- state transitions;\\n- effect intent and settlement records;\\n- budgets and redaction;\\n- terminal state and audit-chain integrity.\\n\\nHarness output is evidence, never authority.\\n\\n## Change discipline\\n\\n- Select the relevant item in `governance/project-ledger.json` before consequential work. Update that item and its Evidence Story Bank record in the same change as code, workflow, public-contract, deployment, distribution or external-state evidence.\\n- Every non-complete item must preserve an owner, status, next action, wait condition, re-entry condition and stale date. Deferred and blocked work is tracked work, never an omission.\\n- Run `npm run governance:render` after changing the ledger. `docs/PROJECT-STATE.md` is generated and must not be edited by hand. CI rejects consequential changes without a matching ledger update and rejects stale generated state.\\n- Keep repository, CI, deployment, runtime, credentials, Marketplace review, directory review and independent verification as separate states. Record exact subjects; never let one imply another.\\n- Preserve existing tests and add failure-path tests for behaviour changes.\\n- Never retry a mutating action whose effect is ambiguous.\\n- Never allow DoneState or an unpinned key to produce `VERIFIED`.\\n- Do not pass the ambient environment to child processes. Add narrow environment allowlists.\\n- Do not invoke a shell for configured commands.\\n- Keep source modules below 750 lines when practical and below 1,000 lines as a hard limit.\\n- Stage and commit exact files. Do not use broad staging shortcuts.\\n- Avoid destructive Git operations and force pushes.\\n\\n## Release proof\\n\\nBefore release, run `npm run check`, inspect `npm pack --dry-run`, scan the package for secrets, and verify the exact public tag, package contents and release assets after publication.\\n/bin/bash: line 1: python: command not found\\n\",\"exit_code\":127,\"status\":\"failed\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_2\",\"type\":\"agent_message\",\"text\":\"`python` is not installed under that name; I’ll use `python3` for the requested short edit. The worktree is clean, and RELEASE-001 is the selected ledger item.\"}}\n{\"type\":\"item.started\",\"item\":{\"id\":\"item_3\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc \\\"python3 - <<'PY'\\nimport json\\nfrom pathlib import Path\\ndata=json.loads(Path('governance/project-ledger.json').read_text())\\nprint('top-level:', list(data))\\nfor key,value in data.items():\\n    if isinstance(value,list):\\n        for i,obj in enumerate(value):\\n            if isinstance(obj,dict) and obj.get('id')=='RELEASE-001':\\n                print('item key/index:', key, i)\\n                print(json.dumps(obj, indent=2))\\nfor key,value in data.items():\\n    if isinstance(value,list) and value and isinstance(value[0],dict) and any(x.get('id','').startswith('E-') for x in value):\\n        print('story key/count:', key, len(value))\\n        for story in value[-2:]: print(json.dumps(story, indent=2))\\nPY\\\"\",\"aggregated_output\":\"\",\"exit_code\":null,\"status\":\"in_progress\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_3\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc \\\"python3 - <<'PY'\\nimport json\\nfrom pathlib import Path\\ndata=json.loads(Path('governance/project-ledger.json').read_text())\\nprint('top-level:', list(data))\\nfor key,value in data.items():\\n    if isinstance(value,list):\\n        for i,obj in enumerate(value):\\n            if isinstance(obj,dict) and obj.get('id')=='RELEASE-001':\\n                print('item key/index:', key, i)\\n                print(json.dumps(obj, indent=2))\\nfor key,value in data.items():\\n    if isinstance(value,list) and value and isinstance(value[0],dict) and any(x.get('id','').startswith('E-') for x in value):\\n        print('story key/count:', key, len(value))\\n        for story in value[-2:]: print(json.dumps(story, indent=2))\\nPY\\\"\",\"aggregated_output\":\"/bin/bash: line 1: python3: command not found\\n\",\"exit_code\":127,\"status\":\"failed\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_4\",\"type\":\"agent_message\",\"text\":\"Neither `python` nor `python3` is on PATH. I’ll locate any repository-provided Python interpreter; if none exists, I’ll preserve the requested edit shape with the smallest available equivalent and report the capability limitation.\"}}\n{\"type\":\"item.started\",\"item\":{\"id\":\"item_5\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc \\\"command -v python3.13 || command -v python3.12 || command -v python3.11 || command -v python3.10 || find . -maxdepth 4 -type f \\\\\\\\( -name 'python' -o -name 'python3' \\\\\\\\) -print | head -20\\\"\",\"aggregated_output\":\"\",\"exit_code\":null,\"status\":\"in_progress\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_5\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc \\\"command -v python3.13 || command -v python3.12 || command -v python3.11 || command -v python3.10 || find . -maxdepth 4 -type f \\\\\\\\( -name 'python' -o -name 'python3' \\\\\\\\) -print | head -20\\\"\",\"aggregated_output\":\"\",\"exit_code\":0,\"status\":\"completed\"}}\n{\"type\":\"item.started\",\"item\":{\"id\":\"item_6\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc \\\"node - <<'JS'\\nconst fs=require('fs'); const d=JSON.parse(fs.readFileSync('governance/project-ledger.json'));\\nconsole.log('keys',Object.keys(d));\\nfor(const [k,v] of Object.entries(d)) if(Array.isArray(v)) {\\n  const n=v.findIndex(x=>x?.id==='RELEASE-001'); if(n>=0) console.log(k,n,JSON.stringify(v[n],null,2));\\n  if(v.some(x=>x?.id?.startsWith('E-'))) { console.log('stories',k,v.length); console.log(JSON.stringify(v.slice(-2),null,2)); }\\n}\\nJS\\\"\",\"aggregated_output\":\"\",\"exit_code\":null,\"status\":\"in_progress\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_6\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc \\\"node - <<'JS'\\nconst fs=require('fs'); const d=JSON.parse(fs.readFileSync('governance/project-ledger.json'));\\nconsole.log('keys',Object.keys(d));\\nfor(const [k,v] of Object.entries(d)) if(Array.isArray(v)) {\\n  const n=v.findIndex(x=>x?.id==='RELEASE-001'); if(n>=0) console.log(k,n,JSON.stringify(v[n],null,2));\\n  if(v.some(x=>x?.id?.startsWith('E-'))) { console.log('stories',k,v.length); console.log(JSON.stringify(v.slice(-2),null,2)); }\\n}\\nJS\\\"\",\"aggregated_output\":\"keys [\\n  'schemaVersion',\\n  'project',\\n  'updatedAt',\\n  'governanceRule',\\n  'recoveryOrder',\\n  'workItems',\\n  'evidenceStories'\\n]\\nworkItems 20 {\\n  \\\"id\\\": \\\"RELEASE-001\\\",\\n  \\\"title\\\": \\\"Gate DoneState standalone launch and future channel releases\\\",\\n  \\\"stream\\\": \\\"release\\\",\\n  \\\"status\\\": \\\"blocked\\\",\\n  \\\"owner\\\": \\\"Publisher owner\\\",\\n  \\\"lastUpdated\\\": \\\"2026-10-07\\\",\\n  \\\"staleDate\\\": \\\"2026-10-09\\\",\\n  \\\"nextAction\\\": \\\"Review the bounded failure-diagnostics repair after local checks and exact-head required CI. Obtain owner merge/deployment authority for that new candidate before resuming customer execution. After deployment, create a fresh bounded public-OAuth objective for OneClickPostFactory; keep its PR unmerged, wait for exact-head CI and pinned independent OpsTruth verification, then inspect/delete the disposable account and remove its exact temporary Write grant. Record fresh signup separately and complete the remaining LEGAL-001 requirements before unrestricted GA.\\\",\\n  \\\"waitCondition\\\": \\\"The GitHub OAuth reconnection and Write gate are resolved: run 257bbf51-66d2-4cd0-838d-01bbe66e2608 was admitted as OneClickPostFactory and its clone succeeded on deployed source 5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4. One implementation launch produced a verified exit-code-1 receipt and terminal FAILED_SAFE, with no branch, PR or verifier request. The deployed failure path discarded its diagnostic log before sandbox teardown, so the cause and provider funding remain unknown. The repair is a review candidate, not deployed. The account, connected key and temporary Write are retained for authorised recovery; a fresh complete customer journey and LEGAL-001 remain separate gates.\\\",\\n  \\\"reentryCondition\\\": \\\"Resume execution only after the diagnostics candidate passes exact-head required CI and an owner-approved merge/deployment is independently confirmed. Preserve the terminal failed run and its receipt; do not rewrite it, retry an ambiguous mutation, broaden App/verifier scope or infer provider funding from credential presence. Use a fresh three-file PR-only objective and keep unrestricted GA blocked until the full customer journey and remaining legal decisions are evidenced.\\\",\\n  \\\"dependencies\\\": [\\n    \\\"VERIFY-004\\\",\\n    \\\"CUST-001\\\",\\n    \\\"CUST-002\\\",\\n    \\\"LEGAL-001\\\"\\n  ],\\n  \\\"evidenceIds\\\": [\\n    \\\"E-037\\\",\\n    \\\"E-038\\\",\\n    \\\"E-041\\\",\\n    \\\"E-044\\\",\\n    \\\"E-049\\\",\\n    \\\"E-054\\\",\\n    \\\"E-055\\\",\\n    \\\"E-064\\\",\\n    \\\"E-065\\\",\\n    \\\"E-066\\\",\\n    \\\"E-067\\\",\\n    \\\"E-068\\\",\\n    \\\"E-070\\\",\\n    \\\"E-071\\\",\\n    \\\"E-072\\\"\\n  ]\\n}\\nstories evidenceStories 72\\n[\\n  {\\n    \\\"id\\\": \\\"E-071\\\",\\n    \\\"date\\\": \\\"2026-10-07\\\",\\n    \\\"identity\\\": \\\"Failed implementation diagnostics retained before sandbox cleanup\\\",\\n    \\\"situation\\\": \\\"The fresh E-070 customer run exposed a narrow diagnostic gap: terminal nonzero implementation receipts discarded Codex stdout/stderr before terminal sandbox teardown. The public run retained exit code 1 without an actionable cause.\\\",\\n    \\\"verification\\\": \\\"The candidate reads the existing receipt log only after receipt run/command/nonce identity checks succeed, redacts both execution and publication credentials plus the private receipt nonce, bounds persisted output to 64 KiB and adds implementationLog to the failed action before settlement and cleanup. An unavailable log yields null without changing FAILED_SAFE. Receipt reconciliation is extracted into a focused module, retaining executor exports and unchanged one-launch/poll/deadline/success/ambiguity behaviour. The executor is below the 1000-line hard limit. UTF-8 truncation drops an incomplete trailing code point instead of emitting a replacement character beyond the byte budget. New failure-path tests drive executeObjective with an existing durable checkpoint and a controlled Sandbox adapter; local full checks and exact-head required CI remain candidate acceptance gates. Local root npm run check passed (40 tests, shared-contract lock, governance, knowledge-base/documentation closure and pack dry-run); Worker npm run check passed (149 tests across 22 files), including all seven new execution-path regressions. npm audit --audit-level=high reports zero vulnerabilities; plugin validation and changed-source/evidence secret-pattern scan passed. Exact-head CI and owner merge/deployment remain separate gates. Worker bundle dry-run passed with --containers-rollout=none; no container build or deployment was attempted for this candidate.\\\",\\n    \\\"accountability\\\": {\\n      \\\"owner\\\": \\\"DoneState maintainers and repository owner\\\",\\n      \\\"status\\\": \\\"active\\\",\\n      \\\"nextAction\\\": \\\"Wait for exact-head required CI, then present the exact tested repair for owner merge/deployment review. Resume with a fresh authorised customer run after deployment without rewriting E-070.\\\",\\n      \\\"waitCondition\\\": \\\"This is an undeployed candidate. The first customer failure cause remains unknown because its sandbox log was not preserved. Existing deployment source and independent verifier pins remain unchanged.\\\",\\n      \\\"staleDate\\\": \\\"2026-10-09\\\"\\n    },\\n    \\\"outcome\\\": \\\"Candidate failure receipts now preserve bounded redacted diagnostics before cleanup. No merge, deployment, new model run or successful customer outcome is claimed.\\\",\\n    \\\"content\\\": \\\"Worker receipt-reconciliation extraction, one failure-log capture, UTF-8 output-bound correction and meaningful execution-path regression tests. No auth/provider, model, authority, App scope, verifier scope, workflow, dependency or container change.\\\",\\n    \\\"measurement\\\": \\\"Seven execution-path tests cover redacted failure capture before settlement/cleanup, 64 KiB UTF-8 truncation, log-read failure, successful quiescence, mismatched-receipt ambiguity, missing-receipt deadline ambiguity and pre-deadline polling. Local checks: 40 core tests and 149 Worker tests across 22 files passed; audit zero; plugin/governance/docs/pack checks passed. No production deployment or new customer execution occurred.\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"E-072\\\",\\n    \\\"date\\\": \\\"2026-10-07\\\",\\n    \\\"identity\\\": \\\"Preserve rollout and OAuth admission evidence across concurrent ledger history\\\",\\n    \\\"situation\\\": \\\"After the original owner-authored OAuth admission record was published in unmerged PR #168 under E-069 at e27e8d8bcf88b4612c65c867212f30f053ea51b0, separate governance PR #167 merged onto main and independently allocated E-069 to AgentProof RC6. The diagnostic candidate must preserve both histories without a duplicate ID or overwriting canonical evidence.\\\",\\n    \\\"verification\\\": \\\"Main advanced to 6fb1f4960d22d351902fe0eefa22f21d249dcd7f through PR #167; exact-main CI 37583831139 passed. Its only changes are governance/project-ledger.json and generated docs/PROJECT-STATE.md, including the active but gated AGENTPROOF-001 track and the canonical AgentProof E-069. All incoming stories and that work item are preserved verbatim. The original unmerged customer OAuth E-069 story is archived verbatim with its published head in evidence/clean-customer-20261007/original-oauth-story.json, and its sanitised deployment/access/authentication receipt remains unchanged at evidence/clean-customer-20261007/continuation-02.json. The earlier record proves the approved PR #166 merge/deploy (source 5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4, CI 37577391832, deploy 37577391829, Worker 98d66425-8a2c-4caf-a2a4-dced459bdd40, container sha256:89239658656b1fe3cef2db45058fb8c7fa02e01ee4d5ecc04c8fa7e6ada9a74e), parent #29 and AgentProof #7 merges, accepted temporary Write, then GitHub 401 refusal before run creation. The subsequent E-070 failed run and E-071 repair remain separate records. PR #167 does not match the Worker deployment path filter; no exact-6fb1f49 production deployment is claimed. The diagnostic candidate incorporates this main through a normal merge, without a force push or authority expansion.\\\",\\n    \\\"accountability\\\": {\\n      \\\"owner\\\": \\\"DoneState maintainers and repository owner\\\",\\n      \\\"status\\\": \\\"blocked\\\",\\n      \\\"nextAction\\\": \\\"Review the bounded failure-diagnostics repair after local checks and exact-head required CI. Obtain owner merge/deployment authority for that new candidate before resuming customer execution. After deployment, create a fresh bounded public-OAuth objective for OneClickPostFactory; keep its PR unmerged, wait for exact-head CI and pinned independent OpsTruth verification, then inspect/delete the disposable account and remove its exact temporary Write grant. Record fresh signup separately and complete the remaining LEGAL-001 requirements before unrestricted GA.\\\",\\n      \\\"waitCondition\\\": \\\"Both dated histories are preserved with distinct canonical identities. The failed customer run remains terminal FAILED_SAFE and the tested repair remains an undeployed candidate awaiting exact-head CI and owner review.\\\",\\n      \\\"staleDate\\\": \\\"2026-10-09\\\"\\n    },\\n    \\\"outcome\\\": \\\"Current main AgentProof activation is preserved, and the earlier approved rollout/OAuth refusal remains independently inspectable. E-070 and E-071 retain their failed-run and repair scope. No new customer success, merge/deployment of the repair or complete journey is claimed.\\\",\\n    \\\"content\\\": \\\"Verbatim original unmerged OAuth story archive, unchanged continuation receipt and reconciliation with exact incoming main/CI. Canonical AgentProof E-069 and all pre-existing main evidence are untouched.\\\",\\n    \\\"measurement\\\": \\\"One independent governance-only main merge and successful CI; one original unmerged story archived verbatim; zero story outcomes rewritten, force pushes, diagnostic deployments or customer retries.\\\"\\n  }\\n]\\n\",\"exit_code\":0,\"status\":\"completed\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_7\",\"type\":\"agent_message\",\"text\":\"The targeted structure confirms RELEASE-001 is blocked and E-072 is the current final story. I’m now adding E-076 without touching existing story values, updating only RELEASE-001’s permitted tracking fields, and creating the exact candidate marker.\"}}\n{\"type\":\"item.started\",\"item\":{\"id\":\"item_8\",\"type\":\"file_change\",\"changes\":[{\"path\":\"/workspace/repo/evidence/clean-customer-20261007/execution-marker-05.json\",\"kind\":\"add\"}],\"status\":\"in_progress\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_8\",\"type\":\"file_change\",\"changes\":[{\"path\":\"/workspace/repo/evidence/clean-customer-20261007/execution-marker-05.json\",\"kind\":\"add\"}],\"status\":\"completed\"}}\n{\"type\":\"item.started\",\"item\":{\"id\":\"item_9\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc \\\"node - <<'JS'\\nconst fs=require('fs'), p='governance/project-ledger.json', d=JSON.parse(fs.readFileSync(p,'utf8'));\\nconst w=d.workItems.find(x=>x.id==='RELEASE-001'); if(\\\"'!w) throw Error('\\\"'RELEASE-001 missing');\\nw.evidenceIds.push('E-076'); w.lastUpdated='2026-10-07'; w.staleDate='2026-10-09';\\nw.nextAction='Await exact-head CI and pinned independent OpsTruth verification of this unmerged funded customer PR-only execution candidate before authorised post-result cleanup. Fresh signup and LEGAL-001 still gate unrestricted GA.';\\nw.waitCondition='Approved diagnostics are deployed at be14e35514f0ee3d78ca2c121c2b236767f80ee4, but this unmerged candidate is not independently verified yet. The previous no-credit failure is historical and immutable; fresh signup and LEGAL-001 still gate unrestricted GA.';\\nw.reentryCondition='Resume authorised post-result cleanup only after the exact published PR head passes core (22), core (24) and hosted-plugin GitHub checks and pinned independent OpsTruth verification completes. Do not infer VERIFIED from this candidate; fresh signup and LEGAL-001 remain separate GA gates.';\\nd.evidenceStories.push({id:'E-076',date:'2026-10-07',identity:'Funded customer PR-only execution candidate',situation:'OneClickPostFactory has USD 5 available for a bounded customer acceptance test with a 120-second implementation timeout. Approved diagnostics are already deployed at be14e35514f0ee3d78ca2c121c2b236767f80ee4; the previous no-credit failure is historical and immutable.',verification:'The unmerged candidate is sealed by nonce 8f46f5b9-5c5e-40f4-9961-f7562458fcd8 at evidence/clean-customer-20261007/execution-marker-05.json. Its exact published PR head must pass core (22), core (24) and hosted-plugin GitHub checks before pinned independent OpsTruth verification. This record and harness output are evidence, never authority.',accountability:{owner:'Publisher owner',status:'blocked',nextAction:'Await exact-head CI and pinned independent OpsTruth verification of this unmerged candidate.',waitCondition:'Candidate is not independently verified yet.',staleDate:'2026-10-09'},outcome:'This is only a customer-execution candidate: no VERIFIED, fresh-signup, cleanup or GA claim.',content:'One funded customer PR-only execution marker for OneClickPostFactory, limited to USD 5 and a 120-second implementation timeout, with authorised post-result cleanup deferred until exact-head CI and pinned independent verification.',measurement:'One unique candidate nonce and one marker file; USD 5 maximum available customer funding; 120-second implementation timeout; zero VERIFIED, fresh-signup, cleanup or GA claims.'});\\nfs.writeFileSync(p,JSON.stringify(d,null,2)+'\\\\\\\\n');\\nJS\\nnpm run governance:render\\\"\",\"aggregated_output\":\"\",\"exit_code\":null,\"status\":\"in_progress\"}}\n",
+            "truncated": false
+          },
+          "launchAcknowledged": true,
+          "launchError": null,
+          "receiptPollAttempt": 21,
+          "receiptSchema": "donestate.implementation-receipt.v1",
+          "receiptVerified": true,
+          "sandboxId": "run-ed9c1146-1fe7-425b-9524-3d138af8552f-clone-1",
+          "success": false
+        },
+        "updatedAt": "2026-10-07T13:01:20.319Z"
+      }
+    ],
+    "events": [
+      {
+        "sequence": 1,
+        "eventType": "run_received",
+        "fromState": null,
+        "toState": "RECEIVED",
+        "detail": null,
+        "createdAt": "2026-10-07T12:58:10.556Z",
+        "previousDigest": null,
+        "digest": "9b481b25cd7cb5603ac0a79ea22551d2c486a520f8051399d2567a7d2eb9a37f"
+      },
+      {
+        "sequence": 2,
+        "eventType": "run_queued",
+        "fromState": "RECEIVED",
+        "toState": "QUEUED",
+        "detail": null,
+        "createdAt": "2026-10-07T12:59:10.871Z",
+        "previousDigest": "9b481b25cd7cb5603ac0a79ea22551d2c486a520f8051399d2567a7d2eb9a37f",
+        "digest": "6b8d1950efb40be17c91787df0eec8c012b4f365d8bbaf0c94f0d23f5812c3f1"
+      },
+      {
+        "sequence": 3,
+        "eventType": "execution_started",
+        "fromState": "QUEUED",
+        "toState": "EXECUTING",
+        "detail": null,
+        "createdAt": "2026-10-07T12:59:10.894Z",
+        "previousDigest": "6b8d1950efb40be17c91787df0eec8c012b4f365d8bbaf0c94f0d23f5812c3f1",
+        "digest": "92a2cfc2c9f0213b0ea88180295e4278154b8d2c03c801bee07512678af09470"
+      },
+      {
+        "sequence": 4,
+        "eventType": "execution_stopped",
+        "fromState": "EXECUTING",
+        "toState": "FAILED_SAFE",
+        "detail": "implement failed with exit code 124",
+        "createdAt": "2026-10-07T13:01:22.138Z",
+        "previousDigest": "92a2cfc2c9f0213b0ea88180295e4278154b8d2c03c801bee07512678af09470",
+        "digest": "d1cc8199ce447049435b0cb7f0c3221b3782e766099f0f0a4bf662a77c0fca0a"
+      }
+    ]
+  }
+}
+

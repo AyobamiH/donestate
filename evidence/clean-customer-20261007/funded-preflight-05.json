@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-07T12:59:10.871Z",
+  "attempt": "05",
+  "status": "QUEUED_AT_ADMISSION",
+  "customer": {
+    "githubLogin": "OneClickPostFactory",
+    "githubId": 281453754
+  },
+  "repository": "AyobamiH/donestate",
+  "source": {
+    "baseCommit": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+    "deployedSourceCommit": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+    "postMergeCiRun": 37595968023,
+    "deploymentRun": 37595968046
+  },
+  "funding": {
+    "availableUsdReportedByOwner": 5,
+    "providerBalanceIndependentlyVerified": false
+  },
+  "credential": {
+    "connected": true,
+    "activeRunId": null,
+    "dailyRunsUsed": 0,
+    "privateSetupCapabilityExcluded": true,
+    "createdAt": "2026-10-07T12:50:30.797Z"
+  },
+  "githubAccess": {
+    "observedPermission": "write",
+    "newInvitationId": 336557908,
+    "invitationPending": false,
+    "effectiveWriteVerified": true,
+    "recipient": "OneClickPostFactory"
+  },
+  "execution": {
+    "objectiveCreated": true,
+    "runId": "ed9c1146-1fe7-425b-9524-3d138af8552f",
+    "stateObservedAtStart": "QUEUED",
+    "startSubmissionCount": 1,
+    "paidRetriesAllowed": 0,
+    "maxDurationMs": 120000,
+    "maxChangedFiles": 3,
+    "hardDollarCapAvailable": false,
+    "actualModelAndProviderUsageObservedAtAdmission": false
+  },
+  "modelCostReview": {
+    "explicitRuntimeModel": null,
+    "pinnedCliVersion": "0.150.1",
+    "bundledCatalogDefaultInference": "gpt-5.6-sol",
+    "liveModelUnproven": true,
+    "officialPricingUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+    "shortContextInputUsdPerMillion": 4,
+    "shortContextOutputUsdPerMillion": 20,
+    "pricingObservedDate": "2026-10-07",
+    "timeoutIsNotADollarCap": true
+  },
+  "objectiveDescriptor": {
+    "repository": "AyobamiH/donestate",
+    "baseRef": "main",
+    "goal": "Make one minimal documentation/evidence candidate for the funded customer acceptance test. The customer has only USD 5 available; the implementation timeout is 120 seconds. Read AGENTS.md and select RELEASE-001 before editing. Use a short Python edit; do not dump the whole ledger or generated document into model context, explore unrelated source, use subagents, or launch another model.\nChange exactly these three files: evidence/clean-customer-20261007/execution-marker-05.json, governance/project-ledger.json, docs/PROJECT-STATE.md.\nCreate the marker as this JSON object: {\"date\":\"2026-10-07\",\"customer\":\"OneClickPostFactory\",\"repository\":\"AyobamiH/donestate\",\"marker\":\"8f46f5b9-5c5e-40f4-9961-f7562458fcd8\",\"outcome\":\"customer-execution-candidate\"}.\nPreserve every existing evidence story verbatim and all other work items. Append E-076, date 2026-10-07, identity \"Funded customer PR-only execution candidate\". Include nonce 8f46f5b9-5c5e-40f4-9961-f7562458fcd8 and marker path evidence/clean-customer-20261007/execution-marker-05.json in its verification text. Supply the normal situation, verification, accountability, outcome, content and measurement fields. Accountability: owner Publisher owner, status blocked, nextAction await exact-head CI and pinned independent OpsTruth verification of this unmerged candidate, waitCondition candidate is not independently verified yet, staleDate 2026-10-09. Its outcome must say this is only a candidate: no VERIFIED, fresh-signup, cleanup or GA claim.\nKeep RELEASE-001 title, stream, status blocked and dependencies unchanged. Add E-076 to its evidenceIds, set lastUpdated 2026-10-07 and staleDate 2026-10-09, and update nextAction/waitCondition/reentryCondition to await exact-head CI and pinned independent verification before authorised post-result cleanup; fresh signup and LEGAL-001 still gate GA. Approved diagnostics are already deployed at be14e35514f0ee3d78ca2c121c2b236767f80ee4; the previous no-credit failure is historical and immutable. Do not alter legal decisions or AgentProof stories.\nRun npm run governance:render, npm run governance:check and git diff --check. The control plane installs dependencies, runs npm test, commits and opens the authorised PR after your implementation. Do not commit, push, open a PR, deploy, publish or read credentials yourself. Finish with a brief result.",
+    "acceptanceCriteria": [
+      "The new customer execution marker has the exact date, customer, repository, unique marker and candidate-only outcome sealed in this objective.",
+      "The ledger and generated state contain E-076 \"Funded customer PR-only execution candidate\" and the unique marker; RELEASE-001 retains its exact identity and blocked status.",
+      "Only the three authorised marker, ledger and generated-state files change.",
+      "The exact published PR head passes core (22), core (24) and hosted-plugin GitHub checks before independent verification."
+    ],
+    "authorities": [
+      "local_read",
+      "local_write",
+      "test",
+      "commit",
+      "push",
+      "open_pr",
+      "secret_access"
+    ],
+    "maxChangedFiles": 3,
+    "maxDurationMs": 120000,
+    "publication": "pull_request",
+    "validationProfile": "node",
+    "autoStart": false,
+    "trustedVerifierFingerprints": [
+      "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+    ],
+    "verificationRequirements": [
+      {
+        "id": "marker-date",
+        "criterionIndex": 0,
+        "kind": "json_equals",
+        "path": "evidence/clean-customer-20261007/execution-marker-05.json",
+        "pointer": "/date",
+        "expected": "2026-10-07"
+      },
+      {
+        "id": "marker-customer",
+        "criterionIndex": 0,
+        "kind": "json_equals",
+        "path": "evidence/clean-customer-20261007/execution-marker-05.json",
+        "pointer": "/customer",
+        "expected": "OneClickPostFactory"
+      },
+      {
+        "id": "marker-repository",
+        "criterionIndex": 0,
+        "kind": "json_equals",
+        "path": "evidence/clean-customer-20261007/execution-marker-05.json",
+        "pointer": "/repository",
+        "expected": "AyobamiH/donestate"
+      },
+      {
+        "id": "marker-marker",
+        "criterionIndex": 0,
+        "kind": "json_equals",
+        "path": "evidence/clean-customer-20261007/execution-marker-05.json",
+        "pointer": "/marker",
+        "expected": "8f46f5b9-5c5e-40f4-9961-f7562458fcd8"
+      },
+      {
+        "id": "marker-outcome",
+        "criterionIndex": 0,
+        "kind": "json_equals",
+        "path": "evidence/clean-customer-20261007/execution-marker-05.json",
+        "pointer": "/outcome",
+        "expected": "customer-execution-candidate"
+      },
+      {
+        "id": "candidate-ledger",
+        "criterionIndex": 1,
+        "kind": "file_contains",
+        "path": "governance/project-ledger.json",
+        "values": [
+          "\"id\": \"E-076\"",
+          "Funded customer PR-only execution candidate",
+          "8f46f5b9-5c5e-40f4-9961-f7562458fcd8",
+          "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+        ]
+      },
+      {
+        "id": "candidate-generated",
+        "criterionIndex": 1,
+        "kind": "file_contains",
+        "path": "docs/PROJECT-STATE.md",
+        "values": [
+          "E-076",
+          "Funded customer PR-only execution candidate",
+          "8f46f5b9-5c5e-40f4-9961-f7562458fcd8"
+        ]
+      },
+      {
+        "id": "only-authorised-files",
+        "criterionIndex": 2,
+        "kind": "changed_files",
+        "allowedPaths": [
+          "evidence/clean-customer-20261007/execution-marker-05.json",
+          "governance/project-ledger.json",
+          "docs/PROJECT-STATE.md"
+        ],
+        "max": 3
+      },
+      {
+        "id": "exact-head-required-ci",
+        "criterionIndex": 3,
+        "kind": "github_checks_pass",
+        "requiredNames": [
+          "core (22)",
+          "core (24)",
+          "hosted-plugin"
+        ]
+      }
+    ]
+  },
+  "history": {
+    "previousTerminalRunsWillNotBeRestarted": [
+      "257bbf51-66d2-4cd0-838d-01bbe66e2608",
+      "c9586ced-df91-4c49-aa97-8d07c04af16b"
+    ],
+    "previousReceiptsRemainImmutable": true
+  },
+  "remainingGates": [
+    "Actual implementation and exact-head PR CI",
+    "Pinned independent verification",
+    "Authorised post-result cleanup",
+    "Selected-repository App push-admission separately unproven",
+    "Fresh signup and remaining LEGAL-001 requirements"
+  ],
+  "claims": {
+    "customerCandidateAuthoredOutsideService": false,
+    "customerPrPublished": false,
+    "independentlyVerified": false,
+    "unrestrictedGaReady": false
+  },
+  "admissionCorrection": {
+    "requestsRejectedBeforeRunCreation": 2,
+    "initialNormalisedResponse": "INVALID_ARGUMENT",
+    "initialDetailedCauseObserved": false,
+    "knownSelectedRepositoryResponse": "authenticated GitHub user cannot push to this repository",
+    "selectedRepositoryRemovedBeforeOAuthAdmission": true,
+    "rawCommitRefIndependentlyReturned404": true,
+    "admittedBaseRef": "main",
+    "admittedBaseHeadSha": "be14e35514f0ee3d78ca2c121c2b236767f80ee4"
+  }
+}

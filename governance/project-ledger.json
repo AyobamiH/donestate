@@ -549,9 +549,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-07",
       "staleDate": "2026-10-09",
-      "nextAction": "The owner must add credits to the OpenAI API organization associated with the execution key. After this intentional cleanup, connect the funded execution key again and explicitly authorise any fresh bounded repository Write. Use a new PR-only objective, exact-head required CI and pinned OpsTruth verification; do not rerun either terminal failed objective. Fresh signup and remaining legitimate public address/branded support/privacy contacts still gate unrestricted GA.",
-      "waitCondition": "Approved diagnostics are deployed at be14e35514f0ee3d78ca2c121c2b236767f80ee4 with successful exact-source CI 37595968023 and deploy 37595968046. Fresh customer run c9586ced-df91-4c49-aa97-8d07c04af16b is FAILED_SAFE with preserved OpenAI no-credit diagnostics and no branch, PR or verifier subject. The approved post-result cleanup is complete: the customer console reported 2 indexed objectives deleted, 0 selected repositories and 0 findings; the stored execution key is disconnected, both known run IDs now return run not found, maintenance selection is empty, and GitHub independently reports OneClickPostFactory permission read after exact collaborator removal. Successful customer execution, independent verification, fresh signup and remaining LEGAL-001 decisions are unproven.",
-      "reentryCondition": "Resume only when the owner confirms API credits and reconnects an execution key after cleanup, with fresh bounded repository authority. Keep prior redacted receipts and stories immutable, including the older unknown-cause run. A new unmerged customer PR must pass exact-head CI and the pinned strict OpsTruth contract; no manufactured marker, blind retry, App/verifier scope expansion or unrestricted GA inference.",
+      "nextAction": "Publish the complete redacted terminal attempt-05 receipt, then complete the already authorised disposable-account and exact temporary-Write cleanup. The prepared Node-only attempt-06 descriptor avoids Python and broad inspection but has not been created or started. Re-enter only with a fresh bounded funded envelope, confirmed key and exact Write; selected-repository App admission, fresh signup and LEGAL-001 remain separate gates.",
+      "waitCondition": "Funded customer run ed9c1146-1fe7-425b-9524-3d138af8552f reached model execution but terminated FAILED_SAFE at 13:01:22.138Z with verified receipt exit 124 under the 120-second timeout. Clone succeeded; untruncated redacted diagnostics report absent python/python3, Node fallback and a sandbox-only marker change. No branch, PR, independent verifier decision or final CLI usage event exists. The key is connected but idle with dailyRunsUsed 1 until authorised cleanup. No further paid run is started and unrestricted GA remains blocked.",
+      "reentryCondition": "Preserve terminal run and all historical receipts unchanged. Complete authorised cleanup only after the failure receipt is durably published. A new compact Node-only candidate must be independently admitted against exact main, use the established verifier pin and pass actual-head required CI. Do not restart the terminal run, invent a customer PR, infer dollar spend from a timeout, widen scopes or infer GA.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -575,7 +575,9 @@
         "E-071",
         "E-072",
         "E-074",
-        "E-075"
+        "E-075",
+        "E-077",
+        "E-078"
       ]
     },
     {
@@ -1839,7 +1841,7 @@
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication \u2192 v2 handoff \u2192 OpsTruth verification loop, then reconcile the final public documentation state.",
+        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication → v2 handoff → OpsTruth verification loop, then reconcile the final public documentation state.",
         "waitCondition": "The npm publication itself is complete. Remaining work is external product acceptance and public documentation closure, not package publication.",
         "staleDate": "2026-10-10"
       },
@@ -1975,7 +1977,7 @@
       "accountability": {
         "owner": "DoneState maintainers and publisher owner",
         "status": "blocked",
-        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up \u2192 connect \u2192 select repo \u2192 create objective \u2192 execute \u2192 unmerged PR \u2192 OpsTruth VERIFIED \u2192 inspect account \u2192 delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
+        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up → connect → select repo → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
         "waitCondition": "Customer execution credential must be reconnected securely. LEGAL-001 remains blocked on its existing publisher requirements.",
         "staleDate": "2026-10-09"
       },
@@ -2118,6 +2120,40 @@
       "outcome": "The authorised indexed-service-account and exact repository-access cleanup are complete. The customer execution remains blocked by API credits and needs a new funded credential connection after intentional cleanup; successful fresh execution and launch readiness are not claimed.",
       "content": "A new cleanup receipt and current blocked work-item update; all prior evidence stories, including the dated pre-cleanup rollout and failure receipts, remain unchanged.",
       "measurement": "One exact disposable-account deletion; two indexed terminal objectives deleted; stored key disconnected; zero selected repositories or findings; both known run IDs return run not found; one exact collaborator removed and permission read independently confirmed; zero customer PRs or verifier decisions."
+    },
+    {
+      "id": "E-077",
+      "date": "2026-10-07",
+      "identity": "Owner-funded customer key and exact Write confirmed; one OAuth objective queued",
+      "situation": "The owner reported USD 5 funded, authorised the bounded test and completed credential reconnection and the exact new collaborator invitation.",
+      "verification": "Independent customer readback confirmed the key connected at 12:50:30.797Z with no active run and zero daily runs; GitHub independently confirmed OneClickPostFactory Write. The explicit selected-repository create response rejected push admission before run creation, so the newly added unscheduled registration was removed and an empty registry read back. The first normalised INVALID_ARGUMENT response did not expose a detailed cause. A raw SHA is also not accepted as a heads branch: its GitHub ref independently returned 404. The public GitHub OAuth path then created exactly one objective ed9c1146-1fe7-425b-9524-3d138af8552f as OneClickPostFactory, pinning main to be14e35514f0ee3d78ca2c121c2b236767f80ee4. All sealed fields were compared semantically before one start submission, which returned QUEUED at 12:59:10.871Z. Limits: three changed files, 120 seconds, PR-only, no paid retry and established strict-verifier pin. No hard dollar cap or actual usage figure is inferred. Dated admission descriptor: evidence/clean-customer-20261007/funded-preflight-05.json.",
+      "accountability": {
+        "owner": "DoneState maintainers and repository owner",
+        "status": "blocked",
+        "nextAction": "Observe the single queued run and preserve its actual outcome before authorised post-result cleanup.",
+        "waitCondition": "At admission the run is queued, with no published head, CI or independent decision yet.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Funded credential reconnection, exact customer Write and one queued public-OAuth objective are evidenced. The selected-repository App push admission remains unproven; queued admission alone is not customer execution, PR publication, verification or GA.",
+      "content": "One dated preflight receipt, one immutable new story and current blocked work-item updates. Existing stories, failure receipts, legal decisions, verifier trust and AgentProof gates remain unchanged.",
+      "measurement": "One accepted exact collaborator invitation; one key reconnection; two create requests rejected before run creation; one successful OAuth objective creation and one start submission; no paid retry."
+    },
+    {
+      "id": "E-078",
+      "date": "2026-10-07",
+      "identity": "Funded customer model execution timed out safely; diagnostic receipt preserved",
+      "situation": "One compact paid customer implementation was approved against owner-reported USD 5 funding, with a two-minute execution window and no paid retry.",
+      "verification": "Customer OAuth run ed9c1146-1fe7-425b-9524-3d138af8552f was admitted as OneClickPostFactory on exact approved deployed base be14e35514f0ee3d78ca2c121c2b236767f80ee4. Clone attempt one succeeded. Exactly one acknowledged implementation launch produced an identity-verified donestate.implementation-receipt.v1 with exit code 124, receiptPollAttempt 21, and terminal FAILED_SAFE at 13:01:22.138Z. The nontruncated redacted log contains real agent/tool activity: python and python3 are unavailable, the agent switches to Node, reports one marker addition inside the sandbox, and starts the Node ledger/render command before timeout. The last command completion and validation are not observed. branchName, branchHeadSha, PR number/URL, verification snapshot and verifier decision are null; no independent-verifier request was sent. Credential readback is idle, lastUsedAt 13:01:18.945Z, dailyRunsUsed 1. The final CLI usage event is absent, so neither actual model billing nor remaining balance is asserted. Final event-chain digest d1cc8199ce447049435b0cb7f0c3221b3782e766099f0f0a4bf662a77c0fca0a. Complete dated receipt: evidence/clean-customer-20261007/attempt-05.json. A separate exact Node editor and prepared re-entry descriptor at evidence/clean-customer-20261007/prepared-node-objective-06.json are not a new customer execution or self-certified result. E-076 remains unpublished; E-080 is reserved for a future actual service-authored candidate.",
+      "accountability": {
+        "owner": "DoneState maintainers and repository owner",
+        "status": "blocked",
+        "nextAction": "Publish the complete redacted terminal attempt-05 receipt, then complete the already authorised disposable-account and exact temporary-Write cleanup. The prepared Node-only attempt-06 descriptor avoids Python and broad inspection but has not been created or started. Re-enter only with a fresh bounded funded envelope, confirmed key and exact Write; selected-repository App admission, fresh signup and LEGAL-001 remain separate gates.",
+        "waitCondition": "Funded customer run ed9c1146-1fe7-425b-9524-3d138af8552f reached model execution but terminated FAILED_SAFE at 13:01:22.138Z with verified receipt exit 124 under the 120-second timeout. Clone succeeded; untruncated redacted diagnostics report absent python/python3, Node fallback and a sandbox-only marker change. No branch, PR, independent verifier decision or final CLI usage event exists. The key is connected but idle with dailyRunsUsed 1 until authorised cleanup. No further paid run is started and unrestricted GA remains blocked.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Funding allowed real model activity, but the bounded run timed out before validation or publication. The receipt and timeout boundary are proven; a complete customer PR/VERIFIED outcome and GA are not.",
+      "content": "One immutable failed-safe receipt and exact terminal history, plus an unstarted Node-only re-entry descriptor. No owner-authored customer marker, runtime deployment, verifier rotation or scope expansion.",
+      "measurement": "One successful clone; one implementation launch; verified exit 124; untruncated diagnostic log; zero branches, PRs, CI subjects, verifier requests or paid retries; no actual USD spend assertion."
     }
   ]
 }
