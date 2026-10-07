@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "status": "REPAIR_PREPARED_NOT_DEPLOYED",
+  "selectedItem": "RELEASE-001",
+  "sourceBaseSha": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+  "priorRunId": "124f1517-c41c-4d67-bc32-016b3d0ba8e1",
+  "priorOutcome": "FAILED_SAFE",
+  "preservedEvidencePr": 169,
+  "preservedEvidenceHead": "2c0e958d8327b6a1250866e219c3ec4fb718166e",
+  "offlineInstall": {
+    "command": "npm ci --offline --no-audit --no-fund",
+    "exitCode": 0,
+    "elapsedSeconds": 2.248,
+    "peakProcessGroupPssKiB": 0,
+    "peakProcessGroupRssKiB": 0,
+    "maxProcesses": 1,
+    "baseSha": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+    "localNode": "v24.19.0",
+    "apiExecutionUsed": false,
+    "cloudflareResourcePressureEmulated": false,
+    "logTail": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> donestate@0.2.0 prepare\n> npm run build\n\nnpm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> donestate@0.2.0 build\n> node scripts/clean.mjs dist && tsc\n\n\n> donestate@0.2.0 postbuild\n> chmod 755 dist/cli.js\n\n\nadded 9 packages in 2s\n",
+    "processTreeSampling": "UNAVAILABLE: process namespace permissions prevented child RSS/PSS observation; zero sampler fields are not memory measurements"
+  },
+  "offlineBuildResources": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "elapsedSeconds": 1.337,
+    "peakProcessTreePssKiB": 0,
+    "peakProcessTreeRssKiB": 0,
+    "kernelMaximumChildRssKiB": 310424,
+    "maxProcesses": 1,
+    "sampleErrors": [
+      "PermissionError"
+    ],
+    "nodeVersion": "v24.19.0",
+    "apiExecutionUsed": false,
+    "cloudflareResourcePressureEmulated": false,
+    "processTreeSampling": "UNAVAILABLE: PermissionError; kernel maximum child RSS is the usable memory observation"
+  },
+  "capacity": {
+    "before": {
+      "instanceType": "lite",
+      "memoryMib": 256,
+      "vCpu": 0.0625,
+      "diskGb": 2,
+      "maxInstances": 5
+    },
+    "prepared": {
+      "instanceType": "basic",
+      "memoryMib": 1024,
+      "vCpu": 0.25,
+      "diskGb": 4,
+      "maxInstances": 5
+    },
+    "source": "https://developers.cloudflare.com/containers/platform/limits/",
+    "chargingSource": "https://developers.cloudflare.com/containers/platform/pricing/",
+    "chargesIncrease": "Provisioned memory increases 4x and disk 2x; available CPU increases 4x and actual CPU usage is billed. Existing included plan usage and run destruction still apply."
+  },
+  "diagnosis": {
+    "measuredLocalWorkloadExceedsLiteMemory": true,
+    "preciseProductionTimeoutCause": "UNPROVEN",
+    "localNode24IsExactProductionNode22Reproduction": false,
+    "productionOomProven": false
+  },
+  "authority": {
+    "userDirectedRepairAndAnotherAttempt": true,
+    "ownerMergeAndDeploymentStillReserved": true,
+    "futureCustomerMaxDurationMs": 120000,
+    "futureCustomerMaxChangedFiles": 3,
+    "publication": "pull_request",
+    "automaticRetry": false
+  },
+  "livePrerequisites": {
+    "customerKeyConnected": false,
+    "customerRepositoryPermission": "read",
+    "futureStartSubmitted": false
+  },
+  "separateUnprovenGates": [
+    "live repaired Node validation",
+    "service-created customer PR",
+    "exact customer PR-head CI",
+    "pinned independent verification",
+    "complete indexed account purge",
+    "fresh signup",
+    "selected-repository App admission",
+    "LEGAL-001"
+  ],
+  "secretsExcluded": true,
+  "localChecks": {
+    "observedAt": "2026-10-07T22:30:05.315950+00:00",
+    "root": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "testsPassed": 44,
+      "testsFailed": 0,
+      "logSha256": "d5d94eeb36b1990a8e9154a9e95a1070a1661f40e21caa2b48cf1adf2ab66e25",
+      "includes": [
+        "typecheck",
+        "tests",
+        "verification contract lock",
+        "documentation and governance closure",
+        "package-content audit"
+      ]
+    },
+    "worker": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "testsPassed": 149,
+      "testFilesPassed": 22,
+      "testsFailed": 0,
+      "logSha256": "c0820df8ffc53ee33459a0f3fc913bb3bea019fbbbe7b46a1529e89362d15138",
+      "includes": [
+        "Sandbox version, transport and resource prerequisite check",
+        "Worker types and build",
+        "all hosted tests"
+      ],
+      "installedDependencyCacheReused": true,
+      "sourcePackageLockMatches": true,
+      "packageLockSha256": "44440786a5731d606a44d5bd9ede127e89cf3ea7f6c46d8f3da39db8c4bb39a1"
+    },
+    "deploymentExecuted": false,
+    "productionImageBuildExecuted": false,
+    "liveCustomerRunExecuted": false,
+    "limits": "Local Node 24 checks are not a production Node 22 container reproduction. No local Cloudflare credential is available; the repository production deployment workflow remains the supported route after owner authority."
+  }
+}

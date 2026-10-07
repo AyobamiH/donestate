@@ -549,9 +549,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-07",
       "staleDate": "2026-10-09",
-      "nextAction": "Review the bounded failure-diagnostics repair after local checks and exact-head required CI. Obtain owner merge/deployment authority for that new candidate before resuming customer execution. After deployment, create a fresh bounded public-OAuth objective for OneClickPostFactory; keep its PR unmerged, wait for exact-head CI and pinned independent OpsTruth verification, then inspect/delete the disposable account and remove its exact temporary Write grant. Record fresh signup separately and complete the remaining LEGAL-001 requirements before unrestricted GA.",
-      "waitCondition": "The GitHub OAuth reconnection and Write gate are resolved: run 257bbf51-66d2-4cd0-838d-01bbe66e2608 was admitted as OneClickPostFactory and its clone succeeded on deployed source 5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4. One implementation launch produced a verified exit-code-1 receipt and terminal FAILED_SAFE, with no branch, PR or verifier request. The deployed failure path discarded its diagnostic log before sandbox teardown, so the cause and provider funding remain unknown. The repair is a review candidate, not deployed. The account, connected key and temporary Write are retained for authorised recovery; a fresh complete customer journey and LEGAL-001 remain separate gates.",
-      "reentryCondition": "Resume execution only after the diagnostics candidate passes exact-head required CI and an owner-approved merge/deployment is independently confirmed. Preserve the terminal failed run and its receipt; do not rewrite it, retry an ambiguous mutation, broaden App/verifier scope or infer provider funding from credential presence. Use a fresh three-file PR-only objective and keep unrestricted GA blocked until the full customer journey and remaining legal decisions are evidenced.",
+      "nextAction": "Require the bounded Sandbox-capacity repair and failure-path guard to pass exact-head required CI. Review and merge/deploy under the reserved owner authority, then restore only the customer key and temporary Write needed for one fresh bounded acceptance run. Require actual service publication, exact-head CI and the established pinned independent decision; preserve every terminal attempt and cleanup.",
+      "waitCondition": "Attempt-07 implementation exited zero, but npm ci validation timed out before publication. Production is configured as lite (256 MiB, 1/16 vCPU); a same-source local Node 24 compiler measurement reached 310424 KiB maximum child RSS, above that memory budget. This establishes a capacity mismatch for the measured local workload, not the exact production timeout cause. Basic capacity is prepared only until the repair is deployed and a fresh real customer run succeeds.",
+      "reentryCondition": "The user explicitly directed repair and another attempt. Keep the original 120000ms implementation bound, three-file customer limit, PR-only effects, independent-verifier pin and no automatic retry. Restore the deleted customer prerequisites only for the fresh successor. No historical failed run or pending publication may be rewritten as successful.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -573,7 +573,8 @@
         "E-068",
         "E-070",
         "E-071",
-        "E-072"
+        "E-072",
+        "E-090"
       ]
     },
     {
@@ -2082,6 +2083,23 @@
       "outcome": "Current main AgentProof activation is preserved, and the earlier approved rollout/OAuth refusal remains independently inspectable. E-070 and E-071 retain their failed-run and repair scope. No new customer success, merge/deployment of the repair or complete journey is claimed.",
       "content": "Verbatim original unmerged OAuth story archive, unchanged continuation receipt and reconciliation with exact incoming main/CI. Canonical AgentProof E-069 and all pre-existing main evidence are untouched.",
       "measurement": "One independent governance-only main merge and successful CI; one original unmerged story archived verbatim; zero story outcomes rewritten, force pushes, diagnostic deployments or customer retries."
+    },
+    {
+      "id": "E-090",
+      "date": "2026-10-07",
+      "identity": "Sandbox compiler-capacity mismatch and bounded deployment repair",
+      "situation": "After the compact customer implementation succeeded, dependency validation timed out at the repository prepare/build lifecycle. The user directed repair and another attempt. Both terminal receipts and exact customer cleanup remain preserved in PR 169.",
+      "verification": "evidence/clean-customer-20261007/validation-resource-repair.json records the unchanged production main, original FAILED_SAFE subject, offline install success and local maximum-child-RSS measurement. Cloudflare documents lite as 256 MiB/1/16 vCPU and basic as 1 GiB/1/4 vCPU. The measured local Node 24 build is not an exact Cloudflare Node 22 reproduction, and the timeout cause remains unproven. Local npm run check passed 44 core tests and 149 Worker tests, type checks, required documentation/governance closure, the verifier contract lock and package-content audit. Exact-head GitHub CI remains pending.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Require the bounded Sandbox-capacity repair and failure-path guard to pass exact-head required CI. Review and merge/deploy under the reserved owner authority, then restore only the customer key and temporary Write needed for one fresh bounded acceptance run. Require actual service publication, exact-head CI and the established pinned independent decision; preserve every terminal attempt and cleanup.",
+        "waitCondition": "Attempt-07 implementation exited zero, but npm ci validation timed out before publication. Production is configured as lite (256 MiB, 1/16 vCPU); a same-source local Node 24 compiler measurement reached 310424 KiB maximum child RSS, above that memory budget. This establishes a capacity mismatch for the measured local workload, not the exact production timeout cause. Basic capacity is prepared only until the repair is deployed and a fresh real customer run succeeds.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Prepare production basic capacity plus a fail-closed deployment memory guard; required CI, deployment and successful customer acceptance are separate pending states. No new model execution or paid retry has occurred.",
+      "content": "Only container capacity and its build/deployment guard change; SDK/image versions, model command, RPC, exact action reconciliation, customer time/file bounds, publication authorities and the verifier pin remain unchanged. Larger capacity has higher provisioned resource charges, retains max_instances 5 and explicit sandbox destruction.",
+      "measurement": "Offline npm ci exited zero in 2.248s. Separate local npm run build exited zero in 1.337s with maximum child RSS 310424 KiB (~303 MiB); process-tree sampling was inaccessible. Production basic supplies 1024 MiB. No production OOM claim, live performance claim, deadline increase or validation bypass. Local core tests 44/44 and Worker tests 149/149 passed; the resource regression guard rejects lite/dev and an actual production-config lite mutation. Production deployment and live acceptance remain unexecuted."
     }
   ]
 }

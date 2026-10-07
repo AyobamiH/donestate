@@ -78,6 +78,10 @@ The hosted GitHub Actions deployment reads `DONESTATE_GITHUB_CLIENT_ID` and `DON
 
 The default hosted limits allow one active objective and ten started objectives per UTC day for each authenticated GitHub user. Cloudflare also caps this deployment at five simultaneous Sandbox containers. Change `USER_DAILY_RUN_LIMIT` deliberately and retain a hard global container cap.
 
+The production configuration selects Cloudflare's `basic` container profile: 1 GiB memory, one quarter vCPU and 4 GB disk. The deployment prerequisite check rejects Sandbox profiles below 512 MiB. A local repository build exceeded the former `lite` profile's 256 MiB capacity; the precise production validation timeout cause remains unproven. This configuration repair requires deployment and a successful live validation run before it can establish recovery.
+
+The larger profile increases provisioned memory and disk charges, with CPU charged by actual usage. Objective deadlines, file limits, required validation and the five-container cap remain enforced. See Cloudflare's [container limits](https://developers.cloudflare.com/containers/platform/limits/) and [pricing](https://developers.cloudflare.com/containers/platform/pricing/) before deployment.
+
 Then run:
 
 ```bash
