@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "status": "CAPACITY_DEPLOYMENT_CONFIRMED_CUSTOMER_PREREQUISITES_PENDING",
+  "authority": {
+    "instruction": "implement the unblockers",
+    "authorisesReviewedRepairMergeAndDeployment": true,
+    "freshBoundedCustomerAttemptAuthorised": true,
+    "automaticRetry": false,
+    "browserWriteGrantActionTimeConfirmationPending": true
+  },
+  "repository": "AyobamiH/donestate",
+  "repairPr": 170,
+  "repairHeadSha": "4ca81f992c407f9403b44ca91821758e36cc6b6c",
+  "mergeSha": "fbaa060dfc6680516dfb7a1195801d1f8ab58d9d",
+  "mergedAt": "2026-10-07T22:44:42Z",
+  "postMergeCi": {
+    "runId": 37698109881,
+    "conclusion": "success",
+    "requiredJobs": [
+      {
+        "name": "core (24)",
+        "conclusion": "success"
+      },
+      {
+        "name": "core (22)",
+        "conclusion": "success"
+      },
+      {
+        "name": "hosted-plugin",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "deployment": {
+    "runId": 37698109840,
+    "jobId": 113054728263,
+    "conclusion": "success",
+    "workerVersion": "10c14fb2-8536-4af3-91f2-8ecd5bae94d9",
+    "containerApplicationId": "a0340af7-00ec-45b5-8d60-2d8444353b89",
+    "imageDigest": "sha256:8753929cf3ef46ccc160471df5addcb8d3228affa713c1df7d025c54548225c2",
+    "instanceType": "basic",
+    "memoryMib": 1024,
+    "maxInstances": 5,
+    "evidenceLines": [
+      "2026-10-07T22:45:06.6678312Z Cloudflare Sandbox versions aligned at 0.12.9; transport=rpc; instance=basic; memory=1024 MiB",
+      "2026-10-07T22:47:20.5682038Z 10c14fb2: digest: sha256:8753929cf3ef46ccc160471df5addcb8d3228affa713c1df7d025c54548225c2 size: 4083",
+      "2026-10-07T22:47:20.9267811Z \u2502 -         \"instance_type\": \"lite\",",
+      "2026-10-07T22:47:20.9268638Z \u2502 +         \"instance_type\": \"basic\",",
+      "2026-10-07T22:47:23.2231142Z \u2502\u200a SUCCESS \u200aModified application donestate-mcp-sandbox (Application ID: a0340af7-00ec-45b5-8d60-2d8444353b89)",
+      "2026-10-07T22:47:24.1140721Z Deployed donestate-mcp triggers (0.89 sec)",
+      "2026-10-07T22:47:24.1145080Z Current Version ID: 10c14fb2-8536-4af3-91f2-8ecd5bae94d9"
+    ]
+  },
+  "customer": {
+    "login": "OneClickPostFactory",
+    "credentialConnected": false,
+    "activeRunId": null,
+    "dailyRunsUsed": 2,
+    "repositoryPermission": "read",
+    "invitationPreparedNotSubmitted": true,
+    "objective08Prepared": true,
+    "objective08Created": false,
+    "objective08Started": false
+  },
+  "priorEvidence": {
+    "pr": 169,
+    "headSha": "2c0e958d8327b6a1250866e219c3ec4fb718166e",
+    "terminalFailedRun": "124f1517-c41c-4d67-bc32-016b3d0ba8e1",
+    "outcome": "FAILED_SAFE",
+    "knownRunKeyAndWriteCleanupPreserved": true
+  },
+  "limits": {
+    "deploymentIsNotCustomerAcceptance": true,
+    "precisePriorProductionTimeoutCause": "UNPROVEN",
+    "productionOomProven": false,
+    "customerPrCreated": false,
+    "independentCustomerVerified": false,
+    "fullIndexedAccountPurgeUnobserved": true
+  },
+  "secretsExcluded": true,
+  "setupTicketAndCredentialExcluded": true,
+  "observedAt": "2026-10-07T23:00:18.494684+00:00",
+  "preparedAccessScreenshot": {
+    "path": "evidence/clean-customer-20261007/customer-write-ready-08.jpg",
+    "sha256": "52d61723b6a7c24f52d249ae26d7aa444f0c275dbb93aacedd7c32891787102c",
+    "sizeBytes": 69604,
+    "showsGrantSubmitted": false
+  }
+}

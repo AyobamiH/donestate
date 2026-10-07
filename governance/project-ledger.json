@@ -549,9 +549,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-07",
       "staleDate": "2026-10-09",
-      "nextAction": "Require the bounded Sandbox-capacity repair and failure-path guard to pass exact-head required CI. Review and merge/deploy under the reserved owner authority, then restore only the customer key and temporary Write needed for one fresh bounded acceptance run. Require actual service publication, exact-head CI and the established pinned independent decision; preserve every terminal attempt and cleanup.",
-      "waitCondition": "Attempt-07 implementation exited zero, but npm ci validation timed out before publication. Production is configured as lite (256 MiB, 1/16 vCPU); a same-source local Node 24 compiler measurement reached 310424 KiB maximum child RSS, above that memory budget. This establishes a capacity mismatch for the measured local workload, not the exact production timeout cause. Basic capacity is prepared only until the repair is deployed and a fresh real customer run succeeds.",
-      "reentryCondition": "The user explicitly directed repair and another attempt. Keep the original 120000ms implementation bound, three-file customer limit, PR-only effects, independent-verifier pin and no automatic retry. Restore the deleted customer prerequisites only for the fresh successor. No historical failed run or pending publication may be rewritten as successful.",
+      "nextAction": "Reconnect the customer execution key and confirm the exact temporary OneClickPostFactory Write invitation, then create/start the fresh prepared three-file PR-only objective once after base, identity and idle checks. Require service publication, exact-head CI and the pinned independent decision, then inspect/delete the disposable account and remove Write. Preserve separate signup, App and LEGAL-001 gates.",
+      "waitCondition": "Capacity repair PR 170 is owner-authorised and merged at fbaa060dfc6680516dfb7a1195801d1f8ab58d9d. Post-merge CI 37698109881 and production deployment 37698109840 succeeded; logs confirm basic container capacity and Worker 10c14fb2-8536-4af3-91f2-8ecd5bae94d9. Customer key is disconnected and permission is read; the exact invitation is prepared but unsubmitted. Live repaired validation, customer PR and independent verification remain unproven.",
+      "reentryCondition": "Proceed under the new user instruction to implement the unblockers and complete one fresh bounded attempt. Retain 120000ms, three changed files, PR-only effects, the established verifier pin and no automatic retry. Recheck current base and customer prerequisites immediately before create/start. Browser security-sensitive Write expansion requires action-time confirmation. Do not rewrite earlier failures, infer full account erasure or self-certify completion.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -574,7 +574,9 @@
         "E-070",
         "E-071",
         "E-072",
-        "E-090"
+        "E-090",
+        "E-091",
+        "E-092"
       ]
     },
     {
@@ -2100,6 +2102,40 @@
       "outcome": "Prepare production basic capacity plus a fail-closed deployment memory guard; required CI, deployment and successful customer acceptance are separate pending states. No new model execution or paid retry has occurred.",
       "content": "Only container capacity and its build/deployment guard change; SDK/image versions, model command, RPC, exact action reconciliation, customer time/file bounds, publication authorities and the verifier pin remain unchanged. Larger capacity has higher provisioned resource charges, retains max_instances 5 and explicit sandbox destruction.",
       "measurement": "Offline npm ci exited zero in 2.248s. Separate local npm run build exited zero in 1.337s with maximum child RSS 310424 KiB (~303 MiB); process-tree sampling was inaccessible. Production basic supplies 1024 MiB. No production OOM claim, live performance claim, deadline increase or validation bypass. Local core tests 44/44 and Worker tests 149/149 passed; the resource regression guard rejects lite/dev and an actual production-config lite mutation. Production deployment and live acceptance remain unexecuted."
+    },
+    {
+      "id": "E-091",
+      "date": "2026-10-07",
+      "identity": "Owner-authorised Sandbox capacity repair merged and deployed",
+      "situation": "The user instructed implementation of the unblockers after the checked repair and its production consequence were presented.",
+      "verification": "evidence/clean-customer-20261007/capacity-repair-deployment.json records one expected-head merge of PR 170, independent merged readback, post-merge required CI and the exact deployment log showing lite to basic, image digest and Worker version.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Reconnect the customer execution key and confirm the exact temporary OneClickPostFactory Write invitation, then create/start the fresh prepared three-file PR-only objective once after base, identity and idle checks. Require service publication, exact-head CI and the pinned independent decision, then inspect/delete the disposable account and remove Write. Preserve separate signup, App and LEGAL-001 gates.",
+        "waitCondition": "Capacity repair PR 170 is owner-authorised and merged at fbaa060dfc6680516dfb7a1195801d1f8ab58d9d. Post-merge CI 37698109881 and production deployment 37698109840 succeeded; logs confirm basic container capacity and Worker 10c14fb2-8536-4af3-91f2-8ecd5bae94d9. Customer key is disconnected and permission is read; the exact invitation is prepared but unsubmitted. Live repaired validation, customer PR and independent verification remain unproven.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Capacity rollout is confirmed on the exact merged source. This is not a successful live customer validation or independent completion result.",
+      "content": "The larger basic container, unchanged five-instance cap and existing resource prerequisite guard are deployed. Customer key and exact temporary repository Write remain pending; no new paid start occurred. Prepared invitation screenshot is not a grant receipt.",
+      "measurement": "Merged fbaa060dfc6680516dfb7a1195801d1f8ab58d9d; CI 37698109881; deploy 37698109840; Worker 10c14fb2-8536-4af3-91f2-8ecd5bae94d9; image sha256:8753929cf3ef46ccc160471df5addcb8d3228affa713c1df7d025c54548225c2; instance basic 1024 MiB; zero customer creates/starts."
+    },
+    {
+      "id": "E-092",
+      "date": "2026-10-07",
+      "identity": "Fresh bounded customer successor prepared and exercised without model billing",
+      "situation": "Implementation of the unblockers includes a fresh successor to the deleted terminal run, using the now-deployed repaired source.",
+      "verification": "evidence/clean-customer-20261007/prepared-compact-objective-08.json seals the new nonce and marker path, unchanged bounds, authorities, verifier pin and machine requirements. An isolated exact-base offline exercise passed the exact editor/check command and preserved all historical stories, unrelated items and RELEASE-001 identity/status/owner/dependencies.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Reconnect the customer execution key and confirm the exact temporary OneClickPostFactory Write invitation, then create/start the fresh prepared three-file PR-only objective once after base, identity and idle checks. Require service publication, exact-head CI and the pinned independent decision, then inspect/delete the disposable account and remove Write. Preserve separate signup, App and LEGAL-001 gates.",
+        "waitCondition": "Capacity repair PR 170 is owner-authorised and merged at fbaa060dfc6680516dfb7a1195801d1f8ab58d9d. Post-merge CI 37698109881 and production deployment 37698109840 succeeded; logs confirm basic container capacity and Worker 10c14fb2-8536-4af3-91f2-8ecd5bae94d9. Customer key is disconnected and permission is read; the exact invitation is prepared but unsubmitted. Live repaired validation, customer PR and independent verification remain unproven.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Prepared and locally checked only; no service objective was created or started. E-086 remains reserved for actual service execution and is absent from this owner evidence branch.",
+      "content": "One fresh marker, ledger and generated-state candidate, autoStart false, public OAuth customer path and exact PR-head required CI. Secure key setup ticket and all credential values are excluded from public evidence.",
+      "measurement": "Offline command exit 0 in 0.305s; exactly three candidate paths; maxDurationMs 120000; maxChangedFiles 3; no hard dollar cap or paid outcome claim; zero automatic retries."
     }
   ]
 }
