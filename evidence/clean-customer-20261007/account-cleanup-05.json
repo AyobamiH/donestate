@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-07T14:03:52.220Z",
+  "attempt": "05",
+  "customer": {
+    "githubLogin": "OneClickPostFactory",
+    "githubId": 281453754
+  },
+  "source": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+  "beforeDeletion": {
+    "identityConfirmedInConsole": true,
+    "indexedObjectives": [
+      {
+        "runId": "ed9c1146-1fe7-425b-9524-3d138af8552f",
+        "state": "FAILED_SAFE"
+      }
+    ],
+    "indexedRunCount": 1,
+    "credentialConnected": true,
+    "activeRun": null,
+    "selectedRepositories": 0,
+    "maintenanceFindings": 0
+  },
+  "durableReceiptBeforeDeletion": {
+    "donestate": {
+      "pullRequest": 169,
+      "headSha": "e6d92dd1ff8f981ad45b41ac363ce44449b51f31",
+      "receiptPath": "evidence/clean-customer-20261007/attempt-05.json",
+      "ciRun": 37631828451,
+      "requiredChecks": [
+        "core (22)",
+        "core (24)",
+        "hosted-plugin"
+      ],
+      "requiredChecksConclusion": "success"
+    },
+    "portfolio": {
+      "pullRequest": 31,
+      "headSha": "41d43632c1ba519f776f9c072fe874ae0d4a5018",
+      "receiptPath": "evidence/rollout-20261007/customer-attempt-05.json",
+      "governanceCiRun": 37631840007,
+      "gtmCiRun": 37631840191,
+      "conclusion": "success"
+    }
+  },
+  "accountDeletion": {
+    "exactLoginSubmittedOnce": true,
+    "renderedHeading": "DoneState account data deleted",
+    "indexedObjectivesDeleted": 1,
+    "selectedRepositoriesDeleted": 0,
+    "maintenanceFindingsDeleted": 0,
+    "githubAccountOrRepositoryDeleted": false
+  },
+  "independentReadback": {
+    "credential": {
+      "connected": false,
+      "createdAt": null,
+      "lastUsedAt": null,
+      "activeRunId": null,
+      "dailyRunsUsed": 0
+    },
+    "maintenanceRepositories": [],
+    "knownRun": {
+      "runId": "ed9c1146-1fe7-425b-9524-3d138af8552f",
+      "text": "run not found",
+      "errorCode": "INVALID_ARGUMENT"
+    },
+    "github": {
+      "repository": "AyobamiH/donestate",
+      "username": "OneClickPostFactory",
+      "permission": "read"
+    }
+  },
+  "temporaryAccessRemoval": {
+    "exactRecipient": "OneClickPostFactory",
+    "repository": "AyobamiH/donestate",
+    "submissionCount": 1,
+    "renderedToast": "Removed OneClickPostFactory as a collaborator of AyobamiH/donestate",
+    "renderedCollaboratorCount": 0
+  },
+  "boundaries": {
+    "indexedServiceAccountDataCleanupComplete": true,
+    "exactTemporaryWriteRemoved": true,
+    "providerApiKeyRevocationClaimed": false,
+    "githubOAuthRevocationClaimed": false,
+    "unknownPreIndexHistoryDeletionClaimed": false,
+    "minimalOpaqueGenerationFencesRemain": true,
+    "freshCustomerJourneyOrGaComplete": false,
+    "additionalPaidRunStarted": false
+  },
+  "proofFiles": [
+    "donestate-account-cleanup-05-1791381715547.jpg",
+    "donestate-access-cleanup-05-1791381809592.jpg"
+  ]
+}
