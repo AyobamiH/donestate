@@ -547,9 +547,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-07",
       "staleDate": "2026-10-09",
-      "nextAction": "Keep controlled owned-domain access live. The disposable customer execution credential is now connected. Obtain the owner decision on temporary write access for OneClickPostFactory to AyobamiH/donestate, confirm the account accepts any invitation and has actual push permission, then run the fresh bounded public-repository OAuth objective through unmerged PR, exact-head CI, independent OpsTruth VERIFIED, account inspection and post-result deletion. Record fresh signup/OAuth separately. Complete remaining LEGAL-001 publisher requirements before unrestricted GA.",
-      "waitCondition": "CUST-001/CUST-002 remain complete. E-067 confirms fresh credential connection, but objective creation stopped before any run/model execution because the selected repository admission rejected push access. Independent GitHub readback shows OneClickPostFactory has read-only access to AyobamiH/donestate. The temporary customer maintenance selection was removed; the credential is retained. Repository write authority, the fresh complete customer outcome and LEGAL-001 remain gates; external-directory approval is independent.",
-      "reentryCondition": "Resume after the owner grants the exact temporary repository authority and the disposable identity accepts it, with push permission independently confirmed. Use the existing public OAuth path without expanding App or verifier scope. Close unrestricted GA only after the fresh complete journey and remaining publisher decisions are evidenced.",
+      "nextAction": "Validate and hand off the narrow Worker dependency refresh in E-068 through the existing required audit/core/hosted-plugin gates; owner merge and production deployment remain separate decisions. Keep controlled owned-domain access live. The disposable customer execution credential is now connected. Obtain the owner decision on temporary write access for OneClickPostFactory to AyobamiH/donestate, confirm the account accepts any invitation and has actual push permission, then run the fresh bounded public-repository OAuth objective through unmerged PR, exact-head CI, independent OpsTruth VERIFIED, account inspection and post-result deletion. Record fresh signup/OAuth separately. Complete remaining LEGAL-001 publisher requirements before unrestricted GA.",
+      "waitCondition": "Fresh required CI found new high/critical dependency advisories on the evidence branch. The patched candidate must pass the existing gate before owner review; the current deployed runtime is not changed by this branch. CUST-001/CUST-002 remain complete. E-067 confirms fresh credential connection, but objective creation stopped before any run/model execution because the selected repository admission rejected push access. Independent GitHub readback shows OneClickPostFactory has read-only access to AyobamiH/donestate. The temporary customer maintenance selection was removed; the credential is retained. Repository write authority, the fresh complete customer outcome and LEGAL-001 remain gates; external-directory approval is independent.",
+      "reentryCondition": "Resume dependency handoff after exact-head CI passes without weakening the high-severity audit gate. Resume after the owner grants the exact temporary repository authority and the disposable identity accepts it, with push permission independently confirmed. Use the existing public OAuth path without expanding App or verifier scope. Close unrestricted GA only after the fresh complete journey and remaining publisher decisions are evidenced.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -567,7 +567,8 @@
         "E-064",
         "E-065",
         "E-066",
-        "E-067"
+        "E-067",
+        "E-068"
       ]
     },
     {
@@ -1991,6 +1992,23 @@
       "outcome": "The execution credential blocker is resolved. The fresh attempt is blocked at repository access before execution; no customer PR, independent VERIFIED, fresh signup/OAuth or post-result deletion is claimed.",
       "content": "Sanitised step-by-step receipt, repository permission readback, temporary selection cleanup and current RELEASE-001 state. Historical E-066 remains unchanged.",
       "measurement": "One fresh secure credential connection, one reversible repository selection, one rejected objective admission, one independent read-only permission result and one selection removal; zero customer model runs, branches, commits, PRs, verifier outcomes, account deletions or permission expansions."
+    },
+    {
+      "id": "E-068",
+      "date": "2026-10-07",
+      "identity": "Worker dependency advisories reopened by the permanent security gate",
+      "situation": "Exact-head CI 37575211329 for customer evidence PR #166 passed both core jobs but rejected the inherited Worker dependency tree at the permanent high-severity npm audit gate. New registry advisory metadata identifies nine affected packages, eight high and one critical, across four advisory families. Historical E-049 remains an accurate dated observation, not a current audit claim.",
+      "verification": "The candidate uses exact patched transitive overrides: @modelcontextprotocol/client 2.2.0 and its nested core 2.2.0, @modelcontextprotocol/sdk 1.31.0, proxy-addr 2.0.8, sharp 0.35.5, and source-map-js 1.2.2. Upstream patch ranges were checked against GHSA-6qxp-vccf-f47h, GHSA-jqcg-44mw-7w3h, GHSA-wq5f-xc86-pv6w and GHSA-68fv-2mgg-jv7q and npm metadata. Existing agents, Sandbox 0.12.9, server SDK 2.0.0, permissions and the audit gate are retained. npm-generated lock resolution, clean installation, zero-advisory readback, full local checks and exact-head CI remain the candidate acceptance gates. No production upgrade is claimed. Local npm 11.9.0 generated a 383-entry lock whose changes are restricted to those patched packages, the matching sharp platform/libvips artifacts and the client nested core. npm ci, npm audit --audit-level=high (zero vulnerabilities), root npm run check (40 tests), Worker npm run check (142 tests across 21 files), and plugin validation passed. The sanitised exact-lock audit snapshot is evidence/dependency-audit-20261007.json. DoneState imports the server SDK and agents server handler; it does not configure an SDK OAuth client provider. No existing external-client OAuth credential migration or exploit test is claimed. Worker bundle dry-run passed with --containers-rollout=none. The full container-building dry-run stopped because this workspace has no Docker CLI; no container image change or deployment is claimed.",
+      "accountability": {
+        "owner": "DoneState maintainers and repository owner",
+        "status": "active",
+        "nextAction": "Hand the patched candidate through exact-head CI, then obtain owner merge review and a separately authorised production deployment. Preserve the permanent high-severity audit gate.",
+        "waitCondition": "Local candidate checks are green; exact-head CI and owner merge/deployment remain separate gates.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "The candidate resolves all nine affected package records to patched versions; local audit is zero and the full core/Worker/plugin checks pass. Exact-head CI, merge and production deployment remain separate states.",
+      "content": "Narrow Worker package overrides and npm-generated lock refresh; existing audit gate remains unchanged. The E-067 customer repository-access blocker is independent.",
+      "measurement": "Initial run 37575211329: core (22) and core (24) success, hosted-plugin failure at npm audit; nine affected package records (eight high, one critical), four advisory families; zero production deployments or authority expansions. Patched local npm audit reports zero vulnerabilities; 40 core and 142 Worker tests pass; 383 lock entries; zero MCP tools or authority classes changed."
     }
   ]
 }

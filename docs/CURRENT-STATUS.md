@@ -12,6 +12,10 @@ The disposable OneClickPostFactory execution credential is connected. The fresh 
 
 Continuation needs the owner's exact temporary write-access decision and accepted customer grant, then the public-repository OAuth objective, unmerged PR, exact-head CI, independent OpsTruth result and post-result inspection/deletion. No App or verifier scope was expanded. CUST-001/CUST-002 remain complete; RELEASE-001 remains blocked on the fresh complete customer outcome and LEGAL-001. Historical E-066 retains its original absent-credential observation.
 
+## Worker dependency refresh, 7 October 2026
+
+The permanent high-severity audit gate rejected the inherited Worker lock in PR #166 CI `37575211329` after both core jobs passed. E-068 tracks four fresh advisory families and a narrow patched override refresh: MCP client `2.2.0`, SDK `1.31.0`, proxy-addr `2.0.8`, sharp `0.35.5`, and source-map-js `1.2.2`. The gate remains active. Clean candidate installation and audit passed with zero vulnerabilities; 40 core tests, 142 Worker tests and plugin validation passed locally. Exact-head CI must pass before owner merge review. This branch does not change the deployed runtime or resolve the independent customer repository-access blocker.
+
 ## Default branch governance
 
 Current GitHub provider state is **PROTECTED**. Repository ruleset **22247029**, `DoneState main governance`, is active on `refs/heads/main`. It requires pull requests, exact checks `core (22)`, `core (24)`, and `hosted-plugin` pinned to GitHub Actions integration `15368`, strict target-branch freshness, resolved review conversations, deletion blocking, and non-fast-forward blocking, with zero required human approvals and one owner emergency bypass.
