@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-07T05:21:55.373706Z",
+  "subject": {
+    "repository": "AyobamiH/donestate",
+    "package": "apps/mcp-worker",
+    "packageLockSha256": "44440786a5731d606a44d5bd9ede127e89cf3ea7f6c46d8f3da39db8c4bb39a1",
+    "lockPackageEntries": 383
+  },
+  "tools": {
+    "node": "24.19.0",
+    "npm": "11.9.0"
+  },
+  "initialCi": {
+    "headSha": "10ceef3d9604653111dbe5822d3a402ef6febb93",
+    "runId": 37575211329,
+    "result": "FAILURE_AT_WORKER_HIGH_SEVERITY_AUDIT_GATE"
+  },
+  "before": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 8,
+    "critical": 1,
+    "total": 9
+  },
+  "patchedOverrides": {
+    "@modelcontextprotocol/client": "2.2.0",
+    "@modelcontextprotocol/sdk": "1.31.0",
+    "proxy-addr": "2.0.8",
+    "sharp": "0.35.5",
+    "source-map-js": "1.2.2"
+  },
+  "advisories": [
+    "https://github.com/advisories/GHSA-6qxp-vccf-f47h",
+    "https://github.com/advisories/GHSA-jqcg-44mw-7w3h",
+    "https://github.com/advisories/GHSA-wq5f-xc86-pv6w",
+    "https://github.com/advisories/GHSA-68fv-2mgg-jv7q"
+  ],
+  "after": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "localChecks": {
+    "npmCi": "PASS",
+    "npmAuditHighSeverityGate": "PASS",
+    "rootCheck": "PASS_40_TESTS",
+    "workerCheck": "PASS_142_TESTS_21_FILES",
+    "pluginValidation": "PASS",
+    "workerBundleDryRun": "PASS_CONTAINERS_ROLLOUT_NONE",
+    "containerBuildDryRun": "BLOCKED_CAPABILITY_DOCKER_CLI_ABSENT"
+  },
+  "boundaries": {
+    "securityGateChanged": false,
+    "authorityExpanded": false,
+    "runtimeDeployed": false,
+    "independentCustomerOutcome": "NOT_RUN_REPOSITORY_ACCESS_BLOCKED",
+    "ownerMergeRequired": true
+  }
+}

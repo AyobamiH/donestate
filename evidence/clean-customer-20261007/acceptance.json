@@ -1,0 +1,74 @@
+{
+  "schema": "donestate.clean-customer-acceptance.v1",
+  "attemptId": "clean-customer-20261007-01",
+  "recordedAt": "2026-10-07T05:11:48Z",
+  "sourceCommit": "e24f543b58b69d861be1f2f5153903a654a9f5ea",
+  "serviceOrigin": "https://donestate.proofandstate.com",
+  "account": "OneClickPostFactory",
+  "accountPath": "Existing authorised disposable GitHub identity and authenticated MCP connection; not a new signup or fresh OAuth round trip.",
+  "result": "BLOCKED_REPOSITORY_ACCESS",
+  "completeJourney": false,
+  "observations": [
+    {
+      "step": "sign up / sign in",
+      "status": "PARTIAL",
+      "evidence": "User-provided current account-console screenshots identify OneClickPostFactory; MCP uses the existing authenticated connection. Fresh signup/OAuth was not exercised."
+    },
+    {
+      "step": "connect execution credential",
+      "status": "PASS",
+      "evidence": "User reported connected. Fresh MCP status confirms connected=true and createdAt=2026-10-07T05:03:33.325Z, dailyRunsUsed=0, activeRunId=null and lastUsedAt=null. Credential validity was accepted by the secure form; funded model execution is not yet proven."
+    },
+    {
+      "step": "select repository",
+      "status": "ATTEMPTED_REVERTED",
+      "evidence": "Explicit selection of AyobamiH/donestate in pr_only mode succeeded using existing installation 157513439, with schedules and autoRepair disabled and exact required CI checks. After objective admission failed, this new customer selection was removed and list_maintenance_repositories returned []. The owner account and App installation scope were unchanged."
+    },
+    {
+      "step": "create objective",
+      "status": "BLOCKED_REPOSITORY_ACCESS",
+      "evidence": "create_objective with autoStart=false and three-file documentation/ledger scope returned INVALID_ARGUMENT: authenticated GitHub user cannot push to this repository. No run ID was returned. Independent GitHub collaborator-permission readback confirms OneClickPostFactory has permission=read on AyobamiH/donestate. The selected App path obtains an installation token but evaluates a user-style permissions.push flag; that is a separate static admission concern, not authority to bypass this account read boundary."
+    },
+    {
+      "step": "execute",
+      "status": "NOT_RUN",
+      "evidence": "Admission stopped before run creation. Subsequent credential status remained connected with 0/12 usage, null lastUsedAt and no activeRunId."
+    },
+    {
+      "step": "publish PR",
+      "status": "NOT_RUN",
+      "evidence": "No customer model run, branch, commit or PR was created. The separately authored evidence-reconciliation PR is not customer execution proof."
+    },
+    {
+      "step": "OpsTruth VERIFIED",
+      "status": "NOT_RUN",
+      "evidence": "No fresh run, execution snapshot or sealed handoff exists. The configured exact-head verifier remains restricted to AyobamiH/donestate; it was not broadened to another repository."
+    },
+    {
+      "step": "inspect account",
+      "status": "BASELINE_ONLY",
+      "evidence": "Fresh MCP status confirms connected credential, no active run, zero daily runs and no maintenance repository after cleanup. No post-result account inspection exists because execution did not start."
+    },
+    {
+      "step": "delete account",
+      "status": "NOT_RUN",
+      "evidence": "No whole-account deletion was performed. The newly connected credential is retained for continuation; prior E-064/E-065 deletion receipts are not substituted for this attempt."
+    }
+  ],
+  "repositoryAccessEvidence": {
+    "repository": "AyobamiH/donestate",
+    "username": "OneClickPostFactory",
+    "tool": "github_get_repo_collaborator_permission",
+    "permission": "read"
+  },
+  "remainingLaunchGates": [
+    "LEGAL-001 publisher requirements",
+    "One fresh complete clean-customer end-to-end outcome"
+  ],
+  "satisfiedPrerequisites": [
+    "CUST-001 via PR #164 and E-065",
+    "CUST-002 via PR #164 and E-064/E-065"
+  ],
+  "continuation": "Obtain the owner decision for temporary repository write access for OneClickPostFactory and have that account accept any invitation. Confirm permission=write, then use the existing public-repository OAuth path for the bounded objective, with no maintenance schedule, App scope expansion or merge grant. Require exact-head CI and independent OpsTruth before post-result inspection/deletion. Fresh signup/OAuth remains separately unproven.",
+  "privacy": "No API key, credential fingerprint, cookie, setup ticket or session value is retained."
+}

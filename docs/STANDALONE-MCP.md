@@ -16,7 +16,7 @@ The client must support remote HTTP MCP plus the OAuth flow exposed by the servi
 2. Complete DoneState OAuth and sign in with GitHub.
 3. Run `get_openai_credential_status`.
 4. If no execution credential is connected, run `create_openai_credential_setup`, open the single-use HTTPS setup URL and save your own OpenAI API key there. Do not paste the key into the MCP conversation.
-5. Start with a public GitHub repository where the authenticated GitHub identity has push access.
+5. Start with a public GitHub repository where the authenticated GitHub identity has push access. The objective's `repository` argument selects its exact target; a maintenance-registry selection is a separate policy and does not grant the customer GitHub write access.
 6. Create one bounded objective with `create_objective`. Grant only the consequence classes that objective needs.
 7. Inspect progress with `get_objective`.
 8. For an independently verified result, use `create_verification_handoff` or `request_opstruth_verification` as appropriate for the configured verifier contract.
@@ -67,6 +67,10 @@ CUST-001 and CUST-002 are complete following [PR #164](https://github.com/Ayobam
 
 Unrestricted self-serve GA still requires both the unresolved publisher requirements in LEGAL-001 and one fresh complete customer journey: sign up → connect → select repository → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account. Each step needs fresh evidence; earlier maintenance, CLI and deletion canaries do not establish this outcome.
 
-Fresh attempt E-066 observed the emptied disposable OneClickPostFactory service account through its existing authenticated MCP connection. The live account console and fresh MCP status both showed no execution credential, zero usage and no selected repositories; the console showed zero objectives and findings. The attempt stopped at **BLOCKED_CAPABILITY** during credential connection. New signup/OAuth, repository selection, execution, publication, independent verification and post-result deletion were not exercised. See [the step-by-step receipt](../evidence/clean-customer-20261003/acceptance.json). Reconnect the customer-owned credential securely before resuming; never put the key in conversation or repository evidence.
+Historical attempt E-066 observed the emptied disposable OneClickPostFactory service account and stopped at **BLOCKED_CAPABILITY** during credential connection. Its [step-by-step receipt](../evidence/clean-customer-20261003/acceptance.json) retains that original scope.
+
+Fresh continuation E-067 on 7 October confirms the user connected the execution credential securely. An explicit PR-only selection of `AyobamiH/donestate` used the existing App installation with scheduling and automatic repair disabled, but `create_objective` rejected push access before any run or model execution. Independent GitHub permission readback confirms `OneClickPostFactory` has only `read` access to that repository. The temporary customer maintenance selection was removed; the new execution credential remains connected and unused. See [the current acceptance receipt](../evidence/clean-customer-20261007/acceptance.json).
+
+Resume the bounded public-repository OAuth test only after the owner decides the exact temporary write grant, the disposable identity accepts any invitation, and actual push access is confirmed. Keep the App/verifier scope unchanged and preserve PR-only authority. Fresh signup/OAuth, execution, PR, independent verification and post-result deletion remain unproven; a valid key or registry selection does not establish them.
 
 Controlled owned-domain access continues. This reconciliation is not legal clearance, external-directory approval or unrestricted GA.
