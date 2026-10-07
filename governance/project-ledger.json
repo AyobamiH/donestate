@@ -549,9 +549,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-07",
       "staleDate": "2026-10-09",
-      "nextAction": "Publish the preserved attempt-07 terminal receipt with required CI, then complete authorised disposable-objective/key and exact temporary-Write cleanup. Diagnose the sandbox npm ci prepare/build timeout before proposing any further paid execution. Preserve the sealed three-file/two-minute envelope and verifier pin; no additional run is authorised. Selected App admission, fresh signup and LEGAL-001 remain separate gates.",
-      "waitCondition": "Run 124f1517-c41c-4d67-bc32-016b3d0ba8e1 ended FAILED_SAFE at install-node with exit 124. Implementation crossed the previous completion boundary with an integrity-matched exit-zero receipt, and the diff check passed. npm ci reached the repository prepare/build lifecycle before its 120000ms timeout. There is no service-created branch/PR, customer PR-head CI subject or independent verifier decision. The precise sandbox build/shutdown cause and actual billed amount remain unproven.",
-      "reentryCondition": "The expressly approved additional one-start envelope has been consumed. Preserve both terminal attempts and all historical stories. Do not retry, skip sealed validation, widen the bounds or manually publish the failed candidate. Any future paid start requires a new concrete reviewed contract and fresh authority, credential, access and exact-base checks.",
+      "nextAction": "Diagnose and repair the sandbox npm ci prepare/build timeout before any future customer execution. Any additional paid start requires a concrete reviewed contract and fresh authority, key, access and base checks. Full indexed account purge remains unobserved because the supported console is blocked in this browser. Selected App admission, fresh signup and LEGAL-001 remain separate gates.",
+      "waitCondition": "The approved compact run implemented with exit 0, then ended FAILED_SAFE at npm ci validation exit 124 before publication. Exact terminal receipts are durable in both CI-green owner evidence PRs. The two known terminal objectives and stored execution key are deleted; readback is run not found and connected false/activeRunId null. OneClickPostFactory temporary Write is removed, with zero collaborators in GitHub and independent permission read. No customer PR, exact-head customer CI or independent decision exists; complete indexed account purge is not claimed.",
+      "reentryCondition": "Preserve every terminal outcome and cleanup receipt. Do not reuse the deleted objectives, infer full account erasure from individual deletions, restore access without fresh authority, manually publish the failed candidate, or start another paid run under the consumed envelope. Keep the original verifier pin and separate GA dependencies.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -585,7 +585,8 @@
         "E-084",
         "E-085",
         "E-087",
-        "E-088"
+        "E-088",
+        "E-089"
       ]
     },
     {
@@ -2298,6 +2299,23 @@
       "outcome": "FAILED_SAFE at npm ci prepare/build validation. No service-created customer branch, PR, exact-head customer CI or independent decision; no further paid run was started.",
       "content": "The local build with runtime compile inputs identical to the sealed base passed in 1.522 seconds. That supports a sandbox-specific investigation but does not prove its precise cause. No runtime changed or sealed validation bypassed; every earlier outcome remains immutable.",
       "measurement": "Clone attempt 1; implementation launch 1 and exit 0; diff-check exit 0; install-node timeout 120000ms and exit 124; two daily runs used; activeRunId null; billed USD and provider balance unknown."
+    },
+    {
+      "id": "E-089",
+      "date": "2026-10-07",
+      "identity": "Known customer run/key cleanup and exact temporary Write removal verified",
+      "situation": "The authorised single compact run stopped safely before publication. Its exact receipts were preserved in both evidence PRs and their required CI passed before deletion.",
+      "verification": "evidence/clean-customer-20261007/account-cleanup-07.json records one deletion for each terminal attempt-06/07 objective, stored credential deletion and independent not-found/connected-false readbacks. The GitHub owner completed secure re-verification; one exact OneClickPostFactory removal produced the success toast and zero collaborators, with independent permission read. DoneState proof evidence/clean-customer-20261007/access-cleanup-07.jpg has SHA-256 2638b8a252029697cc271aef2554fdf636b6d7ba185cc22cc59ed41f59d46e3b. Before deletion: DoneState #169 head 7bc59cc64629a54195f3037a4acfd9932515cb52, required CI 37692002794; Portfolio #31 head 8445653389f13a32af52d912bc78f77bd7bd28a5, Governance 37692008416 and GTM 37692008510, all succeeded.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Diagnose and repair the sandbox npm ci prepare/build timeout before any future customer execution. Any additional paid start requires a concrete reviewed contract and fresh authority, key, access and base checks. Full indexed account purge remains unobserved because the supported console is blocked in this browser. Selected App admission, fresh signup and LEGAL-001 remain separate gates.",
+        "waitCondition": "The approved compact run implemented with exit 0, then ended FAILED_SAFE at npm ci validation exit 124 before publication. Exact terminal receipts are durable in both CI-green owner evidence PRs. The two known terminal objectives and stored execution key are deleted; readback is run not found and connected false/activeRunId null. OneClickPostFactory temporary Write is removed, with zero collaborators in GitHub and independent permission read. No customer PR, exact-head customer CI or independent decision exists; complete indexed account purge is not claimed.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "The two known terminal run records, stored execution key and exact temporary repository Write are removed. Full indexed account purge remains unobserved because the console returned ERR_BLOCKED_BY_CLIENT; no provider-key or OAuth revocation is claimed.",
+      "content": "Preserved receipts and historic stories remain unchanged. This reduces temporary execution authority without converting the failed run into successful customer acceptance.",
+      "measurement": "Two exact terminal-objective deletions; one stored-key deletion; one collaborator removal; permission read; no active run; selected repositories/findings []; daily usage fence 2; zero additional paid starts."
     }
   ]
 }
