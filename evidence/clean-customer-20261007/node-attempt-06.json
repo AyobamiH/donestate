@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "attempt": 6,
+  "status": "FAILED_SAFE",
+  "observedAt": "2026-10-07T20:13:53.377Z",
+  "customer": {
+    "login": "OneClickPostFactory",
+    "githubId": 281453754
+  },
+  "repository": "AyobamiH/donestate",
+  "actualRun": {
+    "id": "e05032c9-31d1-446a-8fe9-6e52d486d438",
+    "ownerLogin": "OneClickPostFactory",
+    "state": "FAILED_SAFE",
+    "objective": {
+      "acceptanceCriteria": [
+        "The new customer execution marker has the exact date, customer, repository, unique marker and candidate-only outcome sealed in this objective.",
+        "The ledger and generated state contain E-080 \"Node-only customer PR-only execution candidate\" and the unique marker; RELEASE-001 retains its exact identity and blocked status.",
+        "Only the three authorised marker, ledger and generated-state files change.",
+        "The exact published PR head passes core (22), core (24) and hosted-plugin GitHub checks before independent verification."
+      ],
+      "authorities": [
+        "local_read",
+        "local_write",
+        "test",
+        "commit",
+        "push",
+        "open_pr",
+        "secret_access"
+      ],
+      "baseHeadSha": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+      "baseRef": "main",
+      "goal": "Implement this one minimal Node-only customer candidate. Read AGENTS.md; RELEASE-001 is the selected item. Node is provided by the pinned sandbox. Do not search for Python, install tools, use subagents, dump the ledger, explore unrelated source, launch another model, or change runtime code.\nExecute the following Node heredoc directly as one shell command; preserve its literal newlines and quoted delimiter:\nnode <<'NODE_CANDIDATE'\nconst fs=require(\"node:fs\");\nconst path=\"governance/project-ledger.json\";\nconst ledger=JSON.parse(fs.readFileSync(path,\"utf8\"));\nconst work=ledger.workItems.find(x=>x.id===\"RELEASE-001\");\nif(work===undefined) throw Error(\"RELEASE-001 missing\");\nwork.evidenceIds.push(\"E-080\");\nwork.lastUpdated=\"2026-10-07\"; work.staleDate=\"2026-10-09\";\nwork.nextAction=\"Await exact-head required CI and pinned independent verification of this unmerged candidate, then complete authorised post-result cleanup. Fresh signup and LEGAL-001 still gate GA.\";\nwork.waitCondition=\"This customer candidate is not independently verified yet. Earlier failed runs remain immutable; fresh signup and LEGAL-001 remain separate gates.\";\nwork.reentryCondition=\"Use only the exact published PR head and established verifier pin; preserve historical stories and await required CI before verification and authorised cleanup.\";\nledger.evidenceStories.push({\"id\":\"E-080\",\"date\":\"2026-10-07\",\"identity\":\"Node-only customer PR-only execution candidate\",\"situation\":\"One compact Node-only customer candidate on the approved diagnostics deployment. Earlier failed runs remain immutable.\",\"verification\":\"Candidate nonce b1bb2c3c-d12e-424e-9d8d-d0666478a2fb at evidence/clean-customer-20261007/execution-marker-06.json; exact PR-head required CI and pinned independent OpsTruth verification remain pending.\",\"accountability\":{\"owner\":\"Publisher owner\",\"status\":\"blocked\",\"nextAction\":\"Await exact-head required CI and pinned independent verification.\",\"waitCondition\":\"Unmerged candidate is not independently verified.\",\"staleDate\":\"2026-10-09\"},\"outcome\":\"Only a candidate; no VERIFIED, fresh-signup, cleanup or GA claim.\",\"content\":\"One marker, RELEASE-001 tracking closure and regenerated state; no runtime, legal or verifier changes.\",\"measurement\":\"Three authorised files; no self-certified completion or dollar-cap claim.\"});\nfs.mkdirSync(\"evidence/clean-customer-20261007\",{recursive:true});\nfs.writeFileSync(\"evidence/clean-customer-20261007/execution-marker-06.json\",JSON.stringify({\"date\":\"2026-10-07\",\"customer\":\"OneClickPostFactory\",\"repository\":\"AyobamiH/donestate\",\"marker\":\"b1bb2c3c-d12e-424e-9d8d-d0666478a2fb\",\"outcome\":\"customer-execution-candidate\"},null,2)+\"\\n\");\nfs.writeFileSync(path,JSON.stringify(ledger,null,2)+\"\\n\");\nNODE_CANDIDATE\nThen run npm run governance:render, npm run governance:check and git diff --check. Only evidence/clean-customer-20261007/execution-marker-06.json, governance/project-ledger.json and docs/PROJECT-STATE.md may change. Existing stories and unrelated work items must remain unchanged, including legal and AgentProof records. RELEASE-001 title, stream, blocked status and dependencies remain unchanged. The control plane installs dependencies, tests, commits and opens the authorised PR. Do not commit, push, publish, read credentials or claim verification yourself. Keep the final response brief.",
+      "maxChangedFiles": 3,
+      "maxDurationMs": 120000,
+      "publication": "pull_request",
+      "repository": "AyobamiH/donestate",
+      "requestedBy": "OneClickPostFactory",
+      "runId": "e05032c9-31d1-446a-8fe9-6e52d486d438",
+      "schema": "donestate.hosted-objective.v1",
+      "trustedVerifierFingerprints": [
+        "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+      ],
+      "validationProfile": "node",
+      "verificationContractVersion": "donestate.verification-contract.v2",
+      "verificationRequirements": [
+        {
+          "criterionIndex": 0,
+          "expected": "2026-10-07",
+          "id": "marker-date",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-06.json",
+          "pointer": "/date"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "OneClickPostFactory",
+          "id": "marker-customer",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-06.json",
+          "pointer": "/customer"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "AyobamiH/donestate",
+          "id": "marker-repository",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-06.json",
+          "pointer": "/repository"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "b1bb2c3c-d12e-424e-9d8d-d0666478a2fb",
+          "id": "marker-marker",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-06.json",
+          "pointer": "/marker"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "customer-execution-candidate",
+          "id": "marker-outcome",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-06.json",
+          "pointer": "/outcome"
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-ledger",
+          "kind": "file_contains",
+          "path": "governance/project-ledger.json",
+          "values": [
+            "\"id\": \"E-080\"",
+            "Node-only customer PR-only execution candidate",
+            "b1bb2c3c-d12e-424e-9d8d-d0666478a2fb",
+            "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+          ]
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-generated",
+          "kind": "file_contains",
+          "path": "docs/PROJECT-STATE.md",
+          "values": [
+            "E-080",
+            "Node-only customer PR-only execution candidate",
+            "b1bb2c3c-d12e-424e-9d8d-d0666478a2fb"
+          ]
+        },
+        {
+          "allowedPaths": [
+            "evidence/clean-customer-20261007/execution-marker-06.json",
+            "governance/project-ledger.json",
+            "docs/PROJECT-STATE.md"
+          ],
+          "criterionIndex": 2,
+          "id": "only-authorised-files",
+          "kind": "changed_files",
+          "max": 3
+        },
+        {
+          "criterionIndex": 3,
+          "id": "exact-head-required-ci",
+          "kind": "github_checks_pass",
+          "requiredNames": [
+            "core (22)",
+            "core (24)",
+            "hosted-plugin"
+          ]
+        }
+      ]
+    },
+    "createdAt": "2026-10-07T20:10:50.053Z",
+    "updatedAt": "2026-10-07T20:13:41.130Z",
+    "lastError": "implement failed with exit code 124",
+    "branchName": null,
+    "branchHeadSha": null,
+    "pullRequestNumber": null,
+    "pullRequestUrl": null,
+    "verificationSnapshotDigest": null,
+    "verifierDecisionSummary": null,
+    "actions": [
+      {
+        "id": "clone",
+        "authority": "local_read",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "e05032c9-31d1-446a-8fe9-6e52d486d438:clone:v1",
+        "intentDigest": "f2bad11d0e9574d396fc1737d29573c30885294a62b385c1ed476d4a9e6559a9",
+        "result": {
+          "attempt": 1,
+          "attempts": 1,
+          "exitCode": 0,
+          "maxAttempts": 3,
+          "sandboxId": "run-e05032c9-31d1-446a-8fe9-6e52d486d438-clone-1",
+          "stderr": "Cloning into '/workspace/repo'...\n",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-07T20:11:31.824Z"
+      },
+      {
+        "id": "implement",
+        "authority": "local_write",
+        "state": "FAILED",
+        "idempotencyKey": "e05032c9-31d1-446a-8fe9-6e52d486d438:implement:v1",
+        "intentDigest": "c35eb804b7e0c29d4fb4469757d36279d7d82f7bb8cd84082b548d359e321596",
+        "result": {
+          "exitCode": 124,
+          "implementationLog": {
+            "text": "Reading additional input from stdin...\n{\"type\":\"thread.started\",\"thread_id\":\"01a117fe-29bd-7321-9441-793a40814a1a\"}\n{\"type\":\"turn.started\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_0\",\"type\":\"agent_message\",\"text\":\"I’ll execute the supplied Node candidate exactly, then run only the three requested validation commands and confirm the changed-file scope.\"}}\n{\"type\":\"item.started\",\"item\":{\"id\":\"item_1\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc \\\"node <<'NODE_CANDIDATE'\\nconst fs=require(\\\\\\\"node:fs\\\\\\\");\\nconst path=\\\\\\\"governance/project-ledger.json\\\\\\\";\\nconst ledger=JSON.parse(fs.readFileSync(path,\\\\\\\"utf8\\\\\\\"));\\nconst work=ledger.workItems.find(x=>x.id===\\\\\\\"RELEASE-001\\\\\\\");\\nif(work===undefined) throw Error(\\\\\\\"RELEASE-001 missing\\\\\\\");\\nwork.evidenceIds.push(\\\\\\\"E-080\\\\\\\");\\nwork.lastUpdated=\\\\\\\"2026-10-07\\\\\\\"; work.staleDate=\\\\\\\"2026-10-09\\\\\\\";\\nwork.nextAction=\\\\\\\"Await exact-head required CI and pinned independent verification of this unmerged candidate, then complete authorised post-result cleanup. Fresh signup and LEGAL-001 still gate GA.\\\\\\\";\\nwork.waitCondition=\\\\\\\"This customer candidate is not independently verified yet. Earlier failed runs remain immutable; fresh signup and LEGAL-001 remain separate gates.\\\\\\\";\\nwork.reentryCondition=\\\\\\\"Use only the exact published PR head and established verifier pin; preserve historical stories and await required CI before verification and authorised cleanup.\\\\\\\";\\nledger.evidenceStories.push({\\\\\\\"id\\\\\\\":\\\\\\\"E-080\\\\\\\",\\\\\\\"date\\\\\\\":\\\\\\\"2026-10-07\\\\\\\",\\\\\\\"identity\\\\\\\":\\\\\\\"Node-only customer PR-only execution candidate\\\\\\\",\\\\\\\"situation\\\\\\\":\\\\\\\"One compact Node-only customer candidate on the approved diagnostics deployment. Earlier failed runs remain immutable.\\\\\\\",\\\\\\\"verification\\\\\\\":\\\\\\\"Candidate nonce b1bb2c3c-d12e-424e-9d8d-d0666478a2fb at evidence/clean-customer-20261007/execution-marker-06.json; exact PR-head required CI and pinned independent OpsTruth verification remain pending.\\\\\\\",\\\\\\\"accountability\\\\\\\":{\\\\\\\"owner\\\\\\\":\\\\\\\"Publisher owner\\\\\\\",\\\\\\\"status\\\\\\\":\\\\\\\"blocked\\\\\\\",\\\\\\\"nextAction\\\\\\\":\\\\\\\"Await exact-head required CI and pinned independent verification.\\\\\\\",\\\\\\\"waitCondition\\\\\\\":\\\\\\\"Unmerged candidate is not independently verified.\\\\\\\",\\\\\\\"staleDate\\\\\\\":\\\\\\\"2026-10-09\\\\\\\"},\\\\\\\"outcome\\\\\\\":\\\\\\\"Only a candidate; no VERIFIED, fresh-signup, cleanup or GA claim.\\\\\\\",\\\\\\\"content\\\\\\\":\\\\\\\"One marker, RELEASE-001 tracking closure and regenerated state; no runtime, legal or verifier changes.\\\\\\\",\\\\\\\"measurement\\\\\\\":\\\\\\\"Three authorised files; no self-certified completion or dollar-cap claim.\\\\\\\"});\\nfs.mkdirSync(\\\\\\\"evidence/clean-customer-20261007\\\\\\\",{recursive:true});\\nfs.writeFileSync(\\\\\\\"evidence/clean-customer-20261007/execution-marker-06.json\\\\\\\",JSON.stringify({\\\\\\\"date\\\\\\\":\\\\\\\"2026-10-07\\\\\\\",\\\\\\\"customer\\\\\\\":\\\\\\\"OneClickPostFactory\\\\\\\",\\\\\\\"repository\\\\\\\":\\\\\\\"AyobamiH/donestate\\\\\\\",\\\\\\\"marker\\\\\\\":\\\\\\\"b1bb2c3c-d12e-424e-9d8d-d0666478a2fb\\\\\\\",\\\\\\\"outcome\\\\\\\":\\\\\\\"customer-execution-candidate\\\\\\\"},null,2)+\\\\\\\"\\\\\\\\n\\\\\\\");\\nfs.writeFileSync(path,JSON.stringify(ledger,null,2)+\\\\\\\"\\\\\\\\n\\\\\\\");\\nNODE_CANDIDATE\\\"\",\"aggregated_output\":\"\",\"exit_code\":null,\"status\":\"in_progress\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_1\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc \\\"node <<'NODE_CANDIDATE'\\nconst fs=require(\\\\\\\"node:fs\\\\\\\");\\nconst path=\\\\\\\"governance/project-ledger.json\\\\\\\";\\nconst ledger=JSON.parse(fs.readFileSync(path,\\\\\\\"utf8\\\\\\\"));\\nconst work=ledger.workItems.find(x=>x.id===\\\\\\\"RELEASE-001\\\\\\\");\\nif(work===undefined) throw Error(\\\\\\\"RELEASE-001 missing\\\\\\\");\\nwork.evidenceIds.push(\\\\\\\"E-080\\\\\\\");\\nwork.lastUpdated=\\\\\\\"2026-10-07\\\\\\\"; work.staleDate=\\\\\\\"2026-10-09\\\\\\\";\\nwork.nextAction=\\\\\\\"Await exact-head required CI and pinned independent verification of this unmerged candidate, then complete authorised post-result cleanup. Fresh signup and LEGAL-001 still gate GA.\\\\\\\";\\nwork.waitCondition=\\\\\\\"This customer candidate is not independently verified yet. Earlier failed runs remain immutable; fresh signup and LEGAL-001 remain separate gates.\\\\\\\";\\nwork.reentryCondition=\\\\\\\"Use only the exact published PR head and established verifier pin; preserve historical stories and await required CI before verification and authorised cleanup.\\\\\\\";\\nledger.evidenceStories.push({\\\\\\\"id\\\\\\\":\\\\\\\"E-080\\\\\\\",\\\\\\\"date\\\\\\\":\\\\\\\"2026-10-07\\\\\\\",\\\\\\\"identity\\\\\\\":\\\\\\\"Node-only customer PR-only execution candidate\\\\\\\",\\\\\\\"situation\\\\\\\":\\\\\\\"One compact Node-only customer candidate on the approved diagnostics deployment. Earlier failed runs remain immutable.\\\\\\\",\\\\\\\"verification\\\\\\\":\\\\\\\"Candidate nonce b1bb2c3c-d12e-424e-9d8d-d0666478a2fb at evidence/clean-customer-20261007/execution-marker-06.json; exact PR-head required CI and pinned independent OpsTruth verification remain pending.\\\\\\\",\\\\\\\"accountability\\\\\\\":{\\\\\\\"owner\\\\\\\":\\\\\\\"Publisher owner\\\\\\\",\\\\\\\"status\\\\\\\":\\\\\\\"blocked\\\\\\\",\\\\\\\"nextAction\\\\\\\":\\\\\\\"Await exact-head required CI and pinned independent verification.\\\\\\\",\\\\\\\"waitCondition\\\\\\\":\\\\\\\"Unmerged candidate is not independently verified.\\\\\\\",\\\\\\\"staleDate\\\\\\\":\\\\\\\"2026-10-09\\\\\\\"},\\\\\\\"outcome\\\\\\\":\\\\\\\"Only a candidate; no VERIFIED, fresh-signup, cleanup or GA claim.\\\\\\\",\\\\\\\"content\\\\\\\":\\\\\\\"One marker, RELEASE-001 tracking closure and regenerated state; no runtime, legal or verifier changes.\\\\\\\",\\\\\\\"measurement\\\\\\\":\\\\\\\"Three authorised files; no self-certified completion or dollar-cap claim.\\\\\\\"});\\nfs.mkdirSync(\\\\\\\"evidence/clean-customer-20261007\\\\\\\",{recursive:true});\\nfs.writeFileSync(\\\\\\\"evidence/clean-customer-20261007/execution-marker-06.json\\\\\\\",JSON.stringify({\\\\\\\"date\\\\\\\":\\\\\\\"2026-10-07\\\\\\\",\\\\\\\"customer\\\\\\\":\\\\\\\"OneClickPostFactory\\\\\\\",\\\\\\\"repository\\\\\\\":\\\\\\\"AyobamiH/donestate\\\\\\\",\\\\\\\"marker\\\\\\\":\\\\\\\"b1bb2c3c-d12e-424e-9d8d-d0666478a2fb\\\\\\\",\\\\\\\"outcome\\\\\\\":\\\\\\\"customer-execution-candidate\\\\\\\"},null,2)+\\\\\\\"\\\\\\\\n\\\\\\\");\\nfs.writeFileSync(path,JSON.stringify(ledger,null,2)+\\\\\\\"\\\\\\\\n\\\\\\\");\\nNODE_CANDIDATE\\\"\",\"aggregated_output\":\"\",\"exit_code\":0,\"status\":\"completed\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_2\",\"type\":\"agent_message\",\"text\":\"The exact heredoc was accepted and produced no error output; I’m waiting for the shell to close before rendering the generated state.\"}}\n{\"type\":\"item.started\",\"item\":{\"id\":\"item_3\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc 'npm run governance:render && npm run governance:check && git diff --check'\",\"aggregated_output\":\"\",\"exit_code\":null,\"status\":\"in_progress\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_4\",\"type\":\"agent_message\",\"text\":\"The requested validations are still running with no failures reported so far. After completion, I’ll inspect only the changed-file names to enforce the three-file boundary.\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_3\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc 'npm run governance:render && npm run governance:check && git diff --check'\",\"aggregated_output\":\"\\n> donestate@0.2.0 governance:render\\n> node scripts/render-project-state.mjs\\n\\nproject state: rendered\\n\\n> donestate@0.2.0 governance:check\\n> node scripts/render-project-state.mjs --check\\n\\nproject state: current\\n\",\"exit_code\":0,\"status\":\"completed\"}}\n{\"type\":\"item.started\",\"item\":{\"id\":\"item_5\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc 'git status --short'\",\"aggregated_output\":\"\",\"exit_code\":null,\"status\":\"in_progress\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_5\",\"type\":\"command_execution\",\"command\":\"/bin/bash -lc 'git status --short'\",\"aggregated_output\":\" M docs/PROJECT-STATE.md\\n M governance/project-ledger.json\\n?? evidence/clean-customer-20261007/execution-marker-06.json\\n\",\"exit_code\":0,\"status\":\"completed\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_6\",\"type\":\"agent_message\",\"text\":\"Implemented the candidate exactly as specified.\\n\\n- All three validation commands passed.\\n- Only the three authorized files changed.\\n- No commit, push, publication, or verification claim was made.\"}}\n",
+            "truncated": false
+          },
+          "launchAcknowledged": true,
+          "launchError": null,
+          "receiptPollAttempt": 21,
+          "receiptSchema": "donestate.implementation-receipt.v1",
+          "receiptVerified": true,
+          "sandboxId": "run-e05032c9-31d1-446a-8fe9-6e52d486d438-clone-1",
+          "success": false
+        },
+        "updatedAt": "2026-10-07T20:13:39.095Z"
+      }
+    ],
+    "events": [
+      {
+        "sequence": 1,
+        "eventType": "run_received",
+        "fromState": null,
+        "toState": "RECEIVED",
+        "detail": null,
+        "createdAt": "2026-10-07T20:10:50.053Z",
+        "previousDigest": null,
+        "digest": "81012239ffc3fdd86e8c438791e00ddc320d45b641ebe5bd7ddee3b05a413cf5"
+      },
+      {
+        "sequence": 2,
+        "eventType": "run_queued",
+        "fromState": "RECEIVED",
+        "toState": "QUEUED",
+        "detail": null,
+        "createdAt": "2026-10-07T20:11:26.844Z",
+        "previousDigest": "81012239ffc3fdd86e8c438791e00ddc320d45b641ebe5bd7ddee3b05a413cf5",
+        "digest": "6805af5ebba950c6fec7837ecc8cb27f43780ccf74f015538c0a7ebc9795e3c0"
+      },
+      {
+        "sequence": 3,
+        "eventType": "execution_started",
+        "fromState": "QUEUED",
+        "toState": "EXECUTING",
+        "detail": null,
+        "createdAt": "2026-10-07T20:11:26.861Z",
+        "previousDigest": "6805af5ebba950c6fec7837ecc8cb27f43780ccf74f015538c0a7ebc9795e3c0",
+        "digest": "979991bb4db69f1864c046166b11b52896252e56a7f80abc0c52f88fcc5fbaca"
+      },
+      {
+        "sequence": 4,
+        "eventType": "execution_stopped",
+        "fromState": "EXECUTING",
+        "toState": "FAILED_SAFE",
+        "detail": "implement failed with exit code 124",
+        "createdAt": "2026-10-07T20:13:41.130Z",
+        "previousDigest": "979991bb4db69f1864c046166b11b52896252e56a7f80abc0c52f88fcc5fbaca",
+        "digest": "f1db5c5f31a796cf65bb4508377429ab0ae0cc118922c279bae3a4f1dedb5790"
+      }
+    ]
+  },
+  "executionObservations": {
+    "cloneAttempts": 1,
+    "cloneSucceeded": true,
+    "implementationStarts": 1,
+    "implementationExitCode": 124,
+    "terminalImplementationReceiptIdentityMatched": true,
+    "implementationReceiptIntegrityIsIndependentVerification": false,
+    "implementationLogCharacters": 7971,
+    "implementationLogTruncated": false,
+    "completedCommands": [
+      {
+        "itemId": "item_1",
+        "command": "/bin/bash -lc \"node <<'NODE_CANDIDATE'\nconst fs=require(\\\"node:fs\\\");\nconst path=\\\"governance/project-ledger.json\\\";\nconst ledger=JSON.parse(fs.readFileSync(path,\\\"utf8\\\"));\nconst work=ledger.workItems.find(x=>x.id===\\\"RELEASE-001\\\");\nif(work===undefined) throw Error(\\\"RELEASE-001 missing\\\");\nwork.evidenceIds.push(\\\"E-080\\\");\nwork.lastUpdated=\\\"2026-10-07\\\"; work.staleDate=\\\"2026-10-09\\\";\nwork.nextAction=\\\"Await exact-head required CI and pinned independent verification of this unmerged candidate, then complete authorised post-result cleanup. Fresh signup and LEGAL-001 still gate GA.\\\";\nwork.waitCondition=\\\"This customer candidate is not independently verified yet. Earlier failed runs remain immutable; fresh signup and LEGAL-001 remain separate gates.\\\";\nwork.reentryCondition=\\\"Use only the exact published PR head and established verifier pin; preserve historical stories and await required CI before verification and authorised cleanup.\\\";\nledger.evidenceStories.push({\\\"id\\\":\\\"E-080\\\",\\\"date\\\":\\\"2026-10-07\\\",\\\"identity\\\":\\\"Node-only customer PR-only execution candidate\\\",\\\"situation\\\":\\\"One compact Node-only customer candidate on the approved diagnostics deployment. Earlier failed runs remain immutable.\\\",\\\"verification\\\":\\\"Candidate nonce b1bb2c3c-d12e-424e-9d8d-d0666478a2fb at evidence/clean-customer-20261007/execution-marker-06.json; exact PR-head required CI and pinned independent OpsTruth verification remain pending.\\\",\\\"accountability\\\":{\\\"owner\\\":\\\"Publisher owner\\\",\\\"status\\\":\\\"blocked\\\",\\\"nextAction\\\":\\\"Await exact-head required CI and pinned independent verification.\\\",\\\"waitCondition\\\":\\\"Unmerged candidate is not independently verified.\\\",\\\"staleDate\\\":\\\"2026-10-09\\\"},\\\"outcome\\\":\\\"Only a candidate; no VERIFIED, fresh-signup, cleanup or GA claim.\\\",\\\"content\\\":\\\"One marker, RELEASE-001 tracking closure and regenerated state; no runtime, legal or verifier changes.\\\",\\\"measurement\\\":\\\"Three authorised files; no self-certified completion or dollar-cap claim.\\\"});\nfs.mkdirSync(\\\"evidence/clean-customer-20261007\\\",{recursive:true});\nfs.writeFileSync(\\\"evidence/clean-customer-20261007/execution-marker-06.json\\\",JSON.stringify({\\\"date\\\":\\\"2026-10-07\\\",\\\"customer\\\":\\\"OneClickPostFactory\\\",\\\"repository\\\":\\\"AyobamiH/donestate\\\",\\\"marker\\\":\\\"b1bb2c3c-d12e-424e-9d8d-d0666478a2fb\\\",\\\"outcome\\\":\\\"customer-execution-candidate\\\"},null,2)+\\\"\\\\n\\\");\nfs.writeFileSync(path,JSON.stringify(ledger,null,2)+\\\"\\\\n\\\");\nNODE_CANDIDATE\"",
+        "exitCode": 0,
+        "output": ""
+      },
+      {
+        "itemId": "item_3",
+        "command": "/bin/bash -lc 'npm run governance:render && npm run governance:check && git diff --check'",
+        "exitCode": 0,
+        "output": "\n> donestate@0.2.0 governance:render\n> node scripts/render-project-state.mjs\n\nproject state: rendered\n\n> donestate@0.2.0 governance:check\n> node scripts/render-project-state.mjs --check\n\nproject state: current\n"
+      },
+      {
+        "itemId": "item_5",
+        "command": "/bin/bash -lc 'git status --short'",
+        "exitCode": 0,
+        "output": " M docs/PROJECT-STATE.md\n M governance/project-ledger.json\n?? evidence/clean-customer-20261007/execution-marker-06.json\n"
+      }
+    ],
+    "finalAgentMessage": "Implemented the candidate exactly as specified.\n\n- All three validation commands passed.\n- Only the three authorized files changed.\n- No commit, push, publication, or verification claim was made.",
+    "turnCompletedEventPresent": false,
+    "usageSummaryPresent": false,
+    "interpretation": "The model log reports the Node editor, governance render/check, diff check and three-file status completed successfully. The model emitted a final agent message. No turn.completed or usage summary appears before the verified timeout exit 124. This does not establish a successful runner exit, publication or independent outcome; the precise stall cause remains unproven.",
+    "customerBranch": null,
+    "customerPr": null,
+    "requiredCustomerCi": null,
+    "independentVerifierRequest": null,
+    "independentDecision": null
+  },
+  "afterFailure": {
+    "credential": {
+      "connected": true,
+      "fingerprint": "44c7550c978b",
+      "createdAt": "2026-10-07T15:31:24.209Z",
+      "updatedAt": "2026-10-07T15:31:24.209Z",
+      "lastUsedAt": "2026-10-07T20:13:37.604Z",
+      "dailyRunsUsed": 1,
+      "dailyRunLimit": 12,
+      "activeRunId": null,
+      "billingOwner": "authenticated_user"
+    },
+    "actualBilledUsd": null,
+    "remainingProviderBalance": null,
+    "anotherPaidStartSubmitted": false
+  },
+  "historicalEvidence": "The prior OAuth admission refusal, previous timeouts, no-credit failure, unknown failure and completed cleanup remain unchanged.",
+  "cleanup": "Pending durable owner evidence publication and required CI; then inspect and delete the disposable customer account data and remove exact temporary Write under the existing cleanup authority.",
+  "reentry": "Diagnose the pinned harness completion boundary and prepare a concrete repair before another customer execution. Do not promote harness prose to successful completion or retry the terminal run.",
+  "separateUnprovenGates": [
+    "successful service publication",
+    "exact customer PR-head required CI",
+    "pinned independent verification",
+    "selected-repository GitHub App admission",
+    "fresh signup",
+    "LEGAL-001 GA gates"
+  ],
+  "secretsExcluded": true
+}

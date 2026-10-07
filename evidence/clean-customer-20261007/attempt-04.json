@@ -1,0 +1,263 @@
+{
+  "schema": "proof-state.customer-execution-evidence.v1",
+  "observedAt": "2026-10-07T10:18:16.259Z",
+  "repository": "AyobamiH/donestate",
+  "customer": "OneClickPostFactory",
+  "attempt": 4,
+  "deployment": {
+    "source": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+    "ciRun": 37595968023,
+    "deploymentRun": 37595968046,
+    "deploymentJob": 112708554641,
+    "workerVersion": "ac31dbd3-2508-469a-a894-3c97b9062677",
+    "containerDigest": "sha256:eae49c40ed6b29e4a7792157ad633910aeab5fdea2130c22694e1707ab356085",
+    "conclusion": "success"
+  },
+  "run": {
+    "id": "c9586ced-df91-4c49-aa97-8d07c04af16b",
+    "ownerLogin": "OneClickPostFactory",
+    "state": "FAILED_SAFE",
+    "objective": {
+      "acceptanceCriteria": [
+        "Create the exact customer marker JSON with the sealed nonce, date, customer, repository and candidate_only outcome.",
+        "Append E-073 as a candidate story, reference the marker, regenerate project state and keep RELEASE-001 blocked.",
+        "Change only the three authorised documentation/evidence files, at most three files.",
+        "Publish an unmerged pull request whose exact head passes core (22), core (24) and hosted-plugin checks."
+      ],
+      "authorities": [
+        "local_read",
+        "local_write",
+        "test",
+        "commit",
+        "push",
+        "open_pr",
+        "secret_access"
+      ],
+      "baseHeadSha": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+      "baseRef": "main",
+      "goal": "Read AGENTS.md and select RELEASE-001 before work. Execute one bounded documentation-only customer objective for OneClickPostFactory on the newly deployed failure-diagnostics source. Create evidence/clean-customer-20261007/execution-marker-04.json as a JSON object with date=\"2026-10-07\", customer=\"OneClickPostFactory\", repository=\"AyobamiH/donestate\", marker=\"clean-customer-9c757b6d-780c-4168-b48e-f79bc6f4a12d\", outcome=\"candidate_only\". Append a new Evidence Story Bank entry E-073, identity \"Fresh customer PR-only execution candidate after diagnostic deployment\", including this exact marker and candidate scope. Preserve every existing evidence story verbatim, including the terminal failed run E-070, diagnostic candidate E-071 and reconciliation E-072. Do not reuse their IDs. Update RELEASE-001 to reference E-073 and describe the bounded candidate with owner, next action, wait condition, re-entry condition, lastUpdated 2026-10-07 and staleDate 2026-10-09. Retain status blocked, existing title, stream and dependencies; LEGAL-001 remains a separate gate. State only that the authenticated customer GitHub OAuth path and accepted temporary Write were separately confirmed, and that owner-approved PR #168 merged and deployed the failure-diagnostics repair from be14e35514f0ee3d78ca2c121c2b236767f80ee4 with CI 37595968023 and deploy 37595968046. Do not claim VERIFIED, fresh signup, account deletion, cleanup, unrestricted GA or external provider approval. Wait for exact-head required CI and pinned independent OpsTruth verification, then post-result account inspection/deletion and removal of the exact temporary Write grant. Format the ledger with two-space JSON indentation; keep the contiguous existing RELEASE-001 id/title/stream/status anchor unchanged. Run npm run governance:render to generate docs/PROJECT-STATE.md, then npm run check. Change only evidence/clean-customer-20261007/execution-marker-04.json, governance/project-ledger.json and docs/PROJECT-STATE.md, at most three files. Commit and push this bounded change and open an unmerged pull request. No runtime, policy, workflow, App/verifier scope, deployment or channel-publication changes. Use only the configured injected OpenAI execution credential; never read or print ambient secrets. Never retry a mutating action whose effect is uncertain.",
+      "maxChangedFiles": 3,
+      "maxDurationMs": 900000,
+      "publication": "pull_request",
+      "repository": "AyobamiH/donestate",
+      "requestedBy": "OneClickPostFactory",
+      "runId": "c9586ced-df91-4c49-aa97-8d07c04af16b",
+      "schema": "donestate.hosted-objective.v1",
+      "trustedVerifierFingerprints": [
+        "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+      ],
+      "validationProfile": "node",
+      "verificationContractVersion": "donestate.verification-contract.v2",
+      "verificationRequirements": [
+        {
+          "criterionIndex": 0,
+          "expected": "2026-10-07",
+          "id": "marker-date",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-04.json",
+          "pointer": "/date"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "OneClickPostFactory",
+          "id": "marker-customer",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-04.json",
+          "pointer": "/customer"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "AyobamiH/donestate",
+          "id": "marker-repository",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-04.json",
+          "pointer": "/repository"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "clean-customer-9c757b6d-780c-4168-b48e-f79bc6f4a12d",
+          "id": "marker-marker",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-04.json",
+          "pointer": "/marker"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "candidate_only",
+          "id": "marker-outcome",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-04.json",
+          "pointer": "/outcome"
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-story",
+          "kind": "file_contains",
+          "path": "governance/project-ledger.json",
+          "values": [
+            "E-073",
+            "Fresh customer PR-only execution candidate after diagnostic deployment",
+            "clean-customer-9c757b6d-780c-4168-b48e-f79bc6f4a12d"
+          ]
+        },
+        {
+          "criterionIndex": 1,
+          "id": "release-stays-blocked",
+          "kind": "file_contains",
+          "path": "governance/project-ledger.json",
+          "values": [
+            "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+          ]
+        },
+        {
+          "criterionIndex": 1,
+          "id": "generated-story",
+          "kind": "file_contains",
+          "path": "docs/PROJECT-STATE.md",
+          "values": [
+            "E-073",
+            "Fresh customer PR-only execution candidate after diagnostic deployment"
+          ]
+        },
+        {
+          "allowedPaths": [
+            "evidence/clean-customer-20261007/execution-marker-04.json",
+            "governance/project-ledger.json",
+            "docs/PROJECT-STATE.md"
+          ],
+          "criterionIndex": 2,
+          "id": "bounded-files",
+          "kind": "changed_files",
+          "max": 3
+        },
+        {
+          "criterionIndex": 3,
+          "id": "required-exact-head-ci",
+          "kind": "github_checks_pass",
+          "requiredNames": [
+            "core (22)",
+            "core (24)",
+            "hosted-plugin"
+          ]
+        }
+      ]
+    },
+    "createdAt": "2026-10-07T10:13:39.911Z",
+    "updatedAt": "2026-10-07T10:15:05.148Z",
+    "lastError": "implement failed with exit code 1",
+    "branchName": null,
+    "branchHeadSha": null,
+    "pullRequestNumber": null,
+    "pullRequestUrl": null,
+    "verificationSnapshotDigest": null,
+    "verifierDecisionSummary": null,
+    "actions": [
+      {
+        "id": "clone",
+        "authority": "local_read",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "c9586ced-df91-4c49-aa97-8d07c04af16b:clone:v1",
+        "intentDigest": "602052d4dd42c23829b22c510d8ba54dea35d7a8c41441f64eb92adcf24bb29f",
+        "result": {
+          "attempt": 1,
+          "attempts": 1,
+          "exitCode": 0,
+          "maxAttempts": 3,
+          "sandboxId": "run-c9586ced-df91-4c49-aa97-8d07c04af16b-clone-1",
+          "stderr": "Cloning into '/workspace/repo'...\n",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-07T10:14:02.002Z"
+      },
+      {
+        "id": "implement",
+        "authority": "local_write",
+        "state": "FAILED",
+        "idempotencyKey": "c9586ced-df91-4c49-aa97-8d07c04af16b:implement:v1",
+        "intentDigest": "0dc1660cc2081e6f87cdabbbb95f8462f4f4942ee327e4c9ec7305372680c177",
+        "result": {
+          "exitCode": 1,
+          "implementationLog": {
+            "text": "Reading additional input from stdin...\n{\"type\":\"thread.started\",\"thread_id\":\"01a115db-2344-7713-b37d-93a3f8e4e086\"}\n{\"type\":\"turn.started\"}\n{\"type\":\"error\",\"message\":\"Reconnecting... 2/5 (stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.)\"}\n{\"type\":\"error\",\"message\":\"Reconnecting... 3/5 (stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.)\"}\n{\"type\":\"error\",\"message\":\"Reconnecting... 4/5 (stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.)\"}\n{\"type\":\"error\",\"message\":\"Reconnecting... 5/5 (stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.)\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_0\",\"type\":\"error\",\"message\":\"Falling back from WebSockets to HTTPS transport. stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\"}}\n{\"type\":\"error\",\"message\":\"Reconnecting... 1/5 (stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.)\"}\n{\"type\":\"error\",\"message\":\"Reconnecting... 2/5 (stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.)\"}\n{\"type\":\"error\",\"message\":\"Reconnecting... 3/5 (stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.)\"}\n{\"type\":\"error\",\"message\":\"Reconnecting... 4/5 (stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.)\"}\n{\"type\":\"error\",\"message\":\"Reconnecting... 5/5 (stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.)\"}\n{\"type\":\"error\",\"message\":\"stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\"}\n{\"type\":\"turn.failed\",\"error\":{\"message\":\"stream disconnected before completion: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\"}}\n",
+            "truncated": false
+          },
+          "launchAcknowledged": true,
+          "launchError": null,
+          "receiptPollAttempt": 9,
+          "receiptSchema": "donestate.implementation-receipt.v1",
+          "receiptVerified": true,
+          "sandboxId": "run-c9586ced-df91-4c49-aa97-8d07c04af16b-clone-1",
+          "success": false
+        },
+        "updatedAt": "2026-10-07T10:15:03.301Z"
+      }
+    ],
+    "events": [
+      {
+        "sequence": 1,
+        "eventType": "run_received",
+        "fromState": null,
+        "toState": "RECEIVED",
+        "detail": null,
+        "createdAt": "2026-10-07T10:13:39.911Z",
+        "previousDigest": null,
+        "digest": "f3f1a96f5781904f89ebb63f3bae36a315ab758d979ba70a4bb64c8c0c2208a2"
+      },
+      {
+        "sequence": 2,
+        "eventType": "run_queued",
+        "fromState": "RECEIVED",
+        "toState": "QUEUED",
+        "detail": null,
+        "createdAt": "2026-10-07T10:13:57.411Z",
+        "previousDigest": "f3f1a96f5781904f89ebb63f3bae36a315ab758d979ba70a4bb64c8c0c2208a2",
+        "digest": "010c8ac7cb40b2d9a44af49e05d9f664533c9dfc32284a19cb144be7f3b91a36"
+      },
+      {
+        "sequence": 3,
+        "eventType": "execution_started",
+        "fromState": "QUEUED",
+        "toState": "EXECUTING",
+        "detail": null,
+        "createdAt": "2026-10-07T10:13:57.426Z",
+        "previousDigest": "010c8ac7cb40b2d9a44af49e05d9f664533c9dfc32284a19cb144be7f3b91a36",
+        "digest": "71c3d332cea95536c1ae4edeaf2d9d1f7d2591a7ab2f8c582d6d0718e76caa88"
+      },
+      {
+        "sequence": 4,
+        "eventType": "execution_stopped",
+        "fromState": "EXECUTING",
+        "toState": "FAILED_SAFE",
+        "detail": "implement failed with exit code 1",
+        "createdAt": "2026-10-07T10:15:05.148Z",
+        "previousDigest": "71c3d332cea95536c1ae4edeaf2d9d1f7d2591a7ab2f8c582d6d0718e76caa88",
+        "digest": "ffd52e615dd8872a45ccd0b034b5cecbe581c543c424355f36d9617b614a17af"
+      }
+    ]
+  },
+  "conclusion": {
+    "state": "FAILED_SAFE",
+    "implementationExitCode": 1,
+    "providerFailure": "OpenAI API returned: You have no credits remaining.",
+    "publication": "No branch, commit or pull request was published.",
+    "verification": "Not reached; no sealed publication subject exists.",
+    "customerAuthentication": "github_oauth",
+    "executionCredential": "Previously connected, injected customer OpenAI API key; key and fingerprint omitted.",
+    "launches": 1,
+    "retryPolicy": "No new objective or start retry after terminal outcome.",
+    "limitations": [
+      "This does not prove fresh signup, successful execution, strict signed verification or unrestricted launch readiness.",
+      "The previous failed attempt remains immutable; its missing diagnostics cannot be retroactively attributed to this billing error."
+    ]
+  },
+  "postRunCredentialStatus": {
+    "connected": true,
+    "activeRunId": null,
+    "lastUsedAt": "2026-10-07T10:15:01.613Z",
+    "dailyRunsUsed": 2,
+    "dailyRunLimit": 12,
+    "interpretation": "One new credential lease; provider returned no credits remaining. Credential presence does not establish funding or successful execution."
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "schema": "proof-state.approved-rollout.v1",
+  "observedAt": "2026-10-07T10:21:41.382Z",
+  "approval": {
+    "instruction": "lets do that i approve",
+    "date": "2026-10-07",
+    "scope": "Merge approved DoneState PR 168 and portfolio PR 30; deploy the tested diagnostic repair; continue bounded customer acceptance and post-result cleanup."
+  },
+  "doneState": {
+    "pullRequest": 168,
+    "approvedHead": "81821640c1ef1633878553c51747e94b6ff9a913",
+    "approvedHeadCI": 37585518215,
+    "merge": {
+      "sha": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+      "merged": true,
+      "message": "Pull Request successfully merged"
+    },
+    "deployment": {
+      "source": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+      "ciRun": 37595968023,
+      "deploymentRun": 37595968046,
+      "deploymentJob": 112708554641,
+      "workerVersion": "ac31dbd3-2508-469a-a894-3c97b9062677",
+      "containerDigest": "sha256:eae49c40ed6b29e4a7792157ad633910aeab5fdea2130c22694e1707ab356085",
+      "conclusion": "success"
+    },
+    "requiredChecks": [
+      "core (22)",
+      "core (24)",
+      "hosted-plugin"
+    ],
+    "allRequiredChecks": "success",
+    "previousDeployedSource": "5b18fefcaa4c186782a2c14e5e4d16c2f93e11e4",
+    "trustedVerifierFingerprint": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+  },
+  "portfolio": {
+    "pullRequest": 30,
+    "approvedHead": "7f7638bc6ea541744fee52f2ccc8325e2421df5f",
+    "merge": {
+      "sha": "96b7f8df4eb7b2447c6c2b76d664b5db23b907af",
+      "merged": true,
+      "message": "Pull Request successfully merged"
+    },
+    "postMergeChecks": [
+      {
+        "name": "Governance",
+        "run": 37596000963,
+        "conclusion": "success"
+      },
+      {
+        "name": "GTM",
+        "run": 37596000885,
+        "conclusion": "success"
+      }
+    ],
+    "publishingEnabled": false
+  },
+  "limits": {
+    "runtimeRepair": "Failure diagnostics only; customer credential provider, model, authority, workflow and verifier trust pin unchanged.",
+    "customerResult": "FAILED_SAFE with OpenAI no-credit diagnostics, no customer branch or PR.",
+    "release": "Blocked by successful fresh customer acceptance and remaining LEGAL-001 requirements.",
+    "channelApproval": "Not established by repository merges, deployment or CI."
+  }
+}

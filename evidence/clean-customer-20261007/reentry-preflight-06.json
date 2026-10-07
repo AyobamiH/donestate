@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "attempt": 6,
+  "status": "BLOCKED_CAPABILITY_NOT_CREATED_OR_STARTED",
+  "observedAt": "2026-10-07T15:15:06.478Z",
+  "customer": {
+    "login": "OneClickPostFactory",
+    "githubId": 281453754
+  },
+  "repository": "AyobamiH/donestate",
+  "selectedWorkItems": {
+    "doneState": [
+      "RELEASE-001"
+    ],
+    "portfolio": [
+      "DS-CUSTOMER-001",
+      "DS-RELEASE-001"
+    ]
+  },
+  "renewedInstruction": "lets work in the custoer acceptace",
+  "historicalRun": {
+    "runId": "ed9c1146-1fe7-425b-9524-3d138af8552f",
+    "state": "FAILED_SAFE",
+    "exitCode": 124,
+    "indexedAccountData": "deleted after durable preservation; historical receipt remains unchanged"
+  },
+  "initialReadback": {
+    "credential": {
+      "connected": false,
+      "fingerprint": null,
+      "createdAt": null,
+      "updatedAt": null,
+      "lastUsedAt": null,
+      "dailyRunsUsed": 0,
+      "dailyRunLimit": 12,
+      "activeRunId": null,
+      "billingOwner": "authenticated_user"
+    },
+    "maintenanceRepositories": [],
+    "githubPermission": {
+      "permission": "read"
+    }
+  },
+  "temporaryRepositoryInvitation": {
+    "id": 336586833,
+    "recipient": "OneClickPostFactory",
+    "repository": "AyobamiH/donestate",
+    "state": "pending",
+    "acceptanceObserved": false,
+    "createdOnce": true,
+    "observedAt": "2026-10-07T15:19:47.121Z",
+    "privateInvitationCapabilityCopied": false
+  },
+  "preparedObjective": {
+    "path": "prepared-node-objective-06.json",
+    "baseRef": "main",
+    "baseHeadShaRequiredBeforeStart": "be14e35514f0ee3d78ca2c121c2b236767f80ee4",
+    "candidateStoryReserved": "E-080",
+    "candidateMarker": "b1bb2c3c-d12e-424e-9d8d-d0666478a2fb",
+    "maxDurationMs": 120000,
+    "maxChangedFiles": 3,
+    "publication": "pull_request",
+    "validationProfile": "node",
+    "autoStart": false,
+    "trustedVerifierFingerprints": [
+      "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+    ],
+    "requiredCheckNames": [
+      "core (22)",
+      "core (24)",
+      "hosted-plugin"
+    ],
+    "nodeInMemoryDryRun": "previously checked; no actual customer repository writes or service execution"
+  },
+  "executionGuard": {
+    "newObjectiveCreated": false,
+    "newStartSubmitted": false,
+    "paidRunsStartedThisReentry": 0,
+    "maximumStartsThisReentry": 1,
+    "automaticPaidRetry": false,
+    "remainingProviderBalance": null,
+    "actualBilledUsd": null,
+    "hardDollarCapAvailable": false,
+    "credentialEntry": "user-only secure first-party setup form; ticket and key excluded from evidence",
+    "route": "public customer GitHub OAuth; selected-repository App push admission remains separately unproven",
+    "beforeStart": [
+      "fresh connected customer credential with no active run",
+      "exact accepted temporary customer Write",
+      "live main still equals required base",
+      "created run identity and every sealed semantic field equal descriptor"
+    ]
+  },
+  "currentOwnerEvidence": {
+    "doneState": {
+      "pr": 169,
+      "head": "a0782eac216fec874742ec5963c1c5c2c76ff189",
+      "state": "open",
+      "merged": false
+    },
+    "portfolio": {
+      "pr": 31,
+      "head": "c648b5b4fc02e310185400bccde3425e8278eac7",
+      "state": "open",
+      "merged": false
+    }
+  },
+  "remainingAcceptance": [
+    "actual service-published customer PR",
+    "required CI on exact customer PR head",
+    "pinned independent OpsTruth decision",
+    "durably preserved outcome before authorised disposable test cleanup",
+    "selected-repository App route",
+    "fresh signup",
+    "LEGAL-001 GA gates"
+  ]
+}
