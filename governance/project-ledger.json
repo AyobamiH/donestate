@@ -549,9 +549,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-08",
       "staleDate": "2026-10-10",
-      "nextAction": "Review PR 173 and grant named authority to merge and deploy the checked account-controls API. After successful deployment, connect the separate resource only as OneClickPostFactory; inspect indexed state, delete once under the recorded customer authority, preserve the redacted receipt and obtain fresh empty-state readback. Do not repeat verified PR 172 or confirmed run/key/temporary-Write cleanup. Fresh signup, selected-repository App and LEGAL-001 remain separate gates.",
-      "waitCondition": "PR 173 implementation head c38fb8aa6ebc6be30426548688006d02bbd14d3e passed all three required CI checks in 37710940385 and is open/unmerged. The account-controls API is not deployed or connected and actual indexed customer-account deletion remains unconfirmed. Browser URL security policy remains in force; do not retry that route.",
-      "reentryCondition": "Proceed only after reviewed exact-head CI, named merge/deployment authority, successful deployment and an authenticated account-controls connection whose inspection identifies OneClickPostFactory. Preserve exact account confirmation, effective scope/resource checks, receipt integrity and no automatic retry of an ambiguous destructive result. Do not use the owner connection or a browser workaround.",
+      "nextAction": "Connect the deployed separate account-controls resource through a supported OAuth-capable MCP client as OneClickPostFactory and verify resource discovery plus authenticated inspection. Current direct probes received Cloudflare 1010: stop probes; if the normal client also fails, the site owner must diagnose that exact denial through Cloudflare support/settings. After confirmed admission, delete indexed service data once under recorded customer authority, preserve the redacted receipt and obtain fresh empty-state inspection. Do not repeat verified PR 172 or confirmed run/key/temporary-Write cleanup. Fresh signup, selected-repository App and LEGAL-001 remain separate gates.",
+      "waitCondition": "Named user approval was exercised once: PR 173 merged as 20a249902a9646209ade5f874b50e19db8f87519, exact-merge CI 37833092717 and production deployment 37833092691 succeeded. Worker aa332bb0-239d-404a-938e-2448dc5d5ffc is reported deployed. Unauthenticated custom-domain metadata/resource probes received Cloudflare 1010, and no separate customer account-controls tools are connected. Actual indexed customer-account deletion remains unconfirmed.",
+      "reentryCondition": "Resume customer cleanup only after a normal supported account-controls OAuth connection and inspection identify OneClickPostFactory with the required effective resource/scopes. Preserve exact login confirmation, receipt integrity and fresh readback; never automatically retry an ambiguous deletion. Do not use the owner connection, blocked browser route, alternate host/user-agent evasion or extracted credentials. Existing merge/deployment and customer deletion authority need no repeated approval.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -583,7 +583,8 @@
         "E-096",
         "E-097",
         "E-098",
-        "E-099"
+        "E-099",
+        "E-100"
       ]
     },
     {
@@ -2262,6 +2263,23 @@
       "outcome": "The supported API implementation is checked and reviewable. No merge, deployment, customer connection or customer-account deletion is claimed. The recorded deletion authority does not substitute for named authority to ship a new API.",
       "content": "Exact public commit/tree/CI receipts, preserved canonical 20-tool inventory and two separate account tools, explicit owner merge/deploy gate, OneClickPostFactory-only re-entry and no blocked browser workaround.",
       "measurement": "Three required implementation-head checks passed. Local validation remains 163 Worker tests/24 files and 44 core tests. Zero new production account deletions, paid model executions or repository Write grants."
+    },
+    {
+      "id": "E-100",
+      "date": "2026-10-08",
+      "identity": "Approved account API merged and deployed; customer connection remains unconfirmed",
+      "situation": "The publisher explicitly approved merging and deploying the checked PR 173 account-controls alternative.",
+      "verification": "Expected-head merge of c9c13f9046fe7142d608726408117dcb97536378 returned 20a249902a9646209ade5f874b50e19db8f87519 and was independently read back merged on main at 2026-10-08T19:35:24Z. Merge tree 7cddb3b4a58b9552e6f956d47f8e12a6424a8bd6 equals the reviewed tree. Exact-merge CI 37833092717 passed core (22), core (24) and hosted-plugin. Production Deploy hosted Worker 37833092691/job 113503166074 succeeded, reporting Worker aa332bb0-239d-404a-938e-2448dc5d5ffc, existing container application a0340af7-00ec-45b5-8d60-2d8444353b89, basic instance type and image sha256:2f03c8f41604e6dd9c0c15bcefa0bf69422425aede6ea428faa5f7da570d0c82. Deployment check passed 163 Worker tests/24 files. Public metadata/resource probes received HTTP 403/Cloudflare 1010; neither discovery nor authenticated account operations were observed. Current session exposes no account-controls tools. Exact observations are in evidence/account-api-20261008/merge-and-deployment.json.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Connect the deployed separate account-controls resource through a supported OAuth-capable MCP client as OneClickPostFactory and verify resource discovery plus authenticated inspection. Current direct probes received Cloudflare 1010: stop probes; if the normal client also fails, the site owner must diagnose that exact denial through Cloudflare support/settings. After confirmed admission, delete indexed service data once under recorded customer authority, preserve the redacted receipt and obtain fresh empty-state inspection. Do not repeat verified PR 172 or confirmed run/key/temporary-Write cleanup. Fresh signup, selected-repository App and LEGAL-001 remain separate gates.",
+        "waitCondition": "Named user approval was exercised once: PR 173 merged as 20a249902a9646209ade5f874b50e19db8f87519, exact-merge CI 37833092717 and production deployment 37833092691 succeeded. Worker aa332bb0-239d-404a-938e-2448dc5d5ffc is reported deployed. Unauthenticated custom-domain metadata/resource probes received Cloudflare 1010, and no separate customer account-controls tools are connected. Actual indexed customer-account deletion remains unconfirmed.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "The reviewed account API is merged and has a successful production deployment receipt. Its live customer admission and indexed-account deletion remain unconfirmed; RELEASE-001 stays blocked. This service deployment receipt is not an independent account-deletion signature.",
+      "content": "Separate exact-head/merge CI, provider deployment, access-denied probes, native-client OAuth requirement and existing customer outcome. Prior E-098/E-099 remain immutable preparation receipts.",
+      "measurement": "One expected-head merge, three successful post-merge CI jobs and one successful deployment. Zero new model executions, repository Write grants, live account deletions, extracted credentials or blocked browser retries."
     }
   ]
 }
