@@ -1,9 +1,13 @@
 # DoneState hosted service terms
 
 **Effective date:** 30 August 2026  
-**Last updated:** 30 August 2026
+**Last updated:** 9 October 2026
 
 These terms are a binding agreement between you and **AYOBAMI JOHN HAASTRUP, a United Kingdom sole trader trading as Proof & State** ("Proof & State", "we", "us") for the hosted DoneState service at `donestate.proofandstate.com` and its GitHub Marketplace listing ("DoneState" or the "Hosted Service").
+
+**Operating location:** Northampton, Northamptonshire, UK.
+
+For support, contact <hello@proofandstate.com>. For confidential security reports, contact <security@proofandstate.com>. These are the existing public contacts at <https://proofandstate.com/contact>.
 
 By installing the Marketplace plan, connecting an account or using the Hosted Service, you agree to these terms. If you act for an organisation, you confirm that you have authority to bind it. If you do not agree, do not install or use the Hosted Service.
 

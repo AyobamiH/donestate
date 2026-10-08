@@ -1,6 +1,8 @@
 # Authenticated account-controls API
 
-Status: implementation candidate, not yet merged, deployed or connected. Local fixtures are not a production customer-deletion receipt.
+Status: PR 173 merged as `20a249902a9646209ade5f874b50e19db8f87519`; exact-merge CI and production deployment succeeded on 2026-10-08. The separate customer connection authenticated **OneClickPostFactory**, and the approved indexed-service purge completed once at `2026-10-08T22:55:39.653Z`. Receipt digest validation and fresh account inspection at `22:56:06.979Z` confirmed an empty complete indexed inventory, no stored execution credential and no active run. Deployment receipt: [merge-and-deployment.json](../evidence/account-api-20261008/merge-and-deployment.json). Customer receipt and readback: [customer-account-closure.json](../evidence/account-api-20261008/customer-account-closure.json).
+
+Earlier direct unauthenticated custom-domain metadata/resource probes returned Cloudflare 1010 access denials and stopped. Those historical receipts remain unchanged. The normal ChatGPT client subsequently discovered the account resource and authenticated inspection/deletion succeeded. This establishes access for the recorded native-client connection; it does not establish universal client reachability or resolution of the earlier direct-probe denial. Do not change user-agent, substitute a hostname or circumvent browser policy.
 
 The separate MCP resource is `https://donestate.proofandstate.com/mcp/account/v1`, served as **DoneState Account Controls 1.0.0**. It exposes only `inspect_account` and `delete_account_data`. The reviewed `/mcp` execution server remains version 0.3.0 with its existing 20-tool inventory. Existing execution tokens cannot call the account-controls operations.
 
@@ -8,7 +10,7 @@ This is an explicit account-management capability with its own OAuth consent. It
 
 ## Connect
 
-After this candidate is reviewed and deployed, add the separate account-controls endpoint to an OAuth-capable MCP client. An example client configuration is [account-controls.mcp.json](../examples/account-controls.mcp.json). Keep the existing DoneState execution connection separate. Sign in as the exact account whose indexed service data you intend to inspect and delete. For the current acceptance cleanup, that identity is **OneClickPostFactory**, not the publisher's AyobamiH account.
+Add the deployed separate account-controls endpoint to an OAuth-capable MCP client. An example client configuration is [account-controls.mcp.json](../examples/account-controls.mcp.json). Keep the existing DoneState execution connection separate. Sign in as the exact account whose indexed service data you intend to inspect and delete. For the current acceptance cleanup, that identity is **OneClickPostFactory**, not the publisher's AyobamiH account.
 
 The protected resource metadata lives at `/.well-known/oauth-protected-resource/mcp/account/v1`. The existing authorization server provides registration, consent, PKCE and token exchange. Account grants require the exact account-controls resource and `donestate:account:read`; deletion additionally requires `donestate:account:delete`. The account consent describes those operations and requests only `read:user` from GitHub. Existing upstream GitHub grants may retain previously approved scopes; this API never uses them to modify a repository. The account connection does not request repository Write access, an execution key, an objective or model execution.
 
@@ -44,4 +46,4 @@ Minimal opaque generation fences and global anonymous aggregate counters remain.
 - Deletion settles but empty readback fails or finds new state: return `AMBIGUOUS_EFFECT`, with no success receipt. Inspect before any further mutation; do not automatically repeat deletion or assume that a lost response means no effect.
 - Authentication or browser security rejection: stop the rejected action. Do not extract credentials, substitute a browser surface or add an administrator impersonation route.
 
-For current customer acceptance, verified unmerged PR 172, deleted known run/key and removed temporary GitHub Write already have preserved evidence. They need no repetition. This API candidate alone does not establish customer account deletion, fresh signup, selected-repository App admission or unrestricted GA; LEGAL-001 remains separate.
+For the current customer successor outcome, verified unmerged PR 172, deleted known run/key, removed temporary GitHub Write, and the now-completed indexed-service account purge all have preserved evidence. They need no repetition. The deletion receipt digest confirms content integrity and has `independentVerification: false`; the separate fresh inspection corroborates the service state. Fresh clean-account signup, selected-repository App admission and unrestricted GA remain unproven; LEGAL-001 remains separate.

@@ -1,7 +1,7 @@
 # DoneState privacy notice
 
 **Effective date:** 30 August 2026  
-**Last updated:** 2 October 2026
+**Last updated:** 9 October 2026
 
 This notice applies to the hosted DoneState service at `donestate.proofandstate.com` and its GitHub Marketplace listing. It does not apply to a copy of the open-source command-line package that you run entirely under your own control.
 
@@ -9,7 +9,9 @@ This notice applies to the hosted DoneState service at `donestate.proofandstate.
 
 The hosted service is operated by **AYOBAMI JOHN HAASTRUP, a United Kingdom sole trader trading as Proof & State** ("Proof & State", "we", "us"). Proof & State is the controller for account, Marketplace and service-operation data described in this notice.
 
-For a non-confidential privacy request, open an issue at <https://github.com/AyobamiH/donestate/issues>. Do not place credentials or other sensitive personal data in a public issue. For a confidential security or privacy report, use GitHub's private reporting channel at <https://github.com/AyobamiH/donestate/security/advisories/new>.
+**Operating location:** Northampton, Northamptonshire, UK.
+
+For support or privacy requests, email <hello@proofandstate.com>. For confidential security reports, email <security@proofandstate.com>. These are the existing contacts published on the [Proof & State contact page](https://proofandstate.com/contact) and [canonical privacy notice](https://proofandstate.com/legal/privacy), which covers the hosted DoneState service. Technical reports can also use <https://github.com/AyobamiH/donestate/issues>, and private reports can use <https://github.com/AyobamiH/donestate/security/advisories/new>. Do not send credentials or unnecessary sensitive information in email or a public issue.
 
 ## Data we process and where it comes from
 

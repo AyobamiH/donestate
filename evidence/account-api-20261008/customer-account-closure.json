@@ -1,0 +1,117 @@
+{
+  "schema": "donestate.customer-account-closure.v1",
+  "account": "OneClickPostFactory",
+  "authority": "Existing explicit user approval for indexed DoneState service-data deletion; exact customer confirmation retained",
+  "source": "Supported separate OAuth account-controls MCP connection",
+  "attemptState": "SERVICE_RECEIPT_AND_FRESH_READBACK_CONFIRMED",
+  "before": {
+    "schema": "donestate.account-inspection.v1",
+    "observedAt": "2026-10-08T22:51:35.335Z",
+    "credential": {
+      "connected": false,
+      "fingerprint": null,
+      "createdAt": null,
+      "updatedAt": null,
+      "lastUsedAt": null,
+      "dailyRunsUsed": 1,
+      "dailyRunLimit": 12,
+      "activeRunId": null
+    },
+    "repositories": [],
+    "runs": [],
+    "summary": {
+      "schema": "donestate.account-data-summary.v1",
+      "ownerLogin": "OneClickPostFactory",
+      "selectedRepositories": 0,
+      "findings": 0,
+      "indexedRuns": 0,
+      "marketplaceUserEntitlements": 0,
+      "marketplaceOrganizationAuthorizations": 0
+    },
+    "inventoryComplete": true
+  },
+  "after": {
+    "schema": "donestate.account-inspection.v1",
+    "observedAt": "2026-10-08T22:56:06.979Z",
+    "credential": {
+      "connected": false,
+      "fingerprint": null,
+      "createdAt": null,
+      "updatedAt": null,
+      "lastUsedAt": null,
+      "dailyRunsUsed": 0,
+      "dailyRunLimit": 12,
+      "activeRunId": null
+    },
+    "repositories": [],
+    "runs": [],
+    "summary": {
+      "schema": "donestate.account-data-summary.v1",
+      "ownerLogin": "OneClickPostFactory",
+      "selectedRepositories": 0,
+      "findings": 0,
+      "indexedRuns": 0,
+      "marketplaceUserEntitlements": 0,
+      "marketplaceOrganizationAuthorizations": 0
+    },
+    "inventoryComplete": true
+  },
+  "receipt": {
+    "schema": "donestate.account-deletion-receipt.v1",
+    "ownerLogin": "OneClickPostFactory",
+    "deletedAt": "2026-10-08T22:55:39.653Z",
+    "deleted": {
+      "schema": "donestate.account-data-summary.v1",
+      "ownerLogin": "OneClickPostFactory",
+      "selectedRepositories": 0,
+      "findings": 0,
+      "indexedRuns": 0,
+      "marketplaceUserEntitlements": 0,
+      "marketplaceOrganizationAuthorizations": 0,
+      "deleted": true
+    },
+    "registryGeneration": 6,
+    "credentialGeneration": 6,
+    "readback": {
+      "credentialConnected": false,
+      "summary": {
+        "schema": "donestate.account-data-summary.v1",
+        "ownerLogin": "OneClickPostFactory",
+        "selectedRepositories": 0,
+        "findings": 0,
+        "indexedRuns": 0,
+        "marketplaceUserEntitlements": 0,
+        "marketplaceOrganizationAuthorizations": 0
+      },
+      "inventoryComplete": true
+    },
+    "scope": "indexed_donestate_service_data",
+    "retained": [
+      "opaque_deletion_generation_fences",
+      "existing_oauth_connections",
+      "global_anonymous_aggregate_counters"
+    ],
+    "exclusions": [
+      "unindexed_legacy_direct_objectives",
+      "github_account_and_repositories",
+      "github_app_installations",
+      "provider_key_revocation",
+      "oauth_revocation"
+    ],
+    "independentVerification": false,
+    "receiptDigest": "3ce7dd8f1a3c484ba5fff6d1e05d14b3bd950019268790b5eafd4f2f11fc7904"
+  },
+  "validation": {
+    "receiptDigestMatches": true,
+    "receiptDigest": "3ce7dd8f1a3c484ba5fff6d1e05d14b3bd950019268790b5eafd4f2f11fc7904",
+    "freshReadbackObservedAt": "2026-10-08T22:56:06.979Z",
+    "identityMatches": true,
+    "completeEmptyIndexedInventory": true,
+    "credentialDisconnected": true,
+    "activeRunAbsent": true,
+    "dailyRunsUsedBefore": 1,
+    "dailyRunsUsedAfter": 0,
+    "independentVerification": false,
+    "claimBoundary": "Indexed DoneState service data only; original unindexed legacy and external credential/GitHub exclusions retained"
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "schema": "donestate.account-api-deployment.v1",
+  "date": "2026-10-08",
+  "status": "MERGED_DEPLOYED_CUSTOMER_CONNECTION_PENDING",
+  "authority": {
+    "source": "Current user instruction",
+    "instruction": "I approve the merging and deploy",
+    "scope": "Merge and production deployment of reviewed DoneState PR 173"
+  },
+  "repository": "AyobamiH/donestate",
+  "pullRequest": 173,
+  "reviewedHead": "c9c13f9046fe7142d608726408117dcb97536378",
+  "reviewedTree": "7cddb3b4a58b9552e6f956d47f8e12a6424a8bd6",
+  "mergeCommit": "20a249902a9646209ade5f874b50e19db8f87519",
+  "mergedAt": "2026-10-08T19:35:24Z",
+  "mergeReadbackConfirmed": true,
+  "mergeTreeMatchesReviewedTree": true,
+  "requiredHeadCi": {
+    "runId": 37711410330,
+    "headSha": "c9c13f9046fe7142d608726408117dcb97536378",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 113097946324,
+        "name": "core (22)",
+        "conclusion": "success"
+      },
+      {
+        "id": 113097946617,
+        "name": "core (24)",
+        "conclusion": "success"
+      },
+      {
+        "id": 113097946565,
+        "name": "hosted-plugin",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "postMergeCi": {
+    "runId": 37833092717,
+    "headSha": "20a249902a9646209ade5f874b50e19db8f87519",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 113503165915,
+        "name": "core (22)",
+        "conclusion": "success"
+      },
+      {
+        "id": 113503165371,
+        "name": "core (24)",
+        "conclusion": "success"
+      },
+      {
+        "id": 113503165730,
+        "name": "hosted-plugin",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "deployment": {
+    "runId": 37833092691,
+    "jobId": 113503166074,
+    "headSha": "20a249902a9646209ade5f874b50e19db8f87519",
+    "status": "completed",
+    "conclusion": "success",
+    "completedAt": "2026-10-08T19:38:23Z",
+    "workerVersion": "aa332bb0-239d-404a-938e-2448dc5d5ffc",
+    "containerApplicationId": "a0340af7-00ec-45b5-8d60-2d8444353b89",
+    "containerImageDigest": "sha256:2f03c8f41604e6dd9c0c15bcefa0bf69422425aede6ea428faa5f7da570d0c82",
+    "instanceTypeObservedInDeploymentLog": "basic",
+    "maxInstancesConfiguredInDeployedCommit": 5,
+    "maxInstancesIndependentlyReadFromProvider": false,
+    "workerTestsPassedInDeployment": 163,
+    "workerTestFilesPassedInDeployment": 24,
+    "sandboxSdkAndImageVersion": "0.12.9",
+    "codexVersionObservedInBuildLog": "0.150.1",
+    "customDomainReported": "donestate.proofandstate.com"
+  },
+  "mcpResource": "https://donestate.proofandstate.com/mcp/account/v1",
+  "customerAccount": "OneClickPostFactory",
+  "customerAccountControlsConnected": false,
+  "productionCustomerAccountDeletionPerformed": false,
+  "independentAccountDeletionVerification": false,
+  "knownCustomerRunVerified": true,
+  "knownRunAndStoredKeyDeleted": true,
+  "temporaryGitHubWriteRemoved": true,
+  "newModelExecutions": 0,
+  "newRepositoryWriteGrants": 0,
+  "browserRouteRetried": false,
+  "rawCredentialsReadOrRequested": false,
+  "providerKeyOrOAuthRevocationClaimed": false,
+  "remaining": [
+    "native_client_account_resource_reachability_and_oauth_discovery",
+    "separate_customer_account_controls_oauth_connection",
+    "fresh_account_inspection",
+    "indexed_service_data_deletion_receipt_and_fresh_empty_readback",
+    "fresh_signup_and_selected_repository_app_acceptance",
+    "LEGAL-001"
+  ],
+  "publicEndpointObservations": [
+    {
+      "url": "https://donestate.proofandstate.com/.well-known/oauth-protected-resource/mcp/account/v1",
+      "observedAt": "2026-10-08T19:39:17.654021Z",
+      "httpStatus": 403,
+      "cloudflareErrorCode": 1010,
+      "errorName": "browser_signature_banned",
+      "rayId": "a4779c5b2d4bd7d9",
+      "authenticated": false,
+      "metadataReadbackConfirmed": false
+    },
+    {
+      "url": "https://donestate.proofandstate.com/mcp/account/v1",
+      "observedAt": "2026-10-08T19:39:25.518487Z",
+      "httpStatus": 403,
+      "cloudflareErrorCode": 1010,
+      "errorName": "browser_signature_banned",
+      "rayId": "a4779c8c4e5bd7d9",
+      "authenticated": false,
+      "oauthChallengeReadbackConfirmed": false
+    }
+  ],
+  "publicProbeStoppedAfterAccessDenial": true,
+  "alternateHostOrUserAgentWorkaroundAttempted": false,
+  "liveCustomerAccountApiCallPerformed": false,
+  "nativeMcpClientAccess": "UNCONFIRMED_SEPARATE_CONNECTION_REQUIRED",
+  "pluginDiscovery": {
+    "exactQuery": "DoneState",
+    "matchingPluginsReturned": 0,
+    "accountToolsExposedInCurrentSession": false,
+    "unrelatedPluginsSuggested": false
+  }
+}
