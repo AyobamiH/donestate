@@ -549,9 +549,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-08",
       "staleDate": "2026-10-10",
-      "nextAction": "Preserve the exact VERIFIED customer run, handoff, CI and integrity receipts, then delete only its disposable run and stored execution key and remove OneClickPostFactory temporary Write. Full indexed account inspection/purge, fresh signup, selected-repository App admission and LEGAL-001 remain separate unproven gates. Keep customer PR 172 unmerged and the verifier pin unchanged.",
-      "waitCondition": "Customer OAuth run aa5389f5-a4dd-400e-ba72-3e80c3190992 created service PR 172 at e2067cd8905f358dadc7b9265d90728726f3c40d. Live install/build and 44 tests passed; CI 37705797840 passed all three required jobs. The configured independent OpsTruth service returned verified under the existing pin and fresh DoneState readback is VERIFIED. Cleanup is pending; this bounded existing-customer success does not prove fresh signup, App admission, full indexed erasure or unrestricted GA.",
-      "reentryCondition": "No further model run or grant approval is needed. Use only the preserved exact subject and terminal run for authorised cleanup; do not merge or alter PR 172, replay execution, widen verification or infer provider-key/GitHub OAuth revocation from stored-key deletion. Full-account console inspection was previously blocked in this browser and current tools do not expose indexed account purge.",
+      "nextAction": "Use the documented browser handoff to inspect and delete only the disposable DoneState service account for OneClickPostFactory and preserve indexed-purge readback. No further model run or temporary Write is needed for verified PR 172. Complete the separate fresh-signup, selected-repository App and LEGAL-001 requirements before any unrestricted GA decision; keep PR 172 unmerged.",
+      "waitCondition": "The bounded public OAuth customer path is independently VERIFIED at PR 172 head e2067cd8905f358dadc7b9265d90728726f3c40d with required CI green. Terminal run/key deletion and exact temporary Write removal are independently confirmed; preserved evidence heads passed CI. Full indexed account inspection/purge is unconfirmed: browser credential protection blocked observation and its documented canonical navigation recovery failed. Fresh signup, App admission and legal gates remain separate.",
+      "reentryCondition": "Do not replay model execution, resend the invitation, alter the exact verified subject or repeat confirmed cleanup. Resume only the supported account handoff; do not bypass credential protection or infer provider-key/GitHub OAuth revocation or full account erasure from known-run/key deletion. Preserve historical failures, all previous evidence stories, source-ledger pins and unrelated work.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -579,7 +579,8 @@
         "E-092",
         "E-093",
         "E-094",
-        "E-095"
+        "E-095",
+        "E-096"
       ]
     },
     {
@@ -2189,7 +2190,24 @@
       },
       "outcome": "The bounded existing public OAuth customer execution/publication/independent-verification path succeeded. Full fresh-account acceptance and GA remain incomplete pending separate gates and cleanup.",
       "content": "PR 172 was service-created by OneClickPostFactory, changes exactly three authorised paths and remains unmerged. The first automatic independent response was uncertain while CI was pending; one owner-requested fresh observation after green exact-head CI returned verified. No execution retry, widened authority, deadline, signer change or historical outcome rewrite.",
-      "measurement": "Run aa5389f5-a4dd-400e-ba72-3e80c3190992; base fbaa060dfc6680516dfb7a1195801d1f8ab58d9d; head e2067cd8905f358dadc7b9265d90728726f3c40d; CI 37705797840; install 25s; tests 44/44; VERIFIED 2026-10-08T00:06:08.244Z; cleanup pending. The marker date 2026-10-07 was sealed before midnight; actual run creation is separately recorded on 2026-10-08. Provider billed amount remains unknown."
+      "measurement": "Run aa5389f5-a4dd-400e-ba72-3e80c3190992; base fbaa060dfc6680516dfb7a1195801d1f8ab58d9d; head e2067cd8905f358dadc7b9265d90728726f3c40d; CI 37705797840; install 25s; tests 44/44; VERIFIED 2026-10-08T00:06:08.244Z; cleanup pending. The marker date 2026-10-07 was prepared before midnight; actual run creation is separately recorded on 2026-10-08. Provider billed amount remains unknown."
+    },
+    {
+      "id": "E-096",
+      "date": "2026-10-08",
+      "identity": "Verified customer run/key deletion and temporary Write removal confirmed",
+      "situation": "After terminal VERIFIED evidence and its integrity checks were durably preserved, the exact authorised disposable-run, stored-key and repository-access cleanup was performed once.",
+      "verification": "evidence/clean-customer-20261007/customer-run-08-cleanup.json records deletion responses, independent run-not-found and connected-false readback, owner zero-collaborator UI, independent GitHub permission read and unchanged unmerged customer PR/head. Screenshot bytes and hash are preserved with the DoneState evidence.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Use the documented browser handoff to inspect and delete only the disposable DoneState service account for OneClickPostFactory and preserve indexed-purge readback. No further model run or temporary Write is needed for verified PR 172. Complete the separate fresh-signup, selected-repository App and LEGAL-001 requirements before any unrestricted GA decision; keep PR 172 unmerged.",
+        "waitCondition": "The bounded public OAuth customer path is independently VERIFIED at PR 172 head e2067cd8905f358dadc7b9265d90728726f3c40d with required CI green. Terminal run/key deletion and exact temporary Write removal are independently confirmed; preserved evidence heads passed CI. Full indexed account inspection/purge is unconfirmed: browser credential protection blocked observation and its documented canonical navigation recovery failed. Fresh signup, App admission and legal gates remain separate.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "The bounded customer execution/publication/independent-verification path and exact known-run/key/temporary-access cleanup succeeded. Full indexed service-account inspection/purge and the remaining fresh-account/GA gates are unconfirmed.",
+      "content": "Credential-protected account observation and the documented canonical navigation recovery both failed, so automated account entry stopped and manual handoff is required. No additional execution, duplicate cleanup, widened authority, GitHub-account deletion, provider-key revocation or OAuth-revocation claim. The prepared marker date is 2026-10-07; actual objective sealing/creation occurred on 2026-10-08 without changing its prepared descriptor.",
+      "measurement": "Run aa5389f5-a4dd-400e-ba72-3e80c3190992 deleted and read not found; stored key connected false; activeRunId null; remaining UTC usage fence 1; OneClickPostFactory permission read; zero collaborators; customer PR 172 remains open/unmerged at e2067cd8905f358dadc7b9265d90728726f3c40d. Cleanup screenshot SHA-256 edb5464e05fa5a7b35b84fb1c859dc9316be5ca59a08c5d4bae5edede8db4d1a."
     }
   ]
 }
