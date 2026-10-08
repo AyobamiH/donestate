@@ -49,16 +49,23 @@ jobs:
       - name: Deploy agent-shop Worker
         working-directory: agent-shop-products/frontend
         run: bunx wrangler@4.135.0 deploy --config wrangler.jsonc
-      - name: Wait for production origin
+      - name: Wait for production edge convergence
         run: |
           for i in {1..60}; do
-            if curl --fail --silent --show-error --location "$ACCEPTANCE_ORIGIN/agents" >/dev/null; then
-              echo "Production origin is reachable."
+            STATUS="$(curl --silent --show-error --location --write-out '%{http_code}' --output /tmp/live-catalog.json "$ACCEPTANCE_ORIGIN/catalog.json" || true)"
+            if [ "$STATUS" = "200" ] && node -e '
+              const fs=require("node:fs");
+              const body=JSON.parse(fs.readFileSync("/tmp/live-catalog.json","utf8"));
+              if (body.productCount !== 20) process.exit(1);
+            '; then
+              echo "Production catalogue converged to 20 products."
               exit 0
             fi
+            echo "Waiting for edge convergence (attempt $i; status=$STATUS)"
             sleep 2
           done
-          echo "::error::Production origin did not become reachable."
+          echo "::error::Production origin did not converge to the deployed 20-product catalogue."
+          cat /tmp/live-catalog.json || true
           exit 1
       - name: Outside-in agent and crawler acceptance
         working-directory: agent-shop-products/frontend
