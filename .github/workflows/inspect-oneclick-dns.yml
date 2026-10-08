@@ -1,0 +1,77 @@
+name: Inspect One Click DNS
+
+on:
+  push:
+    branches:
+      - ops/inspect-oneclick-pages
+    paths:
+      - ".github/workflows/inspect-oneclick-dns.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect public DNS ownership and records
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          const account = process.env.CLOUDFLARE_ACCOUNT_ID;
+          const token = process.env.CLOUDFLARE_API_TOKEN;
+          const domain = "oneclickwebsitedesignfactory.com";
+          const headers = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
+
+          async function cf(url) {
+            const response = await fetch(url, { headers });
+            const body = await response.json();
+            if (!response.ok || body.success !== true) {
+              console.error(JSON.stringify({ status: response.status, errors: body.errors ?? [] }));
+              process.exit(1);
+            }
+            return body.result;
+          }
+
+          const zones = await cf(
+            `https://api.cloudflare.com/client/v4/zones?name=${encodeURIComponent(domain)}&account.id=${account}`
+          );
+
+          if (!zones.length) {
+            console.log(JSON.stringify({ zone_found: false, domain }, null, 2));
+            process.exit(0);
+          }
+
+          const zone = zones[0];
+          const records = await cf(
+            `https://api.cloudflare.com/client/v4/zones/${zone.id}/dns_records?per_page=100`
+          );
+
+          const relevant = records
+            .filter((r) => r.name === domain || r.name === `www.${domain}`)
+            .map((r) => ({
+              id: r.id,
+              type: r.type,
+              name: r.name,
+              content: r.content,
+              proxied: r.proxied,
+              ttl: r.ttl,
+              comment: r.comment ?? null,
+            }));
+
+          console.log(JSON.stringify({
+            zone_found: true,
+            zone: {
+              id: zone.id,
+              name: zone.name,
+              status: zone.status,
+              paused: zone.paused,
+              name_servers: zone.name_servers,
+            },
+            records: relevant,
+          }, null, 2));
+          NODE
