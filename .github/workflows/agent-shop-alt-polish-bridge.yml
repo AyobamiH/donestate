@@ -1,0 +1,71 @@
+name: Agent Shop Alt Polish Bridge
+
+on:
+  push:
+    branches:
+      - ops/agent-shop-design-bridge
+    paths:
+      - ".github/workflows/agent-shop-alt-polish-bridge.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agent-shop-alt-polish-bridge
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      ACCEPTANCE_ORIGIN: https://agents.proofandstate.com
+      VITE_SITE_ORIGIN: https://agents.proofandstate.com
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      AGENT_SHOP_REVISION: fc99be135e9d4c776246dddb4eff5d1a75b5b229
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Verify Cloudflare credential custody
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+      - name: Fetch canonical agent shop
+        run: |
+          git clone --filter=blob:none https://github.com/AyobamiH/agent-shop-products.git agent-shop-products
+          cd agent-shop-products
+          git checkout "$AGENT_SHOP_REVISION"
+          test "$(git rev-parse HEAD)" = "$AGENT_SHOP_REVISION"
+      - name: Install and build
+        working-directory: agent-shop-products/frontend
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+      - name: Deploy exact Agent Shop revision
+        working-directory: agent-shop-products/frontend
+        run: bunx wrangler@4.135.0 deploy --config wrangler.jsonc
+      - name: Wait for production edge convergence
+        run: |
+          for i in {1..60}; do
+            STATUS="$(curl --silent --show-error --location --write-out '%{http_code}' --output /tmp/live-catalog.json "$ACCEPTANCE_ORIGIN/catalog.json" || true)"
+            if [ "$STATUS" = "200" ] && node -e '
+              const fs=require("node:fs");
+              const body=JSON.parse(fs.readFileSync("/tmp/live-catalog.json","utf8"));
+              if (body.productCount !== 20) process.exit(1);
+            '; then
+              echo "Production catalogue converged."
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+      - name: Outside-in agent and crawler acceptance
+        working-directory: agent-shop-products/frontend
+        run: node scripts/verify-deployed-surface.mjs
+      - name: Verify registry assets
+        run: |
+          curl --fail --silent --show-error "$ACCEPTANCE_ORIGIN/agent-registry-mark.svg" >/dev/null
+          curl --fail --silent --show-error "$ACCEPTANCE_ORIGIN/agent-registry-feature.svg" >/dev/null
+          curl --fail --silent --show-error "$ACCEPTANCE_ORIGIN/favicon.svg" >/dev/null
