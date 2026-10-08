@@ -3,6 +3,8 @@ import { OAuthProvider } from "@cloudflare/workers-oauth-provider";
 import { McpServer, type ServerContext } from "@modelcontextprotocol/server";
 import { createMcpHandler } from "agents/mcp/server";
 import { z } from "zod";
+import { ACCOUNT_MCP_PATH, ACCOUNT_READ_SCOPE, ACCOUNT_DELETE_SCOPE, accountResourceMetadata, accountChallenge } from "./account-authorization";
+import { createAccountControlsServer } from "./account-controls";
 import { authHandler, EXECUTION_SCOPE, type AuthEnv } from "./auth";
 import { RunCoordinator } from "./coordinator";
 import { CredentialVault } from "./credential-vault";
@@ -210,7 +212,7 @@ const verificationResponseSchema = z.object({
   attestation: attestationV2Schema.strict(),
 }).strict();
 
-function createServer(): McpServer {
+export function createServer(): McpServer {
   const server = new McpServer({ name: "DoneState", version: "0.3.0" });
 
   server.registerTool(
@@ -621,6 +623,12 @@ const protectedHandler = {
     }
     const authInfo = await mcpAuthInfo(request, oauth as TokenInspector);
     if (!authInfo) return new Response("Invalid access token", { status: 401 });
+    const path = new URL(request.url).pathname;
+    if (path === ACCOUNT_MCP_PATH) {
+      const accountApiHandler = createMcpHandler(() => createAccountControlsServer(() => workerEnv as DoneStateEnv), { route: ACCOUNT_MCP_PATH });
+      return accountApiHandler.fetch(request, { authInfo });
+    }
+    if (path.startsWith(`${ACCOUNT_MCP_PATH}/`)) return new Response("Not found", { status: 404 });
     return apiHandler.fetch(request, { authInfo });
   },
 };
@@ -630,7 +638,8 @@ const oauthProvider = new OAuthProvider({
   tokenEndpoint: "/oauth/token",
   clientRegistrationEndpoint: "/oauth/register",
   clientIdMetadataDocumentEnabled: true,
-  scopesSupported: [EXECUTION_SCOPE],
+  scopesSupported: [EXECUTION_SCOPE, ACCOUNT_READ_SCOPE, ACCOUNT_DELETE_SCOPE],
+  resourceMetadata: { scopes_supported: [EXECUTION_SCOPE] },
   apiRoute: "/mcp",
   apiHandler: protectedHandler,
   defaultHandler: {
@@ -644,12 +653,22 @@ const oauthProvider = new OAuthProvider({
 });
 
 export default {
-  fetch(request: Request, workerEnv: DoneStateEnv, ctx: ExecutionContext) {
+  async fetch(request: Request, workerEnv: DoneStateEnv, ctx: ExecutionContext) {
     if (isMarketplaceDevelopment(workerEnv)) {
       if (!allowsMarketplaceDevelopmentRequest(request)) return new Response("Not found", { status: 404 });
       return authHandler.fetch(request, workerEnv as AuthEnv, ctx);
     }
-    return oauthProvider.fetch(request, workerEnv, ctx);
+    const url = new URL(request.url);
+    if (url.pathname === `/.well-known/oauth-protected-resource${ACCOUNT_MCP_PATH}` && request.method === "GET") {
+      return accountResourceMetadata(url.origin);
+    }
+    const response = await oauthProvider.fetch(request, workerEnv, ctx);
+    if (url.pathname === ACCOUNT_MCP_PATH && (response.status === 401 || response.status === 403)) {
+      const headers = new Headers(response.headers);
+      headers.set("WWW-Authenticate", accountChallenge(url.origin));
+      return new Response(response.body, { status: response.status, headers });
+    }
+    return response;
   },
   scheduled(_controller: ScheduledController, workerEnv: DoneStateEnv, ctx: ExecutionContext) {
     ctx.waitUntil(workerEnv.MAINTENANCE_REGISTRY.getByName("global").scheduledSweep().then((result) => {

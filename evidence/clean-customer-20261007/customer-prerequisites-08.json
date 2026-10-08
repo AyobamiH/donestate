@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "status": "KEY_RESTORED_WRITE_CONFIRMATION_PENDING",
+  "customer": "OneClickPostFactory",
+  "repository": "AyobamiH/donestate",
+  "credential": {
+    "connected": true,
+    "fingerprint": "44c7550c978b",
+    "createdAt": "2026-10-07T22:59:33.539Z",
+    "updatedAt": "2026-10-07T22:59:33.539Z",
+    "lastUsedAt": null,
+    "dailyRunsUsed": 2,
+    "dailyRunLimit": 12,
+    "activeRunId": null,
+    "billingOwner": "authenticated_user"
+  },
+  "repositoryPermission": "read",
+  "invitation": {
+    "prepared": true,
+    "submitted": false,
+    "scope": "only AyobamiH/donestate temporary Write until result inspection/cleanup",
+    "browserActionTimeConfirmationPending": true
+  },
+  "execution": {
+    "preparedAttempt": 8,
+    "baseSha": "fbaa060dfc6680516dfb7a1195801d1f8ab58d9d",
+    "maxDurationMs": 120000,
+    "maxChangedFiles": 3,
+    "publication": "pull_request",
+    "autoStart": false,
+    "noAutomaticRetry": true,
+    "objectiveCreated": false,
+    "objectiveStarted": false
+  },
+  "limits": {
+    "credentialPresenceDoesNotProveFunding": true,
+    "providerBalanceUnknown": true,
+    "customerAcceptanceIncomplete": true
+  },
+  "rawCredentialAndSetupTicketExcluded": true,
+  "readbackRecordedAt": "2026-10-07T23:04:43.122133+00:00"
+}

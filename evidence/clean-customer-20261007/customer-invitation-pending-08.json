@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "status": "INVITATION_SUBMITTED_RECIPIENT_ACCEPTANCE_PENDING",
+  "customer": "OneClickPostFactory",
+  "repository": "AyobamiH/donestate",
+  "approval": {
+    "received": true,
+    "sourceInstruction": "agree and approve",
+    "scope": "Only temporary Write on AyobamiH/donestate for one bounded acceptance run; remove during authorised result cleanup",
+    "repeatConfirmationRequired": false
+  },
+  "invitation": {
+    "submitted": true,
+    "submissionCount": 1,
+    "ownerUiMessage": "OneClickPostFactory has been added as a collaborator on the repository.",
+    "ownerUiState": "Pending Invite; Awaiting OneClickPostFactory\u2019s response",
+    "effectiveWriteConfirmed": false,
+    "accepted": false
+  },
+  "repositoryPermission": "read",
+  "credential": {
+    "connected": true,
+    "fingerprint": "44c7550c978b",
+    "createdAt": "2026-10-07T22:59:33.539Z",
+    "updatedAt": "2026-10-07T22:59:33.539Z",
+    "lastUsedAt": null,
+    "dailyRunsUsed": 2,
+    "dailyRunLimit": 12,
+    "activeRunId": null,
+    "billingOwner": "authenticated_user"
+  },
+  "authentication": {
+    "firstRequestResult": "submitted",
+    "firstRenderedResult": "You're already signed in to this account; AyobamiH owner remains signed in",
+    "secondRequestResult": "unknown after timeout",
+    "followupObservation": "cancelled by user",
+    "recipientSignInConfirmed": false
+  },
+  "safetyReview": {
+    "invitationLinkCopyRejected": true,
+    "reason": "Access-bearing invitation token is unnecessary for the approved acceptance run",
+    "saferAlternative": "Normal GitHub account sign-in and recipient invitation acceptance",
+    "invitationTokenCopiedOrExposed": false
+  },
+  "execution": {
+    "preparedAttempt": 8,
+    "objectiveCreated": false,
+    "objectiveStarted": false,
+    "maxDurationMs": 120000,
+    "maxChangedFiles": 3,
+    "publication": "pull_request",
+    "autoStart": false,
+    "noAutomaticRetry": true,
+    "baseSha": "fbaa060dfc6680516dfb7a1195801d1f8ab58d9d",
+    "trustedVerifierFingerprint": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+  },
+  "limits": {
+    "credentialPresenceDoesNotProveFunding": true,
+    "customerAcceptanceIncomplete": true,
+    "fullIndexedAccountPurgeUnconfirmed": true,
+    "signupAppAndLegalGatesRemainSeparate": true
+  },
+  "rawCredentialAndInvitationTokenExcluded": true,
+  "readbackRecordedAt": "2026-10-07T23:45:51.894Z"
+}

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-10-07",
+  "updatedAt": "2026-10-08",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {
@@ -547,11 +547,11 @@
       "stream": "release",
       "status": "blocked",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-07",
-      "staleDate": "2026-10-09",
-      "nextAction": "Require the bounded Sandbox-capacity repair and failure-path guard to pass exact-head required CI. Review and merge/deploy under the reserved owner authority, then restore only the customer key and temporary Write needed for one fresh bounded acceptance run. Require actual service publication, exact-head CI and the established pinned independent decision; preserve every terminal attempt and cleanup.",
-      "waitCondition": "Attempt-07 implementation exited zero, but npm ci validation timed out before publication. Production is configured as lite (256 MiB, 1/16 vCPU); a same-source local Node 24 compiler measurement reached 310424 KiB maximum child RSS, above that memory budget. This establishes a capacity mismatch for the measured local workload, not the exact production timeout cause. Basic capacity is prepared only until the repair is deployed and a fresh real customer run succeeds.",
-      "reentryCondition": "The user explicitly directed repair and another attempt. Keep the original 120000ms implementation bound, three-file customer limit, PR-only effects, independent-verifier pin and no automatic retry. Restore the deleted customer prerequisites only for the fresh successor. No historical failed run or pending publication may be rewritten as successful.",
+      "lastUpdated": "2026-10-08",
+      "staleDate": "2026-10-10",
+      "nextAction": "Review PR 173 and grant named authority to merge and deploy the checked account-controls API. After successful deployment, connect the separate resource only as OneClickPostFactory; inspect indexed state, delete once under the recorded customer authority, preserve the redacted receipt and obtain fresh empty-state readback. Do not repeat verified PR 172 or confirmed run/key/temporary-Write cleanup. Fresh signup, selected-repository App and LEGAL-001 remain separate gates.",
+      "waitCondition": "PR 173 implementation head c38fb8aa6ebc6be30426548688006d02bbd14d3e passed all three required CI checks in 37710940385 and is open/unmerged. The account-controls API is not deployed or connected and actual indexed customer-account deletion remains unconfirmed. Browser URL security policy remains in force; do not retry that route.",
+      "reentryCondition": "Proceed only after reviewed exact-head CI, named merge/deployment authority, successful deployment and an authenticated account-controls connection whose inspection identifies OneClickPostFactory. Preserve exact account confirmation, effective scope/resource checks, receipt integrity and no automatic retry of an ambiguous destructive result. Do not use the owner connection or a browser workaround.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -574,7 +574,16 @@
         "E-070",
         "E-071",
         "E-072",
-        "E-090"
+        "E-090",
+        "E-091",
+        "E-092",
+        "E-093",
+        "E-094",
+        "E-095",
+        "E-096",
+        "E-097",
+        "E-098",
+        "E-099"
       ]
     },
     {
@@ -2100,6 +2109,159 @@
       "outcome": "Prepare production basic capacity plus a fail-closed deployment memory guard; required CI, deployment and successful customer acceptance are separate pending states. No new model execution or paid retry has occurred.",
       "content": "Only container capacity and its build/deployment guard change; SDK/image versions, model command, RPC, exact action reconciliation, customer time/file bounds, publication authorities and the verifier pin remain unchanged. Larger capacity has higher provisioned resource charges, retains max_instances 5 and explicit sandbox destruction.",
       "measurement": "Offline npm ci exited zero in 2.248s. Separate local npm run build exited zero in 1.337s with maximum child RSS 310424 KiB (~303 MiB); process-tree sampling was inaccessible. Production basic supplies 1024 MiB. No production OOM claim, live performance claim, deadline increase or validation bypass. Local core tests 44/44 and Worker tests 149/149 passed; the resource regression guard rejects lite/dev and an actual production-config lite mutation. Production deployment and live acceptance remain unexecuted."
+    },
+    {
+      "id": "E-091",
+      "date": "2026-10-07",
+      "identity": "Owner-authorised Sandbox capacity repair merged and deployed",
+      "situation": "The user instructed implementation of the unblockers after the checked repair and its production consequence were presented.",
+      "verification": "evidence/clean-customer-20261007/capacity-repair-deployment.json records one expected-head merge of PR 170, independent merged readback, post-merge required CI and the exact deployment log showing lite to basic, image digest and Worker version.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Reconnect the customer execution key and confirm the exact temporary OneClickPostFactory Write invitation, then create/start the fresh prepared three-file PR-only objective once after base, identity and idle checks. Require service publication, exact-head CI and the pinned independent decision, then inspect/delete the disposable account and remove Write. Preserve separate signup, App and LEGAL-001 gates.",
+        "waitCondition": "Capacity repair PR 170 is owner-authorised and merged at fbaa060dfc6680516dfb7a1195801d1f8ab58d9d. Post-merge CI 37698109881 and production deployment 37698109840 succeeded; logs confirm basic container capacity and Worker 10c14fb2-8536-4af3-91f2-8ecd5bae94d9. Customer key is disconnected and permission is read; the exact invitation is prepared but unsubmitted. Live repaired validation, customer PR and independent verification remain unproven.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Capacity rollout is confirmed on the exact merged source. This is not a successful live customer validation or independent completion result.",
+      "content": "The larger basic container, unchanged five-instance cap and existing resource prerequisite guard are deployed. Customer key and exact temporary repository Write remain pending; no new paid start occurred. Prepared invitation screenshot is not a grant receipt.",
+      "measurement": "Merged fbaa060dfc6680516dfb7a1195801d1f8ab58d9d; CI 37698109881; deploy 37698109840; Worker 10c14fb2-8536-4af3-91f2-8ecd5bae94d9; image sha256:8753929cf3ef46ccc160471df5addcb8d3228affa713c1df7d025c54548225c2; instance basic 1024 MiB; zero customer creates/starts."
+    },
+    {
+      "id": "E-092",
+      "date": "2026-10-07",
+      "identity": "Fresh bounded customer successor prepared and exercised without model billing",
+      "situation": "Implementation of the unblockers includes a fresh successor to the deleted terminal run, using the now-deployed repaired source.",
+      "verification": "evidence/clean-customer-20261007/prepared-compact-objective-08.json seals the new nonce and marker path, unchanged bounds, authorities, verifier pin and machine requirements. An isolated exact-base offline exercise passed the exact editor/check command and preserved all historical stories, unrelated items and RELEASE-001 identity/status/owner/dependencies.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Reconnect the customer execution key and confirm the exact temporary OneClickPostFactory Write invitation, then create/start the fresh prepared three-file PR-only objective once after base, identity and idle checks. Require service publication, exact-head CI and the pinned independent decision, then inspect/delete the disposable account and remove Write. Preserve separate signup, App and LEGAL-001 gates.",
+        "waitCondition": "Capacity repair PR 170 is owner-authorised and merged at fbaa060dfc6680516dfb7a1195801d1f8ab58d9d. Post-merge CI 37698109881 and production deployment 37698109840 succeeded; logs confirm basic container capacity and Worker 10c14fb2-8536-4af3-91f2-8ecd5bae94d9. Customer key is disconnected and permission is read; the exact invitation is prepared but unsubmitted. Live repaired validation, customer PR and independent verification remain unproven.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Prepared and locally checked only; no service objective was created or started. E-086 remains reserved for actual service execution and is absent from this owner evidence branch.",
+      "content": "One fresh marker, ledger and generated-state candidate, autoStart false, public OAuth customer path and exact PR-head required CI. Secure key setup ticket and all credential values are excluded from public evidence.",
+      "measurement": "Offline command exit 0 in 0.305s; exactly three candidate paths; maxDurationMs 120000; maxChangedFiles 3; no hard dollar cap or paid outcome claim; zero automatic retries."
+    },
+    {
+      "id": "E-093",
+      "date": "2026-10-07",
+      "identity": "Customer execution key restored securely with repository Write still pending",
+      "situation": "After deployment, the user connected the customer key through the single-use secure setup link without exposing it in chat.",
+      "verification": "evidence/clean-customer-20261007/customer-prerequisites-08.json preserves connected-true idle credential readback and exact permission-read state. The prepared invitation screenshot shows the unsent OneClickPostFactory action. Earlier disconnected snapshots remain historical observations.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Confirm and submit only the prepared temporary OneClickPostFactory Write invitation for AyobamiH/donestate. Then independently check accepted Write, customer identity, idle connected key and unchanged deployed base before one fresh prepared three-file PR-only create/start. Require service publication, exact-head CI, pinned independent verification and cleanup; preserve separate signup, App, full indexed purge and LEGAL-001 gates.",
+        "waitCondition": "Capacity repair is merged/deployed at fbaa060dfc6680516dfb7a1195801d1f8ab58d9d with successful post-merge CI and rollout. The user restored the customer key through secure setup; connected true, activeRunId null, dailyRunsUsed 2. Exact customer repository permission remains read and the invitation is selected but unsubmitted. Browser action-time Write confirmation is the remaining pre-start blocker; no fresh objective exists.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "The key blocker is removed. Temporary repository Write still requires the browser action-time confirmation, invitation submission and accepted-access readback before any create/start.",
+      "content": "Only credential metadata is recorded; no raw key or setup ticket. Credential presence is not funding verification, model success, service publication or independent outcome proof.",
+      "measurement": "connected true; fingerprint 44c7550c978b; created 2026-10-07T22:59:33.539Z; activeRunId null; dailyRunsUsed 2; permission read; zero fresh creates, starts or automatic retries."
+    },
+    {
+      "id": "E-094",
+      "date": "2026-10-07",
+      "identity": "Approved customer Write invitation submitted; recipient acceptance pending",
+      "situation": "The user replied agree and approve to the concrete temporary OneClickPostFactory Write invitation for one acceptance run and cleanup.",
+      "verification": "evidence/clean-customer-20261007/customer-invitation-pending-08.json records the approved single submission, rendered pending-invitation state and independent read permission. Secure recipient authentication is unconfirmed; a submitted credential request is not sign-in success.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Accept the already-approved temporary AyobamiH/donestate invitation as OneClickPostFactory through secure GitHub sign-in. Independently read back Write, customer identity, idle connected key and unchanged deployed base before one prepared 120000ms, three-file PR-only create/start. Require service publication, exact-head required CI, the established pinned independent decision and authorised cleanup. Preserve separate signup, selected-repository App, full indexed-purge and LEGAL-001 gates.",
+        "waitCondition": "The user approved the exact temporary Write grant and its invitation was submitted once. GitHub rendered Pending Invite awaiting OneClickPostFactory; independent permission remains read. First secure sign-in returned the already-signed-in AyobamiH owner, and the second sign-in result is unknown after timeout and cancelled observation. The customer key remains connected and idle, dailyRunsUsed 2; no fresh objective has been created or started. Capacity repair is already merged/deployed at fbaa060dfc6680516dfb7a1195801d1f8ab58d9d.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "The grant approval and invitation submission are complete. Effective Write, service execution, customer PR and independent verification remain unproven.",
+      "content": "No additional invitation, new objective, paid start, copied invitation token or credential value. Normal GitHub recipient acceptance is the next prerequisite; remove the exact temporary access during authorised result cleanup.",
+      "measurement": "Independent readback 2026-10-07T23:45:51.894Z: permission read, connected true, activeRunId null, lastUsedAt null, dailyRunsUsed 2; zero attempt-08 creates/starts."
+    },
+    {
+      "id": "E-095",
+      "date": "2026-10-08",
+      "identity": "Repaired deployment produced an independently VERIFIED public OAuth customer PR",
+      "situation": "After approved temporary Write was accepted, one fresh prepared customer objective was created and started under the existing bounded envelope.",
+      "verification": "evidence/clean-customer-20261007/customer-run-08-verified.json preserves terminal VERIFIED readback, the sealed v2 handoff, exact customer PR/head and required CI. customer-run-08-integrity.json independently matches all nine event digests, nine action-result digests, objective, handoff, nonce and snapshot. The trusted policy pin matches the admitted OpsTruth signer; raw signature/key material is not exposed by these tools, so no additional local signature-verification claim is made.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Preserve the exact VERIFIED customer run, handoff, CI and integrity receipts, then delete only its disposable run and stored execution key and remove OneClickPostFactory temporary Write. Full indexed account inspection/purge, fresh signup, selected-repository App admission and LEGAL-001 remain separate unproven gates. Keep customer PR 172 unmerged and the verifier pin unchanged.",
+        "waitCondition": "Customer OAuth run aa5389f5-a4dd-400e-ba72-3e80c3190992 created service PR 172 at e2067cd8905f358dadc7b9265d90728726f3c40d. Live install/build and 44 tests passed; CI 37705797840 passed all three required jobs. The configured independent OpsTruth service returned verified under the existing pin and fresh DoneState readback is VERIFIED. Cleanup is pending; this bounded existing-customer success does not prove fresh signup, App admission, full indexed erasure or unrestricted GA.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "The bounded existing public OAuth customer execution/publication/independent-verification path succeeded. Full fresh-account acceptance and GA remain incomplete pending separate gates and cleanup.",
+      "content": "PR 172 was service-created by OneClickPostFactory, changes exactly three authorised paths and remains unmerged. The first automatic independent response was uncertain while CI was pending; one owner-requested fresh observation after green exact-head CI returned verified. No execution retry, widened authority, deadline, signer change or historical outcome rewrite.",
+      "measurement": "Run aa5389f5-a4dd-400e-ba72-3e80c3190992; base fbaa060dfc6680516dfb7a1195801d1f8ab58d9d; head e2067cd8905f358dadc7b9265d90728726f3c40d; CI 37705797840; install 25s; tests 44/44; VERIFIED 2026-10-08T00:06:08.244Z; cleanup pending. The marker date 2026-10-07 was prepared before midnight; actual run creation is separately recorded on 2026-10-08. Provider billed amount remains unknown."
+    },
+    {
+      "id": "E-096",
+      "date": "2026-10-08",
+      "identity": "Verified customer run/key deletion and temporary Write removal confirmed",
+      "situation": "After terminal VERIFIED evidence and its integrity checks were durably preserved, the exact authorised disposable-run, stored-key and repository-access cleanup was performed once.",
+      "verification": "evidence/clean-customer-20261007/customer-run-08-cleanup.json records deletion responses, independent run-not-found and connected-false readback, owner zero-collaborator UI, independent GitHub permission read and unchanged unmerged customer PR/head. Screenshot bytes and hash are preserved with the DoneState evidence.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Use the documented browser handoff to inspect and delete only the disposable DoneState service account for OneClickPostFactory and preserve indexed-purge readback. No further model run or temporary Write is needed for verified PR 172. Complete the separate fresh-signup, selected-repository App and LEGAL-001 requirements before any unrestricted GA decision; keep PR 172 unmerged.",
+        "waitCondition": "The bounded public OAuth customer path is independently VERIFIED at PR 172 head e2067cd8905f358dadc7b9265d90728726f3c40d with required CI green. Terminal run/key deletion and exact temporary Write removal are independently confirmed; preserved evidence heads passed CI. Full indexed account inspection/purge is unconfirmed: browser credential protection blocked observation and its documented canonical navigation recovery failed. Fresh signup, App admission and legal gates remain separate.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "The bounded customer execution/publication/independent-verification path and exact known-run/key/temporary-access cleanup succeeded. Full indexed service-account inspection/purge and the remaining fresh-account/GA gates are unconfirmed.",
+      "content": "Credential-protected account observation and the documented canonical navigation recovery both failed, so automated account entry stopped and manual handoff is required. No additional execution, duplicate cleanup, widened authority, GitHub-account deletion, provider-key revocation or OAuth-revocation claim. The prepared marker date is 2026-10-07; actual objective sealing/creation occurred on 2026-10-08 without changing its prepared descriptor.",
+      "measurement": "Run aa5389f5-a4dd-400e-ba72-3e80c3190992 deleted and read not found; stored key connected false; activeRunId null; remaining UTC usage fence 1; OneClickPostFactory permission read; zero collaborators; customer PR 172 remains open/unmerged at e2067cd8905f358dadc7b9265d90728726f3c40d. Cleanup screenshot SHA-256 edb5464e05fa5a7b35b84fb1c859dc9316be5ca59a08c5d4bae5edede8db4d1a."
+    },
+    {
+      "id": "E-097",
+      "date": "2026-10-08",
+      "identity": "Full service-account handoff rejected by browser URL policy",
+      "situation": "After independently verified customer execution and confirmed targeted cleanup, the documented full-account handoff was requested once.",
+      "verification": "evidence/clean-customer-20261007/customer-account-block-08.json records credential-protected observation, failed documented canonical recovery and the rejected manual handoff with browser_security_restricted. This is a browser URL policy block, not an observed service outage or bot challenge.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Obtain a non-secret owner-provided receipt confirming full indexed inspection and deletion of the disposable DoneState service account for OneClickPostFactory, or expose and review a supported account-bound inspection/deletion capability. Do not retry the blocked browser handoff. Verified PR 172 and confirmed run/key/temporary-Write cleanup need no repetition. Preserve separate fresh-signup, selected-repository App and LEGAL-001 gates before unrestricted GA.",
+        "waitCondition": "Bounded customer run aa5389f5-a4dd-400e-ba72-3e80c3190992 is independently VERIFIED on unmerged PR 172 with exact-head CI green; known run/key deletion and temporary Write removal are confirmed. Full indexed service-account inspection/purge is unconfirmed. Browser credential-protection recovery failed and the documented manual handoff was rejected by browser URL policy. Current MCP tools do not expose full indexed account inspection/purge; browser workaround attempts are prohibited.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "Full indexed account inspection/purge remains unconfirmed. The successful customer result and exact confirmed cleanup remain preserved; no blocked browser workaround was attempted.",
+      "content": "Only a supported account-bound inspection/deletion interface or a non-secret owner-provided service-account deletion receipt can re-enter this step. Do not delete the GitHub account or repeat model execution/known cleanup.",
+      "measurement": "Browser observation credential_observation_restricted; canonical recovery protected_command_failed; manual handoff browser_security_restricted and next_action stop. Zero alternate-browser/workaround attempts; no indexed erasure claim."
+    },
+    {
+      "id": "E-098",
+      "date": "2026-10-08",
+      "identity": "Separate consented account-controls API candidate for the blocked account-console step",
+      "situation": "The customer coding/CI/independent-verification path and targeted cleanup succeeded, but browser URL policy prevented the remaining full indexed-account step. The publisher requested a supported alternative.",
+      "verification": "A separate /mcp/account/v1 server exposes inspect_account and delete_account_data with account-specific effective OAuth scopes and exact token resource binding. Its OAuth consent requests only GitHub read:user, and account grants preserve existing execution grants. Deletion reuses the console generation-fenced implementation, requires exact login confirmation, refuses active work or unreadable/capped inventories and emits a canonical-digest receipt only after empty-state readback. Local Worker check passed 163 tests across 24 files, including real registration/PKCE/token/HTTP-MCP fixture admission, legacy-to-canonical callback compatibility and final-readback ambiguity. The canonical 0.3.0 20-tool registration body is byte-identical to 2ec1963 and its frozen distribution manifest is unchanged. Source digests and limits are in evidence/account-api-20261008/candidate.json. Root check passed 44 tests, TypeScript, the shared verification-contract lock, governance/documentation closure and package audit. Exact-head GitHub CI remains pending at this preparation boundary.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Review the separate account-controls API candidate and its exact-head CI, then obtain named merge/deployment authority. After deployment, connect only the OneClickPostFactory account-controls resource, inspect indexed state, delete once under the recorded customer authority, preserve the redacted receipt and obtain fresh empty-state readback. Do not repeat verified PR 172 or confirmed run/key/temporary-Write cleanup. Fresh signup, selected-repository App and LEGAL-001 gates remain separate.",
+        "waitCondition": "Authenticated account-controls implementation and local fixtures are prepared; production deployment, the separate customer OAuth connection and actual indexed-account deletion are unconfirmed. The browser account route remains blocked by URL security policy and must not be retried.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "A tested and documented supported API candidate is ready for repository review. It is not yet a deployed capability or customer account-deletion receipt. CUST-001/CUST-002 remain complete prerequisites and RELEASE-001 remains blocked.",
+      "content": "Separate account consent and tool inventory, strict owner/resource/scope checks, exact confirmation, shared deterministic deletion, no credential entry or browser/session extraction, no administrator impersonation, bounded legacy coverage and explicit retained OAuth connections/fences. The receipt records service facts and is explicitly not independent verification.",
+      "measurement": "163 Worker tests/24 files and 44 core tests passed, together with typechecks, contract lock, governance/docs closure and package audit. Canonical tools remain 20; new separate resource exposes 2. Zero production customer deletions, new model executions, repository Write grants, browser workaround attempts or upstream key/OAuth revocation claims."
+    },
+    {
+      "id": "E-099",
+      "date": "2026-10-08",
+      "identity": "Account API implementation CI passed; deployment and customer connection remain pending",
+      "situation": "The publisher-requested supported alternative was prepared and published as PR 173 after local validation.",
+      "verification": "GitHub PR 173 independently read back open/unmerged at c38fb8aa6ebc6be30426548688006d02bbd14d3e, base fbaa060dfc6680516dfb7a1195801d1f8ab58d9d. Its tree 4fcfbaa205cfc602d7ebdec134a2f28952ed7638 exactly matches the checked local tree. Required CI run 37710940385 completed successfully: core (22) job 113096452870, core (24) job 113096453126 and hosted-plugin job 113096453047. Evidence is preserved in evidence/account-api-20261008/implementation-ci.json. This documentation follow-up does not change implementation code; its final-head checks remain a separate publication condition.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Review PR 173 and grant named authority to merge and deploy the checked account-controls API. After successful deployment, connect the separate resource only as OneClickPostFactory; inspect indexed state, delete once under the recorded customer authority, preserve the redacted receipt and obtain fresh empty-state readback. Do not repeat verified PR 172 or confirmed run/key/temporary-Write cleanup. Fresh signup, selected-repository App and LEGAL-001 remain separate gates.",
+        "waitCondition": "PR 173 implementation head c38fb8aa6ebc6be30426548688006d02bbd14d3e passed all three required CI checks in 37710940385 and is open/unmerged. The account-controls API is not deployed or connected and actual indexed customer-account deletion remains unconfirmed. Browser URL security policy remains in force; do not retry that route.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "The supported API implementation is checked and reviewable. No merge, deployment, customer connection or customer-account deletion is claimed. The recorded deletion authority does not substitute for named authority to ship a new API.",
+      "content": "Exact public commit/tree/CI receipts, preserved canonical 20-tool inventory and two separate account tools, explicit owner merge/deploy gate, OneClickPostFactory-only re-entry and no blocked browser workaround.",
+      "measurement": "Three required implementation-head checks passed. Local validation remains 163 Worker tests/24 files and 44 core tests. Zero new production account deletions, paid model executions or repository Write grants."
     }
   ]
 }

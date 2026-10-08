@@ -1,0 +1,92 @@
+{
+  "schema": "donestate.account-api-candidate.v1",
+  "date": "2026-10-08",
+  "status": "IMPLEMENTATION_CANDIDATE_NOT_DEPLOYED",
+  "baseCommit": "2ec196343367181c25b79a87240880c4671991d9",
+  "observedProductionCommit": "fbaa060dfc6680516dfb7a1195801d1f8ab58d9d",
+  "mcpResource": "https://donestate.proofandstate.com/mcp/account/v1",
+  "serverVersion": "1.0.0",
+  "tools": [
+    "inspect_account",
+    "delete_account_data"
+  ],
+  "scopes": [
+    "donestate:account:read",
+    "donestate:account:delete"
+  ],
+  "gitHubRequestedScope": "read:user",
+  "arbitraryAccountSelector": false,
+  "exactLoginConfirmationRequired": true,
+  "canonicalToolCount": 20,
+  "canonicalToolDefinitionsUnchanged": true,
+  "canonicalToolDefinitionSha256": "aa7adba236d41f1bba87042b946263693dc330cc4693e58359859ee45c6ae19a",
+  "sourceDigests": {
+    "apps/mcp-worker/src/account-authorization.ts": "729e7a64ba39fbc3b3166f49d0a987667a9b220037d963659d459d888dd06942",
+    "apps/mcp-worker/src/account-controls.ts": "8860ff9978c8f0819d69e0c530fa0480844279f77b804d3bc2e13af27b331e50",
+    "apps/mcp-worker/src/account-data.ts": "45d409bc38293c9ae66cd0bc7c3c9ba7469c33c94fe0b1f9d04fc870f32dca7c",
+    "apps/mcp-worker/src/auth.ts": "1a39755ffa011c6aabee3bc14ddb915fe1d9abe306e2541c72d3f77852282c09",
+    "apps/mcp-worker/src/credential-settings.ts": "8db0446701000c8f7be54f623146fff3fc929c6f5069bcd0ffe212d61a48fef9",
+    "apps/mcp-worker/src/server.ts": "5992038353d4d424ade4f69f16cd13db85806cbe25f89c96fb3fe9df59603b08",
+    "apps/mcp-worker/test/account-controls.test.ts": "75b9dc082aa7124b87e4c40daf9496a3ce1d40c8a04ca58a07711632a8a80f41",
+    "apps/mcp-worker/test/account-oauth.test.ts": "1ab311f8a87b26f371c5ef3a623dba7730808bb97400be02e50cf091b16f35a9",
+    "apps/mcp-worker/test/auth.test.ts": "1cb4edf47253ccfdfdfaec896fab6ff22a24fc48b86aaec65da0bad501fd1a7d"
+  },
+  "checks": {
+    "worker": {
+      "command": "npm run check --prefix apps/mcp-worker",
+      "exitCode": 0,
+      "testsPassed": 163,
+      "testFilesPassed": 24,
+      "finalSourceRecheck": true
+    },
+    "root": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "testsPassed": 44,
+      "typecheckPassed": true,
+      "verificationContractLockPassed": true,
+      "governanceAndDocumentationClosurePassed": true,
+      "packAuditPassed": true
+    }
+  },
+  "coveredBoundaries": [
+    "separate_resource_and_effective_scopes",
+    "registration_pkce_real_oauth_token_and_http_mcp_fixture",
+    "identity_only_requested_github_scope",
+    "canonical_20_tool_inventory",
+    "wrong_login_or_absent_confirmation",
+    "reviewer_mutation_refusal",
+    "active_objective_refusal",
+    "owner_only_inventory",
+    "failed_read_is_not_absence",
+    "deletion_generations_and_stale_admission_rejection",
+    "capped_200_run_inventory_refusal",
+    "deletion_receipt_digest_and_empty_readback",
+    "final_readback_failure_is_ambiguous",
+    "legacy_resource_to_canonical_callback_compatibility"
+  ],
+  "receiptIsIndependentVerification": false,
+  "productionCustomerAccountDeletionPerformed": false,
+  "providerKeyOrOAuthRevocationClaimed": false,
+  "browserRouteRetried": false,
+  "rawCredentialsReadOrRequested": false,
+  "adminImpersonationRouteAdded": false,
+  "remaining": [
+    "exact_head_required_ci",
+    "owner_merge_and_deployment_authority",
+    "deployment_receipt",
+    "separate_customer_account_controls_oauth_connection",
+    "fresh_inspect_delete_receipt_and_readback",
+    "fresh_signup_and_selected_repository_app_acceptance",
+    "LEGAL-001"
+  ],
+  "knownCustomerOutcome": {
+    "runId": "aa5389f5-a4dd-400e-ba72-3e80c3190992",
+    "pullRequest": 172,
+    "head": "e2067cd8905f358dadc7b9265d90728726f3c40d",
+    "decision": "VERIFIED",
+    "knownRunAndKeyDeleted": true,
+    "temporaryWriteRemoved": true,
+    "repeatRequired": false
+  }
+}

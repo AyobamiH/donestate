@@ -16,3 +16,7 @@ The only route requires a random bearer token expiring after five minutes. The w
 This proves the deployed write guards under a controlled admission/deletion interleaving. It does not claim arbitrary timing stress coverage, nor does it replace the authenticated browser journey. Unindexed historical objectives still require their known run ID or a privacy request for erasure.
 
 Reference: [Cloudflare Durable Object environments and cross-Worker bindings](https://developers.cloudflare.com/durable-objects/reference/environments/).
+
+## Separate account-controls API candidate
+
+A separate, explicitly consented account-controls MCP resource is prepared for inspection and indexed deletion without account-console access. Its implementation, scopes, receipt, recovery and limits are documented in [Authenticated account-controls API](ACCOUNT-CONTROLS-API.md). It preserves the existing canonical 20-tool inventory. Merge, deployment, connection and actual customer deletion remain unconfirmed.

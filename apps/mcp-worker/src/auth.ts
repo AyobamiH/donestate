@@ -1,5 +1,6 @@
 import type { AuthRequest, OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 import { digest } from "./canonical";
+import { doneStateGrantScopes } from "./account-authorization";
 import { credentialSettingsHandler } from "./credential-settings";
 import { githubAppSettingsHandler, githubWebhookHandler } from "./github-app-settings";
 import {
@@ -40,6 +41,7 @@ interface SealedAuthorization {
   oauthRequest: AuthRequest;
   csrfDigest: string;
   expiresAt: number;
+  authorizationOrigin?: string;
 }
 export const OAUTH_FORM_ACTION = "'self' https://github.com https://chatgpt.com https://platform.openai.com";
 
@@ -176,6 +178,8 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
   if (!oauthRequest.clientId) return new Response("Invalid client", { status: 400 });
   const client = await env.OAUTH_PROVIDER.lookupClient(oauthRequest.clientId);
   if (!client) return new Response("Unknown client", { status: 400 });
+  const grant = doneStateGrantScopes(oauthRequest, new URL(request.url).origin, EXECUTION_SCOPE);
+  if (!grant) return new Response("Required DoneState resource and scope were not requested", { status: 400 });
   const csrf = crypto.randomUUID();
   const approvalState = await sealAuthorization({
     schema: OAUTH_APPROVAL_SCHEMA,
@@ -183,22 +187,26 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
     oauthRequest: portableAuthRequest(oauthRequest),
     csrfDigest: await digest(csrf),
     expiresAt: Date.now() + OAUTH_APPROVAL_TTL_MS,
+    authorizationOrigin: new URL(request.url).origin,
   }, env);
   const clientName = escapeHtml(client.clientName || "ChatGPT");
-  const scopes = escapeHtml(oauthRequest.scope.join(", ") || EXECUTION_SCOPE);
+  const scopes = escapeHtml(grant.scopes.join(", "));
+  const accessPurpose = grant.accountControls ? "account controls" : "execution plane";
+  const permissions = grant.accountControls
+    ? `<p>GitHub will confirm your identity. This connection cannot run coding objectives or publish repository changes.</p><ul><li>Inspect your own DoneState credential status and indexed service data</li>${grant.scopes.includes("donestate:account:delete") ? "<li>Permanently delete your indexed DoneState service data only after exact login confirmation</li>" : ""}<li>Your GitHub account, repositories and external provider credentials are outside this operation</li></ul>`
+    : `<p>GitHub will ask for repository access. DoneState will still require an explicit authority envelope for every objective. It cannot silently push or open a pull request.</p><ul><li>Use your separately connected OpenAI API key for your runs</li><li>Run a coding agent in an isolated sandbox</li><li>Validate and commit bounded repository changes</li><li>Push or open a pull request only when granted</li><li>Stop before claiming completion until an independent verifier signs the exact snapshot</li></ul>`;
   return html(`<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Authorise DoneState</title>
 <style>body{font-family:system-ui,sans-serif;background:#f5f6f8;color:#15171a;margin:0}.card{max-width:620px;margin:8vh auto;background:white;padding:32px;border:1px solid #dfe3e8;border-radius:14px;box-shadow:0 10px 32px #0001}h1{margin-top:0}.scope{background:#f3f5f7;padding:12px;border-radius:8px}li{margin:.6rem 0}.actions{display:flex;gap:12px;margin-top:24px}button,a,input{font:inherit;padding:11px 18px;border-radius:8px;text-decoration:none}.approve{border:0;background:#15171a;color:white}.cancel{border:1px solid #ccd1d7;color:#15171a}.reviewer{margin-top:24px;padding-top:20px;border-top:1px solid #dfe3e8}.reviewer label{display:block;margin:12px 0}.reviewer input{display:block;width:100%;box-sizing:border-box;margin-top:6px;border:1px solid #aeb6c0}.hint{font-size:.9rem;color:#4b5563}</style></head>
-<body><main class="card"><h1>Authorise DoneState</h1><p><strong>${clientName}</strong> is requesting access to your DoneState execution plane.</p>
+<body><main class="card"><h1>Authorise DoneState</h1><p><strong>${clientName}</strong> is requesting access to your DoneState ${accessPurpose}.</p>
 <p class="scope"><strong>Client scopes:</strong> ${scopes}</p>
-<p>GitHub will ask for repository access. DoneState will still require an explicit authority envelope for every objective. It cannot silently push or open a pull request.</p>
-<ul><li>Use your separately connected OpenAI API key for your runs</li><li>Run a coding agent in an isolated sandbox</li><li>Validate and commit bounded repository changes</li><li>Push or open a pull request only when granted</li><li>Stop before claiming completion until an independent verifier signs the exact snapshot</li></ul>
+${permissions}
 <form method="post" action="/authorize"><input type="hidden" name="approval_state" value="${escapeHtml(approvalState)}"><input type="hidden" name="csrf" value="${csrf}"><div class="actions"><a class="cancel" href="/">Cancel</a><button class="approve" type="submit">Continue with GitHub</button></div></form>
-<p class="hint">Cloud Browser users: if GitHub asks you to confirm access, use your password or authenticator app. Passkeys are not supported in Cloud Browser.</p>
-<details class="reviewer"><summary>OpenAI reviewer test account</summary><p>For OpenAI review only. This account can inspect the sample repository and existing evidence but cannot create credentials, change repository selection, start work, open pull requests, merge, deploy, release, or submit verification.</p>
+<p class="hint">${grant.accountControls ? "Sign in with the GitHub account whose DoneState service data you intend to inspect." : "Cloud Browser users: if GitHub asks you to confirm access, use your password or authenticator app. Passkeys are not supported in Cloud Browser."}</p>
+${grant.accountControls ? "" : `<details class="reviewer"><summary>OpenAI reviewer test account</summary><p>For OpenAI review only. This account can inspect the sample repository and existing evidence but cannot create credentials, change repository selection, start work, open pull requests, merge, deploy, release, or submit verification.</p>
 <form method="post" action="/authorize/reviewer"><input type="hidden" name="approval_state" value="${escapeHtml(approvalState)}"><input type="hidden" name="csrf" value="${csrf}">
 <label>Username<input name="username" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label>
-<button class="approve" type="submit">Sign in to review</button></form></details></main></body></html>`, 200, OAUTH_FORM_ACTION);
+<button class="approve" type="submit">Sign in to review</button></form></details>`}</main></body></html>`, 200, OAUTH_FORM_ACTION);
 }
 
 async function approve(request: Request, env: AuthEnv): Promise<Response> {
@@ -211,11 +219,13 @@ async function approve(request: Request, env: AuthEnv): Promise<Response> {
   if (!await constantTimeEqual(pending.csrfDigest, await digest(csrf))) {
     return new Response("CSRF validation failed", { status: 400 });
   }
+  const grant = doneStateGrantScopes(pending.oauthRequest, pending.authorizationOrigin ?? new URL(request.url).origin, EXECUTION_SCOPE);
+  if (!grant) return new Response("Required DoneState resource and scope were not requested", { status: 400 });
   const callback = githubCallbackUrl(request, env);
   const upstream = new URL("https://github.com/login/oauth/authorize");
   upstream.searchParams.set("client_id", requiredSecret(env, "GITHUB_CLIENT_ID"));
   upstream.searchParams.set("redirect_uri", callback);
-  upstream.searchParams.set("scope", "public_repo read:user");
+  upstream.searchParams.set("scope", grant.accountControls ? "read:user" : "public_repo read:user");
   upstream.searchParams.set("state", await sealAuthorization({ ...pending, stage: "approved" }, env));
   return Response.redirect(upstream.href, 302);
 }
@@ -247,17 +257,15 @@ async function reviewerApprove(request: Request, env: AuthEnv): Promise<Response
   if (username !== OPENAI_REVIEW_USERNAME || !validPassword || !owner) {
     return new Response("Reviewer sign-in failed", { status: 401 });
   }
-  const grantedScopes = pending.oauthRequest.scope.length === 0
-    ? [EXECUTION_SCOPE]
-    : pending.oauthRequest.scope.filter((scope) => scope === EXECUTION_SCOPE);
-  if (!grantedScopes.includes(EXECUTION_SCOPE)) {
+  const grant = doneStateGrantScopes(pending.oauthRequest, pending.authorizationOrigin ?? new URL(request.url).origin, EXECUTION_SCOPE);
+  if (!grant || grant.accountControls) {
     return new Response("Required DoneState scope was not requested", { status: 400 });
   }
   const { redirectTo } = await env.OAUTH_PROVIDER.completeAuthorization({
     request: pending.oauthRequest,
     userId: owner,
     metadata: { label: "OpenAI reviewer" },
-    scope: grantedScopes,
+    scope: grant.scopes,
     props: {
       userId: owner,
       login: owner,
@@ -279,6 +287,8 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
   if (isMarketplaceOAuthState(stateId)) return completeMarketplaceInstall(request, env, stateId, code);
   const pending = await readAuthorization(stateId, "approved", env);
   if (!pending) return new Response("Expired OAuth callback", { status: 400 });
+  const grant = doneStateGrantScopes(pending.oauthRequest, pending.authorizationOrigin ?? url.origin, EXECUTION_SCOPE);
+  if (!grant) return new Response("Required DoneState resource and scope were not requested", { status: 400 });
   const callbackUrl = githubCallbackUrl(request, env);
   const accessToken = await exchangeGitHubCode(
     requiredSecret(env, "GITHUB_CLIENT_ID"),
@@ -293,17 +303,14 @@ async function callback(request: Request, env: AuthEnv): Promise<Response> {
     name: user.name,
     email: user.email,
     accessToken,
-    origin: new URL(request.url).origin,
+    origin: grant.accountControls ? (pending.authorizationOrigin ?? url.origin) : url.origin,
   };
-  const grantedScopes = pending.oauthRequest.scope.length === 0
-    ? [EXECUTION_SCOPE]
-    : pending.oauthRequest.scope.filter((scope) => scope === EXECUTION_SCOPE);
-  if (!grantedScopes.includes(EXECUTION_SCOPE)) return new Response("Required DoneState scope was not requested", { status: 400 });
   const { redirectTo } = await env.OAUTH_PROVIDER.completeAuthorization({
     request: pending.oauthRequest,
     userId: user.login,
     metadata: { label: user.login },
-    scope: grantedScopes,
+    scope: grant.scopes,
+    ...(grant.accountControls ? { revokeExistingGrants: false } : {}),
     props,
   });
   await recordFunnelBestEffort(env, "oauth_connection_completed");

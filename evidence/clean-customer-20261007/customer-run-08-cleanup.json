@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "status": "VERIFIED_RUN_KEY_AND_TEMPORARY_WRITE_CLEANUP_CONFIRMED",
+  "customer": "OneClickPostFactory",
+  "repository": "AyobamiH/donestate",
+  "runId": "aa5389f5-a4dd-400e-ba72-3e80c3190992",
+  "preservation": {
+    "done": {
+      "head": "4338caeab101d411f3e1d12b7e9b80b0efc9e579",
+      "tree": "ab6b5926b2a596b4dc389431b4ef6b3e0d3c6f31",
+      "repo": "AyobamiH/donestate",
+      "branch": "docs/customer-capacity-deployment-20261007"
+    },
+    "portfolio": {
+      "head": "5572e268840fde25c32de8421c13d6e81a986a3a",
+      "tree": "0a56367422839cc9b9e7a778ac87d557a0bf7db3",
+      "repo": "AyobamiH/proof-and-state",
+      "branch": "docs/customer-successor-outcome-20261007"
+    },
+    "ci": {
+      "done": [
+        {
+          "id": 37706370277,
+          "head_sha": "4338caeab101d411f3e1d12b7e9b80b0efc9e579",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "portfolio": [
+        {
+          "id": 37706376072,
+          "name": "GTM Orchestrator",
+          "head_sha": "5572e268840fde25c32de8421c13d6e81a986a3a",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 37706376053,
+          "name": "Governance",
+          "head_sha": "5572e268840fde25c32de8421c13d6e81a986a3a",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  },
+  "runDeletion": {
+    "submittedAt": "2026-10-08T00:11:10.023Z",
+    "response": {
+      "runId": "aa5389f5-a4dd-400e-ba72-3e80c3190992",
+      "deleted": true
+    },
+    "readback": "run not found"
+  },
+  "storedCredentialDeletion": {
+    "submittedAt": "2026-10-08T00:11:10.900Z",
+    "response": {
+      "connected": false,
+      "fingerprint": null,
+      "createdAt": null,
+      "updatedAt": null,
+      "lastUsedAt": null,
+      "dailyRunsUsed": 1,
+      "dailyRunLimit": 12,
+      "activeRunId": null
+    },
+    "independentReadback": {
+      "connected": false,
+      "fingerprint": null,
+      "createdAt": null,
+      "updatedAt": null,
+      "lastUsedAt": null,
+      "dailyRunsUsed": 1,
+      "dailyRunLimit": 12,
+      "activeRunId": null,
+      "billingOwner": "authenticated_user"
+    }
+  },
+  "temporaryWriteRemoval": {
+    "ownerUiMessage": "Removed OneClickPostFactory as a collaborator of AyobamiH/donestate",
+    "ownerUiCollaboratorCount": 0,
+    "independentPermission": "read",
+    "screenshot": {
+      "path": "/workspace/scratch/d7c8b0c4a0c1/donestate-capacity-deployment/evidence/clean-customer-20261007/customer-access-cleanup-08.jpg",
+      "size": 77869,
+      "sha256": "edb5464e05fa5a7b35b84fb1c859dc9316be5ca59a08c5d4bae5edede8db4d1a"
+    }
+  },
+  "customerPullRequest": {
+    "number": 172,
+    "url": "https://github.com/AyobamiH/donestate/pull/172",
+    "headSha": "e2067cd8905f358dadc7b9265d90728726f3c40d",
+    "state": "open",
+    "merged": false
+  },
+  "accountInspection": {
+    "status": "BLOCKED_CAPABILITY",
+    "scope": "Only the disposable DoneState service account for OneClickPostFactory; not the GitHub account",
+    "browserObservation": "credential_observation_restricted",
+    "documentedCanonicalNavigationRecovery": "protected_command_failed",
+    "automatedCredentialEntryStopped": true,
+    "manualHandoffRequired": true,
+    "fullIndexedAccountPurgeConfirmed": false,
+    "remainingUTCUsageFence": 1
+  },
+  "limits": {
+    "knownRunAndKeyDeletionIsNotFullIndexedAccountPurge": true,
+    "providerKeyRevocationNotClaimed": true,
+    "githubOAuthRevocationNotClaimed": true,
+    "freshSignupNotProven": true,
+    "selectedRepositoryAppAdmissionNotProven": true,
+    "legalGateUnchanged": true,
+    "unrestrictedGA": false,
+    "noFurtherModelExecutionRequiredForThisCandidate": true
+  },
+  "recordedAt": "2026-10-08T00:12:02.868Z"
+}

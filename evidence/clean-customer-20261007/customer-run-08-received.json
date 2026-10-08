@@ -1,0 +1,149 @@
+{
+  "run": {
+    "id": "aa5389f5-a4dd-400e-ba72-3e80c3190992",
+    "ownerLogin": "OneClickPostFactory",
+    "state": "RECEIVED",
+    "objective": {
+      "acceptanceCriteria": [
+        "The candidate marker contains the sealed date, customer, repository, nonce and candidate-only outcome.",
+        "The ledger and generated state contain E-086 and its nonce; RELEASE-001 identity, blocked status and dependencies are preserved.",
+        "Only the three authorised marker, ledger and generated-state files change.",
+        "The published customer PR head passes core (22), core (24) and hosted-plugin before independent verification."
+      ],
+      "authorities": [
+        "local_read",
+        "local_write",
+        "test",
+        "commit",
+        "push",
+        "open_pr",
+        "secret_access"
+      ],
+      "baseHeadSha": "fbaa060dfc6680516dfb7a1195801d1f8ab58d9d",
+      "baseRef": "main",
+      "goal": "RELEASE-001 is the selected item; follow AGENTS.md. Execute the single shell command below. The control plane owns dependency installation, further validation, commit, push and PR creation. Do not explore unrelated files, install tools, invoke another model or subagent, commit, push, read credentials, poll or run separate status checks. After this command finishes, end the turn with a brief result.\n\nnode <<'NODE_CANDIDATE'\nconst fs = require(\"node:fs\");\nconst p = \"governance/project-ledger.json\";\nconst ledger = JSON.parse(fs.readFileSync(p, \"utf8\"));\nconst work = ledger.workItems.find(x => x.id === \"RELEASE-001\");\nif (!work || work.status !== \"blocked\" || ledger.evidenceStories.some(x => x.id === \"E-086\")) throw Error(\"candidate precondition failed\");\nwork.evidenceIds.push(\"E-086\");\nObject.assign(work, {\"lastUpdated\":\"2026-10-07\",\"staleDate\":\"2026-10-09\",\"nextAction\":\"Await exact PR-head CI and pinned independent verification, then authorised result cleanup. Fresh signup and LEGAL-001 still gate GA.\",\"waitCondition\":\"This unmerged candidate is not independently verified. Earlier failures and separate GA gates remain unchanged.\",\"reentryCondition\":\"Use only the exact published PR head and established verifier pin; preserve every historical story and separate gate.\"});\nledger.evidenceStories.push({\"id\":\"E-086\",\"date\":\"2026-10-07\",\"identity\":\"Compact customer PR-only execution candidate\",\"situation\":\"One authorised compact customer candidate after a preserved terminal timeout.\",\"verification\":\"Candidate nonce ba811b2b-518a-4ca9-9c1e-117c09ed3192 at evidence/clean-customer-20261007/execution-marker-08.json; exact PR-head CI and pinned independent verification are pending.\",\"accountability\":{\"owner\":\"Publisher owner\",\"status\":\"blocked\",\"nextAction\":\"Await required CI and pinned independent verification.\",\"waitCondition\":\"Unmerged candidate is not independently verified.\",\"staleDate\":\"2026-10-09\"},\"outcome\":\"Candidate only; no VERIFIED, fresh-signup, cleanup or GA claim.\",\"content\":\"Only marker, RELEASE-001 evidence tracking and generated state.\",\"measurement\":\"Three authorised files; no dollar-cap or self-certified completion claim.\"});\nfs.mkdirSync(\"evidence/clean-customer-20261007\", {recursive:true});\nfs.writeFileSync(\"evidence/clean-customer-20261007/execution-marker-08.json\", JSON.stringify({\"date\":\"2026-10-07\",\"customer\":\"OneClickPostFactory\",\"repository\":\"AyobamiH/donestate\",\"marker\":\"ba811b2b-518a-4ca9-9c1e-117c09ed3192\",\"outcome\":\"customer-execution-candidate\"}, null, 2) + \"\\n\");\nfs.writeFileSync(p, JSON.stringify(ledger, null, 2) + \"\\n\");\nNODE_CANDIDATE\nnpm run governance:render && npm run governance:check && git diff --check",
+      "maxChangedFiles": 3,
+      "maxDurationMs": 120000,
+      "publication": "pull_request",
+      "repository": "AyobamiH/donestate",
+      "requestedBy": "OneClickPostFactory",
+      "runId": "aa5389f5-a4dd-400e-ba72-3e80c3190992",
+      "schema": "donestate.hosted-objective.v1",
+      "trustedVerifierFingerprints": [
+        "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+      ],
+      "validationProfile": "node",
+      "verificationContractVersion": "donestate.verification-contract.v2",
+      "verificationRequirements": [
+        {
+          "criterionIndex": 0,
+          "expected": "2026-10-07",
+          "id": "marker-date",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-08.json",
+          "pointer": "/date"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "OneClickPostFactory",
+          "id": "marker-customer",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-08.json",
+          "pointer": "/customer"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "AyobamiH/donestate",
+          "id": "marker-repository",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-08.json",
+          "pointer": "/repository"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "ba811b2b-518a-4ca9-9c1e-117c09ed3192",
+          "id": "marker-marker",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-08.json",
+          "pointer": "/marker"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "customer-execution-candidate",
+          "id": "marker-outcome",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261007/execution-marker-08.json",
+          "pointer": "/outcome"
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-ledger",
+          "kind": "file_contains",
+          "path": "governance/project-ledger.json",
+          "values": [
+            "E-086",
+            "Compact customer PR-only execution candidate",
+            "ba811b2b-518a-4ca9-9c1e-117c09ed3192",
+            "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+          ]
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-generated",
+          "kind": "file_contains",
+          "path": "docs/PROJECT-STATE.md",
+          "values": [
+            "E-086",
+            "Compact customer PR-only execution candidate",
+            "ba811b2b-518a-4ca9-9c1e-117c09ed3192"
+          ]
+        },
+        {
+          "allowedPaths": [
+            "evidence/clean-customer-20261007/execution-marker-08.json",
+            "governance/project-ledger.json",
+            "docs/PROJECT-STATE.md"
+          ],
+          "criterionIndex": 2,
+          "id": "only-authorised-files",
+          "kind": "changed_files",
+          "max": 3
+        },
+        {
+          "criterionIndex": 3,
+          "id": "required-pr-head-ci",
+          "kind": "github_checks_pass",
+          "requiredNames": [
+            "core (22)",
+            "core (24)",
+            "hosted-plugin"
+          ]
+        }
+      ]
+    },
+    "createdAt": "2026-10-08T00:01:45.814Z",
+    "updatedAt": "2026-10-08T00:01:45.814Z",
+    "lastError": null,
+    "branchName": null,
+    "branchHeadSha": null,
+    "pullRequestNumber": null,
+    "pullRequestUrl": null,
+    "verificationSnapshotDigest": null,
+    "verifierDecisionSummary": null,
+    "actions": [],
+    "events": [
+      {
+        "sequence": 1,
+        "eventType": "run_received",
+        "fromState": null,
+        "toState": "RECEIVED",
+        "detail": null,
+        "createdAt": "2026-10-08T00:01:45.814Z",
+        "previousDigest": null,
+        "digest": "8bdaa274e64defd7c85b716d2d32cb8df9c4faa10d67f518ba5b5b318876068a"
+      }
+    ]
+  },
+  "repositoryPrivate": false,
+  "credentialSource": "github_oauth"
+}

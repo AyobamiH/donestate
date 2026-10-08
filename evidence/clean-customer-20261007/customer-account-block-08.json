@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "status": "BLOCKED_SAFETY",
+  "runId": "aa5389f5-a4dd-400e-ba72-3e80c3190992",
+  "customer": "OneClickPostFactory",
+  "serviceAccountOnly": true,
+  "fullIndexedAccountInspectionConfirmed": false,
+  "fullIndexedAccountPurgeConfirmed": false,
+  "browser": {
+    "observation": "credential_observation_restricted",
+    "canonicalNavigationRecovery": "protected_command_failed",
+    "manualHandoff": "rejected",
+    "reason": "browser_security_restricted; browser URL policy blocks this action",
+    "nextAction": "stop",
+    "noAlternateBrowserSurfaceOrWorkaroundAttempted": true
+  },
+  "supportedMCP": {
+    "knownRunAndStoredKeyCleanupConfirmed": true,
+    "fullIndexedAccountInspectionAndPurgeToolsNotExposed": true
+  },
+  "reentry": "Accept a non-secret owner-provided DoneState account-deletion receipt, or expose and review a supported account-bound inspection/deletion capability; do not retry or bypass the blocked browser action.",
+  "recordedAt": "2026-10-08T00:20:00.340Z"
+}
