@@ -1,0 +1,130 @@
+name: One Click Apex Cutover Bridge
+
+on:
+  push:
+    branches:
+      - ops/oneclick-apex-cutover-20261008
+    paths:
+      - ".github/workflows/oneclick-apex-cutover-bridge.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oneclick-apex-cutover-bridge
+  cancel-in-progress: false
+
+jobs:
+  cutover:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      ONECLICK_REVISION: a8075189c95cc1cac7053c35fbed0f0daa9d2276
+      ONECLICK_ORIGIN: https://oneclickwebsitedesignfactory.com
+      ONECLICK_WORKER: oneclick-webdesignfactory
+      ONECLICK_ROUTE: oneclickwebsitedesignfactory.com/*
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify bounded authority
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+
+      - name: Fetch exact One Click revision
+        run: |
+          git clone --filter=blob:none https://github.com/AyobamiH/oneclickwebdesignfactory.git oneclickwebdesignfactory
+          cd oneclickwebdesignfactory
+          git checkout "$ONECLICK_REVISION"
+          test "$(git rev-parse HEAD)" = "$ONECLICK_REVISION"
+
+      - name: Install and verify exact candidate
+        working-directory: oneclickwebdesignfactory
+        run: |
+          npm ci
+          npm run test:analytics
+          npm run build
+          npm run verify:discovery
+          npx --yes wrangler@4.135.0 deploy --dry-run --config wrangler.jsonc --outdir /tmp/oneclick-worker
+
+      - name: Capture pre-cutover public shell
+        run: |
+          curl --fail --silent --show-error --location "$ONECLICK_ORIGIN/" > /tmp/oneclick-before.html
+          printf 'pre_cutover_bytes=%s\n' "$(wc -c < /tmp/oneclick-before.html)"
+
+      - name: Promote accepted Worker through apex route
+        working-directory: oneclickwebdesignfactory
+        run: npx --yes wrangler@4.135.0 deploy --config wrangler.jsonc
+
+      - name: Wait for apex route convergence
+        run: |
+          for i in {1..60}; do
+            if curl --fail --silent --show-error --location "$ONECLICK_ORIGIN/" | grep -q 'Stop Fighting AI. Build Stable, Production-Ready Websites Instantly.'; then
+              echo "Apex Worker Route converged."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::Apex Worker Route did not converge to the accepted shell."
+          exit 1
+
+      - name: Outside-in production cutover acceptance
+        working-directory: oneclickwebdesignfactory
+        run: node scripts/verify-production-cutover.mjs
+
+      - name: Roll back exact Worker Route on cutover failure
+        if: failure()
+        run: |
+          node --input-type=module <<'NODE'
+          const token = process.env.CLOUDFLARE_API_TOKEN;
+          const routePattern = process.env.ONECLICK_ROUTE;
+          const worker = process.env.ONECLICK_WORKER;
+          const headers = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
+
+          const zonesResponse = await fetch(
+            "https://api.cloudflare.com/client/v4/zones?name=oneclickwebsitedesignfactory.com",
+            { headers },
+          );
+          const zonesBody = await zonesResponse.json();
+          const zone = zonesBody?.result?.[0];
+          if (!zone?.id) {
+            console.error("Rollback could not resolve Cloudflare zone.");
+            process.exit(1);
+          }
+
+          const routesResponse = await fetch(
+            `https://api.cloudflare.com/client/v4/zones/${zone.id}/workers/routes`,
+            { headers },
+          );
+          const routesBody = await routesResponse.json();
+          const route = (routesBody?.result || []).find(
+            (item) => item.pattern === routePattern && item.script === worker,
+          );
+
+          if (!route?.id) {
+            console.log("No matching Worker Route present; nothing to roll back.");
+            process.exit(0);
+          }
+
+          const deleteResponse = await fetch(
+            `https://api.cloudflare.com/client/v4/zones/${zone.id}/workers/routes/${route.id}`,
+            { method: "DELETE", headers },
+          );
+          const deleteBody = await deleteResponse.json();
+          if (!deleteResponse.ok || deleteBody?.success !== true) {
+            console.error("Rollback route removal failed.");
+            process.exit(1);
+          }
+
+          console.log("Removed exact One Click Worker Route; prior origin is authoritative again.");
+          NODE
+
+      - name: Record accepted cutover
+        if: success()
+        run: |
+          echo "One Click apex cutover accepted at revision $ONECLICK_REVISION."
+          echo "Rollback remains removal of $ONECLICK_ROUTE for $ONECLICK_WORKER."
