@@ -136,3 +136,7 @@ DoneState still does not implement merge queues, autonomous deployment or packag
 See [the current directory submission record](DIRECTORY-SUBMISSION.md): DoneState 0.3.0 is submitted / Review, OpsTruth 0.4.1 is Published, and the existing GitHub Marketplace listing is still Pending for publish and not published. Earlier dated 0.2.0 Review observations are historical, not a current provider read. The observed DoneState review app ID differs from the historical mapping; continuity and old-version disposition remain unresolved. No duplicate is established; neither identity should be deleted or silently replaced.
 
 OpsTruth standalone public-repository inspection does not require DoneState. Its authenticated DoneState exact-head bridge is a separate lane currently scoped only to AyobamiH/donestate. Directory visibility, a signed repository map and the historical VERIFIED canary do not substitute for a fresh clean-account end-to-end production outcome.
+
+## Separate account-controls API candidate
+
+A separate, explicitly consented account-controls MCP resource is prepared for inspection and indexed deletion without account-console access. Its implementation, scopes, receipt, recovery and limits are documented in [Authenticated account-controls API](ACCOUNT-CONTROLS-API.md). It preserves the existing canonical 20-tool inventory. Merge, deployment, connection and actual customer deletion remain unconfirmed.

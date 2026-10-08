@@ -549,9 +549,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-08",
       "staleDate": "2026-10-10",
-      "nextAction": "Obtain a non-secret owner-provided receipt confirming full indexed inspection and deletion of the disposable DoneState service account for OneClickPostFactory, or expose and review a supported account-bound inspection/deletion capability. Do not retry the blocked browser handoff. Verified PR 172 and confirmed run/key/temporary-Write cleanup need no repetition. Preserve separate fresh-signup, selected-repository App and LEGAL-001 gates before unrestricted GA.",
-      "waitCondition": "Bounded customer run aa5389f5-a4dd-400e-ba72-3e80c3190992 is independently VERIFIED on unmerged PR 172 with exact-head CI green; known run/key deletion and temporary Write removal are confirmed. Full indexed service-account inspection/purge is unconfirmed. Browser credential-protection recovery failed and the documented manual handoff was rejected by browser URL policy. Current MCP tools do not expose full indexed account inspection/purge; browser workaround attempts are prohibited.",
-      "reentryCondition": "Continue only with a supported account-bound API capability or non-secret owner-provided service-account deletion evidence. Do not retry the blocked browser URL or substitute another browser surface, extract credentials, replay model execution, merge PR 172, repeat confirmed cleanup or infer full account erasure/provider-key/OAuth revocation.",
+      "nextAction": "Review the separate account-controls API candidate and its exact-head CI, then obtain named merge/deployment authority. After deployment, connect only the OneClickPostFactory account-controls resource, inspect indexed state, delete once under the recorded customer authority, preserve the redacted receipt and obtain fresh empty-state readback. Do not repeat verified PR 172 or confirmed run/key/temporary-Write cleanup. Fresh signup, selected-repository App and LEGAL-001 gates remain separate.",
+      "waitCondition": "Authenticated account-controls implementation and local fixtures are prepared; production deployment, the separate customer OAuth connection and actual indexed-account deletion are unconfirmed. The browser account route remains blocked by URL security policy and must not be retried.",
+      "reentryCondition": "Proceed only after reviewed exact-head CI, named merge/deployment authority, successful deployment and an authenticated account-controls connection whose inspection identifies OneClickPostFactory. Preserve exact account confirmation, effective scope/resource checks, receipt integrity and no automatic retry of an ambiguous destructive result. Do not use the owner connection or a browser workaround.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -581,7 +581,8 @@
         "E-094",
         "E-095",
         "E-096",
-        "E-097"
+        "E-097",
+        "E-098"
       ]
     },
     {
@@ -1845,7 +1846,7 @@
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication → v2 handoff → OpsTruth verification loop, then reconcile the final public documentation state.",
+        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication \u2192 v2 handoff \u2192 OpsTruth verification loop, then reconcile the final public documentation state.",
         "waitCondition": "The npm publication itself is complete. Remaining work is external product acceptance and public documentation closure, not package publication.",
         "staleDate": "2026-10-10"
       },
@@ -1981,7 +1982,7 @@
       "accountability": {
         "owner": "DoneState maintainers and publisher owner",
         "status": "blocked",
-        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up → connect → select repo → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
+        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up \u2192 connect \u2192 select repo \u2192 create objective \u2192 execute \u2192 unmerged PR \u2192 OpsTruth VERIFIED \u2192 inspect account \u2192 delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
         "waitCondition": "Customer execution credential must be reconnected securely. LEGAL-001 remains blocked on its existing publisher requirements.",
         "staleDate": "2026-10-09"
       },
@@ -2226,6 +2227,23 @@
       "outcome": "Full indexed account inspection/purge remains unconfirmed. The successful customer result and exact confirmed cleanup remain preserved; no blocked browser workaround was attempted.",
       "content": "Only a supported account-bound inspection/deletion interface or a non-secret owner-provided service-account deletion receipt can re-enter this step. Do not delete the GitHub account or repeat model execution/known cleanup.",
       "measurement": "Browser observation credential_observation_restricted; canonical recovery protected_command_failed; manual handoff browser_security_restricted and next_action stop. Zero alternate-browser/workaround attempts; no indexed erasure claim."
+    },
+    {
+      "id": "E-098",
+      "date": "2026-10-08",
+      "identity": "Separate consented account-controls API candidate for the blocked account-console step",
+      "situation": "The customer coding/CI/independent-verification path and targeted cleanup succeeded, but browser URL policy prevented the remaining full indexed-account step. The publisher requested a supported alternative.",
+      "verification": "A separate /mcp/account/v1 server exposes inspect_account and delete_account_data with account-specific effective OAuth scopes and exact token resource binding. Its OAuth consent requests only GitHub read:user, and account grants preserve existing execution grants. Deletion reuses the console generation-fenced implementation, requires exact login confirmation, refuses active work or unreadable/capped inventories and emits a canonical-digest receipt only after empty-state readback. Local Worker check passed 163 tests across 24 files, including real registration/PKCE/token/HTTP-MCP fixture admission, legacy-to-canonical callback compatibility and final-readback ambiguity. The canonical 0.3.0 20-tool registration body is byte-identical to 2ec1963 and its frozen distribution manifest is unchanged. Source digests and limits are in evidence/account-api-20261008/candidate.json. Root check passed 44 tests, TypeScript, the shared verification-contract lock, governance/documentation closure and package audit. Exact-head GitHub CI remains pending at this preparation boundary.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Review the separate account-controls API candidate and its exact-head CI, then obtain named merge/deployment authority. After deployment, connect only the OneClickPostFactory account-controls resource, inspect indexed state, delete once under the recorded customer authority, preserve the redacted receipt and obtain fresh empty-state readback. Do not repeat verified PR 172 or confirmed run/key/temporary-Write cleanup. Fresh signup, selected-repository App and LEGAL-001 gates remain separate.",
+        "waitCondition": "Authenticated account-controls implementation and local fixtures are prepared; production deployment, the separate customer OAuth connection and actual indexed-account deletion are unconfirmed. The browser account route remains blocked by URL security policy and must not be retried.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "A tested and documented supported API candidate is ready for repository review. It is not yet a deployed capability or customer account-deletion receipt. CUST-001/CUST-002 remain complete prerequisites and RELEASE-001 remains blocked.",
+      "content": "Separate account consent and tool inventory, strict owner/resource/scope checks, exact confirmation, shared deterministic deletion, no credential entry or browser/session extraction, no administrator impersonation, bounded legacy coverage and explicit retained OAuth connections/fences. The receipt records service facts and is explicitly not independent verification.",
+      "measurement": "163 Worker tests/24 files and 44 core tests passed, together with typechecks, contract lock, governance/docs closure and package audit. Canonical tools remain 20; new separate resource exposes 2. Zero production customer deletions, new model executions, repository Write grants, browser workaround attempts or upstream key/OAuth revocation claims."
     }
   ]
 }

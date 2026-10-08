@@ -1,6 +1,7 @@
 import type { AuthRequest } from "@cloudflare/workers-oauth-provider";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { authHandler, OAUTH_FORM_ACTION, type AuthEnv } from "../src/auth";
+import { ACCOUNT_MCP_PATH, ACCOUNT_READ_SCOPE, ACCOUNT_DELETE_SCOPE } from "../src/account-authorization";
 
 function authorizationEnv(
   githubClientId = "test-github-client-id",
@@ -54,9 +55,47 @@ async function approveRequest(env: AuthEnv): Promise<Response> {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe("OAuth authorisation security policy", () => {
+  it("describes account controls accurately and requests identity-only GitHub access", async () => {
+    const env = authorizationEnv();
+    const original = env.OAUTH_PROVIDER.parseAuthRequest;
+    env.OAUTH_PROVIDER.parseAuthRequest = async (request) => Object.assign(Object.create(await original(request)), { scope: [ACCOUNT_READ_SCOPE, ACCOUNT_DELETE_SCOPE], resource: `https://done.example${ACCOUNT_MCP_PATH}` });
+    const page = await (await authHandler.fetch(new Request("https://done.example/authorize"), env)).text();
+    expect(page).toContain("account controls");
+    expect(page).toContain("exact login confirmation");
+    expect(page).not.toContain("Run a coding agent in an isolated sandbox");
+    expect(page).not.toContain("OpenAI reviewer test account");
+    const approved = await approveRequest(env);
+    const github = new URL(approved.headers.get("Location")!);
+    expect(github.searchParams.get("scope")).toBe("read:user");
+    const complete = vi.fn(async (_input: Parameters<AuthEnv["OAUTH_PROVIDER"]["completeAuthorization"]>[0]) => ({ redirectTo: "https://chatgpt.com/connector_platform_oauth_redirect?code=fixture-code" }));
+    env.OAUTH_PROVIDER.completeAuthorization = complete;
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => url.includes("access_token")
+      ? Response.json({ access_token: "fixture-github-token" })
+      : Response.json({ login: "fixture-user", name: null, email: null })));
+    const callback = new URL("https://done.example/callback");
+    callback.searchParams.set("state", github.searchParams.get("state")!); callback.searchParams.set("code", "fixture-code");
+    expect((await authHandler.fetch(new Request(callback), env)).status).toBe(302);
+    expect(complete.mock.calls[0]?.[0]).toMatchObject({ userId: "fixture-user", scope: [ACCOUNT_READ_SCOPE, ACCOUNT_DELETE_SCOPE] });
+  });
+
+  it("preserves the sealed legacy resource when the GitHub callback moves to the canonical origin", async () => {
+    const env = authorizationEnv(); env.CANONICAL_ORIGIN = "https://donestate.proofandstate.com";
+    const approved = await approveRequest(env);
+    const github = new URL(approved.headers.get("Location")!);
+    const complete = vi.fn(async (_input: Parameters<AuthEnv["OAUTH_PROVIDER"]["completeAuthorization"]>[0]) => ({ redirectTo: "https://chatgpt.com/connector_platform_oauth_redirect?code=fixture-code" }));
+    env.OAUTH_PROVIDER.completeAuthorization = complete;
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => url.includes("access_token")
+      ? Response.json({ access_token: "fixture-github-token" })
+      : Response.json({ login: "fixture-user", name: null, email: null })));
+    const callback = new URL("https://donestate.proofandstate.com/callback");
+    callback.searchParams.set("state", github.searchParams.get("state")!); callback.searchParams.set("code", "fixture-code");
+    expect((await authHandler.fetch(new Request(callback), env)).status).toBe(302);
+    expect(complete.mock.calls[0]?.[0]).toMatchObject({ scope: ["donestate:execute"], request: { resource: "https://done.example/mcp" } });
+  });
   it("serves the configured OpenAI apps domain challenge as plain text", async () => {
     const response = await authHandler.fetch(
       new Request("https://done.example/.well-known/openai-apps-challenge"),

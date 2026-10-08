@@ -2,10 +2,10 @@ import { accountNextSteps, renderAccountDocument } from "./account-layout";
 import { renderAccountRuns } from "./account-presentation";
 import { digest } from "./canonical";
 import type { DoneStateEnv } from "./environment";
-import type { AccountDataSummary, AccountRunRecord } from "./maintenance-registry";
+import type { AccountDataSummary } from "./maintenance-registry";
+import { AccountDeletionRefused, deleteIndexedAccountData, readAccountData, type AccountView } from "./account-data";
 import { verifyOpenAIApiKey } from "./openai";
 import type { CredentialStatus as StoredCredentialStatus } from "./credential-vault";
-import type { RunState, SelectedRepository } from "./types";
 
 interface SetupTicket {
   login: string;
@@ -24,29 +24,6 @@ type CredentialSettingsEnv = Pick<
   DoneStateEnv,
   "CREDENTIAL_VAULT" | "MAINTENANCE_REGISTRY" | "OAUTH_KV" | "RUN_COORDINATOR"
 >;
-
-interface AccountRunView extends AccountRunRecord {
-  state: RunState | "MISSING";
-  updatedAt: string;
-}
-
-interface AccountView {
-  credential: StoredCredentialStatus;
-  repositories: SelectedRepository[];
-  runs: AccountRunView[];
-  summary: AccountDataSummary;
-}
-
-const DELETABLE_RUN_STATES = new Set<RunState>([
-  "AWAITING_VERIFICATION",
-  "VERIFIED",
-  "BLOCKED_AUTHORITY",
-  "BLOCKED_CAPABILITY",
-  "BLOCKED_SAFETY",
-  "AMBIGUOUS_EFFECT",
-  "FAILED_SAFE",
-  "CANCELLED",
-]);
 
 function randomToken(): string {
   const bytes = crypto.getRandomValues(new Uint8Array(32));
@@ -196,47 +173,13 @@ async function recordFunnelBestEffort(
   }
 }
 
-function runCoordinator(env: CredentialSettingsEnv, runId: string) {
-  // Wrangler's generated DurableObjectNamespace method surface can narrow the
-  // custom RPC `get()` method to `never` because the stub itself also has
-  // platform methods. Keep this adapter local to the settings surface and
-  // describe only the RPC methods used here.
-  return env.RUN_COORDINATOR.getByName(runId) as unknown as {
-    get(ownerLogin: string): Promise<{ state: RunState; updatedAt: string }>;
-    accountDeletionState(ownerLogin: string): Promise<{ state: RunState; updatedAt: string } | null>;
-    purge(ownerLogin: string): Promise<{ runId: string; deleted: true }>;
-  };
-}
-
-async function accountView(env: CredentialSettingsEnv, login: string, forDeletion = false): Promise<AccountView> {
-  const [credential, repositories, runs, summary] = await Promise.all([
-    vault(env, login).status(login),
-    registry(env).listRepositories(login),
-    registry(env).listRuns(login),
-    registry(env).accountDataSummary(login),
-  ]);
-  const runViews = await Promise.all(runs.map(async (item): Promise<AccountRunView> => {
-    if (forDeletion) {
-      const run = await runCoordinator(env, item.runId).accountDeletionState(login);
-      return { ...item, state: run?.state ?? "MISSING", updatedAt: run?.updatedAt ?? item.updatedAt };
-    }
-    try {
-      const run = await runCoordinator(env, item.runId).get(login);
-      return { ...item, state: run.state, updatedAt: run.updatedAt };
-    } catch {
-      return { ...item, state: "MISSING", updatedAt: item.updatedAt };
-    }
-  }));
-  return { credential, repositories, runs: runViews, summary };
-}
-
 async function accountPage(
   env: CredentialSettingsEnv,
   login: string,
   csrf: string,
   message?: string,
 ): Promise<Response> {
-  return page(login, csrf, await accountView(env, login), message);
+  return page(login, csrf, await readAccountData(env, login, false), message);
 }
 
 export async function createCredentialSetup(
@@ -320,29 +263,12 @@ async function finishSetup(request: Request, env: CredentialSettingsEnv): Promis
       return accountPage(env, pending.login, csrf, "Type the exact GitHub login to confirm account-data deletion");
     }
     try {
-      await registry(env).beginAccountDeletion(pending.login);
-      await vault(env, pending.login).beginAccountDeletion();
-      const account = await accountView(env, pending.login, true);
-      const active = account.runs.filter((item) => item.state !== "MISSING" && !DELETABLE_RUN_STATES.has(item.state));
-      if (active.length > 0) {
-        await vault(env, pending.login).endAccountDeletion();
-        await registry(env).endAccountDeletion(pending.login);
-        return accountPage(
-          env,
-          pending.login,
-          csrf,
-          `Cancel active objectives before deletion: ${active.map((item) => item.runId).join(", ")}`,
-        );
-      }
-      for (const item of account.runs) {
-        if (item.state !== "MISSING") await runCoordinator(env, item.runId).purge(pending.login);
-      }
-      await vault(env, pending.login).purgeAccount(pending.login);
-      const registryReceipt = await registry(env).purgeAccount(pending.login);
+      const { deleted: registryReceipt } = await deleteIndexedAccountData(env, pending.login);
       await recordFunnelBestEffort(env, "account_deletion_completed");
       await env.OAUTH_KV.delete(sessionKey);
       return deletionSuccess(pending.login, registryReceipt);
     } catch (error) {
+      if (error instanceof AccountDeletionRefused) return accountPage(env, pending.login, csrf, error.message);
       const message = error instanceof Error ? error.message : "Account data could not be deleted";
       return accountPage(
         env,
