@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-10-08",
+  "updatedAt": "2026-10-09",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {
@@ -235,17 +235,18 @@
       "stream": "legal",
       "status": "blocked",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-03",
+      "lastUpdated": "2026-10-09",
       "staleDate": "2026-10-17",
-      "nextAction": "Preserve the publisher decision that DoneState is intended for worldwide availability where legally permitted. Before unrestricted public onboarding, add a legitimate public business/service address, confirm branded public support/privacy email routes, and retake the ICO fee self-assessment when the sole-trader business actually begins trading or carrying out business activity.",
-      "waitCondition": "Launch territory is decided: worldwide where legally permitted. Current ICO self-assessment says no fee is due yet because the sole trader has genuinely not started trading/carrying out activity. Remaining human publisher gates are a legitimate public geographic business/service address and the branded support/privacy contact routes; private home address and UTR must not be copied into the repository.",
-      "reentryCondition": "Resume as soon as the publisher decisions are available. Controlled technical early access on the owned service does not constitute legal clearance.",
+      "nextAction": "Publish the approved Northampton, Northamptonshire, UK operating location and align repository policy contacts with the existing canonical publisher routes. Before unrestricted onboarding, complete an appropriate public geographic business/service address. Preserve worldwide availability where legally permitted and retake the ICO self-assessment when business activity begins.",
+      "waitCondition": "The publisher approved the public locality Northampton, Northamptonshire, UK. Existing canonical Proof & State pages explicitly publish hello@proofandstate.com for support/privacy and security@proofandstate.com for confidential reports, and the parent privacy notice covers hosted DoneState. Those contact declarations are now aligned in repository policies. A complete appropriate geographic business/service address remains unprovided. No inbox delivery test or unrestricted legal clearance is claimed.",
+      "reentryCondition": "Resume the remaining complete geographic service-address requirement when exact publishable details are available. The approved locality and existing public contacts need no repeated permission; preserve the prohibition on publishing private home details or UTR.",
       "dependencies": [
         "GOV-001"
       ],
       "evidenceIds": [
         "E-004",
-        "E-041"
+        "E-041",
+        "E-102"
       ]
     },
     {
@@ -547,10 +548,10 @@
       "stream": "release",
       "status": "blocked",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-08",
+      "lastUpdated": "2026-10-09",
       "staleDate": "2026-10-10",
-      "nextAction": "Preserve the completed OneClickPostFactory indexed-service cleanup receipt and fresh empty readback. Complete the separate fresh clean-account signup and selected-repository GitHub App admission acceptance, and LEGAL-001 public business/service address and branded support/privacy contacts, before unrestricted GA. Do not repeat verified PR 172, known run/key/temporary-Write cleanup or the now-confirmed account purge.",
-      "waitCondition": "PR 173 is merged and deployed. The supported separate account-controls MCP connection authenticated OneClickPostFactory; one approved deletion returned receipt 3ce7dd8f1a3c484ba5fff6d1e05d14b3bd950019268790b5eafd4f2f11fc7904 at 2026-10-08T22:55:39.653Z. Digest validation and fresh inspection at 22:56:06.979Z confirmed a complete empty indexed inventory, no credential or active run, and dailyRunsUsed 0. Fresh clean-account signup/App admission and LEGAL-001 remain unproven; the deletion receipt is service evidence, not an independent signature.",
+      "nextAction": "Preserve the completed OneClickPostFactory indexed-service cleanup receipt and fresh empty readback. Complete the separate fresh clean-account signup and selected-repository GitHub App admission acceptance, and LEGAL-001 appropriate complete geographic business/service address, before unrestricted GA. Approved public location and existing support/privacy contacts are recorded in E-102. Do not repeat verified PR 172, known run/key/temporary-Write cleanup or the confirmed account purge.",
+      "waitCondition": "PR 173 is merged and deployed. The supported separate account-controls MCP connection authenticated OneClickPostFactory; one approved deletion returned receipt 3ce7dd8f1a3c484ba5fff6d1e05d14b3bd950019268790b5eafd4f2f11fc7904 at 2026-10-08T22:55:39.653Z. Digest validation and fresh inspection at 22:56:06.979Z confirmed a complete empty indexed inventory, no credential or active run, and dailyRunsUsed 0. Fresh clean-account signup/App admission and LEGAL-001 remain unproven; the deletion receipt is service evidence, not an independent signature. The publisher has approved Northampton, Northamptonshire, UK as the operating location; a complete geographic service address remains separate. Existing public support/privacy contacts have been recovered from canonical publisher pages and aligned in policy copy.",
       "reentryCondition": "Resume only the remaining fresh onboarding/App and public publisher/legal decisions. Existing customer execution and service cleanup are complete within their recorded scope and need no repeated model run, account purge or approval. Preserve deletion receipt exclusions: unindexed legacy objectives, external GitHub resources and upstream key/OAuth revocation were not covered. Reopen cleanup only on new contradictory state or an actual regression.",
       "dependencies": [
         "VERIFY-004",
@@ -585,7 +586,8 @@
         "E-098",
         "E-099",
         "E-100",
-        "E-101"
+        "E-101",
+        "E-102"
       ]
     },
     {
@@ -2298,6 +2300,23 @@
       "outcome": "The account-connection and indexed-service deletion blockers are closed for the verified OneClickPostFactory successor outcome. RELEASE-001 remains blocked by fresh clean-account signup/App admission and public publisher/legal decisions. No unrestricted GA or external-account/key revocation claim is made.",
       "content": "Keep customer inspection, service deletion, receipt integrity, fresh state observation and independent verification separate. The prior PR 172 independent-verifier outcome remains unchanged.",
       "measurement": "One live pre-deletion inspection, exactly one approved deletion and one fresh post-deletion inspection. All indexed counts were already zero; the account vault usage counter reset from 1 to 0. Zero new model executions, GitHub Write grants, publisher-account deletions, blocked browser retries or external GitHub/provider credential revocations."
+    },
+    {
+      "id": "E-102",
+      "date": "2026-10-09",
+      "identity": "Publisher-approved Northampton operating location added to public policies",
+      "situation": "The publisher instructed use of Northampton, Northamptonshire, UK and requested completion of this slice after the account cleanup blocker was closed.",
+      "verification": "Both repository hosted-service policies now state Operating location: Northampton, Northamptonshire, UK and Last updated 9 October 2026. Existing canonical https://proofandstate.com/contact and https://proofandstate.com/legal/privacy publish hello@proofandstate.com for support/privacy and security@proofandstate.com for confidential reports; the canonical privacy notice already covers hosted DoneState. Repository policy contacts are aligned with those published routes without inventing aliases or testing inbox delivery. Website PR 27 at 716941c74df04cd5bd479efa7cdd26a545a64708 adds the exact location to both canonical legal routes. The existing operator identity, effective date, worldwide availability and GitHub fallback channels are preserved. public-location-decision.json records town/county/country granularity and the remaining complete geographic service-address requirement. Location and contact publication do not establish fresh signup/App acceptance or unrestricted GA.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "complete",
+        "nextAction": "Retain the approved public location and existing canonical support/privacy contacts. Complete the separate full geographic service-address requirement under LEGAL-001.",
+        "waitCondition": "None for this public locality decision. Remaining LEGAL-001 and fresh onboarding/App gates are separately tracked.",
+        "staleDate": "2026-12-01"
+      },
+      "outcome": "The requested public locality and existing canonical support/privacy contacts are aligned in repository policies, with a two-route website candidate. LEGAL-001 remains blocked by a complete appropriate geographic service address; fresh onboarding/App acceptance remains a separate RELEASE-001 gate.",
+      "content": "Publisher location approval, two policy location lines and dates, explicit remaining address/email scope, and preserved customer-cleanup evidence.",
+      "measurement": "Two repository policies updated; two canonical legal routes prepared; one explicit locality decision recorded; existing support/privacy/security email declarations recovered. Zero private address/UTR values, invented email aliases, sent messages, new model runs, account purges or hosted MCP runtime changes."
     }
   ]
 }

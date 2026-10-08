@@ -1,0 +1,41 @@
+{
+  "schema": "donestate.public-location-decision.v1",
+  "date": "2026-10-09",
+  "operator": "AYOBAMI JOHN HAASTRUP trading as Proof & State",
+  "publicLocation": "Northampton, Northamptonshire, UK",
+  "granularity": "town_county_country",
+  "authority": "Explicit publisher instruction to use this location and finish the current slice",
+  "policyPaths": [
+    "docs/PRIVACY.md",
+    "docs/TERMS.md"
+  ],
+  "fullServiceAddressProvided": false,
+  "publicSupportEmailConfirmed": true,
+  "publicPrivacyEmailConfirmed": true,
+  "existingContactRoutes": [
+    "https://github.com/AyobamiH/donestate/issues",
+    "https://github.com/AyobamiH/donestate/security/advisories/new"
+  ],
+  "launchClearance": false,
+  "remainingRequirements": [
+    "Appropriate complete public business/service geographic address",
+    "Fresh clean-account signup and selected-repository GitHub App admission"
+  ],
+  "reference": "https://www.legislation.gov.uk/uksi/2002/2013/2026-05-07?view=extent",
+  "privateDetailsPublished": false,
+  "runtimeCodeChanged": false,
+  "publicSupportEmail": "hello@proofandstate.com",
+  "publicPrivacyEmail": "hello@proofandstate.com",
+  "publicSecurityEmail": "security@proofandstate.com",
+  "contactConfirmationBasis": [
+    "https://proofandstate.com/contact",
+    "https://proofandstate.com/legal/privacy"
+  ],
+  "mailDeliveryTestPerformed": false,
+  "canonicalWebsiteCandidate": "716941c74df04cd5bd479efa7cdd26a545a64708",
+  "canonicalWebsitePullRequest": 27,
+  "canonicalPolicyUrls": [
+    "https://proofandstate.com/legal/privacy",
+    "https://proofandstate.com/legal/terms"
+  ]
+}
