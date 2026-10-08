@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "runId": "aa5389f5-a4dd-400e-ba72-3e80c3190992",
+  "structuralAndDigestChecksPassed": true,
+  "eventCount": 9,
+  "terminalEventChainHead": "c73fef168b19380e0648cbedee573d87d1409d4047e3e64b122fc1bee18ecd39",
+  "actionResultDigestsMatched": 9,
+  "handoffDigestMatched": true,
+  "verificationNonceMatched": true,
+  "executionSnapshotDigestMatched": true,
+  "trustedSignerPolicyMatched": true,
+  "rawSignatureMaterialAvailable": false,
+  "localCryptographicSignatureReverificationPerformed": false,
+  "signatureAdmission": "DoneState accepted the signed response from the configured independent OpsTruth service under the existing pin",
+  "noSelfCertification": true
+}
