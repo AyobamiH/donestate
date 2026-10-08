@@ -549,9 +549,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-07",
       "staleDate": "2026-10-09",
-      "nextAction": "Require the bounded Sandbox-capacity repair and failure-path guard to pass exact-head required CI. Review and merge/deploy under the reserved owner authority, then restore only the customer key and temporary Write needed for one fresh bounded acceptance run. Require actual service publication, exact-head CI and the established pinned independent decision; preserve every terminal attempt and cleanup.",
-      "waitCondition": "Attempt-07 implementation exited zero, but npm ci validation timed out before publication. Production is configured as lite (256 MiB, 1/16 vCPU); a same-source local Node 24 compiler measurement reached 310424 KiB maximum child RSS, above that memory budget. This establishes a capacity mismatch for the measured local workload, not the exact production timeout cause. Basic capacity is prepared only until the repair is deployed and a fresh real customer run succeeds.",
-      "reentryCondition": "The user explicitly directed repair and another attempt. Keep the original 120000ms implementation bound, three-file customer limit, PR-only effects, independent-verifier pin and no automatic retry. Restore the deleted customer prerequisites only for the fresh successor. No historical failed run or pending publication may be rewritten as successful.",
+      "nextAction": "Await exact PR-head CI and pinned independent verification, then authorised result cleanup. Fresh signup and LEGAL-001 still gate GA.",
+      "waitCondition": "This unmerged candidate is not independently verified. Earlier failures and separate GA gates remain unchanged.",
+      "reentryCondition": "Use only the exact published PR head and established verifier pin; preserve every historical story and separate gate.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -574,7 +574,8 @@
         "E-070",
         "E-071",
         "E-072",
-        "E-090"
+        "E-090",
+        "E-086"
       ]
     },
     {
@@ -1838,7 +1839,7 @@
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication \u2192 v2 handoff \u2192 OpsTruth verification loop, then reconcile the final public documentation state.",
+        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication → v2 handoff → OpsTruth verification loop, then reconcile the final public documentation state.",
         "waitCondition": "The npm publication itself is complete. Remaining work is external product acceptance and public documentation closure, not package publication.",
         "staleDate": "2026-10-10"
       },
@@ -1974,7 +1975,7 @@
       "accountability": {
         "owner": "DoneState maintainers and publisher owner",
         "status": "blocked",
-        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up \u2192 connect \u2192 select repo \u2192 create objective \u2192 execute \u2192 unmerged PR \u2192 OpsTruth VERIFIED \u2192 inspect account \u2192 delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
+        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up → connect → select repo → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
         "waitCondition": "Customer execution credential must be reconnected securely. LEGAL-001 remains blocked on its existing publisher requirements.",
         "staleDate": "2026-10-09"
       },
@@ -2100,6 +2101,23 @@
       "outcome": "Prepare production basic capacity plus a fail-closed deployment memory guard; required CI, deployment and successful customer acceptance are separate pending states. No new model execution or paid retry has occurred.",
       "content": "Only container capacity and its build/deployment guard change; SDK/image versions, model command, RPC, exact action reconciliation, customer time/file bounds, publication authorities and the verifier pin remain unchanged. Larger capacity has higher provisioned resource charges, retains max_instances 5 and explicit sandbox destruction.",
       "measurement": "Offline npm ci exited zero in 2.248s. Separate local npm run build exited zero in 1.337s with maximum child RSS 310424 KiB (~303 MiB); process-tree sampling was inaccessible. Production basic supplies 1024 MiB. No production OOM claim, live performance claim, deadline increase or validation bypass. Local core tests 44/44 and Worker tests 149/149 passed; the resource regression guard rejects lite/dev and an actual production-config lite mutation. Production deployment and live acceptance remain unexecuted."
+    },
+    {
+      "id": "E-086",
+      "date": "2026-10-07",
+      "identity": "Compact customer PR-only execution candidate",
+      "situation": "One authorised compact customer candidate after a preserved terminal timeout.",
+      "verification": "Candidate nonce ba811b2b-518a-4ca9-9c1e-117c09ed3192 at evidence/clean-customer-20261007/execution-marker-08.json; exact PR-head CI and pinned independent verification are pending.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Await required CI and pinned independent verification.",
+        "waitCondition": "Unmerged candidate is not independently verified.",
+        "staleDate": "2026-10-09"
+      },
+      "outcome": "Candidate only; no VERIFIED, fresh-signup, cleanup or GA claim.",
+      "content": "Only marker, RELEASE-001 evidence tracking and generated state.",
+      "measurement": "Three authorised files; no dollar-cap or self-certified completion claim."
     }
   ]
 }
