@@ -549,8 +549,8 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-08",
       "staleDate": "2026-10-10",
-      "nextAction": "Review the separate account-controls API candidate and its exact-head CI, then obtain named merge/deployment authority. After deployment, connect only the OneClickPostFactory account-controls resource, inspect indexed state, delete once under the recorded customer authority, preserve the redacted receipt and obtain fresh empty-state readback. Do not repeat verified PR 172 or confirmed run/key/temporary-Write cleanup. Fresh signup, selected-repository App and LEGAL-001 gates remain separate.",
-      "waitCondition": "Authenticated account-controls implementation and local fixtures are prepared; production deployment, the separate customer OAuth connection and actual indexed-account deletion are unconfirmed. The browser account route remains blocked by URL security policy and must not be retried.",
+      "nextAction": "Review PR 173 and grant named authority to merge and deploy the checked account-controls API. After successful deployment, connect the separate resource only as OneClickPostFactory; inspect indexed state, delete once under the recorded customer authority, preserve the redacted receipt and obtain fresh empty-state readback. Do not repeat verified PR 172 or confirmed run/key/temporary-Write cleanup. Fresh signup, selected-repository App and LEGAL-001 remain separate gates.",
+      "waitCondition": "PR 173 implementation head c38fb8aa6ebc6be30426548688006d02bbd14d3e passed all three required CI checks in 37710940385 and is open/unmerged. The account-controls API is not deployed or connected and actual indexed customer-account deletion remains unconfirmed. Browser URL security policy remains in force; do not retry that route.",
       "reentryCondition": "Proceed only after reviewed exact-head CI, named merge/deployment authority, successful deployment and an authenticated account-controls connection whose inspection identifies OneClickPostFactory. Preserve exact account confirmation, effective scope/resource checks, receipt integrity and no automatic retry of an ambiguous destructive result. Do not use the owner connection or a browser workaround.",
       "dependencies": [
         "VERIFY-004",
@@ -582,7 +582,8 @@
         "E-095",
         "E-096",
         "E-097",
-        "E-098"
+        "E-098",
+        "E-099"
       ]
     },
     {
@@ -2244,6 +2245,23 @@
       "outcome": "A tested and documented supported API candidate is ready for repository review. It is not yet a deployed capability or customer account-deletion receipt. CUST-001/CUST-002 remain complete prerequisites and RELEASE-001 remains blocked.",
       "content": "Separate account consent and tool inventory, strict owner/resource/scope checks, exact confirmation, shared deterministic deletion, no credential entry or browser/session extraction, no administrator impersonation, bounded legacy coverage and explicit retained OAuth connections/fences. The receipt records service facts and is explicitly not independent verification.",
       "measurement": "163 Worker tests/24 files and 44 core tests passed, together with typechecks, contract lock, governance/docs closure and package audit. Canonical tools remain 20; new separate resource exposes 2. Zero production customer deletions, new model executions, repository Write grants, browser workaround attempts or upstream key/OAuth revocation claims."
+    },
+    {
+      "id": "E-099",
+      "date": "2026-10-08",
+      "identity": "Account API implementation CI passed; deployment and customer connection remain pending",
+      "situation": "The publisher-requested supported alternative was prepared and published as PR 173 after local validation.",
+      "verification": "GitHub PR 173 independently read back open/unmerged at c38fb8aa6ebc6be30426548688006d02bbd14d3e, base fbaa060dfc6680516dfb7a1195801d1f8ab58d9d. Its tree 4fcfbaa205cfc602d7ebdec134a2f28952ed7638 exactly matches the checked local tree. Required CI run 37710940385 completed successfully: core (22) job 113096452870, core (24) job 113096453126 and hosted-plugin job 113096453047. Evidence is preserved in evidence/account-api-20261008/implementation-ci.json. This documentation follow-up does not change implementation code; its final-head checks remain a separate publication condition.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "blocked",
+        "nextAction": "Review PR 173 and grant named authority to merge and deploy the checked account-controls API. After successful deployment, connect the separate resource only as OneClickPostFactory; inspect indexed state, delete once under the recorded customer authority, preserve the redacted receipt and obtain fresh empty-state readback. Do not repeat verified PR 172 or confirmed run/key/temporary-Write cleanup. Fresh signup, selected-repository App and LEGAL-001 remain separate gates.",
+        "waitCondition": "PR 173 implementation head c38fb8aa6ebc6be30426548688006d02bbd14d3e passed all three required CI checks in 37710940385 and is open/unmerged. The account-controls API is not deployed or connected and actual indexed customer-account deletion remains unconfirmed. Browser URL security policy remains in force; do not retry that route.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "The supported API implementation is checked and reviewable. No merge, deployment, customer connection or customer-account deletion is claimed. The recorded deletion authority does not substitute for named authority to ship a new API.",
+      "content": "Exact public commit/tree/CI receipts, preserved canonical 20-tool inventory and two separate account tools, explicit owner merge/deploy gate, OneClickPostFactory-only re-entry and no blocked browser workaround.",
+      "measurement": "Three required implementation-head checks passed. Local validation remains 163 Worker tests/24 files and 44 core tests. Zero new production account deletions, paid model executions or repository Write grants."
     }
   ]
 }

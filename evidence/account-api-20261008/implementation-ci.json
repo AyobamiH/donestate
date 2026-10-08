@@ -1,0 +1,47 @@
+{
+  "schema": "donestate.account-api-implementation-ci.v1",
+  "date": "2026-10-08",
+  "pullRequest": 173,
+  "repository": "AyobamiH/donestate",
+  "candidateHead": "c38fb8aa6ebc6be30426548688006d02bbd14d3e",
+  "candidateTree": "4fcfbaa205cfc602d7ebdec134a2f28952ed7638",
+  "baseHead": "fbaa060dfc6680516dfb7a1195801d1f8ab58d9d",
+  "workflowRun": 37710940385,
+  "workflowConclusion": "success",
+  "requiredJobs": [
+    {
+      "id": 113096452870,
+      "name": "core (22)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-08T01:03:05Z",
+      "completedAt": "2026-10-08T01:03:26Z",
+      "url": "https://github.com/AyobamiH/donestate/actions/runs/37710940385/job/113096452870"
+    },
+    {
+      "id": 113096453126,
+      "name": "core (24)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-08T01:03:05Z",
+      "completedAt": "2026-10-08T01:03:22Z",
+      "url": "https://github.com/AyobamiH/donestate/actions/runs/37710940385/job/113096453126"
+    },
+    {
+      "id": 113096453047,
+      "name": "hosted-plugin",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-08T01:03:05Z",
+      "completedAt": "2026-10-08T01:03:43Z",
+      "url": "https://github.com/AyobamiH/donestate/actions/runs/37710940385/job/113096453047"
+    }
+  ],
+  "merged": false,
+  "deployed": false,
+  "customerAccountDeleted": false,
+  "canonicalToolCount": 20,
+  "separateAccountToolCount": 2,
+  "productionCustomerLogin": "OneClickPostFactory",
+  "independentVerifierDecisionForThisApiCandidate": null
+}
