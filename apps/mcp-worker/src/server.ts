@@ -13,6 +13,7 @@ import { createGitHubAppSetup } from "./github-app-settings";
 import type { DoneStateEnv } from "./environment";
 import { getBranchHead, getRepositoryAccess } from "./github";
 import { mcpAuthInfo, type TokenInspector } from "./mcp-auth";
+import { MCP_BROWSER_ORIGIN_POLICY } from "./mcp-origin";
 import { MaintenanceRegistry, type FunnelEvent } from "./maintenance-registry";
 import { allowsMarketplaceDevelopmentRequest, isMarketplaceDevelopment } from "./marketplace-development";
 import {
@@ -617,7 +618,7 @@ export function createServer(): McpServer {
   return server;
 }
 
-const apiHandler = createMcpHandler(createServer);
+const apiHandler = createMcpHandler(createServer, MCP_BROWSER_ORIGIN_POLICY);
 const protectedHandler = {
   async fetch(request: Request, workerEnv: unknown, _ctx: ExecutionContext): Promise<Response> {
     if (!workerEnv || typeof workerEnv !== "object") return new Response("OAuth provider binding is missing", { status: 500 });
@@ -629,7 +630,7 @@ const protectedHandler = {
     if (!authInfo) return new Response("Invalid access token", { status: 401 });
     const path = new URL(request.url).pathname;
     if (path === ACCOUNT_MCP_PATH) {
-      const accountApiHandler = createMcpHandler(() => createAccountControlsServer(() => workerEnv as DoneStateEnv), { route: ACCOUNT_MCP_PATH });
+      const accountApiHandler = createMcpHandler(() => createAccountControlsServer(() => workerEnv as DoneStateEnv), { ...MCP_BROWSER_ORIGIN_POLICY, route: ACCOUNT_MCP_PATH });
       return accountApiHandler.fetch(request, { authInfo });
     }
     if (path.startsWith(`${ACCOUNT_MCP_PATH}/`)) return new Response("Not found", { status: 404 });

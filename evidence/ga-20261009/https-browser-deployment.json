@@ -1,0 +1,20 @@
+{
+  "sourceCommit": "430c195e1e8ab82aef8f345521c33141542d4b04",
+  "sourceTree": "3d83d69913c4eaf6e47062b2a07066ff6c808762",
+  "candidateCommit": "f2d25b8acde99ddc8003faf9607b53d8cdcdd9cb",
+  "candidateCiRun": 37963040527,
+  "mergeCiRun": 37963139656,
+  "deploymentRun": 37963139631,
+  "deploymentJob": 113930746438,
+  "deploymentConclusion": "success",
+  "workerVersion": "77bf6431-39b6-4807-9f14-59e71ba38802",
+  "pageUrl": "https://donestate.proofandstate.com/acceptance/oauth",
+  "status": 200,
+  "exactAssetMatch": true,
+  "bodySha256": "3553f836c91c961d7e2eb17da9fb34c1fc0543bf677dbeefc74c5753057abb0e",
+  "noStore": true,
+  "referrerPolicy": "no-referrer",
+  "cloudGitHubAccountObserved": "OneClickPostFactory",
+  "freshCustomerConsentObserved": false,
+  "broaderGaDeclared": false
+}

@@ -28,20 +28,42 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 2
+      - name: Wait for the new deployment when this push changes the Worker
+        id: subject
+        env:
+          OBSERVATION_EVENT: ${{ github.event_name }}
+        run: |
+          observe=true
+          if [ "$OBSERVATION_EVENT" = "push" ]; then
+            set +e
+            git diff --quiet HEAD^ HEAD -- apps/mcp-worker
+            changed=$?
+            set -e
+            case "$changed" in
+              0) ;;
+              1) observe=false ;;
+              *) exit "$changed" ;;
+            esac
+          fi
+          echo "observe=$observe" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v4
+        if: steps.subject.outputs.observe == 'true'
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: apps/mcp-worker/package-lock.json
       - run: npm ci --ignore-scripts
+        if: steps.subject.outputs.observe == 'true'
         working-directory: apps/mcp-worker
       - name: Check public onboarding prerequisites and one natural hourly sweep
+        if: steps.subject.outputs.observe == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node scripts/ga-production.mjs --receipt "$RUNNER_TEMP/ga-production.json" --observe-minutes 65
       - name: Preserve only the sanitized receipt
-        if: always()
+        if: always() && steps.subject.outputs.observe == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: ga-production-preflight

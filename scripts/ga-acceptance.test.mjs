@@ -191,3 +191,79 @@ test("natural observation checks deployment stability and removes its ephemeral 
   assert.deepEqual(calls.at(-2), ["/tails/tail-fixture", "DELETE"]);
   assert.doesNotMatch(JSON.stringify(result), /private-ticket|private-secret/);
 });
+
+function rotatingTailFixture({ first = "normal", cleanupFails = false } = {}) {
+  const calls = [];
+  let created = 0;
+  const provider = async (path, method = "GET") => {
+    calls.push([path, method]);
+    if (path === "/deployments") return { deployments: [{ id: "deployment", created_on: "2026-10-09T00:00:00Z", versions: [{ version_id: "worker-version", percentage: 100 }] }] };
+    if (path === "/schedules") return [{ cron: "0 * * * *" }];
+    if (path === "/telemetry-query") return { events: { events: [] } };
+    if (path === "/tails") return { id: `tail-${++created}`, url: `wss://tail.developers.workers.dev/${created}?private-ticket` };
+    if (path.startsWith("/tails/") && method === "DELETE") {
+      if (cleanupFails) throw new Error("PROVIDER_REQUEST_EFFECT_UNCONFIRMED_NO_RETRY");
+      return null;
+    }
+    assert.fail("Unexpected provider operation");
+  };
+  class Socket extends EventTarget {
+    readyState = 1;
+    constructor(url) { super(); this.number = Number(new URL(url).pathname.slice(1)); queueMicrotask(() => this.dispatchEvent(new Event("open"))); }
+    ping() {}
+    send() {
+      if (first === "silent") return;
+      setTimeout(() => {
+        if (this.number === 1) {
+          if (first === "error") this.dispatchEvent(new Event("error"));
+          else {
+            const event = new Event("close"); event.code = first === "abnormal" ? 1006 : 1000;
+            this.dispatchEvent(event);
+          }
+        } else this.dispatchEvent(new MessageEvent("message", { data: JSON.stringify(healthyEvent()) }));
+      }, 0);
+    }
+    close() {}
+  }
+  return { provider, Socket, calls };
+}
+
+test("a confirmed normal closure rotates only after deleting the owned tail", async () => {
+  const { provider, Socket, calls } = rotatingTailFixture();
+  const result = await observeNaturalSweep(provider, 1000, Socket);
+  assert.equal(result.passed, true);
+  assert.equal(result.tailSessionsCreated, 2);
+  assert.equal(result.tailSessionRemoved, true);
+  assert.deepEqual(result.tailSessions.map((session) => session.completion), ["provider_normal_close", "natural_sweep"]);
+  assert.ok(calls.findIndex(([path]) => path === "/tails/tail-1") < calls.findLastIndex(([path, method]) => path === "/tails" && method === "POST"));
+  assert.doesNotMatch(JSON.stringify(result), /private-ticket/);
+});
+
+test("uncertain deletion, abnormal closure and connection error never rotate or retry", async () => {
+  for (const settings of [{ cleanupFails: true }, { first: "abnormal" }, { first: "error" }]) {
+    const { provider, Socket, calls } = rotatingTailFixture(settings);
+    const result = await observeNaturalSweep(provider, 1000, Socket);
+    assert.equal(result.passed, false);
+    assert.equal(result.tailSessionsCreated, 1);
+    assert.equal(calls.filter(([path, method]) => path === "/tails" && method === "POST").length, 1);
+    assert.equal(calls.filter(([path, method]) => path === "/tails/tail-1" && method === "DELETE").length, 1);
+    if (settings.cleanupFails) {
+      assert.equal(result.tailSessionRemoved, false);
+      assert.equal(result.cleanupFailure, "PROVIDER_REQUEST_EFFECT_UNCONFIRMED_NO_RETRY");
+    } else assert.equal(result.failure, settings.first === "abnormal" ? "TAIL_CLOSED_ABNORMALLY" : "TAIL_CONNECTION_FAILED");
+  }
+});
+
+test("bounded rotation stops at the global deadline and session budget", async () => {
+  const fixture = rotatingTailFixture({ first: "silent" });
+  const deadline = await observeNaturalSweep(fixture.provider, 15, fixture.Socket, 50);
+  assert.equal(deadline.failure, "NATURAL_SWEEP_NOT_OBSERVED");
+  assert.equal(deadline.tailSessionsCreated, 1);
+  assert.equal(deadline.tailSessionRemoved, true);
+  const budget = rotatingTailFixture({ first: "silent" });
+  const limited = await observeNaturalSweep(budget.provider, 1000, budget.Socket, 5);
+  assert.equal(limited.failure, "TAIL_SESSION_BUDGET_EXHAUSTED");
+  assert.equal(limited.tailSessionsCreated, 4);
+  assert.equal(limited.tailSessionRemoved, true);
+  await assert.rejects(observeNaturalSweep(fixture.provider, 66 * 60_000, fixture.Socket), /OBSERVATION_BUDGET_INVALID/);
+});
