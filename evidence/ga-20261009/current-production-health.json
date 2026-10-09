@@ -1,0 +1,130 @@
+{
+  "schema": "donestate.current-production-health.v1",
+  "sourceCommit": "3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a",
+  "workflowRunId": 37973398818,
+  "workflowJobId": 113965473927,
+  "receipt": {
+    "schema": "donestate.ga-production-preflight.v1",
+    "startedAt": "2026-10-09T18:27:40.580Z",
+    "productionMutations": 0,
+    "syntheticCronInvocations": 0,
+    "credentialSetups": 0,
+    "modelStarts": 0,
+    "passed": true,
+    "publicPreflight": {
+      "observedAt": "2026-10-09T18:27:40.580Z",
+      "issuer": "https://donestate.proofandstate.com",
+      "resource": "https://donestate.proofandstate.com/mcp",
+      "probes": [
+        {
+          "name": "landing",
+          "path": "/",
+          "expectedStatus": 200,
+          "observedStatus": 200,
+          "bodySha256": "4c2a1f5e74ec4547023e1e5310a3fdbaad0527241f5c5700cd75a8a73534f7b5",
+          "observedAt": "2026-10-09T18:27:41.096Z",
+          "bodyPublished": true
+        },
+        {
+          "name": "execution_resource_without_token",
+          "path": "/mcp",
+          "expectedStatus": 401,
+          "observedStatus": 401,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "observedAt": "2026-10-09T18:27:41.155Z",
+          "canonicalChallengePresent": true
+        },
+        {
+          "name": "account_resource_without_token",
+          "path": "/mcp/account/v1",
+          "expectedStatus": 401,
+          "observedStatus": 401,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "observedAt": "2026-10-09T18:27:41.202Z",
+          "canonicalChallengePresent": true
+        },
+        {
+          "name": "unknown_oauth_client",
+          "path": "/authorize?client_id=ga-preflight-not-registered&response_type=code",
+          "expectedStatus": 400,
+          "observedStatus": 400,
+          "bodySha256": "58a4275d202d34a26a4bab74eb4846c44266f098e0cfcdac1cababb266573dd9",
+          "observedAt": "2026-10-09T18:27:41.358Z"
+        },
+        {
+          "name": "malformed_client_registration",
+          "path": "/oauth/register",
+          "expectedStatus": 400,
+          "observedStatus": 400,
+          "bodySha256": "486c9134aa34fbadd4c14bdbd0180aaa5427bc171118a22950fdfd73485ea1a5",
+          "observedAt": "2026-10-09T18:27:41.382Z"
+        }
+      ],
+      "discovery": {
+        "issuer": "https://donestate.proofandstate.com",
+        "authorizationEndpoint": "https://donestate.proofandstate.com/authorize",
+        "tokenEndpoint": "https://donestate.proofandstate.com/oauth/token",
+        "pkce": "S256",
+        "publicClient": true
+      },
+      "passed": true
+    },
+    "operations": {
+      "deploymentBefore": {
+        "id": "f609425c-8f23-48c1-a0b7-d3793da78fe3",
+        "createdAt": "2026-10-09T18:25:43.197316Z",
+        "versions": [
+          {
+            "id": "3c9564a7-3800-4727-b791-b5b88c354183",
+            "percentage": 100
+          }
+        ]
+      },
+      "deploymentAfter": {
+        "id": "f609425c-8f23-48c1-a0b7-d3793da78fe3",
+        "createdAt": "2026-10-09T18:25:43.197316Z",
+        "versions": [
+          {
+            "id": "3c9564a7-3800-4727-b791-b5b88c354183",
+            "percentage": 100
+          }
+        ]
+      },
+      "deploymentUnchangedDuringObservation": true,
+      "eventVersionMatches": true,
+      "naturalSweep": {
+        "cron": "0 * * * *",
+        "scheduledAt": "2026-10-09T19:00:45.000Z",
+        "observedAt": "2026-10-09T19:00:55.977Z",
+        "outcome": "ok",
+        "workerVersion": "3c9564a7-3800-4727-b791-b5b88c354183",
+        "marketplaceWebhook": {
+          "schema": "donestate.marketplace-webhook-health.v1",
+          "unresolvedRecent": 0,
+          "unresolvedConfiguration": 0,
+          "unresolvedProcessing": 0,
+          "escalationRequired": false
+        },
+        "healthy": true
+      },
+      "observationSource": "provider_live_scheduled_log",
+      "tailSessionCreated": true,
+      "tailSessionsCreated": 2,
+      "tailSessions": [
+        {
+          "number": 1,
+          "completion": "bounded_rotation",
+          "removed": true
+        },
+        {
+          "number": 2,
+          "completion": "natural_sweep",
+          "removed": true
+        }
+      ],
+      "tailSessionRemoved": true,
+      "passed": true
+    },
+    "finishedAt": "2026-10-09T19:00:58.200Z"
+  }
+}
