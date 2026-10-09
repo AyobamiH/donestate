@@ -384,11 +384,11 @@
       "stream": "go-to-market",
       "status": "active",
       "owner": "Proof & State maintainers",
-      "lastUpdated": "2026-10-02",
+      "lastUpdated": "2026-10-09",
       "staleDate": "2026-10-16",
-      "nextAction": "Use the deployed aggregate funnel during controlled owned-domain access. Inspect natural hourly UTC-day snapshots for stage volume and rough drop-off, and pair them with bounded manual cohort evidence for unique/repeat use, support load and conversion. Keep OpenAI and GitHub Marketplace attribution separate when those channels publish.",
-      "waitCondition": "Privacy-minimal production instrumentation is deployed and post-merge CI is green. Real customer/cohort observations do not yet exist, and aggregate counters intentionally cannot identify unique or repeat users.",
-      "reentryCondition": "Keep active through the first external standalone cohort. Reopen the implementation if counters fail to appear in natural scheduled snapshots, collect identifiers, include internal maintenance traffic in customer execution stages, or later channels require separate attribution.",
+      "nextAction": "Use the anonymous strict cohort review for the first consenting external bounded public-repository-fix cohort. Record customer-accepted independently verified results, seven-day eligible repeat use, real priced-offer commitments/payments and support burden; improve the largest evidenced constraint one variable at a time.",
+      "waitCondition": "Owned-domain entry gates are complete under E-118. Review tooling and the focused first-cohort experiment are implemented; no real external customer cohort, demand, retention or payment evidence is supplied. Empty input reports not_observed, never market fit.",
+      "reentryCondition": "Keep active through real external cohort entry and review within seven days. Preserve channel/cohort separation and independent-verifier authority; promote private-repository, billing or adapter work only against evidenced customer constraints.",
       "dependencies": [
         "CUST-001",
         "CUST-002"
@@ -396,7 +396,8 @@
       "evidenceIds": [
         "E-044",
         "E-047",
-        "E-048"
+        "E-048",
+        "E-119"
       ]
     },
     {
@@ -2621,6 +2622,23 @@
       "outcome": "CUST-003 and the current owned-domain RELEASE-001 slice are complete. Existing explicit publisher launch/merge/deploy approvals support the owned-domain GA decision after all recorded entry gates passed. Owned-domain GA uses explicit per-objective authority, customer-held execution credentials and independently signed outcome verification. First-ever identity history, arbitrary private-repository self-service, real customer support delivery/24-hour staffing, first-cohort metrics and external directory/Marketplace publication are not established by this acceptance. Review the first cohort within seven days of entry; apply the existing incident stop criteria.",
       "content": "Whitelisted browser acceptance receipt, prior runtime health and independent customer-outcome subjects, and bounded publisher GA decision.",
       "measurement": "One new public-client OAuth round trip, two authenticated read-only MCP checks, one token refresh and one confirmed own-grant revocation with denied access. Zero coding runs, execution-key setups, repository mutations or external messages."
+    },
+    {
+      "id": "E-119",
+      "date": "2026-10-09",
+      "identity": "Executable anonymous customer learning loop after owned-domain GA",
+      "situation": "The launch is accepted, but aggregate production funnel counters cannot identify unique external customers, repeated useful outcomes, paid conversion or support burden. No external market-fit cohort observations have been supplied.",
+      "verification": "scripts/review-market-fit.mjs validates an exact anonymous aggregate contract, external-customer population, observed dates, conversion denominators and evidence-kind hash references. It separates jobs/channels/cohorts and does not pool anonymous cohorts into unique totals. Zero denominators are null. Publisher/test populations, private-data fields, future or immature windows, duplicate cohorts, impossible conversions and missing payment evidence are rejected. The empty examples/market-fit-cohorts.json returns not_observed and marketFit not_established. Six regression tests exercise these failure and interpretation boundaries; normal repository checks include them. docs/MARKET-FIT.md defines a five-customer operating experiment for bounded public-repository fixes, customer-accepted independently verified activation, actual seven-day repeat eligibility, written price commitment versus settled payment, support burden and one-variable weekly decisions. Hash references are explicitly operator evidence, never independent audit proof. Current-status documentation now leads with E-118 and marks earlier dated checkpoints historical. Full local npm run check passes: 72 tests, verification contract lock, generated governance, documentation/knowledge-base/asset closure and package dry-run. evidence/market-fit-20261009/unobserved-review.json preserves the actual empty-input review output, not customer telemetry.",
+      "accountability": {
+        "owner": "Proof & State maintainers",
+        "status": "active",
+        "nextAction": "Enter the first consenting external cohort, collect separately held evidence and review the largest constraint within seven days of entry.",
+        "waitCondition": "No actual external cohort results, retained customers or payment observations are supplied. Tooling does not create demand or send invitations.",
+        "staleDate": "2026-10-16"
+      },
+      "outcome": "The next market-fit experiment has an executable honest review boundary; real market fit remains unproven and GTM-001 stays active. No production tracking, billing integration, runtime deployment, permissions, external message or provider listing changes.",
+      "content": "Strict local anonymous cohort review, failure-path tests, empty unobserved input, operator experiment/runbook, measurement documentation and current-status reconciliation.",
+      "measurement": "Six semantic regression tests; ten bounded aggregate counts; nine fixed friction categories; six evidence kinds; three separately attributed channels; zero supplied external cohort observations or new production data collection."
     }
   ]
 }
