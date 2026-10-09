@@ -1,0 +1,1354 @@
+{
+  "schema": "donestate.fresh-selected-app-acceptance.v1",
+  "date": "2026-10-09",
+  "account": "OneClickPostFactory",
+  "repository": "AyobamiH/donestate",
+  "before": {
+    "schema": "donestate.account-inspection.v1",
+    "observedAt": "2026-10-09T06:27:26.599Z",
+    "credential": {
+      "connected": true,
+      "fingerprint": "44c7550c978b",
+      "createdAt": "2026-10-09T05:39:39.553Z",
+      "updatedAt": "2026-10-09T05:39:39.553Z",
+      "lastUsedAt": null,
+      "dailyRunsUsed": 0,
+      "dailyRunLimit": 12,
+      "activeRunId": null
+    },
+    "repositories": [
+      {
+        "schema": "donestate.selected-repository.v1",
+        "ownerLogin": "OneClickPostFactory",
+        "repository": "AyobamiH/donestate",
+        "defaultBranch": "main",
+        "installationId": 157513439,
+        "mode": "pr_only",
+        "scheduleEnabled": false,
+        "autoRepair": false,
+        "requiredCheckNames": [
+          "core (22)",
+          "core (24)",
+          "hosted-plugin"
+        ],
+        "createdAt": "2026-10-09T05:42:01.993Z",
+        "updatedAt": "2026-10-09T05:42:01.993Z"
+      }
+    ],
+    "runs": [],
+    "summary": {
+      "schema": "donestate.account-data-summary.v1",
+      "ownerLogin": "OneClickPostFactory",
+      "selectedRepositories": 1,
+      "findings": 0,
+      "indexedRuns": 0,
+      "marketplaceUserEntitlements": 0,
+      "marketplaceOrganizationAuthorizations": 0
+    },
+    "inventoryComplete": true
+  },
+  "customerPermission": {
+    "permission": "write",
+    "source": "Independent GitHub connector collaborator-permission readback after user completed temporary grant",
+    "checkpointObservedAt": "2026-10-09T06:27:26.599Z"
+  },
+  "objectiveAdmission": {
+    "credentialSource": "github_app_installation",
+    "repositoryPrivate": false,
+    "run": {
+      "id": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+      "ownerLogin": "OneClickPostFactory",
+      "state": "RECEIVED",
+      "objective": {
+        "acceptanceCriteria": [
+          "The candidate marker contains the sealed date, customer, repository, nonce and candidate-only outcome.",
+          "The ledger and generated state contain E-110 and its nonce; RELEASE-001 identity, blocked status and dependencies are preserved.",
+          "Only the three authorised marker, ledger and generated-state files change.",
+          "The published customer PR head passes core (22), core (24) and hosted-plugin before independent verification."
+        ],
+        "authorities": [
+          "local_read",
+          "local_write",
+          "test",
+          "commit",
+          "push",
+          "open_pr",
+          "secret_access"
+        ],
+        "baseHeadSha": "f5a00d20d70a41827911d8fb148590891bbaad42",
+        "baseRef": "main",
+        "goal": "Implement exactly this bounded three-file candidate using one command below. Preserve all prior evidence stories and unrelated work items, and RELEASE-001 identity, blocked status and dependencies. Use no subagents. Do not inspect or copy credentials, change runtime/workflows, widen App scope, start unrelated repairs, merge or deploy. secret_access is solely for the backend's existing scoped execution credential; never read credentials yourself. DoneState owns commit, push and PR publication. Report the implementation result without self-certifying VERIFIED. Run this exact command:\n\nnode <<'NODE_CANDIDATE'\nconst fs = require(\"node:fs\");\nconst p = \"governance/project-ledger.json\";\nconst ledger = JSON.parse(fs.readFileSync(p, \"utf8\"));\nconst work = ledger.workItems.find(x => x.id === \"RELEASE-001\");\nif (!work || work.status !== \"blocked\" || ledger.evidenceStories.some(x => x.id === \"E-110\")) throw Error(\"candidate precondition failed\");\nwork.evidenceIds.push(\"E-110\");\nwork.lastUpdated = \"2026-10-09\";\nledger.evidenceStories.push({\"id\":\"E-110\",\"date\":\"2026-10-09\",\"identity\":\"Fresh selected-App customer execution candidate\",\"situation\":\"One newly authorised bounded selected-App customer candidate after independent temporary Write confirmation; historical PR 172 is preserved.\",\"verification\":\"Candidate nonce donestate-selected-app-20261009-0627-oneclick at evidence/clean-customer-20261009/selected-app-marker.json; exact PR-head CI and pinned independent verification are pending.\",\"accountability\":{\"owner\":\"DoneState maintainers\",\"status\":\"blocked\",\"nextAction\":\"Observe the exact published PR head, required CI and pinned independent verification.\",\"waitCondition\":\"Unmerged candidate has not been independently verified.\",\"staleDate\":\"2026-10-10\"},\"outcome\":\"Candidate only; no new-signup, VERIFIED, cleanup or unrestricted-GA claim.\",\"content\":\"Only marker, RELEASE-001 evidence reference and generated state.\",\"measurement\":\"Three authorised files; no runtime, workflow, credential, App scope or permission change.\"});\nfs.mkdirSync(\"evidence/clean-customer-20261009\", {recursive:true});\nfs.writeFileSync(\"evidence/clean-customer-20261009/selected-app-marker.json\", JSON.stringify({\"date\":\"2026-10-09\",\"customer\":\"OneClickPostFactory\",\"repository\":\"AyobamiH/donestate\",\"marker\":\"donestate-selected-app-20261009-0627-oneclick\",\"outcome\":\"selected-app-execution-candidate\"}, null, 2) + \"\\n\");\nfs.writeFileSync(p, JSON.stringify(ledger, null, 2) + \"\\n\");\nNODE_CANDIDATE\nnpm run governance:render && npm run governance:check && git diff --check",
+        "maxChangedFiles": 3,
+        "maxDurationMs": 120000,
+        "publication": "pull_request",
+        "repository": "AyobamiH/donestate",
+        "requestedBy": "OneClickPostFactory",
+        "runId": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+        "schema": "donestate.hosted-objective.v1",
+        "trustedVerifierFingerprints": [
+          "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+        ],
+        "validationProfile": "node",
+        "verificationContractVersion": "donestate.verification-contract.v2",
+        "verificationRequirements": [
+          {
+            "criterionIndex": 0,
+            "expected": "2026-10-09",
+            "id": "marker-date",
+            "kind": "json_equals",
+            "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+            "pointer": "/date"
+          },
+          {
+            "criterionIndex": 0,
+            "expected": "OneClickPostFactory",
+            "id": "marker-customer",
+            "kind": "json_equals",
+            "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+            "pointer": "/customer"
+          },
+          {
+            "criterionIndex": 0,
+            "expected": "AyobamiH/donestate",
+            "id": "marker-repository",
+            "kind": "json_equals",
+            "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+            "pointer": "/repository"
+          },
+          {
+            "criterionIndex": 0,
+            "expected": "donestate-selected-app-20261009-0627-oneclick",
+            "id": "marker-marker",
+            "kind": "json_equals",
+            "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+            "pointer": "/marker"
+          },
+          {
+            "criterionIndex": 0,
+            "expected": "selected-app-execution-candidate",
+            "id": "marker-outcome",
+            "kind": "json_equals",
+            "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+            "pointer": "/outcome"
+          },
+          {
+            "criterionIndex": 1,
+            "id": "candidate-ledger",
+            "kind": "file_contains",
+            "path": "governance/project-ledger.json",
+            "values": [
+              "E-110",
+              "Fresh selected-App customer execution candidate",
+              "donestate-selected-app-20261009-0627-oneclick",
+              "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+            ]
+          },
+          {
+            "criterionIndex": 1,
+            "id": "candidate-generated",
+            "kind": "file_contains",
+            "path": "docs/PROJECT-STATE.md",
+            "values": [
+              "E-110",
+              "Fresh selected-App customer execution candidate",
+              "donestate-selected-app-20261009-0627-oneclick"
+            ]
+          },
+          {
+            "allowedPaths": [
+              "evidence/clean-customer-20261009/selected-app-marker.json",
+              "governance/project-ledger.json",
+              "docs/PROJECT-STATE.md"
+            ],
+            "criterionIndex": 2,
+            "id": "only-authorised-files",
+            "kind": "changed_files",
+            "max": 3
+          },
+          {
+            "criterionIndex": 3,
+            "id": "required-pr-head-ci",
+            "kind": "github_checks_pass",
+            "requiredNames": [
+              "core (22)",
+              "core (24)",
+              "hosted-plugin"
+            ]
+          }
+        ]
+      },
+      "createdAt": "2026-10-09T07:17:41.233Z",
+      "updatedAt": "2026-10-09T07:17:41.233Z",
+      "lastError": null,
+      "branchName": null,
+      "branchHeadSha": null,
+      "pullRequestNumber": null,
+      "pullRequestUrl": null,
+      "verificationSnapshotDigest": null,
+      "verifierDecisionSummary": null,
+      "actions": [],
+      "events": [
+        {
+          "sequence": 1,
+          "eventType": "run_received",
+          "fromState": null,
+          "toState": "RECEIVED",
+          "detail": null,
+          "createdAt": "2026-10-09T07:17:41.233Z",
+          "previousDigest": null,
+          "digest": "e0bf9546dfcdf6cf64eec8651c50fee4d6ce5161927a253e47accf7ae43d6c10"
+        }
+      ]
+    }
+  },
+  "savedObjectiveReadbackMatched": true,
+  "start": {
+    "id": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+    "ownerLogin": "OneClickPostFactory",
+    "state": "QUEUED",
+    "objective": {
+      "acceptanceCriteria": [
+        "The candidate marker contains the sealed date, customer, repository, nonce and candidate-only outcome.",
+        "The ledger and generated state contain E-110 and its nonce; RELEASE-001 identity, blocked status and dependencies are preserved.",
+        "Only the three authorised marker, ledger and generated-state files change.",
+        "The published customer PR head passes core (22), core (24) and hosted-plugin before independent verification."
+      ],
+      "authorities": [
+        "local_read",
+        "local_write",
+        "test",
+        "commit",
+        "push",
+        "open_pr",
+        "secret_access"
+      ],
+      "baseHeadSha": "f5a00d20d70a41827911d8fb148590891bbaad42",
+      "baseRef": "main",
+      "goal": "Implement exactly this bounded three-file candidate using one command below. Preserve all prior evidence stories and unrelated work items, and RELEASE-001 identity, blocked status and dependencies. Use no subagents. Do not inspect or copy credentials, change runtime/workflows, widen App scope, start unrelated repairs, merge or deploy. secret_access is solely for the backend's existing scoped execution credential; never read credentials yourself. DoneState owns commit, push and PR publication. Report the implementation result without self-certifying VERIFIED. Run this exact command:\n\nnode <<'NODE_CANDIDATE'\nconst fs = require(\"node:fs\");\nconst p = \"governance/project-ledger.json\";\nconst ledger = JSON.parse(fs.readFileSync(p, \"utf8\"));\nconst work = ledger.workItems.find(x => x.id === \"RELEASE-001\");\nif (!work || work.status !== \"blocked\" || ledger.evidenceStories.some(x => x.id === \"E-110\")) throw Error(\"candidate precondition failed\");\nwork.evidenceIds.push(\"E-110\");\nwork.lastUpdated = \"2026-10-09\";\nledger.evidenceStories.push({\"id\":\"E-110\",\"date\":\"2026-10-09\",\"identity\":\"Fresh selected-App customer execution candidate\",\"situation\":\"One newly authorised bounded selected-App customer candidate after independent temporary Write confirmation; historical PR 172 is preserved.\",\"verification\":\"Candidate nonce donestate-selected-app-20261009-0627-oneclick at evidence/clean-customer-20261009/selected-app-marker.json; exact PR-head CI and pinned independent verification are pending.\",\"accountability\":{\"owner\":\"DoneState maintainers\",\"status\":\"blocked\",\"nextAction\":\"Observe the exact published PR head, required CI and pinned independent verification.\",\"waitCondition\":\"Unmerged candidate has not been independently verified.\",\"staleDate\":\"2026-10-10\"},\"outcome\":\"Candidate only; no new-signup, VERIFIED, cleanup or unrestricted-GA claim.\",\"content\":\"Only marker, RELEASE-001 evidence reference and generated state.\",\"measurement\":\"Three authorised files; no runtime, workflow, credential, App scope or permission change.\"});\nfs.mkdirSync(\"evidence/clean-customer-20261009\", {recursive:true});\nfs.writeFileSync(\"evidence/clean-customer-20261009/selected-app-marker.json\", JSON.stringify({\"date\":\"2026-10-09\",\"customer\":\"OneClickPostFactory\",\"repository\":\"AyobamiH/donestate\",\"marker\":\"donestate-selected-app-20261009-0627-oneclick\",\"outcome\":\"selected-app-execution-candidate\"}, null, 2) + \"\\n\");\nfs.writeFileSync(p, JSON.stringify(ledger, null, 2) + \"\\n\");\nNODE_CANDIDATE\nnpm run governance:render && npm run governance:check && git diff --check",
+      "maxChangedFiles": 3,
+      "maxDurationMs": 120000,
+      "publication": "pull_request",
+      "repository": "AyobamiH/donestate",
+      "requestedBy": "OneClickPostFactory",
+      "runId": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+      "schema": "donestate.hosted-objective.v1",
+      "trustedVerifierFingerprints": [
+        "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+      ],
+      "validationProfile": "node",
+      "verificationContractVersion": "donestate.verification-contract.v2",
+      "verificationRequirements": [
+        {
+          "criterionIndex": 0,
+          "expected": "2026-10-09",
+          "id": "marker-date",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/date"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "OneClickPostFactory",
+          "id": "marker-customer",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/customer"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "AyobamiH/donestate",
+          "id": "marker-repository",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/repository"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "donestate-selected-app-20261009-0627-oneclick",
+          "id": "marker-marker",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/marker"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "selected-app-execution-candidate",
+          "id": "marker-outcome",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/outcome"
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-ledger",
+          "kind": "file_contains",
+          "path": "governance/project-ledger.json",
+          "values": [
+            "E-110",
+            "Fresh selected-App customer execution candidate",
+            "donestate-selected-app-20261009-0627-oneclick",
+            "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+          ]
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-generated",
+          "kind": "file_contains",
+          "path": "docs/PROJECT-STATE.md",
+          "values": [
+            "E-110",
+            "Fresh selected-App customer execution candidate",
+            "donestate-selected-app-20261009-0627-oneclick"
+          ]
+        },
+        {
+          "allowedPaths": [
+            "evidence/clean-customer-20261009/selected-app-marker.json",
+            "governance/project-ledger.json",
+            "docs/PROJECT-STATE.md"
+          ],
+          "criterionIndex": 2,
+          "id": "only-authorised-files",
+          "kind": "changed_files",
+          "max": 3
+        },
+        {
+          "criterionIndex": 3,
+          "id": "required-pr-head-ci",
+          "kind": "github_checks_pass",
+          "requiredNames": [
+            "core (22)",
+            "core (24)",
+            "hosted-plugin"
+          ]
+        }
+      ]
+    },
+    "createdAt": "2026-10-09T07:17:41.233Z",
+    "updatedAt": "2026-10-09T07:18:38.458Z",
+    "lastError": null,
+    "branchName": null,
+    "branchHeadSha": null,
+    "pullRequestNumber": null,
+    "pullRequestUrl": null,
+    "verificationSnapshotDigest": null,
+    "verifierDecisionSummary": null,
+    "actions": [],
+    "events": [
+      {
+        "sequence": 1,
+        "eventType": "run_received",
+        "fromState": null,
+        "toState": "RECEIVED",
+        "detail": null,
+        "createdAt": "2026-10-09T07:17:41.233Z",
+        "previousDigest": null,
+        "digest": "e0bf9546dfcdf6cf64eec8651c50fee4d6ce5161927a253e47accf7ae43d6c10"
+      },
+      {
+        "sequence": 2,
+        "eventType": "run_queued",
+        "fromState": "RECEIVED",
+        "toState": "QUEUED",
+        "detail": null,
+        "createdAt": "2026-10-09T07:18:38.458Z",
+        "previousDigest": "e0bf9546dfcdf6cf64eec8651c50fee4d6ce5161927a253e47accf7ae43d6c10",
+        "digest": "7a7d1335782400ffae53b8b4f03140313a3c2ffc4606c92ee4aaf57e4754f2e3"
+      }
+    ]
+  },
+  "currentCheckpoint": "VERIFIED_SELECTED_APP_ACCEPTANCE_AND_ALL_NEW_STATE_AUTHORITY_CLEANUP_CONFIRMED",
+  "historicalRunAndPr172Unchanged": true,
+  "originalAccountDeletionNotRepeated": true,
+  "oldSourceStoriesPreserved": true,
+  "appScopeExpanded": false,
+  "firstTimeGithubSignupProven": false,
+  "unrestrictedGaClaimed": false,
+  "initialVerificationCheckpoint": {
+    "id": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+    "ownerLogin": "OneClickPostFactory",
+    "state": "AWAITING_VERIFICATION",
+    "objective": {
+      "acceptanceCriteria": [
+        "The candidate marker contains the sealed date, customer, repository, nonce and candidate-only outcome.",
+        "The ledger and generated state contain E-110 and its nonce; RELEASE-001 identity, blocked status and dependencies are preserved.",
+        "Only the three authorised marker, ledger and generated-state files change.",
+        "The published customer PR head passes core (22), core (24) and hosted-plugin before independent verification."
+      ],
+      "authorities": [
+        "local_read",
+        "local_write",
+        "test",
+        "commit",
+        "push",
+        "open_pr",
+        "secret_access"
+      ],
+      "baseHeadSha": "f5a00d20d70a41827911d8fb148590891bbaad42",
+      "baseRef": "main",
+      "goal": "Implement exactly this bounded three-file candidate using one command below. Preserve all prior evidence stories and unrelated work items, and RELEASE-001 identity, blocked status and dependencies. Use no subagents. Do not inspect or copy credentials, change runtime/workflows, widen App scope, start unrelated repairs, merge or deploy. secret_access is solely for the backend's existing scoped execution credential; never read credentials yourself. DoneState owns commit, push and PR publication. Report the implementation result without self-certifying VERIFIED. Run this exact command:\n\nnode <<'NODE_CANDIDATE'\nconst fs = require(\"node:fs\");\nconst p = \"governance/project-ledger.json\";\nconst ledger = JSON.parse(fs.readFileSync(p, \"utf8\"));\nconst work = ledger.workItems.find(x => x.id === \"RELEASE-001\");\nif (!work || work.status !== \"blocked\" || ledger.evidenceStories.some(x => x.id === \"E-110\")) throw Error(\"candidate precondition failed\");\nwork.evidenceIds.push(\"E-110\");\nwork.lastUpdated = \"2026-10-09\";\nledger.evidenceStories.push({\"id\":\"E-110\",\"date\":\"2026-10-09\",\"identity\":\"Fresh selected-App customer execution candidate\",\"situation\":\"One newly authorised bounded selected-App customer candidate after independent temporary Write confirmation; historical PR 172 is preserved.\",\"verification\":\"Candidate nonce donestate-selected-app-20261009-0627-oneclick at evidence/clean-customer-20261009/selected-app-marker.json; exact PR-head CI and pinned independent verification are pending.\",\"accountability\":{\"owner\":\"DoneState maintainers\",\"status\":\"blocked\",\"nextAction\":\"Observe the exact published PR head, required CI and pinned independent verification.\",\"waitCondition\":\"Unmerged candidate has not been independently verified.\",\"staleDate\":\"2026-10-10\"},\"outcome\":\"Candidate only; no new-signup, VERIFIED, cleanup or unrestricted-GA claim.\",\"content\":\"Only marker, RELEASE-001 evidence reference and generated state.\",\"measurement\":\"Three authorised files; no runtime, workflow, credential, App scope or permission change.\"});\nfs.mkdirSync(\"evidence/clean-customer-20261009\", {recursive:true});\nfs.writeFileSync(\"evidence/clean-customer-20261009/selected-app-marker.json\", JSON.stringify({\"date\":\"2026-10-09\",\"customer\":\"OneClickPostFactory\",\"repository\":\"AyobamiH/donestate\",\"marker\":\"donestate-selected-app-20261009-0627-oneclick\",\"outcome\":\"selected-app-execution-candidate\"}, null, 2) + \"\\n\");\nfs.writeFileSync(p, JSON.stringify(ledger, null, 2) + \"\\n\");\nNODE_CANDIDATE\nnpm run governance:render && npm run governance:check && git diff --check",
+      "maxChangedFiles": 3,
+      "maxDurationMs": 120000,
+      "publication": "pull_request",
+      "repository": "AyobamiH/donestate",
+      "requestedBy": "OneClickPostFactory",
+      "runId": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+      "schema": "donestate.hosted-objective.v1",
+      "trustedVerifierFingerprints": [
+        "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+      ],
+      "validationProfile": "node",
+      "verificationContractVersion": "donestate.verification-contract.v2",
+      "verificationRequirements": [
+        {
+          "criterionIndex": 0,
+          "expected": "2026-10-09",
+          "id": "marker-date",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/date"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "OneClickPostFactory",
+          "id": "marker-customer",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/customer"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "AyobamiH/donestate",
+          "id": "marker-repository",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/repository"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "donestate-selected-app-20261009-0627-oneclick",
+          "id": "marker-marker",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/marker"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "selected-app-execution-candidate",
+          "id": "marker-outcome",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/outcome"
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-ledger",
+          "kind": "file_contains",
+          "path": "governance/project-ledger.json",
+          "values": [
+            "E-110",
+            "Fresh selected-App customer execution candidate",
+            "donestate-selected-app-20261009-0627-oneclick",
+            "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+          ]
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-generated",
+          "kind": "file_contains",
+          "path": "docs/PROJECT-STATE.md",
+          "values": [
+            "E-110",
+            "Fresh selected-App customer execution candidate",
+            "donestate-selected-app-20261009-0627-oneclick"
+          ]
+        },
+        {
+          "allowedPaths": [
+            "evidence/clean-customer-20261009/selected-app-marker.json",
+            "governance/project-ledger.json",
+            "docs/PROJECT-STATE.md"
+          ],
+          "criterionIndex": 2,
+          "id": "only-authorised-files",
+          "kind": "changed_files",
+          "max": 3
+        },
+        {
+          "criterionIndex": 3,
+          "id": "required-pr-head-ci",
+          "kind": "github_checks_pass",
+          "requiredNames": [
+            "core (22)",
+            "core (24)",
+            "hosted-plugin"
+          ]
+        }
+      ]
+    },
+    "createdAt": "2026-10-09T07:17:41.233Z",
+    "updatedAt": "2026-10-09T07:21:23.043Z",
+    "lastError": null,
+    "branchName": "donestate/bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+    "branchHeadSha": "1bf4c2823ca95da50c053dc888703e61e68a2464",
+    "pullRequestNumber": 177,
+    "pullRequestUrl": "https://github.com/AyobamiH/donestate/pull/177",
+    "verificationSnapshotDigest": "c442bfdb17b9b031a2c963835c0c358cbaac18c00e2077f089d26adef73e3db4",
+    "verifierDecisionSummary": {
+      "schema": "donestate.verification-attestation.v2",
+      "decision": "uncertain",
+      "issuedAt": "2026-10-09T07:21:19.693Z",
+      "issuedBy": "urn:opstruth:service:public-verifier",
+      "evidenceRefs": [
+        "https://github.com/AyobamiH/donestate/commit/1bf4c2823ca95da50c053dc888703e61e68a2464",
+        "https://github.com/AyobamiH/donestate/compare/f5a00d20d70a41827911d8fb148590891bbaad42...1bf4c2823ca95da50c053dc888703e61e68a2464"
+      ],
+      "verificationReportDigest": "69ce89d153c8021b1efbaadc6fdfbc23dbe912f72daf879842edb8179dfd8c96",
+      "signerFingerprint": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+    },
+    "actions": [
+      {
+        "id": "clone",
+        "authority": "local_read",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:clone:v1",
+        "intentDigest": "10665c07930d803c000ad607d1a43b508a3af13140eaab569902bddf85d0814d",
+        "result": {
+          "attempt": 1,
+          "attempts": 1,
+          "exitCode": 0,
+          "maxAttempts": 3,
+          "sandboxId": "run-bca89cb4-f7f3-4ac4-ab98-7d59854b5135-clone-1",
+          "stderr": "Cloning into '/workspace/repo'...\n",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:18:43.559Z"
+      },
+      {
+        "id": "implement",
+        "authority": "local_write",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:implement:v1",
+        "intentDigest": "fd2101290d316dfecb3bcc8cdafb064b2d29e93e913c079f42a855678ac2d582",
+        "result": {
+          "controlRecovered": true,
+          "exitCode": 0,
+          "launchAcknowledged": true,
+          "launchError": null,
+          "postImplementationHead": "f5a00d20d70a41827911d8fb148590891bbaad42",
+          "receiptDeadlineMs": 1791530459721,
+          "receiptPollAttempt": 4,
+          "receiptSchema": "donestate.implementation-receipt.v1",
+          "receiptVerified": true,
+          "repositoryGovernanceRequired": false,
+          "sandboxId": "run-bca89cb4-f7f3-4ac4-ab98-7d59854b5135-clone-1",
+          "success": true
+        },
+        "updatedAt": "2026-10-09T07:19:06.011Z"
+      },
+      {
+        "id": "diff-check",
+        "authority": "test",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:diff-check:v1",
+        "intentDigest": "908c3c17cc0a2fc0a0550e00b4afe0baf0c51cc3f065d78d5ba0c3183971a723",
+        "result": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:19:36.112Z"
+      },
+      {
+        "id": "install-node",
+        "authority": "test",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:install-node:v1",
+        "intentDigest": "0511e511d94db6c0a4a15d661028fd63299ea0c40fa12bd771ccb5a50ffcf2c3",
+        "result": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": "\n> donestate@0.2.0 prepare\n> npm run build\n\n\n> donestate@0.2.0 build\n> node scripts/clean.mjs dist && tsc\n\n\n> donestate@0.2.0 postbuild\n> chmod 755 dist/cli.js\n\n\nadded 9 packages, and audited 10 packages in 31s\n\n2 packages are looking for funding\n  run `npm fund` for details\n\nfound 0 vulnerabilities\n",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:20:08.226Z"
+      },
+      {
+        "id": "validate-node",
+        "authority": "test",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:validate-node:v1",
+        "intentDigest": "1afd9aaa1c688d6483991a36297c707f85170e25af6bdca1c1504ecff8874234",
+        "result": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": "\n> donestate@0.2.0 test\n> npm run build && node scripts/clean.mjs test-dist && tsc -p tsconfig.test.json && node --test test-dist/test/*.test.js scripts/*.test.mjs\n\n\n> donestate@0.2.0 build\n> node scripts/clean.mjs dist && tsc\n\n\n> donestate@0.2.0 postbuild\n> chmod 755 dist/cli.js\n\nTAP version 13\n# Subtest: accepts verified active main protection\nok 1 - accepts verified active main protection\n  ---\n  duration_ms: 16.094634\n  ...\n# Subtest: rejects provider regression to unprotected\nok 2 - rejects provider regression to unprotected\n  ---\n  duration_ms: 83.285511\n  ...\n# Subtest: rejects ruleset identity drift\nok 3 - rejects ruleset identity drift\n  ---\n  duration_ms: 8.645597\n  ...\n# Subtest: rejects silently adding a Stage 1 approval\nok 4 - rejects silently adding a Stage 1 approval\n  ---\n  duration_ms: 6.142275\n  ...\n# Subtest: rejects required check drift\nok 5 - rejects required check drift\n  ---\n  duration_ms: 82.14709\n  ...\n# Subtest: rejects stale blocked documentation\nok 6 - rejects stale blocked documentation\n  ---\n  duration_ms: 6.839915\n  ...\n# Subtest: rejects reopening GOV-003 without evidence\nok 7 - rejects reopening GOV-003 without evidence\n  ---\n  duration_ms: 6.405496\n  ...\n# Subtest: rejects the memory profiles below the measured compiler footprint\nok 8 - rejects the memory profiles below the measured compiler footprint\n  ---\n  duration_ms: 1.399821\n  ...\n# Subtest: accepts supported profiles with room for repository validation\nok 9 - accepts supported profiles with room for repository validation\n  ---\n  duration_ms: 0.25879\n  ...\n# Subtest: fails closed when the production Sandbox identity or capacity is unspecified\nok 10 - fails closed when the production Sandbox identity or capacity is unspecified\n  ---\n  duration_ms: 0.36085\n  ...\n# Subtest: the production configuration has sufficient capacity and a lite regression is rejected\nok 11 - the production configuration has sufficient capacity and a lite regression is rejected\n  ---\n  duration_ms: 9.945549\n  ...\n# Subtest: accepts an Ed25519 attestation from a pinned independent verifier\nok 12 - accepts an Ed25519 attestation from a pinned independent verifier\n  ---\n  duration_ms: 97.051732\n  ...\n# Subtest: rejects DoneState as its own verifier\nok 13 - rejects DoneState as its own verifier\n  ---\n  duration_ms: 4.022423\n  ...\n# Subtest: CLI exposes machine-readable capabilities for humans and agents\nok 14 - CLI exposes machine-readable capabilities for humans and agents\n  ---\n  duration_ms: 296.801803\n  ...\n# Subtest: CLI create/list/cancel/delete lifecycle is consumable as structured JSON\nok 15 - CLI create/list/cancel/delete lifecycle is consumable as structured JSON\n  ---\n  duration_ms: 1588.088544\n  ...\n# Subtest: CLI maintenance discovery persists labeled issues and keeps workflow failures evidence-only\nok 16 - CLI maintenance discovery persists labeled issues and keeps workflow failures evidence-only\n  ---\n  duration_ms: 904.143591\n  ...\n# (node:541) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: executes a bounded objective and stops for independent verification\nok 17 - executes a bounded objective and stops for independent verification\n  ---\n  duration_ms: 601.595423\n  ...\n# Subtest: only a trusted signed independent attestation can produce VERIFIED\nok 18 - only a trusted signed independent attestation can produce VERIFIED\n  ---\n  duration_ms: 689.643698\n  ...\n# Subtest: records VERIFIED after a matching attestation from the pinned verifier\nok 19 - records VERIFIED after a matching attestation from the pinned verifier\n  ---\n  duration_ms: 593.172306\n  ...\n# Subtest: keeps an uncertain verifier decision in AWAITING_VERIFICATION for a fresh retry\nok 20 - keeps an uncertain verifier decision in AWAITING_VERIFICATION for a fresh retry\n  ---\n  duration_ms: 608.841459\n  ...\n# Subtest: blocks an action when its consequence lacks standing authority\nok 21 - blocks an action when its consequence lacks standing authority\n  ---\n  duration_ms: 211.574831\n  ...\n# Subtest: resumes after a missing executable becomes available\nok 22 - resumes after a missing executable becomes available\n  ---\n  duration_ms: 502.116818\n  ...\n# Subtest: reconciliation blocks a Git workspace that exceeds the changed-file budget\nok 23 - reconciliation blocks a Git workspace that exceeds the changed-file budget\n  ---\n  duration_ms: 492.98128\n  ...\n# Subtest: creates a durable objective without executing until explicitly started\nok 24 - creates a durable objective without executing until explicitly started\n  ---\n  duration_ms: 493.714811\n  ...\n# Subtest: cancels a created local objective before execution\nok 25 - cancels a created local objective before execution\n  ---\n  duration_ms: 108.288043\n  ...\n# Subtest: refuses local cancellation while another worker lease is active\nok 26 - refuses local cancellation while another worker lease is active\n  ---\n  duration_ms: 181.923025\n  ...\n# Subtest: blocks publication before external effects when the changed-file budget is exceeded\nok 27 - blocks publication before external effects when the changed-file budget is exceeded\n  ---\n  duration_ms: 520.580464\n  ...\n# Subtest: admits a bounded objective under standing local authority\nok 28 - admits a bounded objective under standing local authority\n  ---\n  duration_ms: 94.605501\n  ...\n# Subtest: rejects a working directory that escapes the repository\nok 29 - rejects a working directory that escapes the repository\n  ---\n  duration_ms: 2.987823\n  ...\n# Subtest: binds an authority envelope to the exact objective digest\nok 30 - binds an authority envelope to the exact objective digest\n  ---\n  duration_ms: 3.073823\n  ...\n# Subtest: requires secret authority for secret-bearing environment keys\nok 31 - requires secret authority for secret-bearing environment keys\n  ---\n  duration_ms: 1.097481\n  ...\n# Subtest: never persists a literal secret-bearing environment value\nok 32 - never persists a literal secret-bearing environment value\n  ---\n  duration_ms: 2.429231\n  ...\n# Subtest: rejects duplicate explicit idempotency keys\nok 33 - rejects duplicate explicit idempotency keys\n  ---\n  duration_ms: 79.668388\n  ...\n# Subtest: reports malformed JSON contracts as invalid input\nok 34 - reports malformed JSON contracts as invalid input\n  ---\n  duration_ms: 0.38483\n  ...\n# Subtest: redacts explicit and recognisable secret material\nok 35 - redacts explicit and recognisable secret material\n  ---\n  duration_ms: 1.395921\n  ...\n# Subtest: truncates output by byte budget\nok 36 - truncates output by byte budget\n  ---\n  duration_ms: 0.737431\n  ...\n# Subtest: published schemas compile and examples conform\nok 37 - published schemas compile and examples conform\n  ---\n  duration_ms: 1686.009167\n  ...\n# (node:657) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: leases reject concurrent owners and advance fencing tokens after expiry\nok 38 - leases reject concurrent owners and advance fencing tokens after expiry\n  ---\n  duration_ms: 204.073454\n  ...\n# Subtest: resume turns an unsettled mutating intent into AMBIGUOUS_EFFECT\nok 39 - resume turns an unsettled mutating intent into AMBIGUOUS_EFFECT\n  ---\n  duration_ms: 298.218374\n  ...\n# Subtest: lists recent runs and deletes only settled local run state\nok 40 - lists recent runs and deletes only settled local run state\n  ---\n  duration_ms: 215.964664\n  ...\n# (node:669) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: local published runs can complete the strict v2 independent-verification contract\nok 41 - local published runs can complete the strict v2 independent-verification contract\n  ---\n  duration_ms: 902.55159\n  ...\n# Subtest: verification compatibility vectors bind signer fingerprints to their public keys\nok 42 - verification compatibility vectors bind signer fingerprints to their public keys\n  ---\n  duration_ms: 85.685813\n  ...\n# Subtest: CLI help reports the package metadata version\nok 43 - CLI help reports the package metadata version\n  ---\n  duration_ms: 401.748622\n  ...\n# Subtest: counts Git workspace changes while excluding DoneState local state\nok 44 - counts Git workspace changes while excluding DoneState local state\n  ---\n  duration_ms: 184.081797\n  ...\n1..44\n# tests 44\n# suites 0\n# pass 44\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 19118.190755\n",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:21:10.344Z"
+      },
+      {
+        "id": "create-commit",
+        "authority": "commit",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:create-commit:v1",
+        "intentDigest": "43b0b08f63311bd8b570118bc8b3ab8b7c836e1cdc1771213951f7c6fb66bd92",
+        "result": {
+          "exitCode": 0,
+          "stderr": "Switched to a new branch 'donestate/bca89cb4-f7f3-4ac4-ab98-7d59854b5135'\n",
+          "stdout": "[donestate/bca89cb4-f7f3-4ac4-ab98-7d59854b5135 1bf4c28] DoneState objective bca89cb4-f7f3-4ac4-ab98-7d59854b5135\n 3 files changed, 36 insertions(+), 1 deletion(-)\n create mode 100644 evidence/clean-customer-20261009/selected-app-marker.json\n",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:21:11.822Z"
+      },
+      {
+        "id": "prepare-publication-credentials",
+        "authority": "secret_access",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:prepare-publication-credentials:v1",
+        "intentDigest": "6e41da1cb391c9f4a1b3bfe8ace721c4d0a7c61cc839fc0b292c6fd1e3a7097a",
+        "result": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:21:13.638Z"
+      },
+      {
+        "id": "push-branch",
+        "authority": "push",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:push-branch:v1",
+        "intentDigest": "dc5573fad35d7327a4a56ce2f4e57c2ff8f309dbbd2dccbf25e5bca03c26d27b",
+        "result": {
+          "branchHeadSha": "1bf4c2823ca95da50c053dc888703e61e68a2464",
+          "branchName": "donestate/bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+          "probe": "github_ref_match"
+        },
+        "updatedAt": "2026-10-09T07:21:15.826Z"
+      },
+      {
+        "id": "open-pull-request",
+        "authority": "open_pr",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:open-pull-request:v1",
+        "intentDigest": "f9da05b3ed28995a678703c3f69cb0a2c65b42c46598b4d368c98c110cfa3e8c",
+        "result": {
+          "headSha": "1bf4c2823ca95da50c053dc888703e61e68a2464",
+          "htmlUrl": "https://github.com/AyobamiH/donestate/pull/177",
+          "number": 177
+        },
+        "updatedAt": "2026-10-09T07:21:19.219Z"
+      }
+    ],
+    "events": [
+      {
+        "sequence": 1,
+        "eventType": "run_received",
+        "fromState": null,
+        "toState": "RECEIVED",
+        "detail": null,
+        "createdAt": "2026-10-09T07:17:41.233Z",
+        "previousDigest": null,
+        "digest": "e0bf9546dfcdf6cf64eec8651c50fee4d6ce5161927a253e47accf7ae43d6c10"
+      },
+      {
+        "sequence": 2,
+        "eventType": "run_queued",
+        "fromState": "RECEIVED",
+        "toState": "QUEUED",
+        "detail": null,
+        "createdAt": "2026-10-09T07:18:38.458Z",
+        "previousDigest": "e0bf9546dfcdf6cf64eec8651c50fee4d6ce5161927a253e47accf7ae43d6c10",
+        "digest": "7a7d1335782400ffae53b8b4f03140313a3c2ffc4606c92ee4aaf57e4754f2e3"
+      },
+      {
+        "sequence": 3,
+        "eventType": "execution_started",
+        "fromState": "QUEUED",
+        "toState": "EXECUTING",
+        "detail": null,
+        "createdAt": "2026-10-09T07:18:38.541Z",
+        "previousDigest": "7a7d1335782400ffae53b8b4f03140313a3c2ffc4606c92ee4aaf57e4754f2e3",
+        "digest": "6ae04966ca4011e1d906879a4eddbdf81e7441b9d1f1d59a15265f6ff22bb45a"
+      },
+      {
+        "sequence": 4,
+        "eventType": "validation_started",
+        "fromState": "EXECUTING",
+        "toState": "VALIDATING",
+        "detail": null,
+        "createdAt": "2026-10-09T07:19:36.035Z",
+        "previousDigest": "6ae04966ca4011e1d906879a4eddbdf81e7441b9d1f1d59a15265f6ff22bb45a",
+        "digest": "68807955761b89d30a4ee25355d4bde90cf9115f3f65face55d8a0ba6dca3b4c"
+      },
+      {
+        "sequence": 5,
+        "eventType": "publication_started",
+        "fromState": "VALIDATING",
+        "toState": "PUBLISHING",
+        "detail": null,
+        "createdAt": "2026-10-09T07:21:12.960Z",
+        "previousDigest": "68807955761b89d30a4ee25355d4bde90cf9115f3f65face55d8a0ba6dca3b4c",
+        "digest": "2650ae2ef4e2add732e9625e572bc295a30742fcdb2f6f6cbcbbcbf8639494ba"
+      },
+      {
+        "sequence": 6,
+        "eventType": "execution_reconciled",
+        "fromState": "PUBLISHING",
+        "toState": "RECONCILING",
+        "detail": null,
+        "createdAt": "2026-10-09T07:21:19.591Z",
+        "previousDigest": "2650ae2ef4e2add732e9625e572bc295a30742fcdb2f6f6cbcbbcbf8639494ba",
+        "digest": "37b3cf0d5b696a1df20b2ce21d60a781f0ca222a7770921a2fee45c9184ce20c"
+      },
+      {
+        "sequence": 7,
+        "eventType": "independent_verification_required",
+        "fromState": "RECONCILING",
+        "toState": "AWAITING_VERIFICATION",
+        "detail": "c442bfdb17b9b031a2c963835c0c358cbaac18c00e2077f089d26adef73e3db4",
+        "createdAt": "2026-10-09T07:21:19.591Z",
+        "previousDigest": "37b3cf0d5b696a1df20b2ce21d60a781f0ca222a7770921a2fee45c9184ce20c",
+        "digest": "0b818058c997f18c4f84bdd73a2dcfd7ea435209bb22293fb00a3d10bf44b90f"
+      },
+      {
+        "sequence": 8,
+        "eventType": "independent_verification_response_recorded",
+        "fromState": "AWAITING_VERIFICATION",
+        "toState": "AWAITING_VERIFICATION",
+        "detail": "uncertain",
+        "createdAt": "2026-10-09T07:21:23.043Z",
+        "previousDigest": "0b818058c997f18c4f84bdd73a2dcfd7ea435209bb22293fb00a3d10bf44b90f",
+        "digest": "08fa355b39528bb845745df51a255e44a06516aa7a1e5ca67a0ef64a6854ab59"
+      }
+    ]
+  },
+  "customerPullRequest": {
+    "number": 177,
+    "url": "https://github.com/AyobamiH/donestate/pull/177",
+    "headSha": "1bf4c2823ca95da50c053dc888703e61e68a2464",
+    "baseSha": "f5a00d20d70a41827911d8fb148590891bbaad42",
+    "merged": false,
+    "changedFiles": [
+      "docs/PROJECT-STATE.md",
+      "evidence/clean-customer-20261009/selected-app-marker.json",
+      "governance/project-ledger.json"
+    ]
+  },
+  "exactPrHeadChecks": [
+    {
+      "name": "core (22)",
+      "headSha": "1bf4c2823ca95da50c053dc888703e61e68a2464",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/AyobamiH/donestate/actions/runs/37898537150/job/113715421225"
+    },
+    {
+      "name": "core (24)",
+      "headSha": "1bf4c2823ca95da50c053dc888703e61e68a2464",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/AyobamiH/donestate/actions/runs/37898537150/job/113715421093"
+    },
+    {
+      "name": "hosted-plugin",
+      "headSha": "1bf4c2823ca95da50c053dc888703e61e68a2464",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/AyobamiH/donestate/actions/runs/37898537150/job/113715420950"
+    }
+  ],
+  "publishedPreviousStoriesAndOtherWorkFieldsReadbackPreserved": true,
+  "finalVerifiedRun": {
+    "id": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+    "ownerLogin": "OneClickPostFactory",
+    "state": "VERIFIED",
+    "objective": {
+      "acceptanceCriteria": [
+        "The candidate marker contains the sealed date, customer, repository, nonce and candidate-only outcome.",
+        "The ledger and generated state contain E-110 and its nonce; RELEASE-001 identity, blocked status and dependencies are preserved.",
+        "Only the three authorised marker, ledger and generated-state files change.",
+        "The published customer PR head passes core (22), core (24) and hosted-plugin before independent verification."
+      ],
+      "authorities": [
+        "local_read",
+        "local_write",
+        "test",
+        "commit",
+        "push",
+        "open_pr",
+        "secret_access"
+      ],
+      "baseHeadSha": "f5a00d20d70a41827911d8fb148590891bbaad42",
+      "baseRef": "main",
+      "goal": "Implement exactly this bounded three-file candidate using one command below. Preserve all prior evidence stories and unrelated work items, and RELEASE-001 identity, blocked status and dependencies. Use no subagents. Do not inspect or copy credentials, change runtime/workflows, widen App scope, start unrelated repairs, merge or deploy. secret_access is solely for the backend's existing scoped execution credential; never read credentials yourself. DoneState owns commit, push and PR publication. Report the implementation result without self-certifying VERIFIED. Run this exact command:\n\nnode <<'NODE_CANDIDATE'\nconst fs = require(\"node:fs\");\nconst p = \"governance/project-ledger.json\";\nconst ledger = JSON.parse(fs.readFileSync(p, \"utf8\"));\nconst work = ledger.workItems.find(x => x.id === \"RELEASE-001\");\nif (!work || work.status !== \"blocked\" || ledger.evidenceStories.some(x => x.id === \"E-110\")) throw Error(\"candidate precondition failed\");\nwork.evidenceIds.push(\"E-110\");\nwork.lastUpdated = \"2026-10-09\";\nledger.evidenceStories.push({\"id\":\"E-110\",\"date\":\"2026-10-09\",\"identity\":\"Fresh selected-App customer execution candidate\",\"situation\":\"One newly authorised bounded selected-App customer candidate after independent temporary Write confirmation; historical PR 172 is preserved.\",\"verification\":\"Candidate nonce donestate-selected-app-20261009-0627-oneclick at evidence/clean-customer-20261009/selected-app-marker.json; exact PR-head CI and pinned independent verification are pending.\",\"accountability\":{\"owner\":\"DoneState maintainers\",\"status\":\"blocked\",\"nextAction\":\"Observe the exact published PR head, required CI and pinned independent verification.\",\"waitCondition\":\"Unmerged candidate has not been independently verified.\",\"staleDate\":\"2026-10-10\"},\"outcome\":\"Candidate only; no new-signup, VERIFIED, cleanup or unrestricted-GA claim.\",\"content\":\"Only marker, RELEASE-001 evidence reference and generated state.\",\"measurement\":\"Three authorised files; no runtime, workflow, credential, App scope or permission change.\"});\nfs.mkdirSync(\"evidence/clean-customer-20261009\", {recursive:true});\nfs.writeFileSync(\"evidence/clean-customer-20261009/selected-app-marker.json\", JSON.stringify({\"date\":\"2026-10-09\",\"customer\":\"OneClickPostFactory\",\"repository\":\"AyobamiH/donestate\",\"marker\":\"donestate-selected-app-20261009-0627-oneclick\",\"outcome\":\"selected-app-execution-candidate\"}, null, 2) + \"\\n\");\nfs.writeFileSync(p, JSON.stringify(ledger, null, 2) + \"\\n\");\nNODE_CANDIDATE\nnpm run governance:render && npm run governance:check && git diff --check",
+      "maxChangedFiles": 3,
+      "maxDurationMs": 120000,
+      "publication": "pull_request",
+      "repository": "AyobamiH/donestate",
+      "requestedBy": "OneClickPostFactory",
+      "runId": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+      "schema": "donestate.hosted-objective.v1",
+      "trustedVerifierFingerprints": [
+        "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+      ],
+      "validationProfile": "node",
+      "verificationContractVersion": "donestate.verification-contract.v2",
+      "verificationRequirements": [
+        {
+          "criterionIndex": 0,
+          "expected": "2026-10-09",
+          "id": "marker-date",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/date"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "OneClickPostFactory",
+          "id": "marker-customer",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/customer"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "AyobamiH/donestate",
+          "id": "marker-repository",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/repository"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "donestate-selected-app-20261009-0627-oneclick",
+          "id": "marker-marker",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/marker"
+        },
+        {
+          "criterionIndex": 0,
+          "expected": "selected-app-execution-candidate",
+          "id": "marker-outcome",
+          "kind": "json_equals",
+          "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+          "pointer": "/outcome"
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-ledger",
+          "kind": "file_contains",
+          "path": "governance/project-ledger.json",
+          "values": [
+            "E-110",
+            "Fresh selected-App customer execution candidate",
+            "donestate-selected-app-20261009-0627-oneclick",
+            "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+          ]
+        },
+        {
+          "criterionIndex": 1,
+          "id": "candidate-generated",
+          "kind": "file_contains",
+          "path": "docs/PROJECT-STATE.md",
+          "values": [
+            "E-110",
+            "Fresh selected-App customer execution candidate",
+            "donestate-selected-app-20261009-0627-oneclick"
+          ]
+        },
+        {
+          "allowedPaths": [
+            "evidence/clean-customer-20261009/selected-app-marker.json",
+            "governance/project-ledger.json",
+            "docs/PROJECT-STATE.md"
+          ],
+          "criterionIndex": 2,
+          "id": "only-authorised-files",
+          "kind": "changed_files",
+          "max": 3
+        },
+        {
+          "criterionIndex": 3,
+          "id": "required-pr-head-ci",
+          "kind": "github_checks_pass",
+          "requiredNames": [
+            "core (22)",
+            "core (24)",
+            "hosted-plugin"
+          ]
+        }
+      ]
+    },
+    "createdAt": "2026-10-09T07:17:41.233Z",
+    "updatedAt": "2026-10-09T07:23:13.396Z",
+    "lastError": null,
+    "branchName": "donestate/bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+    "branchHeadSha": "1bf4c2823ca95da50c053dc888703e61e68a2464",
+    "pullRequestNumber": 177,
+    "pullRequestUrl": "https://github.com/AyobamiH/donestate/pull/177",
+    "verificationSnapshotDigest": "c442bfdb17b9b031a2c963835c0c358cbaac18c00e2077f089d26adef73e3db4",
+    "verifierDecisionSummary": {
+      "schema": "donestate.verification-attestation.v2",
+      "decision": "verified",
+      "issuedAt": "2026-10-09T07:23:09.661Z",
+      "issuedBy": "urn:opstruth:service:public-verifier",
+      "evidenceRefs": [
+        "https://github.com/AyobamiH/donestate/actions/runs/37898537150/job/113715420950",
+        "https://github.com/AyobamiH/donestate/actions/runs/37898537150/job/113715421093",
+        "https://github.com/AyobamiH/donestate/actions/runs/37898537150/job/113715421225",
+        "https://github.com/AyobamiH/donestate/commit/1bf4c2823ca95da50c053dc888703e61e68a2464",
+        "https://github.com/AyobamiH/donestate/compare/f5a00d20d70a41827911d8fb148590891bbaad42...1bf4c2823ca95da50c053dc888703e61e68a2464"
+      ],
+      "verificationReportDigest": "892f2cbace2fd74b5f300022b9d05eddef4a37c483d7c2ff63763901a8567577",
+      "signerFingerprint": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+    },
+    "actions": [
+      {
+        "id": "clone",
+        "authority": "local_read",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:clone:v1",
+        "intentDigest": "10665c07930d803c000ad607d1a43b508a3af13140eaab569902bddf85d0814d",
+        "result": {
+          "attempt": 1,
+          "attempts": 1,
+          "exitCode": 0,
+          "maxAttempts": 3,
+          "sandboxId": "run-bca89cb4-f7f3-4ac4-ab98-7d59854b5135-clone-1",
+          "stderr": "Cloning into '/workspace/repo'...\n",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:18:43.559Z"
+      },
+      {
+        "id": "implement",
+        "authority": "local_write",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:implement:v1",
+        "intentDigest": "fd2101290d316dfecb3bcc8cdafb064b2d29e93e913c079f42a855678ac2d582",
+        "result": {
+          "controlRecovered": true,
+          "exitCode": 0,
+          "launchAcknowledged": true,
+          "launchError": null,
+          "postImplementationHead": "f5a00d20d70a41827911d8fb148590891bbaad42",
+          "receiptDeadlineMs": 1791530459721,
+          "receiptPollAttempt": 4,
+          "receiptSchema": "donestate.implementation-receipt.v1",
+          "receiptVerified": true,
+          "repositoryGovernanceRequired": false,
+          "sandboxId": "run-bca89cb4-f7f3-4ac4-ab98-7d59854b5135-clone-1",
+          "success": true
+        },
+        "updatedAt": "2026-10-09T07:19:06.011Z"
+      },
+      {
+        "id": "diff-check",
+        "authority": "test",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:diff-check:v1",
+        "intentDigest": "908c3c17cc0a2fc0a0550e00b4afe0baf0c51cc3f065d78d5ba0c3183971a723",
+        "result": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:19:36.112Z"
+      },
+      {
+        "id": "install-node",
+        "authority": "test",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:install-node:v1",
+        "intentDigest": "0511e511d94db6c0a4a15d661028fd63299ea0c40fa12bd771ccb5a50ffcf2c3",
+        "result": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": "\n> donestate@0.2.0 prepare\n> npm run build\n\n\n> donestate@0.2.0 build\n> node scripts/clean.mjs dist && tsc\n\n\n> donestate@0.2.0 postbuild\n> chmod 755 dist/cli.js\n\n\nadded 9 packages, and audited 10 packages in 31s\n\n2 packages are looking for funding\n  run `npm fund` for details\n\nfound 0 vulnerabilities\n",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:20:08.226Z"
+      },
+      {
+        "id": "validate-node",
+        "authority": "test",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:validate-node:v1",
+        "intentDigest": "1afd9aaa1c688d6483991a36297c707f85170e25af6bdca1c1504ecff8874234",
+        "result": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": "\n> donestate@0.2.0 test\n> npm run build && node scripts/clean.mjs test-dist && tsc -p tsconfig.test.json && node --test test-dist/test/*.test.js scripts/*.test.mjs\n\n\n> donestate@0.2.0 build\n> node scripts/clean.mjs dist && tsc\n\n\n> donestate@0.2.0 postbuild\n> chmod 755 dist/cli.js\n\nTAP version 13\n# Subtest: accepts verified active main protection\nok 1 - accepts verified active main protection\n  ---\n  duration_ms: 16.094634\n  ...\n# Subtest: rejects provider regression to unprotected\nok 2 - rejects provider regression to unprotected\n  ---\n  duration_ms: 83.285511\n  ...\n# Subtest: rejects ruleset identity drift\nok 3 - rejects ruleset identity drift\n  ---\n  duration_ms: 8.645597\n  ...\n# Subtest: rejects silently adding a Stage 1 approval\nok 4 - rejects silently adding a Stage 1 approval\n  ---\n  duration_ms: 6.142275\n  ...\n# Subtest: rejects required check drift\nok 5 - rejects required check drift\n  ---\n  duration_ms: 82.14709\n  ...\n# Subtest: rejects stale blocked documentation\nok 6 - rejects stale blocked documentation\n  ---\n  duration_ms: 6.839915\n  ...\n# Subtest: rejects reopening GOV-003 without evidence\nok 7 - rejects reopening GOV-003 without evidence\n  ---\n  duration_ms: 6.405496\n  ...\n# Subtest: rejects the memory profiles below the measured compiler footprint\nok 8 - rejects the memory profiles below the measured compiler footprint\n  ---\n  duration_ms: 1.399821\n  ...\n# Subtest: accepts supported profiles with room for repository validation\nok 9 - accepts supported profiles with room for repository validation\n  ---\n  duration_ms: 0.25879\n  ...\n# Subtest: fails closed when the production Sandbox identity or capacity is unspecified\nok 10 - fails closed when the production Sandbox identity or capacity is unspecified\n  ---\n  duration_ms: 0.36085\n  ...\n# Subtest: the production configuration has sufficient capacity and a lite regression is rejected\nok 11 - the production configuration has sufficient capacity and a lite regression is rejected\n  ---\n  duration_ms: 9.945549\n  ...\n# Subtest: accepts an Ed25519 attestation from a pinned independent verifier\nok 12 - accepts an Ed25519 attestation from a pinned independent verifier\n  ---\n  duration_ms: 97.051732\n  ...\n# Subtest: rejects DoneState as its own verifier\nok 13 - rejects DoneState as its own verifier\n  ---\n  duration_ms: 4.022423\n  ...\n# Subtest: CLI exposes machine-readable capabilities for humans and agents\nok 14 - CLI exposes machine-readable capabilities for humans and agents\n  ---\n  duration_ms: 296.801803\n  ...\n# Subtest: CLI create/list/cancel/delete lifecycle is consumable as structured JSON\nok 15 - CLI create/list/cancel/delete lifecycle is consumable as structured JSON\n  ---\n  duration_ms: 1588.088544\n  ...\n# Subtest: CLI maintenance discovery persists labeled issues and keeps workflow failures evidence-only\nok 16 - CLI maintenance discovery persists labeled issues and keeps workflow failures evidence-only\n  ---\n  duration_ms: 904.143591\n  ...\n# (node:541) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: executes a bounded objective and stops for independent verification\nok 17 - executes a bounded objective and stops for independent verification\n  ---\n  duration_ms: 601.595423\n  ...\n# Subtest: only a trusted signed independent attestation can produce VERIFIED\nok 18 - only a trusted signed independent attestation can produce VERIFIED\n  ---\n  duration_ms: 689.643698\n  ...\n# Subtest: records VERIFIED after a matching attestation from the pinned verifier\nok 19 - records VERIFIED after a matching attestation from the pinned verifier\n  ---\n  duration_ms: 593.172306\n  ...\n# Subtest: keeps an uncertain verifier decision in AWAITING_VERIFICATION for a fresh retry\nok 20 - keeps an uncertain verifier decision in AWAITING_VERIFICATION for a fresh retry\n  ---\n  duration_ms: 608.841459\n  ...\n# Subtest: blocks an action when its consequence lacks standing authority\nok 21 - blocks an action when its consequence lacks standing authority\n  ---\n  duration_ms: 211.574831\n  ...\n# Subtest: resumes after a missing executable becomes available\nok 22 - resumes after a missing executable becomes available\n  ---\n  duration_ms: 502.116818\n  ...\n# Subtest: reconciliation blocks a Git workspace that exceeds the changed-file budget\nok 23 - reconciliation blocks a Git workspace that exceeds the changed-file budget\n  ---\n  duration_ms: 492.98128\n  ...\n# Subtest: creates a durable objective without executing until explicitly started\nok 24 - creates a durable objective without executing until explicitly started\n  ---\n  duration_ms: 493.714811\n  ...\n# Subtest: cancels a created local objective before execution\nok 25 - cancels a created local objective before execution\n  ---\n  duration_ms: 108.288043\n  ...\n# Subtest: refuses local cancellation while another worker lease is active\nok 26 - refuses local cancellation while another worker lease is active\n  ---\n  duration_ms: 181.923025\n  ...\n# Subtest: blocks publication before external effects when the changed-file budget is exceeded\nok 27 - blocks publication before external effects when the changed-file budget is exceeded\n  ---\n  duration_ms: 520.580464\n  ...\n# Subtest: admits a bounded objective under standing local authority\nok 28 - admits a bounded objective under standing local authority\n  ---\n  duration_ms: 94.605501\n  ...\n# Subtest: rejects a working directory that escapes the repository\nok 29 - rejects a working directory that escapes the repository\n  ---\n  duration_ms: 2.987823\n  ...\n# Subtest: binds an authority envelope to the exact objective digest\nok 30 - binds an authority envelope to the exact objective digest\n  ---\n  duration_ms: 3.073823\n  ...\n# Subtest: requires secret authority for secret-bearing environment keys\nok 31 - requires secret authority for secret-bearing environment keys\n  ---\n  duration_ms: 1.097481\n  ...\n# Subtest: never persists a literal secret-bearing environment value\nok 32 - never persists a literal secret-bearing environment value\n  ---\n  duration_ms: 2.429231\n  ...\n# Subtest: rejects duplicate explicit idempotency keys\nok 33 - rejects duplicate explicit idempotency keys\n  ---\n  duration_ms: 79.668388\n  ...\n# Subtest: reports malformed JSON contracts as invalid input\nok 34 - reports malformed JSON contracts as invalid input\n  ---\n  duration_ms: 0.38483\n  ...\n# Subtest: redacts explicit and recognisable secret material\nok 35 - redacts explicit and recognisable secret material\n  ---\n  duration_ms: 1.395921\n  ...\n# Subtest: truncates output by byte budget\nok 36 - truncates output by byte budget\n  ---\n  duration_ms: 0.737431\n  ...\n# Subtest: published schemas compile and examples conform\nok 37 - published schemas compile and examples conform\n  ---\n  duration_ms: 1686.009167\n  ...\n# (node:657) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: leases reject concurrent owners and advance fencing tokens after expiry\nok 38 - leases reject concurrent owners and advance fencing tokens after expiry\n  ---\n  duration_ms: 204.073454\n  ...\n# Subtest: resume turns an unsettled mutating intent into AMBIGUOUS_EFFECT\nok 39 - resume turns an unsettled mutating intent into AMBIGUOUS_EFFECT\n  ---\n  duration_ms: 298.218374\n  ...\n# Subtest: lists recent runs and deletes only settled local run state\nok 40 - lists recent runs and deletes only settled local run state\n  ---\n  duration_ms: 215.964664\n  ...\n# (node:669) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: local published runs can complete the strict v2 independent-verification contract\nok 41 - local published runs can complete the strict v2 independent-verification contract\n  ---\n  duration_ms: 902.55159\n  ...\n# Subtest: verification compatibility vectors bind signer fingerprints to their public keys\nok 42 - verification compatibility vectors bind signer fingerprints to their public keys\n  ---\n  duration_ms: 85.685813\n  ...\n# Subtest: CLI help reports the package metadata version\nok 43 - CLI help reports the package metadata version\n  ---\n  duration_ms: 401.748622\n  ...\n# Subtest: counts Git workspace changes while excluding DoneState local state\nok 44 - counts Git workspace changes while excluding DoneState local state\n  ---\n  duration_ms: 184.081797\n  ...\n1..44\n# tests 44\n# suites 0\n# pass 44\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 19118.190755\n",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:21:10.344Z"
+      },
+      {
+        "id": "create-commit",
+        "authority": "commit",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:create-commit:v1",
+        "intentDigest": "43b0b08f63311bd8b570118bc8b3ab8b7c836e1cdc1771213951f7c6fb66bd92",
+        "result": {
+          "exitCode": 0,
+          "stderr": "Switched to a new branch 'donestate/bca89cb4-f7f3-4ac4-ab98-7d59854b5135'\n",
+          "stdout": "[donestate/bca89cb4-f7f3-4ac4-ab98-7d59854b5135 1bf4c28] DoneState objective bca89cb4-f7f3-4ac4-ab98-7d59854b5135\n 3 files changed, 36 insertions(+), 1 deletion(-)\n create mode 100644 evidence/clean-customer-20261009/selected-app-marker.json\n",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:21:11.822Z"
+      },
+      {
+        "id": "prepare-publication-credentials",
+        "authority": "secret_access",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:prepare-publication-credentials:v1",
+        "intentDigest": "6e41da1cb391c9f4a1b3bfe8ace721c4d0a7c61cc839fc0b292c6fd1e3a7097a",
+        "result": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": "",
+          "success": true,
+          "truncated": false
+        },
+        "updatedAt": "2026-10-09T07:21:13.638Z"
+      },
+      {
+        "id": "push-branch",
+        "authority": "push",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:push-branch:v1",
+        "intentDigest": "dc5573fad35d7327a4a56ce2f4e57c2ff8f309dbbd2dccbf25e5bca03c26d27b",
+        "result": {
+          "branchHeadSha": "1bf4c2823ca95da50c053dc888703e61e68a2464",
+          "branchName": "donestate/bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+          "probe": "github_ref_match"
+        },
+        "updatedAt": "2026-10-09T07:21:15.826Z"
+      },
+      {
+        "id": "open-pull-request",
+        "authority": "open_pr",
+        "state": "SUCCEEDED",
+        "idempotencyKey": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135:open-pull-request:v1",
+        "intentDigest": "f9da05b3ed28995a678703c3f69cb0a2c65b42c46598b4d368c98c110cfa3e8c",
+        "result": {
+          "headSha": "1bf4c2823ca95da50c053dc888703e61e68a2464",
+          "htmlUrl": "https://github.com/AyobamiH/donestate/pull/177",
+          "number": 177
+        },
+        "updatedAt": "2026-10-09T07:21:19.219Z"
+      }
+    ],
+    "events": [
+      {
+        "sequence": 1,
+        "eventType": "run_received",
+        "fromState": null,
+        "toState": "RECEIVED",
+        "detail": null,
+        "createdAt": "2026-10-09T07:17:41.233Z",
+        "previousDigest": null,
+        "digest": "e0bf9546dfcdf6cf64eec8651c50fee4d6ce5161927a253e47accf7ae43d6c10"
+      },
+      {
+        "sequence": 2,
+        "eventType": "run_queued",
+        "fromState": "RECEIVED",
+        "toState": "QUEUED",
+        "detail": null,
+        "createdAt": "2026-10-09T07:18:38.458Z",
+        "previousDigest": "e0bf9546dfcdf6cf64eec8651c50fee4d6ce5161927a253e47accf7ae43d6c10",
+        "digest": "7a7d1335782400ffae53b8b4f03140313a3c2ffc4606c92ee4aaf57e4754f2e3"
+      },
+      {
+        "sequence": 3,
+        "eventType": "execution_started",
+        "fromState": "QUEUED",
+        "toState": "EXECUTING",
+        "detail": null,
+        "createdAt": "2026-10-09T07:18:38.541Z",
+        "previousDigest": "7a7d1335782400ffae53b8b4f03140313a3c2ffc4606c92ee4aaf57e4754f2e3",
+        "digest": "6ae04966ca4011e1d906879a4eddbdf81e7441b9d1f1d59a15265f6ff22bb45a"
+      },
+      {
+        "sequence": 4,
+        "eventType": "validation_started",
+        "fromState": "EXECUTING",
+        "toState": "VALIDATING",
+        "detail": null,
+        "createdAt": "2026-10-09T07:19:36.035Z",
+        "previousDigest": "6ae04966ca4011e1d906879a4eddbdf81e7441b9d1f1d59a15265f6ff22bb45a",
+        "digest": "68807955761b89d30a4ee25355d4bde90cf9115f3f65face55d8a0ba6dca3b4c"
+      },
+      {
+        "sequence": 5,
+        "eventType": "publication_started",
+        "fromState": "VALIDATING",
+        "toState": "PUBLISHING",
+        "detail": null,
+        "createdAt": "2026-10-09T07:21:12.960Z",
+        "previousDigest": "68807955761b89d30a4ee25355d4bde90cf9115f3f65face55d8a0ba6dca3b4c",
+        "digest": "2650ae2ef4e2add732e9625e572bc295a30742fcdb2f6f6cbcbbcbf8639494ba"
+      },
+      {
+        "sequence": 6,
+        "eventType": "execution_reconciled",
+        "fromState": "PUBLISHING",
+        "toState": "RECONCILING",
+        "detail": null,
+        "createdAt": "2026-10-09T07:21:19.591Z",
+        "previousDigest": "2650ae2ef4e2add732e9625e572bc295a30742fcdb2f6f6cbcbbcbf8639494ba",
+        "digest": "37b3cf0d5b696a1df20b2ce21d60a781f0ca222a7770921a2fee45c9184ce20c"
+      },
+      {
+        "sequence": 7,
+        "eventType": "independent_verification_required",
+        "fromState": "RECONCILING",
+        "toState": "AWAITING_VERIFICATION",
+        "detail": "c442bfdb17b9b031a2c963835c0c358cbaac18c00e2077f089d26adef73e3db4",
+        "createdAt": "2026-10-09T07:21:19.591Z",
+        "previousDigest": "37b3cf0d5b696a1df20b2ce21d60a781f0ca222a7770921a2fee45c9184ce20c",
+        "digest": "0b818058c997f18c4f84bdd73a2dcfd7ea435209bb22293fb00a3d10bf44b90f"
+      },
+      {
+        "sequence": 8,
+        "eventType": "independent_verification_response_recorded",
+        "fromState": "AWAITING_VERIFICATION",
+        "toState": "AWAITING_VERIFICATION",
+        "detail": "uncertain",
+        "createdAt": "2026-10-09T07:21:23.043Z",
+        "previousDigest": "0b818058c997f18c4f84bdd73a2dcfd7ea435209bb22293fb00a3d10bf44b90f",
+        "digest": "08fa355b39528bb845745df51a255e44a06516aa7a1e5ca67a0ef64a6854ab59"
+      },
+      {
+        "sequence": 9,
+        "eventType": "independent_verification_response_recorded",
+        "fromState": "AWAITING_VERIFICATION",
+        "toState": "VERIFIED",
+        "detail": "verified",
+        "createdAt": "2026-10-09T07:23:13.396Z",
+        "previousDigest": "08fa355b39528bb845745df51a255e44a06516aa7a1e5ca67a0ef64a6854ab59",
+        "digest": "9a1efee1a3fe2740b105253a05d84eba3bbdce6c7584e4ee1e676e4e4e2ae253"
+      }
+    ]
+  },
+  "beforeNewStateCleanup": {
+    "schema": "donestate.account-inspection.v1",
+    "observedAt": "2026-10-09T07:23:51.370Z",
+    "credential": {
+      "connected": true,
+      "fingerprint": "44c7550c978b",
+      "createdAt": "2026-10-09T05:39:39.553Z",
+      "updatedAt": "2026-10-09T05:39:39.553Z",
+      "lastUsedAt": "2026-10-09T07:21:16.888Z",
+      "dailyRunsUsed": 1,
+      "dailyRunLimit": 12,
+      "activeRunId": null
+    },
+    "repositories": [
+      {
+        "schema": "donestate.selected-repository.v1",
+        "ownerLogin": "OneClickPostFactory",
+        "repository": "AyobamiH/donestate",
+        "defaultBranch": "main",
+        "installationId": 157513439,
+        "mode": "pr_only",
+        "scheduleEnabled": false,
+        "autoRepair": false,
+        "requiredCheckNames": [
+          "core (22)",
+          "core (24)",
+          "hosted-plugin"
+        ],
+        "createdAt": "2026-10-09T05:42:01.993Z",
+        "updatedAt": "2026-10-09T05:42:01.993Z"
+      }
+    ],
+    "runs": [
+      {
+        "schema": "donestate.account-run.v1",
+        "ownerLogin": "OneClickPostFactory",
+        "runId": "bca89cb4-f7f3-4ac4-ab98-7d59854b5135",
+        "repository": "AyobamiH/donestate",
+        "objectiveClass": "operator",
+        "createdAt": "2026-10-09T07:17:40.612Z",
+        "updatedAt": "2026-10-09T07:23:13.396Z",
+        "state": "VERIFIED"
+      }
+    ],
+    "summary": {
+      "schema": "donestate.account-data-summary.v1",
+      "ownerLogin": "OneClickPostFactory",
+      "selectedRepositories": 1,
+      "findings": 0,
+      "indexedRuns": 1,
+      "marketplaceUserEntitlements": 0,
+      "marketplaceOrganizationAuthorizations": 0
+    },
+    "inventoryComplete": true
+  },
+  "verificationScope": {
+    "state": "VERIFIED",
+    "contract": "donestate.verification-contract.v2",
+    "snapshotDigest": "c442bfdb17b9b031a2c963835c0c358cbaac18c00e2077f089d26adef73e3db4",
+    "decision": {
+      "schema": "donestate.verification-attestation.v2",
+      "decision": "verified",
+      "issuedAt": "2026-10-09T07:23:09.661Z",
+      "issuedBy": "urn:opstruth:service:public-verifier",
+      "evidenceRefs": [
+        "https://github.com/AyobamiH/donestate/actions/runs/37898537150/job/113715420950",
+        "https://github.com/AyobamiH/donestate/actions/runs/37898537150/job/113715421093",
+        "https://github.com/AyobamiH/donestate/actions/runs/37898537150/job/113715421225",
+        "https://github.com/AyobamiH/donestate/commit/1bf4c2823ca95da50c053dc888703e61e68a2464",
+        "https://github.com/AyobamiH/donestate/compare/f5a00d20d70a41827911d8fb148590891bbaad42...1bf4c2823ca95da50c053dc888703e61e68a2464"
+      ],
+      "verificationReportDigest": "892f2cbace2fd74b5f300022b9d05eddef4a37c483d7c2ff63763901a8567577",
+      "signerFingerprint": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+    },
+    "rawSignatureAndPublicKeyExposed": false,
+    "localRawCryptographicReverificationClaimed": false,
+    "bridgeAcceptedPinnedIndependentAttestation": true
+  },
+  "newStateDeletion": {
+    "operation": "Exactly one new indexed-service cleanup for the fresh 9 October run/selection/key; previous completed purge not repeated",
+    "receipt": {
+      "schema": "donestate.account-deletion-receipt.v1",
+      "ownerLogin": "OneClickPostFactory",
+      "deletedAt": "2026-10-09T09:20:54.571Z",
+      "deleted": {
+        "schema": "donestate.account-data-summary.v1",
+        "ownerLogin": "OneClickPostFactory",
+        "selectedRepositories": 1,
+        "findings": 0,
+        "indexedRuns": 1,
+        "marketplaceUserEntitlements": 0,
+        "marketplaceOrganizationAuthorizations": 0,
+        "deleted": true
+      },
+      "registryGeneration": 7,
+      "credentialGeneration": 7,
+      "readback": {
+        "credentialConnected": false,
+        "summary": {
+          "schema": "donestate.account-data-summary.v1",
+          "ownerLogin": "OneClickPostFactory",
+          "selectedRepositories": 0,
+          "findings": 0,
+          "indexedRuns": 0,
+          "marketplaceUserEntitlements": 0,
+          "marketplaceOrganizationAuthorizations": 0
+        },
+        "inventoryComplete": true
+      },
+      "scope": "indexed_donestate_service_data",
+      "retained": [
+        "opaque_deletion_generation_fences",
+        "existing_oauth_connections",
+        "global_anonymous_aggregate_counters"
+      ],
+      "exclusions": [
+        "unindexed_legacy_direct_objectives",
+        "github_account_and_repositories",
+        "github_app_installations",
+        "provider_key_revocation",
+        "oauth_revocation"
+      ],
+      "independentVerification": false,
+      "receiptDigest": "dd110686e72cb1d902f8b1320bed214b8ce7956e1952ae4f9a014e813ffa94a8"
+    },
+    "receiptDigestLocallyMatched": true,
+    "independentDeletionSignatureVerificationClaimed": false
+  },
+  "afterNewStateCleanup": {
+    "schema": "donestate.account-inspection.v1",
+    "observedAt": "2026-10-09T09:21:30.935Z",
+    "credential": {
+      "connected": false,
+      "fingerprint": null,
+      "createdAt": null,
+      "updatedAt": null,
+      "lastUsedAt": null,
+      "dailyRunsUsed": 0,
+      "dailyRunLimit": 12,
+      "activeRunId": null
+    },
+    "repositories": [],
+    "runs": [],
+    "summary": {
+      "schema": "donestate.account-data-summary.v1",
+      "ownerLogin": "OneClickPostFactory",
+      "selectedRepositories": 0,
+      "findings": 0,
+      "indexedRuns": 0,
+      "marketplaceUserEntitlements": 0,
+      "marketplaceOrganizationAuthorizations": 0
+    },
+    "inventoryComplete": true
+  },
+  "separateCredentialAbsenceReadback": {
+    "connected": false,
+    "fingerprint": null,
+    "createdAt": null,
+    "updatedAt": null,
+    "lastUsedAt": null,
+    "dailyRunsUsed": 0,
+    "dailyRunLimit": 12,
+    "activeRunId": null,
+    "billingOwner": "authenticated_user"
+  },
+  "temporaryRepositoryGrantCleanup": {
+    "state": "REMOVAL_CONFIRMED",
+    "permissionAfterServiceCleanup": "write",
+    "permissionAfterUserRemoval": "read",
+    "source": "Separate GitHub connector collaborator-permission readback after user reports removal",
+    "accountInspectionAtSameCheckpoint": "2026-10-09T09:26:48.857Z",
+    "connectorCanChangeCollaborators": false
+  },
+  "finalAccountInspectionAfterGrantRemoval": {
+    "schema": "donestate.account-inspection.v1",
+    "observedAt": "2026-10-09T09:26:48.857Z",
+    "credential": {
+      "connected": false,
+      "fingerprint": null,
+      "createdAt": null,
+      "updatedAt": null,
+      "lastUsedAt": null,
+      "dailyRunsUsed": 0,
+      "dailyRunLimit": 12,
+      "activeRunId": null
+    },
+    "repositories": [],
+    "runs": [],
+    "summary": {
+      "schema": "donestate.account-data-summary.v1",
+      "ownerLogin": "OneClickPostFactory",
+      "selectedRepositories": 0,
+      "findings": 0,
+      "indexedRuns": 0,
+      "marketplaceUserEntitlements": 0,
+      "marketplaceOrganizationAuthorizations": 0
+    },
+    "inventoryComplete": true
+  },
+  "selectedAppAcceptanceCompletedWithinRecordedScope": true
+}

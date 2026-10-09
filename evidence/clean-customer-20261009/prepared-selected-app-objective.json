@@ -1,0 +1,122 @@
+{
+  "schema": "donestate.prepared-selected-app-objective.v1",
+  "referenceBaseHeadSha": "f5a00d20d70a41827911d8fb148590891bbaad42",
+  "referenceBaseTree": "44a45b30331ae76fbc052dca0bb13e216fa34e19",
+  "objectiveDescriptor": {
+    "repository": "AyobamiH/donestate",
+    "baseRef": "main",
+    "publication": "pull_request",
+    "autoStart": false,
+    "validationProfile": "node",
+    "maxChangedFiles": 3,
+    "maxDurationMs": 120000,
+    "authorities": [
+      "local_read",
+      "local_write",
+      "test",
+      "commit",
+      "push",
+      "open_pr",
+      "secret_access"
+    ],
+    "trustedVerifierFingerprints": [
+      "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+    ],
+    "acceptanceCriteria": [
+      "The candidate marker contains the sealed date, customer, repository, nonce and candidate-only outcome.",
+      "The ledger and generated state contain E-110 and its nonce; RELEASE-001 identity, blocked status and dependencies are preserved.",
+      "Only the three authorised marker, ledger and generated-state files change.",
+      "The published customer PR head passes core (22), core (24) and hosted-plugin before independent verification."
+    ],
+    "verificationRequirements": [
+      {
+        "criterionIndex": 0,
+        "id": "marker-date",
+        "kind": "json_equals",
+        "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+        "pointer": "/date",
+        "expected": "2026-10-09"
+      },
+      {
+        "criterionIndex": 0,
+        "id": "marker-customer",
+        "kind": "json_equals",
+        "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+        "pointer": "/customer",
+        "expected": "OneClickPostFactory"
+      },
+      {
+        "criterionIndex": 0,
+        "id": "marker-repository",
+        "kind": "json_equals",
+        "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+        "pointer": "/repository",
+        "expected": "AyobamiH/donestate"
+      },
+      {
+        "criterionIndex": 0,
+        "id": "marker-marker",
+        "kind": "json_equals",
+        "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+        "pointer": "/marker",
+        "expected": "donestate-selected-app-20261009-0627-oneclick"
+      },
+      {
+        "criterionIndex": 0,
+        "id": "marker-outcome",
+        "kind": "json_equals",
+        "path": "evidence/clean-customer-20261009/selected-app-marker.json",
+        "pointer": "/outcome",
+        "expected": "selected-app-execution-candidate"
+      },
+      {
+        "criterionIndex": 1,
+        "id": "candidate-ledger",
+        "kind": "file_contains",
+        "path": "governance/project-ledger.json",
+        "values": [
+          "E-110",
+          "Fresh selected-App customer execution candidate",
+          "donestate-selected-app-20261009-0627-oneclick",
+          "\"id\": \"RELEASE-001\",\n      \"title\": \"Gate DoneState standalone launch and future channel releases\",\n      \"stream\": \"release\",\n      \"status\": \"blocked\""
+        ]
+      },
+      {
+        "criterionIndex": 1,
+        "id": "candidate-generated",
+        "kind": "file_contains",
+        "path": "docs/PROJECT-STATE.md",
+        "values": [
+          "E-110",
+          "Fresh selected-App customer execution candidate",
+          "donestate-selected-app-20261009-0627-oneclick"
+        ]
+      },
+      {
+        "criterionIndex": 2,
+        "id": "only-authorised-files",
+        "kind": "changed_files",
+        "allowedPaths": [
+          "evidence/clean-customer-20261009/selected-app-marker.json",
+          "governance/project-ledger.json",
+          "docs/PROJECT-STATE.md"
+        ],
+        "max": 3
+      },
+      {
+        "criterionIndex": 3,
+        "id": "required-pr-head-ci",
+        "kind": "github_checks_pass",
+        "requiredNames": [
+          "core (22)",
+          "core (24)",
+          "hosted-plugin"
+        ]
+      }
+    ],
+    "goal": "Implement exactly this bounded three-file candidate using one command below. Preserve all prior evidence stories and unrelated work items, and RELEASE-001 identity, blocked status and dependencies. Use no subagents. Do not inspect or copy credentials, change runtime/workflows, widen App scope, start unrelated repairs, merge or deploy. secret_access is solely for the backend's existing scoped execution credential; never read credentials yourself. DoneState owns commit, push and PR publication. Report the implementation result without self-certifying VERIFIED. Run this exact command:\n\nnode <<'NODE_CANDIDATE'\nconst fs = require(\"node:fs\");\nconst p = \"governance/project-ledger.json\";\nconst ledger = JSON.parse(fs.readFileSync(p, \"utf8\"));\nconst work = ledger.workItems.find(x => x.id === \"RELEASE-001\");\nif (!work || work.status !== \"blocked\" || ledger.evidenceStories.some(x => x.id === \"E-110\")) throw Error(\"candidate precondition failed\");\nwork.evidenceIds.push(\"E-110\");\nwork.lastUpdated = \"2026-10-09\";\nledger.evidenceStories.push({\"id\":\"E-110\",\"date\":\"2026-10-09\",\"identity\":\"Fresh selected-App customer execution candidate\",\"situation\":\"One newly authorised bounded selected-App customer candidate after independent temporary Write confirmation; historical PR 172 is preserved.\",\"verification\":\"Candidate nonce donestate-selected-app-20261009-0627-oneclick at evidence/clean-customer-20261009/selected-app-marker.json; exact PR-head CI and pinned independent verification are pending.\",\"accountability\":{\"owner\":\"DoneState maintainers\",\"status\":\"blocked\",\"nextAction\":\"Observe the exact published PR head, required CI and pinned independent verification.\",\"waitCondition\":\"Unmerged candidate has not been independently verified.\",\"staleDate\":\"2026-10-10\"},\"outcome\":\"Candidate only; no new-signup, VERIFIED, cleanup or unrestricted-GA claim.\",\"content\":\"Only marker, RELEASE-001 evidence reference and generated state.\",\"measurement\":\"Three authorised files; no runtime, workflow, credential, App scope or permission change.\"});\nfs.mkdirSync(\"evidence/clean-customer-20261009\", {recursive:true});\nfs.writeFileSync(\"evidence/clean-customer-20261009/selected-app-marker.json\", JSON.stringify({\"date\":\"2026-10-09\",\"customer\":\"OneClickPostFactory\",\"repository\":\"AyobamiH/donestate\",\"marker\":\"donestate-selected-app-20261009-0627-oneclick\",\"outcome\":\"selected-app-execution-candidate\"}, null, 2) + \"\\n\");\nfs.writeFileSync(p, JSON.stringify(ledger, null, 2) + \"\\n\");\nNODE_CANDIDATE\nnpm run governance:render && npm run governance:check && git diff --check"
+  },
+  "singleShellCommand": "node <<'NODE_CANDIDATE'\nconst fs = require(\"node:fs\");\nconst p = \"governance/project-ledger.json\";\nconst ledger = JSON.parse(fs.readFileSync(p, \"utf8\"));\nconst work = ledger.workItems.find(x => x.id === \"RELEASE-001\");\nif (!work || work.status !== \"blocked\" || ledger.evidenceStories.some(x => x.id === \"E-110\")) throw Error(\"candidate precondition failed\");\nwork.evidenceIds.push(\"E-110\");\nwork.lastUpdated = \"2026-10-09\";\nledger.evidenceStories.push({\"id\":\"E-110\",\"date\":\"2026-10-09\",\"identity\":\"Fresh selected-App customer execution candidate\",\"situation\":\"One newly authorised bounded selected-App customer candidate after independent temporary Write confirmation; historical PR 172 is preserved.\",\"verification\":\"Candidate nonce donestate-selected-app-20261009-0627-oneclick at evidence/clean-customer-20261009/selected-app-marker.json; exact PR-head CI and pinned independent verification are pending.\",\"accountability\":{\"owner\":\"DoneState maintainers\",\"status\":\"blocked\",\"nextAction\":\"Observe the exact published PR head, required CI and pinned independent verification.\",\"waitCondition\":\"Unmerged candidate has not been independently verified.\",\"staleDate\":\"2026-10-10\"},\"outcome\":\"Candidate only; no new-signup, VERIFIED, cleanup or unrestricted-GA claim.\",\"content\":\"Only marker, RELEASE-001 evidence reference and generated state.\",\"measurement\":\"Three authorised files; no runtime, workflow, credential, App scope or permission change.\"});\nfs.mkdirSync(\"evidence/clean-customer-20261009\", {recursive:true});\nfs.writeFileSync(\"evidence/clean-customer-20261009/selected-app-marker.json\", JSON.stringify({\"date\":\"2026-10-09\",\"customer\":\"OneClickPostFactory\",\"repository\":\"AyobamiH/donestate\",\"marker\":\"donestate-selected-app-20261009-0627-oneclick\",\"outcome\":\"selected-app-execution-candidate\"}, null, 2) + \"\\n\");\nfs.writeFileSync(p, JSON.stringify(ledger, null, 2) + \"\\n\");\nNODE_CANDIDATE\nnpm run governance:render && npm run governance:check && git diff --check",
+  "checkpointSavedAt": "2026-10-09T07:20:17.241032+00:00",
+  "preparedBeforeAdmissionAt": "2026-10-09T07:17:41.233Z"
+}
