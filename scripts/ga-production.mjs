@@ -72,11 +72,19 @@ export function maintenanceEvidence(event) {
 export function providerClient({ accountId, token }, fetcher = fetch) {
   check(/^[a-f0-9]{32}$/.test(accountId ?? "") && typeof token === "string" && token.length > 0, "PROVIDER_READ_CAPABILITY_MISSING");
   return async (suffix, method = "GET", body) => {
-    check(/^\/(deployments|schedules|tails(?:\/[a-zA-Z0-9-]+)?)$/.test(suffix), "PROVIDER_PATH_NOT_ALLOWED");
-    check(method === "GET" || (suffix === "/tails" && method === "POST") || (suffix.startsWith("/tails/") && method === "DELETE"), "PROVIDER_OPERATION_NOT_ALLOWED");
+    check(/^\/(deployments|schedules|telemetry-query|tails(?:\/[a-zA-Z0-9-]+)?)$/.test(suffix), "PROVIDER_PATH_NOT_ALLOWED");
+    check((suffix !== "/telemetry-query" && method === "GET") || (["/tails", "/telemetry-query"].includes(suffix) && method === "POST") || (suffix.startsWith("/tails/") && method === "DELETE"), "PROVIDER_OPERATION_NOT_ALLOWED");
+    if (suffix === "/telemetry-query") {
+      const filters = body?.parameters?.filters;
+      check(body?.dry === true && body?.view === "events" && JSON.stringify(body?.parameters?.datasets) === '["cloudflare-workers"]' && Array.isArray(filters) && filters.length === 3
+        && filters.some((filter) => filter.key === "$metadata.service" && filter.operation === "eq" && filter.value === "donestate-mcp")
+        && filters.some((filter) => filter.key === "$metadata.origin" && filter.operation === "eq" && filter.value === "scheduled")
+        && filters.some((filter) => filter.key === "$metadata.message" && filter.operation === "includes" && filter.value === "maintenance sweep completed"), "TELEMETRY_QUERY_NOT_SCOPED");
+    }
+    const path = suffix === "/telemetry-query" ? "/workers/observability/telemetry/query" : `/workers/scripts/donestate-mcp${suffix}`;
     let response;
     try {
-      response = await fetcher(`https://api.cloudflare.com/client/v4/accounts/${accountId}/workers/scripts/donestate-mcp${suffix}`, { method, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}), redirect: "manual", signal: AbortSignal.timeout(20_000) });
+      response = await fetcher(`https://api.cloudflare.com/client/v4/accounts/${accountId}${path}`, { method, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}), redirect: "manual", signal: AbortSignal.timeout(20_000) });
     } catch { throw new Error("PROVIDER_REQUEST_EFFECT_UNCONFIRMED_NO_RETRY"); }
     check(response.ok, "PROVIDER_HTTP_FAILED");
     let parsed;
@@ -84,6 +92,43 @@ export function providerClient({ accountId, token }, fetcher = fetch) {
     check(parsed.success === true, "PROVIDER_READ_FAILED");
     return parsed.result;
   };
+}
+
+export function hasHourlyCron(payload) {
+  const schedules = Array.isArray(payload) ? payload : payload?.schedules;
+  return Array.isArray(schedules) && schedules.some((schedule) => schedule.cron === "0 * * * *");
+}
+
+export function storedMaintenanceEvidence(log) {
+  if (log?.dataset !== "cloudflare-workers" || log.$metadata?.service !== "donestate-mcp" || log.$workers?.eventType !== "scheduled") return null;
+  let source = log.source;
+  if (typeof source === "string") {
+    try { source = JSON.parse(source); } catch { source = null; }
+  }
+  if (source?.message !== "maintenance sweep completed") {
+    try { source = JSON.parse(log.$metadata.message); } catch { return null; }
+  }
+  if (source?.message !== "maintenance sweep completed") return null;
+  return maintenanceEvidence({ event: log.$workers.event, outcome: log.$workers.outcome, scriptVersion: log.$workers.scriptVersion, logs: [{ message: [JSON.stringify(source)] }] });
+}
+
+async function readStoredSweep(provider, deployment) {
+  const to = Date.now();
+  const from = Math.max(to - 75 * 60_000, new Date(deployment.createdAt).getTime());
+  check(Number.isFinite(from) && from < to, "STORED_LOG_TIMEFRAME_INVALID");
+  const result = await provider("/telemetry-query", "POST", {
+    queryId: "donestate-ga-scheduled-health", dry: true, view: "events", limit: 20,
+    timeframe: { from, to }, parameters: { datasets: ["cloudflare-workers"], filterCombination: "and", filters: [
+      { key: "$metadata.service", operation: "eq", type: "string", value: "donestate-mcp" },
+      { key: "$metadata.origin", operation: "eq", type: "string", value: "scheduled" },
+      { key: "$metadata.message", operation: "includes", type: "string", value: "maintenance sweep completed" },
+    ] },
+  });
+  const events = result?.events?.events;
+  check(Array.isArray(events), "STORED_LOG_RESPONSE_INVALID");
+  return events.map(storedMaintenanceEvidence).filter((event) => event && new Date(event.scheduledAt).getTime() >= from && new Date(event.scheduledAt).getTime() <= to
+    && event.workerVersion && deployment.versions.some((version) => version.id === event.workerVersion && version.percentage > 0))
+    .sort((a, b) => b.scheduledAt.localeCompare(a.scheduledAt))[0] ?? null;
 }
 
 function deploymentSummary(payload) {
@@ -97,7 +142,16 @@ function deploymentSummary(payload) {
 export async function observeNaturalSweep(provider, timeoutMs, WebSocketClass) {
   const before = deploymentSummary(await provider("/deployments"));
   const schedules = await provider("/schedules");
-  check(Array.isArray(schedules) && schedules.some((schedule) => schedule.cron === "0 * * * *"), "HOURLY_CRON_NOT_PRESENT");
+  check(hasHourlyCron(schedules), "HOURLY_CRON_NOT_PRESENT");
+  let storedLogFailure;
+  try {
+    const stored = await readStoredSweep(provider, before);
+    if (stored) {
+      const after = deploymentSummary(await provider("/deployments"));
+      const unchanged = JSON.stringify(before) === JSON.stringify(after);
+      return { deploymentBefore: before, deploymentAfter: after, deploymentUnchangedDuringObservation: unchanged, eventVersionMatches: true, naturalSweep: stored, observationSource: "provider_stored_scheduled_log", tailSessionCreated: false, passed: stored.healthy && unchanged };
+    }
+  } catch (error) { storedLogFailure = safeFailure(error); }
   const tail = await provider("/tails", "POST", { filters: [{ query: "maintenance sweep" }] });
   check(typeof tail.id === "string", "TAIL_RESPONSE_INVALID");
   let socket, timer, ping, result, failure, cleanupFailure;
@@ -141,7 +195,7 @@ export async function observeNaturalSweep(provider, timeoutMs, WebSocketClass) {
   const after = deploymentSummary(await provider("/deployments"));
   const unchanged = JSON.stringify(before) === JSON.stringify(after);
   const eventVersionMatches = !result?.workerVersion || after.versions.some((version) => version.id === result.workerVersion && version.percentage > 0);
-  return { deploymentBefore: before, deploymentAfter: after, deploymentUnchangedDuringObservation: unchanged, eventVersionMatches, ...(result ? { naturalSweep: result } : {}), ...(failure ? { failure } : {}), tailSessionRemoved: !cleanupFailure, ...(cleanupFailure ? { cleanupFailure } : {}), passed: Boolean(result?.healthy && unchanged && eventVersionMatches && !failure && !cleanupFailure) };
+  return { deploymentBefore: before, deploymentAfter: after, deploymentUnchangedDuringObservation: unchanged, eventVersionMatches, ...(result ? { naturalSweep: result } : {}), observationSource: "provider_live_scheduled_log", ...(storedLogFailure ? { storedLogFailure } : {}), ...(failure ? { failure } : {}), tailSessionCreated: true, tailSessionRemoved: !cleanupFailure, ...(cleanupFailure ? { cleanupFailure } : {}), passed: Boolean(result?.healthy && unchanged && eventVersionMatches && !failure && !cleanupFailure) };
 }
 
 export async function main(args = process.argv.slice(2)) {

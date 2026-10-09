@@ -2,6 +2,11 @@ name: GA production preflight
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/ga-production-preflight.yml
+      - scripts/ga-production.mjs
   workflow_run:
     workflows: [Deploy hosted Worker]
     types: [completed]
@@ -16,7 +21,7 @@ concurrency:
 
 jobs:
   observe:
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository)
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 75
     steps:
