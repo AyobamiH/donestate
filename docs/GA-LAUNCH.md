@@ -6,7 +6,9 @@ The publisher authorised work on fresh signup/OAuth and broader GA on 9 October 
 
 DoneState onboarding is GitHub-backed OAuth consent. There is no separate registration form. A new client must discover the canonical issuer, register its callback, use S256 PKCE, complete DoneState and GitHub consent, exchange the code, and access the MCP service using its own new grant.
 
-Run the reviewed helper on the computer where the customer will sign in:
+For cloud-browser acceptance, use the canonical HTTPS page at `https://donestate.proofandstate.com/acceptance/oauth`. It uses the same tested exchange, read-only MCP, refresh and scoped revocation functions as the terminal helper. PKCE and client state live only in tab session storage for at most fifteen minutes; tokens remain in memory. The callback query is removed before asynchronous work and state is consumed before the single code exchange. Keep the browser tab open until the receipt appears. Opening a localhost page on another computer does not reach the helper.
+
+For an optional terminal-based acceptance on the actual sign-in computer:
 
 ```sh
 node scripts/ga-oauth.mjs --receipt ga-oauth-acceptance.json

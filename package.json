@@ -16,7 +16,7 @@
     "test": "npm run build && node scripts/clean.mjs test-dist && tsc -p tsconfig.test.json && node --test test-dist/test/*.test.js scripts/*.test.mjs",
     "check": "npm run typecheck && npm test && npm run verification:contract-lock && npm run docs:check && npm run pack:audit",
     "verification:contract-lock": "node scripts/check-verification-contract-lock.mjs",
-    "docs:check": "npm run governance:check && npm run governance:main:check && npm run kb:check && node scripts/check-documentation-closure.mjs",
+    "docs:check": "npm run governance:check && npm run governance:main:check && npm run kb:check && node scripts/check-documentation-closure.mjs && node scripts/build-ga-oauth-page.mjs --check",
     "kb:check": "node scripts/check-knowledge-base.mjs",
     "governance:render": "node scripts/render-project-state.mjs",
     "governance:check": "node scripts/render-project-state.mjs --check",

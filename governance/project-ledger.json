@@ -897,8 +897,8 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-09",
       "staleDate": "2026-10-10",
-      "nextAction": "Launch scripts/ga-oauth.mjs on the customer sign-in computer, complete a distinct new-client DoneState/GitHub consent, and record code exchange, read-only MCP access, refresh and scoped grant revocation. Do not reuse the existing authenticated connection or reconnect an OpenAI key.",
-      "waitCondition": "The secure loopback helper is prepared. Customer GitHub consent remains a human handoff; the connected Desktop Commander device was offline at preparation. No new signup success is claimed.",
+      "nextAction": "Deploy the reviewed same-origin HTTPS browser acceptance page, then complete fresh customer GitHub consent in the cloud browser and record the real access, refresh and scoped revocation result. Do not send localhost links to a different machine.",
+      "waitCondition": "The terminal helper on the connected Linux host timed out without consent; the host is not the customer Windows PC. A cloud-browser connectivity check also confirmed that its localhost is separate from compute. No fresh customer consent or grant result was observed. A canonical HTTPS browser page is prepared using the same tested OAuth exchange/MCP/refresh/revocation core. Existing execution, deletion, Write removal, policies and natural production health remain complete in their recorded scopes.",
       "reentryCondition": "Close only with a passing new-client OAuth receipt. Preserve failed or ambiguous effects without replay; record identity-history limits and any failed grant cleanup.",
       "dependencies": [
         "CUST-001",
@@ -906,7 +906,8 @@
       ],
       "evidenceIds": [
         "E-111",
-        "E-112"
+        "E-112",
+        "E-114"
       ]
     }
   ],
@@ -1889,7 +1890,7 @@
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication → v2 handoff → OpsTruth verification loop, then reconcile the final public documentation state.",
+        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication \u2192 v2 handoff \u2192 OpsTruth verification loop, then reconcile the final public documentation state.",
         "waitCondition": "The npm publication itself is complete. Remaining work is external product acceptance and public documentation closure, not package publication.",
         "staleDate": "2026-10-10"
       },
@@ -2025,7 +2026,7 @@
       "accountability": {
         "owner": "DoneState maintainers and publisher owner",
         "status": "blocked",
-        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up → connect → select repo → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
+        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up \u2192 connect \u2192 select repo \u2192 create objective \u2192 execute \u2192 unmerged PR \u2192 OpsTruth VERIFIED \u2192 inspect account \u2192 delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
         "waitCondition": "Customer execution credential must be reconnected securely. LEGAL-001 remains blocked on its existing publisher requirements.",
         "staleDate": "2026-10-09"
       },
@@ -2525,6 +2526,23 @@
       "outcome": "OPS-002 is complete against real production evidence. No synthetic cron, deployment or model execution was used. Fresh OAuth and owned-domain GA are not inferred from operations success.",
       "content": "Whitelisted protected-provider receipt, exact source and workflow identities, completed current operational item; append-only prior failure preserved.",
       "measurement": "One natural scheduled sweep, five passing public HTTP probes, zero unresolved webhook failures, one tail session created and removed, zero production mutations, synthetic cron invocations, credential setups or model starts."
+    },
+    {
+      "id": "E-114",
+      "date": "2026-10-09",
+      "identity": "Same-origin HTTPS OAuth acceptance replaces unreachable loopback handoff",
+      "situation": "The publisher correctly reported that the connected Linux host localhost is not their Windows computer. The first helper timed out without consent. Cloud Browser also cannot reach compute loopback, so terminal commands were not a usable customer handoff.",
+      "verification": "The hosted /acceptance/oauth page uses the exact reviewed helper functions for discovery, public-client registration, code exchange, read-only MCP, refresh and scoped grant revocation. Browser-only orchestration stores only short-lived PKCE/client state in sessionStorage, checks canonical callback/state/issuer, strips the callback query before asynchronous work, consumes state before the single exchange and displays only the bounded receipt. Access/refresh tokens remain in memory and are never written to browser storage or the DOM. Generated inline assets are pinned by exact CSP script/style hashes, checked against source, same-origin network only, no-store/no-referrer and no framing. Tests cover missing/expired/malformed sessions, callback duplicates/mix-up, registration replay, exchange replay and response headers. The old helper receipt reports CONSENT_TIMEOUT at 2026-10-09T16:39:37.159Z; a second unreachable helper was stopped without any consent result. Full root checks pass with 63 tests and pack dry-run; full Worker checks pass with 180 tests. Generated browser JavaScript parses and diff checks pass.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "complete",
+        "nextAction": "Publish after exact-head CI, verify the deployed HTTPS page, then complete real customer browser consent.",
+        "waitCondition": "None for this implementation and failure-path coverage; live customer acceptance remains unproven.",
+        "staleDate": "2026-12-01"
+      },
+      "outcome": "The acceptance flow can run in the cloud browser through the canonical HTTPS service rather than requiring a user terminal or shared localhost. Source preparation is not customer consent or a GA declaration.",
+      "content": "Browser orchestration, reproducible CSP-pinned assets, canonical Worker route and regression tests; earlier complete evidence and actual timeout preserved.",
+      "measurement": "No new model execution, execution credential, repository Write permission, account deletion or customer PR merge. Runtime deployment and customer OAuth are separate follow-up observations."
     }
   ]
 }
