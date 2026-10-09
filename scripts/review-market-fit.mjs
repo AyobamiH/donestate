@@ -64,7 +64,7 @@ export function reviewMarketFit(input, asOf = new Date().toISOString().slice(0, 
   }
   return { schema: "donestate.market-fit-review.v1", asOf, evidenceState: input.cohorts.length ? "manual_observations" : "not_observed",
     marketFit: "not_established", evidenceLimit: "Anonymous operator-entered aggregates and hash references are not independently audited proof; channels and cohorts are not pooled into unique-user totals.",
-    groups: [...groups.values()], nextAction: input.cohorts.length ? "Review each cohort's largest evidenced constraint; change one variable and observe the next comparable cohort." : "Recruit the first consenting external cohort for one bounded public-repository fix; no customer demand or conversion is established by publisher acceptance." };
+    groups: [...groups.values()], nextAction: input.cohorts.length ? "Review each cohort's largest evidenced constraint; change one variable and observe the next comparable cohort." : "Improve first use while observing incoming external customers for bounded public-repository fixes; customer recruitment is not a development gate and publisher acceptance does not establish demand." };
 }
 
 function nextAction(c, friction) {

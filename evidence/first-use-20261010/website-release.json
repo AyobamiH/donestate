@@ -1,0 +1,108 @@
+{
+  "schema": "donestate.first-use-release.v1",
+  "repository": "AyobamiH/proof-and-state-website",
+  "pullRequest": "https://github.com/AyobamiH/proof-and-state-website/pull/30",
+  "candidate": "1b746dfc7e40d6f1b97cd6dd52803de5f78cad72",
+  "base": "bc803c1be8b47de27fe72d55adfcb47b492adf97",
+  "merge": "c049d83f699f5247050a8c09efe332c88d3952e3",
+  "tree": "7765ba05560ea9dd313f811c1b0a3805776bd0ba",
+  "parents": [
+    "bc803c1be8b47de27fe72d55adfcb47b492adf97",
+    "1b746dfc7e40d6f1b97cd6dd52803de5f78cad72"
+  ],
+  "changedPaths": [
+    "src/routes/docs.donestate.get-started.tsx",
+    "src/routes/docs.donestate.troubleshooting.tsx"
+  ],
+  "candidateChecks": [
+    {
+      "name": "verify",
+      "id": 114065037633,
+      "url": "https://github.com/AyobamiH/proof-and-state-website/actions/runs/38002928213/job/114065037633",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "integration",
+      "id": 114065037254,
+      "url": "https://github.com/AyobamiH/proof-and-state-website/actions/runs/38002928130/job/114065037254",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "mergeChecks": [
+    {
+      "name": "verify",
+      "id": 114065761335,
+      "url": "https://github.com/AyobamiH/proof-and-state-website/actions/runs/38003153832/job/114065761335",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "integration",
+      "id": 114065761035,
+      "url": "https://github.com/AyobamiH/proof-and-state-website/actions/runs/38003153811/job/114065761035",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "deploy",
+      "id": 114065760847,
+      "url": "https://github.com/AyobamiH/proof-and-state-website/actions/runs/38003153792/job/114065760847",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "deployment": {
+    "workflowRun": 38003153792,
+    "job": 114065760847,
+    "conclusion": "success",
+    "worker": "proof-and-state-website",
+    "workerVersion": "24d5f046-de25-447f-84be-04b5210727be",
+    "uploadedAt": "2026-10-09T23:12:21.8236147Z",
+    "triggersDeployedAt": "2026-10-09T23:12:22.7611074Z"
+  },
+  "live": {
+    "guide": {
+      "url": "https://proofandstate.com/docs/donestate/get-started",
+      "observedAt": "2026-10-09T23:12:43.360Z",
+      "heading": "Reach a first useful result",
+      "firstJobSection": true,
+      "fundingAndVerifierBoundary": true,
+      "copyableBrief": true,
+      "autoStartDefaultClarified": true,
+      "resultAndAccountCleanupGuidance": true
+    },
+    "recovery": {
+      "url": "https://proofandstate.com/docs/donestate/troubleshooting#first-attempt",
+      "observedAt": "2026-10-09T23:13:09.140Z",
+      "reachedThroughGuideLink": true,
+      "heading": "Your first attempt stopped: choose the next action",
+      "cases": [
+        "credential_funding",
+        "repository_permission",
+        "failed_safe",
+        "verification_pending",
+        "ambiguous_publication"
+      ],
+      "privateSupportBoundary": true
+    },
+    "copyButton": {
+      "observedAt": "2026-10-09T23:13:15.754Z",
+      "feedback": "Copied",
+      "clipboardContents": "not_confirmed_by_browser_clipboard_read"
+    }
+  },
+  "scope": {
+    "doneStateMcpRuntimeChanged": false,
+    "newCustomerExecution": false,
+    "newCustomerTracking": false,
+    "newPermissions": false,
+    "postOnceIntegration": "not_inspected",
+    "customerDemand": "not_established",
+    "marketFit": "not_established",
+    "recruitmentRequiredForDevelopment": false
+  },
+  "evidenceLimit": "Authenticated repository checks, deployment workflow and public browser readback evidence this documentation release. They are not a customer outcome or an independent DoneState verifier attestation."
+}
+
