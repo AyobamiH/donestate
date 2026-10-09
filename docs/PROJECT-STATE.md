@@ -1003,3 +1003,13 @@ Repository, CI, deployment, runtime, credentials, Marketplace review, directory 
 - **Outcome:** The App/customer-authority repair is deployed. Provider deployment acknowledgement is not an independent verdict on a new customer outcome. No new objective or model execution has begun; the still-read customer role correctly gates the next attempt.
 - **Content:** Record candidate, merge/tree, exact-merge CI, provider Worker/container identity and post-deployment customer readiness as distinct observations. Preserve earlier dated checkpoint stories without rewriting them.
 - **Measurement:** One authorised merge and production deployment; three successful exact-merge required checks; one separate complete account inspection and independent read-role observation. Zero new model starts, permission grants, App scope expansions, historical retries or account purges.
+
+### E-110 — Fresh selected-App customer execution candidate
+
+- **Date:** 2026-10-09
+- **Situation:** One newly authorised bounded selected-App customer candidate after independent temporary Write confirmation; historical PR 172 is preserved.
+- **Verification:** Candidate nonce donestate-selected-app-20261009-0627-oneclick at evidence/clean-customer-20261009/selected-app-marker.json; exact PR-head CI and pinned independent verification are pending.
+- **Accountability:** owner=DoneState maintainers; status=blocked; next=Observe the exact published PR head, required CI and pinned independent verification.; wait=Unmerged candidate has not been independently verified.; stale=2026-10-10
+- **Outcome:** Candidate only; no new-signup, VERIFIED, cleanup or unrestricted-GA claim.
+- **Content:** Only marker, RELEASE-001 evidence reference and generated state.
+- **Measurement:** Three authorised files; no runtime, workflow, credential, App scope or permission change.
