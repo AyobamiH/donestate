@@ -1,0 +1,136 @@
+{
+  "schema": "donestate.selected-app-admission-deployment.v1",
+  "date": "2026-10-09",
+  "repository": "AyobamiH/donestate",
+  "pullRequest": 175,
+  "candidateCommit": "2d589d9398be9e51248ce8832cd899c0afbe5303",
+  "mergeCommit": "030251e1e0c5b840d5072c14f655695ea2cf2651",
+  "candidateAndMergeTree": "e29b768135e08f90d2918ac13829f19223eb0983",
+  "mergeParents": [
+    "762ac3983c65d916bb9dc091843ebb3a1fdc7a38",
+    "2d589d9398be9e51248ce8832cd899c0afbe5303"
+  ],
+  "candidateCi": {
+    "runId": 37890592810,
+    "conclusion": "success",
+    "requiredChecks": [
+      "core (22)",
+      "core (24)",
+      "hosted-plugin"
+    ]
+  },
+  "exactMergeChecks": [
+    {
+      "name": "deploy",
+      "headSha": "030251e1e0c5b840d5072c14f655695ea2cf2651",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/AyobamiH/donestate/actions/runs/37890708490/job/113690767012"
+    },
+    {
+      "name": "core (24)",
+      "headSha": "030251e1e0c5b840d5072c14f655695ea2cf2651",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/AyobamiH/donestate/actions/runs/37890708382/job/113690766056"
+    },
+    {
+      "name": "hosted-plugin",
+      "headSha": "030251e1e0c5b840d5072c14f655695ea2cf2651",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/AyobamiH/donestate/actions/runs/37890708382/job/113690766046"
+    },
+    {
+      "name": "core (22)",
+      "headSha": "030251e1e0c5b840d5072c14f655695ea2cf2651",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/AyobamiH/donestate/actions/runs/37890708382/job/113690765925"
+    }
+  ],
+  "production": {
+    "state": "DEPLOYMENT_CONFIRMED_BY_PROVIDER_WORKFLOW",
+    "runId": 37890708490,
+    "jobId": 113690767012,
+    "headSha": "030251e1e0c5b840d5072c14f655695ea2cf2651",
+    "conclusion": "success",
+    "completedWorkflowUpdatedAt": "2026-10-09T05:55:40Z",
+    "url": "https://github.com/AyobamiH/donestate/actions/runs/37890708490",
+    "workerVersion": "4f9c111f-bd4c-4512-9fe8-3eca2aec06b4",
+    "containerApplicationId": "a0340af7-00ec-45b5-8d60-2d8444353b89",
+    "containerImageDigest": "sha256:dac3a8747872f46f61661d842004accff990b07bb4606cb6ec2b5a902cc8793f",
+    "runtimeUrl": "https://donestate-mcp.woeinvests.workers.dev",
+    "canonicalMcpUrl": "https://donestate.proofandstate.com/mcp",
+    "sandboxSdkVersion": "0.12.9",
+    "sandboxBaseImageVersion": "0.12.9",
+    "codexVersion": "0.150.1",
+    "instanceType": "basic",
+    "maxInstances": 5
+  },
+  "postDeploymentCustomerInspection": {
+    "schema": "donestate.account-inspection.v1",
+    "observedAt": "2026-10-09T06:00:16.626Z",
+    "credential": {
+      "connected": true,
+      "fingerprint": "44c7550c978b",
+      "createdAt": "2026-10-09T05:39:39.553Z",
+      "updatedAt": "2026-10-09T05:39:39.553Z",
+      "lastUsedAt": null,
+      "dailyRunsUsed": 0,
+      "dailyRunLimit": 12,
+      "activeRunId": null
+    },
+    "repositories": [
+      {
+        "schema": "donestate.selected-repository.v1",
+        "ownerLogin": "OneClickPostFactory",
+        "repository": "AyobamiH/donestate",
+        "defaultBranch": "main",
+        "installationId": 157513439,
+        "mode": "pr_only",
+        "scheduleEnabled": false,
+        "autoRepair": false,
+        "requiredCheckNames": [
+          "core (22)",
+          "core (24)",
+          "hosted-plugin"
+        ],
+        "createdAt": "2026-10-09T05:42:01.993Z",
+        "updatedAt": "2026-10-09T05:42:01.993Z"
+      }
+    ],
+    "runs": [],
+    "summary": {
+      "schema": "donestate.account-data-summary.v1",
+      "ownerLogin": "OneClickPostFactory",
+      "selectedRepositories": 1,
+      "findings": 0,
+      "indexedRuns": 0,
+      "marketplaceUserEntitlements": 0,
+      "marketplaceOrganizationAuthorizations": 0
+    },
+    "inventoryComplete": true
+  },
+  "independentGitHubPermission": {
+    "account": "OneClickPostFactory",
+    "repository": "AyobamiH/donestate",
+    "permission": "read",
+    "scope": "Separate GitHub connector collaborator-permission readback during post-deployment checkpoint"
+  },
+  "newObjectiveCreated": false,
+  "newModelExecutionStarted": false,
+  "remaining": [
+    "Independently confirm authorised temporary customer repository Write access",
+    "Create and inspect one fresh bounded selected-App draft, then execute once",
+    "Observe exact PR-head CI and pinned independent OpsTruth verification",
+    "Inspect and clean up only new acceptance state and temporary grant",
+    "Fresh first-time signup/OAuth remains unproven unless actually exercised"
+  ],
+  "historicalStoriesPreserved": true,
+  "originalCustomerPr172Unchanged": true,
+  "originalAccountDeletionNotRepeated": true,
+  "installationScopeExpanded": false,
+  "providerReceiptIsIndependentVerification": false,
+  "unrestrictedGaClaimed": false
+}

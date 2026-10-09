@@ -551,9 +551,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-09",
       "staleDate": "2026-10-10",
-      "nextAction": "Merge and deploy the selected-App write-admission repair after exact-head CI, then confirm temporary OneClickPostFactory repository Write authority and run one fresh bounded selected-App objective. Observe exact-head CI and pinned independent OpsTruth verification, inspect new account state, and clean up only the new acceptance artefacts and temporary grant. Accepted public-location/contact decisions and exact live policy text checks are complete.",
-      "waitCondition": "The publisher accepts the supplied public location/contact decision with its recorded granularity. Website PR 28 is merged as e3bc6c58c6a4badd9b389ab7197a0be6c66e78fd; exact-merge CI and production deployment 37889489223 succeeded. Both legal pages returned 200 and matched the approved location/date/contact links on desktop/mobile. The customer execution credential was securely reconnected at 2026-10-09T05:39:39.553Z and independent inspection confirmed it is idle. A fresh selected-App draft was rejected before objective creation. Independent GitHub readback gives OneClickPostFactory permission read; no run or model execution started. E-107 repairs App admission to inspect the authenticated user permission with the existing installation token, rather than treating App metadata push as customer authority. That repair is locally checked but not yet deployed in this checkpoint; temporary customer Write confirmation and the fresh execution journey remain pending.",
-      "reentryCondition": "After exact-head checks, authorised merge/deployment and independent customer Write readback, create and start exactly one new bounded selected-App objective. Keep the existing verifier pin, PR-only authority and scheduling/automatic-repair disabled. Preserve the old PR 172/customer deletion receipts; do not reuse a historical run or retry ambiguous effects. Complete scoped cleanup for only the new run/selection/credential and new temporary grant. Fresh first-time signup/OAuth remains a distinct unproven observation unless actually exercised.",
+      "nextAction": "Confirm temporary OneClickPostFactory repository Write authority and run one fresh bounded selected-App objective on the deployed repair. Observe exact PR-head CI and pinned independent OpsTruth verification, inspect new account state and clean up only the new acceptance artefacts and temporary grant. Accepted public-location/contact decisions, exact live policy text checks and repair deployment are complete.",
+      "waitCondition": "PR 175 is merged as 030251e1e0c5b840d5072c14f655695ea2cf2651 with candidate/merge tree e29b768135e08f90d2918ac13829f19223eb0983. All three required exact-merge checks passed and production deployment 37890708490 succeeded, reporting Worker 4f9c111f-bd4c-4512-9fe8-3eca2aec06b4 and container digest sha256:dac3a8747872f46f61661d842004accff990b07bb4606cb6ec2b5a902cc8793f. Post-deployment inspection at 2026-10-09T06:00:16.626Z confirms the OneClickPostFactory credential connected and unused, one schedule-disabled PR-only selection and zero indexed runs. Separate GitHub permission readback still reports read. The missing customer Write authority and fresh execution journey remain pending; no new model run started.",
+      "reentryCondition": "After independent authorised temporary customer Write readback, create and start exactly one new bounded selected-App objective. Keep the existing verifier pin, PR-only authority and scheduling/automatic-repair disabled. Preserve old PR 172/customer deletion receipts and do not reuse a historical run or retry ambiguous effects. Complete scoped cleanup for only new run/selection/credential and new temporary grant. Fresh first-time signup/OAuth remains a distinct unproven observation unless actually exercised.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -593,7 +593,8 @@
         "E-104",
         "E-105",
         "E-106",
-        "E-107"
+        "E-107",
+        "E-108"
       ]
     },
     {
@@ -2408,6 +2409,23 @@
       "outcome": "The prepared admission repair distinguishes App token capability from actual customer write authority. It cannot turn read-only access into write authority and does not grant or expand repository permissions. The product has not yet deployed this candidate in this checkpoint.",
       "content": "One explicit actor-permission read for App-backed objective admission and failure-path regression coverage; preserve OAuth semantics, App scope and independent-verifier boundary.",
       "measurement": "Two source files and one existing test file changed; 11 added admission cases; 174 Worker tests passed. Zero new tool names, installation-scope changes, permission grants, token exposures, model executions or unproven deployment claims."
+    },
+    {
+      "id": "E-108",
+      "date": "2026-10-09",
+      "identity": "Selected-App customer-authority repair merged and deployed; live customer role remains read",
+      "situation": "E-107 preserved the locally checked admission repair with deployment pending. The user has already authorised merge and deployment, while the separate fresh selected-App customer journey still requires actual repository writer authority.",
+      "verification": "PR 175 final head 2d589d9398be9e51248ce8832cd899c0afbe5303 passed all three required candidate checks in run 37890592810 and merged as 030251e1e0c5b840d5072c14f655695ea2cf2651. Fresh commit readback confirms tree e29b768135e08f90d2918ac13829f19223eb0983 and ordered parents 762ac3983c65d916bb9dc091843ebb3a1fdc7a38 / 2d589d9398be9e51248ce8832cd899c0afbe5303. Exact-merge core (22), core (24) and hosted-plugin checks succeeded in run 37890708382. Production run 37890708490 and job 113690767012 succeeded, reporting Worker 4f9c111f-bd4c-4512-9fe8-3eca2aec06b4, application a0340af7-00ec-45b5-8d60-2d8444353b89 and container digest sha256:dac3a8747872f46f61661d842004accff990b07bb4606cb6ec2b5a902cc8793f. Existing Sandbox 0.12.9/Codex 0.150.1/basic/maxInstances 5 values remain unchanged. A separate post-deployment native account inspection at 2026-10-09T06:00:16.626Z confirms connected unused credential, one PR-only selection, no findings or indexed runs, and complete inventory. Independent GitHub customer-permission readback is read. The non-secret provider/runtime and current account observations are preserved in evidence/launch-continuation-20261009/selected-app-admission-deployment.json.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "complete",
+        "nextAction": "Retain exact deployed-subject evidence and resume one fresh selected-App acceptance only after independent customer Write confirmation.",
+        "waitCondition": "None for the authorised repair merge/deployment. Customer writer authority and fresh end-to-end acceptance remain separate.",
+        "staleDate": "2026-12-01"
+      },
+      "outcome": "The App/customer-authority repair is deployed. Provider deployment acknowledgement is not an independent verdict on a new customer outcome. No new objective or model execution has begun; the still-read customer role correctly gates the next attempt.",
+      "content": "Record candidate, merge/tree, exact-merge CI, provider Worker/container identity and post-deployment customer readiness as distinct observations. Preserve earlier dated checkpoint stories without rewriting them.",
+      "measurement": "One authorised merge and production deployment; three successful exact-merge required checks; one separate complete account inspection and independent read-role observation. Zero new model starts, permission grants, App scope expansions, historical retries or account purges."
     }
   ]
 }
