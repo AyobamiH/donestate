@@ -1,0 +1,32 @@
+{
+  "schema": "donestate.fresh-oauth-acceptance.v1",
+  "startedAt": "2026-10-09T22:25:29.744Z",
+  "issuer": "https://donestate.proofandstate.com",
+  "resource": "https://donestate.proofandstate.com/mcp",
+  "scope": "donestate:execute",
+  "connection": "new_dynamically_registered_public_client",
+  "transport": "same_origin_https_browser",
+  "identityHistory": "Not established: fresh client consent does not establish first-ever GitHub or DoneState identity.",
+  "modelStarts": 0,
+  "credentialSetups": 0,
+  "repositoryMutations": 0,
+  "clientMetadataRetention": "Non-secret dynamic client registration metadata remains; the provider exposes no public client-delete endpoint.",
+  "discoveryPassed": true,
+  "callbackStateAndIssuerValidated": true,
+  "clientIdSha256": "22ee9a4bcc2d7e5f5e145c2bbb4b457706fa81fb82d2499d870cfe724a037902",
+  "authorizationCodeExchanged": true,
+  "mcpReadOnly": true,
+  "tokenRefreshed": true,
+  "refreshMcpReadOnly": true,
+  "cleanup": {
+    "grantRevocationConfirmed": true,
+    "accessDeniedAfterRevocation": true
+  },
+  "readOnly": {
+    "server": "DoneState",
+    "credentialAbsent": true,
+    "readOnlyTool": "get_openai_credential_status"
+  },
+  "passed": true,
+  "finishedAt": "2026-10-09T22:25:33.617Z"
+}
