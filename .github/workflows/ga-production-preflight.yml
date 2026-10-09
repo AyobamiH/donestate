@@ -1,0 +1,45 @@
+name: GA production preflight
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Deploy hosted Worker]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: donestate-ga-production-observation
+  cancel-in-progress: false
+
+jobs:
+  observe:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: apps/mcp-worker/package-lock.json
+      - run: npm ci --ignore-scripts
+        working-directory: apps/mcp-worker
+      - name: Check public onboarding prerequisites and one natural hourly sweep
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/ga-production.mjs --receipt "$RUNNER_TEMP/ga-production.json" --observe-minutes 65
+      - name: Preserve only the sanitized receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ga-production-preflight
+          path: ${{ runner.temp }}/ga-production.json
+          if-no-files-found: error
+          retention-days: 30

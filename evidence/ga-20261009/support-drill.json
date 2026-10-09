@@ -1,0 +1,56 @@
+{
+  "schema": "donestate.support-tabletop.v1",
+  "observedAt": "2026-10-09T13:49:08.653Z",
+  "scope": "Procedural tabletop only; no production incident or support message was created.",
+  "scenario": "Hypothetical production Marketplace webhook configuration failure returns 503; external delivery effect remains unconfirmed.",
+  "commander": "Publisher owner under the published incident runbook",
+  "technicalOwner": "DoneState maintainers",
+  "decisions": [
+    {
+      "step": "triage",
+      "severity": "Medium bounded service failure, escalated to High/Critical if authority or personal-data compromise is observed",
+      "deadline": "First 15 minutes from an actual discovery",
+      "result": "Classify and contain the narrow affected path; preserve deployment, delivery metadata and redacted receipt."
+    },
+    {
+      "step": "reconcile",
+      "deadline": "First hour",
+      "result": "No replay of ambiguous mutation. Read exact GitHub delivery and durable entitlement state before claiming loss, corruption or recovery."
+    },
+    {
+      "step": "route_support",
+      "result": "Use https://github.com/AyobamiH/donestate/issues for non-confidential availability; use https://github.com/AyobamiH/donestate/security/advisories/new for sensitive security evidence. Never include credentials or private repository material in a public issue."
+    },
+    {
+      "step": "notify",
+      "deadline": "Within 24 hours for an actual security incident affecting the Marketplace app or GitHub-supplied data, or any shorter applicable requirement",
+      "result": "Incident commander owns provider/customer notice; no notice is due for this hypothetical exercise."
+    },
+    {
+      "step": "recover",
+      "result": "Require known cause, credential containment where applicable, exact provider reconciliation, regression tests, candidate CI, deployment identity, live probe and independent verification when required; owner accepts residual risk."
+    },
+    {
+      "step": "close",
+      "deadline": "Within five working days of actual recovery",
+      "result": "Publish a redacted evidence story with exact subjects and assign every follow-up an owner and stale date."
+    }
+  ],
+  "checks": {
+    "publishedRunbookReviewed": true,
+    "githubPublicRepositoryReadback": {
+      "repository": "AyobamiH/donestate",
+      "issuesEnabled": true,
+      "archived": false,
+      "private": false
+    },
+    "policyAndSupportLinksAddedToConsentAndLanding": true,
+    "proceduralDecisionsRecorded": true,
+    "liveSupportReportSent": false,
+    "privateAdvisorySubmitted": false,
+    "productionFailureManufactured": false,
+    "providerNotificationSent": false,
+    "inboxMonitoringProven": false
+  },
+  "outcome": "Procedural support and recovery drill completed; live delivery and staffing guarantees are not claimed."
+}
