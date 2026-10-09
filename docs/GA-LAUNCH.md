@@ -34,7 +34,7 @@ The support drill in `evidence/ga-20261009/support-drill.json` exercises the pub
 | Policy and public-location acceptance | E-103/E-105 exact live wording | Complete |
 | Fresh client signup/OAuth | New helper receipt with consent, code exchange, MCP access, refresh and scoped revocation | Awaiting customer consent |
 | Production prerequisites | Exact deployed source plus canonical HTTP receipt | Complete: PR 179, Worker `164602a6-35a5-464a-ac70-1ffd00a01066`, all public probes passed |
-| Natural Marketplace health | Successful scheduled sweep receipt, no recent unresolved failures or escalation | OPS-002 active |
+| Natural Marketplace health | Successful scheduled sweep receipt, no recent unresolved failures or escalation | Complete: E-113, natural sweep at `2026-10-09T15:00:26Z`, no unresolved failures; deployment unchanged |
 | Support procedure | Bounded tabletop receipt and visible support/policy links | Drill complete; live customer delivery not claimed |
 | Initial owned-domain access | Publisher authority, bounded objective controls, support and stop criteria | Approved preparation; fresh OAuth and runtime gates still apply |
 | Unrestricted owned-domain GA | Separately recorded publisher decision against the completed gates and accepted residual risks | Not declared |
