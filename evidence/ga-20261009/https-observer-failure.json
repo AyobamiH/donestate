@@ -1,0 +1,104 @@
+{
+  "schema": "donestate.ga-observer-failure.v1",
+  "sourceCommit": "430c195e1e8ab82aef8f345521c33141542d4b04",
+  "workflowRunId": 37963469985,
+  "workflowJobId": 113931849365,
+  "receipt": {
+    "schema": "donestate.ga-production-preflight.v1",
+    "startedAt": "2026-10-09T17:03:06.271Z",
+    "productionMutations": 0,
+    "syntheticCronInvocations": 0,
+    "credentialSetups": 0,
+    "modelStarts": 0,
+    "passed": false,
+    "publicPreflight": {
+      "observedAt": "2026-10-09T17:03:06.271Z",
+      "issuer": "https://donestate.proofandstate.com",
+      "resource": "https://donestate.proofandstate.com/mcp",
+      "probes": [
+        {
+          "name": "landing",
+          "path": "/",
+          "expectedStatus": 200,
+          "observedStatus": 200,
+          "bodySha256": "4c2a1f5e74ec4547023e1e5310a3fdbaad0527241f5c5700cd75a8a73534f7b5",
+          "observedAt": "2026-10-09T17:03:06.559Z",
+          "bodyPublished": true
+        },
+        {
+          "name": "execution_resource_without_token",
+          "path": "/mcp",
+          "expectedStatus": 401,
+          "observedStatus": 401,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "observedAt": "2026-10-09T17:03:06.580Z",
+          "canonicalChallengePresent": true
+        },
+        {
+          "name": "account_resource_without_token",
+          "path": "/mcp/account/v1",
+          "expectedStatus": 401,
+          "observedStatus": 401,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "observedAt": "2026-10-09T17:03:07.023Z",
+          "canonicalChallengePresent": true
+        },
+        {
+          "name": "unknown_oauth_client",
+          "path": "/authorize?client_id=ga-preflight-not-registered&response_type=code",
+          "expectedStatus": 400,
+          "observedStatus": 400,
+          "bodySha256": "58a4275d202d34a26a4bab74eb4846c44266f098e0cfcdac1cababb266573dd9",
+          "observedAt": "2026-10-09T17:03:07.138Z"
+        },
+        {
+          "name": "malformed_client_registration",
+          "path": "/oauth/register",
+          "expectedStatus": 400,
+          "observedStatus": 400,
+          "bodySha256": "486c9134aa34fbadd4c14bdbd0180aaa5427bc171118a22950fdfd73485ea1a5",
+          "observedAt": "2026-10-09T17:03:07.166Z"
+        }
+      ],
+      "discovery": {
+        "issuer": "https://donestate.proofandstate.com",
+        "authorizationEndpoint": "https://donestate.proofandstate.com/authorize",
+        "tokenEndpoint": "https://donestate.proofandstate.com/oauth/token",
+        "pkce": "S256",
+        "publicClient": true
+      },
+      "passed": true
+    },
+    "operations": {
+      "deploymentBefore": {
+        "id": "48708c83-a108-4a66-9b9e-46f19c896daa",
+        "createdAt": "2026-10-09T17:00:58.531833Z",
+        "versions": [
+          {
+            "id": "77bf6431-39b6-4807-9f14-59e71ba38802",
+            "percentage": 100
+          }
+        ]
+      },
+      "deploymentAfter": {
+        "id": "48708c83-a108-4a66-9b9e-46f19c896daa",
+        "createdAt": "2026-10-09T17:00:58.531833Z",
+        "versions": [
+          {
+            "id": "77bf6431-39b6-4807-9f14-59e71ba38802",
+            "percentage": 100
+          }
+        ]
+      },
+      "deploymentUnchangedDuringObservation": true,
+      "eventVersionMatches": true,
+      "observationSource": "provider_live_scheduled_log",
+      "failure": "TAIL_CLOSED_BEFORE_OBSERVATION",
+      "tailSessionCreated": true,
+      "tailSessionRemoved": true,
+      "passed": false
+    },
+    "finishedAt": "2026-10-09T17:48:01.617Z"
+  },
+  "interpretation": "Temporary log connection closed before a natural sweep was observed; not evidence of a production outage."
+}

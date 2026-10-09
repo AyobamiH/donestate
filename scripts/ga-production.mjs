@@ -139,7 +139,8 @@ function deploymentSummary(payload) {
   return { id: latest.id, createdAt: latest.created_on, versions: latest.versions.map((version) => ({ id: version.version_id, percentage: version.percentage })) };
 }
 
-export async function observeNaturalSweep(provider, timeoutMs, WebSocketClass) {
+export async function observeNaturalSweep(provider, timeoutMs, WebSocketClass, sessionWindowMs = 20 * 60_000) {
+  check(Number.isFinite(timeoutMs) && timeoutMs > 0 && timeoutMs <= 65 * 60_000 && Number.isFinite(sessionWindowMs) && sessionWindowMs > 0 && sessionWindowMs <= 20 * 60_000, "OBSERVATION_BUDGET_INVALID");
   const before = deploymentSummary(await provider("/deployments"));
   const schedules = await provider("/schedules");
   check(hasHourlyCron(schedules), "HOURLY_CRON_NOT_PRESENT");
@@ -152,50 +153,76 @@ export async function observeNaturalSweep(provider, timeoutMs, WebSocketClass) {
       return { deploymentBefore: before, deploymentAfter: after, deploymentUnchangedDuringObservation: unchanged, eventVersionMatches: true, naturalSweep: stored, observationSource: "provider_stored_scheduled_log", tailSessionCreated: false, passed: stored.healthy && unchanged };
     }
   } catch (error) { storedLogFailure = safeFailure(error); }
-  const tail = await provider("/tails", "POST", { filters: [{ query: "maintenance sweep" }] });
-  check(typeof tail.id === "string", "TAIL_RESPONSE_INVALID");
-  let socket, timer, ping, result, failure, cleanupFailure;
   const startedMs = Date.now();
-  try {
-    const wsUrl = new URL(tail.url);
-    check(wsUrl.protocol === "wss:" && wsUrl.hostname.endsWith(".workers.dev"), "TAIL_ENDPOINT_UNTRUSTED");
-    WebSocketClass ??= createRequire(new URL("../apps/mcp-worker/package.json", import.meta.url))("ws");
-    result = await new Promise((resolve, reject) => {
-      socket = new WebSocketClass(tail.url, "trace-v1");
-      timer = setTimeout(() => reject(new Error("NATURAL_SWEEP_NOT_OBSERVED")), timeoutMs);
-      socket.addEventListener("open", () => {
-        socket.send(JSON.stringify({ debug: false }));
-        check(typeof socket.ping === "function", "TAIL_CONTROL_PING_UNAVAILABLE");
-        // Use the same WebSocket control ping as the installed Wrangler.
-        ping = setInterval(() => { if (socket.readyState === 1) socket.ping(Buffer.from("wrangler tail ping")); }, 10_000);
-        console.log("TAIL_CONNECTED_WAITING_FOR_NATURAL_HOURLY_SWEEP");
+  const deadline = startedMs + timeoutMs;
+  const sessions = [];
+  let result, failure, cleanupFailure;
+  // Provider tails have a shorter lifetime than the next hourly cron can take.
+  // Rotate only our own bounded session, after confirmed deletion. Never retry
+  // ambiguous creation/deletion, abnormal closure or a connection error.
+  while (!result && !failure && !cleanupFailure && Date.now() < deadline && sessions.length < 4) {
+    let tail;
+    try {
+      tail = await provider("/tails", "POST", { filters: [{ query: "maintenance sweep" }] });
+      check(typeof tail.id === "string" && /^[a-zA-Z0-9-]+$/.test(tail.id), "TAIL_RESPONSE_INVALID");
+    } catch (error) { failure = safeFailure(error); break; }
+    const session = { number: sessions.length + 1, completion: "unconfirmed", removed: false };
+    sessions.push(session);
+    let socket, timer, ping;
+    try {
+      const wsUrl = new URL(tail.url);
+      check(wsUrl.protocol === "wss:" && wsUrl.hostname.endsWith(".workers.dev"), "TAIL_ENDPOINT_UNTRUSTED");
+      WebSocketClass ??= createRequire(new URL("../apps/mcp-worker/package.json", import.meta.url))("ws");
+      const remainingMs = Math.max(0, deadline - Date.now());
+      const observed = await new Promise((resolve, reject) => {
+        socket = new WebSocketClass(tail.url, "trace-v1");
+        timer = setTimeout(() => resolve({ completion: remainingMs <= sessionWindowMs ? "observation_deadline" : "bounded_rotation" }), Math.min(sessionWindowMs, remainingMs));
+        socket.addEventListener("open", () => {
+          try {
+            socket.send(JSON.stringify({ debug: false }));
+            check(typeof socket.ping === "function", "TAIL_CONTROL_PING_UNAVAILABLE");
+            // Use the same WebSocket control ping as the installed Wrangler.
+            ping = setInterval(() => {
+              try { if (socket.readyState === 1) socket.ping(Buffer.from("wrangler tail ping")); }
+              catch { reject(new Error("TAIL_CONNECTION_FAILED")); }
+            }, 10_000);
+            console.log("TAIL_CONNECTED_WAITING_FOR_NATURAL_HOURLY_SWEEP");
+          } catch (error) { reject(error); }
+        });
+        socket.addEventListener("message", async ({ data }) => {
+          try {
+            const text = typeof data === "string" ? data
+              : Buffer.isBuffer(data) || data instanceof ArrayBuffer ? Buffer.from(data).toString()
+              : Buffer.from(await data.arrayBuffer()).toString();
+            if (text.length > 1_000_000) return;
+            const event = JSON.parse(text);
+            if (event.event?.scheduledTime < startedMs || event.event?.scheduledTime > Date.now()) return;
+            const sweep = maintenanceEvidence(event);
+            if (sweep) resolve({ completion: "natural_sweep", sweep });
+          } catch (error) { if (/^MAINTENANCE_/.test(error.message)) reject(error); }
+        });
+        socket.addEventListener("error", () => reject(new Error("TAIL_CONNECTION_FAILED")));
+        socket.addEventListener("close", (event) => {
+          if (event.code === 1000 || event.code === 1001) resolve({ completion: "provider_normal_close" });
+          else reject(new Error("TAIL_CLOSED_ABNORMALLY"));
+        });
       });
-      socket.addEventListener("message", async ({ data }) => {
-        try {
-          const text = typeof data === "string" ? data
-            : Buffer.isBuffer(data) || data instanceof ArrayBuffer ? Buffer.from(data).toString()
-            : Buffer.from(await data.arrayBuffer()).toString();
-          if (text.length > 1_000_000) return;
-          const event = JSON.parse(text);
-          if (event.event?.scheduledTime < startedMs) return;
-          const observed = maintenanceEvidence(event);
-          if (observed) resolve(observed);
-        } catch (error) {
-          if (/^MAINTENANCE_/.test(error.message)) reject(error);
-        }
-      });
-      socket.addEventListener("error", () => reject(new Error("TAIL_CONNECTION_FAILED")));
-      socket.addEventListener("close", () => reject(new Error("TAIL_CLOSED_BEFORE_OBSERVATION")));
-    });
-  } catch (error) { failure = safeFailure(error); }
-  finally {
-    clearTimeout(timer); clearInterval(ping); socket?.close();
-    try { await provider(`/tails/${tail.id}`, "DELETE"); } catch (error) { cleanupFailure = safeFailure(error); }
+      session.completion = observed.completion;
+      result = observed.sweep;
+      if (observed.completion === "observation_deadline") failure = "NATURAL_SWEEP_NOT_OBSERVED";
+    } catch (error) { failure = safeFailure(error); session.completion = "failed"; }
+    finally {
+      clearTimeout(timer); clearInterval(ping);
+      try { socket?.close(); } catch { failure ??= "TAIL_SOCKET_CLOSE_FAILED"; }
+      try { await provider(`/tails/${tail.id}`, "DELETE"); session.removed = true; }
+      catch (error) { cleanupFailure = safeFailure(error); }
+    }
   }
+  if (!result && !failure && !cleanupFailure) failure = Date.now() >= deadline ? "NATURAL_SWEEP_NOT_OBSERVED" : "TAIL_SESSION_BUDGET_EXHAUSTED";
   const after = deploymentSummary(await provider("/deployments"));
   const unchanged = JSON.stringify(before) === JSON.stringify(after);
-  const eventVersionMatches = !result?.workerVersion || after.versions.some((version) => version.id === result.workerVersion && version.percentage > 0);
-  return { deploymentBefore: before, deploymentAfter: after, deploymentUnchangedDuringObservation: unchanged, eventVersionMatches, ...(result ? { naturalSweep: result } : {}), observationSource: "provider_live_scheduled_log", ...(storedLogFailure ? { storedLogFailure } : {}), ...(failure ? { failure } : {}), tailSessionCreated: true, tailSessionRemoved: !cleanupFailure, ...(cleanupFailure ? { cleanupFailure } : {}), passed: Boolean(result?.healthy && unchanged && eventVersionMatches && !failure && !cleanupFailure) };
+  const eventVersionMatches = Boolean(result?.workerVersion) && after.versions.some((version) => version.id === result.workerVersion && version.percentage > 0);
+  return { deploymentBefore: before, deploymentAfter: after, deploymentUnchangedDuringObservation: unchanged, eventVersionMatches, ...(result ? { naturalSweep: result } : {}), observationSource: "provider_live_scheduled_log", ...(storedLogFailure ? { storedLogFailure } : {}), ...(failure ? { failure } : {}), tailSessionCreated: sessions.length > 0, tailSessionsCreated: sessions.length, tailSessions: sessions, tailSessionRemoved: sessions.length > 0 && sessions.every((session) => session.removed), ...(cleanupFailure ? { cleanupFailure } : {}), passed: Boolean(result?.healthy && unchanged && eventVersionMatches && !failure && !cleanupFailure) };
 }
 
 export async function main(args = process.argv.slice(2)) {
