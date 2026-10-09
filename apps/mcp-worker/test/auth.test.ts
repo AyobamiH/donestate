@@ -1,4 +1,5 @@
 import type { AuthRequest } from "@cloudflare/workers-oauth-provider";
+import { AuthorizationError } from "@cloudflare/workers-oauth-provider";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { authHandler, OAUTH_FORM_ACTION, type AuthEnv } from "../src/auth";
 import { ACCOUNT_MCP_PATH, ACCOUNT_READ_SCOPE, ACCOUNT_DELETE_SCOPE } from "../src/account-authorization";
@@ -59,6 +60,44 @@ afterEach(() => {
 });
 
 describe("OAuth authorisation security policy", () => {
+  it("makes policy and support routes available before consent and on the public landing page", async () => {
+    for (const path of ["/", "/authorize"]) {
+      const page = await (await authHandler.fetch(new Request(`https://done.example${path}`), authorizationEnv())).text();
+      for (const target of ["https://proofandstate.com/privacy", "https://proofandstate.com/terms", "https://github.com/AyobamiH/donestate/issues"]) expect(page).toContain(`href="${target}"`);
+    }
+  });
+
+  it("rejects an unregistered or malformed client locally without logging input or inventing a redirect", async () => {
+    const env = authorizationEnv();
+    const logged = vi.spyOn(console, "error").mockImplementation(() => {});
+    env.OAUTH_PROVIDER.parseAuthRequest = async () => { throw new AuthorizationError("invalid_request", { description: "private-input-must-not-be-published" }); };
+    const response = await authHandler.fetch(new Request("https://done.example/authorize?client_id=unregistered"), env);
+    expect(response.status).toBe(400);
+    expect(response.headers.get("Location")).toBeNull();
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(await response.json()).toEqual({ error: "invalid_request", error_description: "Invalid OAuth authorization request" });
+    expect(logged).not.toHaveBeenCalled();
+  });
+
+  it("returns a provider-validated OAuth error to the registered client with state and issuer intact", async () => {
+    const env = authorizationEnv();
+    env.OAUTH_PROVIDER.parseAuthRequest = async () => { throw new AuthorizationError("unsupported_response_type", { description: "Unsupported response type", redirectUri: "https://chatgpt.com/connector_platform_oauth_redirect?existing=value", state: "fixture-client-state", issuer: "https://done.example" }); };
+    const response = await authHandler.fetch(new Request("https://done.example/authorize"), env);
+    expect(response.status).toBe(302);
+    const target = new URL(response.headers.get("Location")!);
+    expect(target.origin + target.pathname).toBe("https://chatgpt.com/connector_platform_oauth_redirect");
+    expect(Object.fromEntries(target.searchParams)).toEqual({ existing: "value", error: "unsupported_response_type", error_description: "Invalid OAuth authorization request", state: "fixture-client-state", iss: "https://done.example" });
+  });
+
+  it("preserves genuine provider lookup failures as a server error", async () => {
+    const env = authorizationEnv();
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    env.OAUTH_PROVIDER.parseAuthRequest = async () => { throw new Error("KV provider unavailable"); };
+    const response = await authHandler.fetch(new Request("https://done.example/authorize"), env);
+    expect(response.status).toBe(500);
+    expect(response.headers.get("Location")).toBeNull();
+  });
+
   it("describes account controls accurately and requests identity-only GitHub access", async () => {
     const env = authorizationEnv();
     const original = env.OAUTH_PROVIDER.parseAuthRequest;

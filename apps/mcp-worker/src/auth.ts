@@ -1,4 +1,4 @@
-import type { AuthRequest, OAuthHelpers } from "@cloudflare/workers-oauth-provider";
+import { AuthorizationError, type AuthRequest, type OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 import { digest } from "./canonical";
 import { doneStateGrantScopes } from "./account-authorization";
 import { credentialSettingsHandler } from "./credential-settings";
@@ -201,6 +201,7 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
 <body><main class="card"><h1>Authorise DoneState</h1><p><strong>${clientName}</strong> is requesting access to your DoneState ${accessPurpose}.</p>
 <p class="scope"><strong>Client scopes:</strong> ${scopes}</p>
 ${permissions}
+<p class="hint"><a href="https://proofandstate.com/privacy">Privacy</a> · <a href="https://proofandstate.com/terms">Terms</a> · <a href="https://github.com/AyobamiH/donestate/issues">Support</a></p>
 <form method="post" action="/authorize"><input type="hidden" name="approval_state" value="${escapeHtml(approvalState)}"><input type="hidden" name="csrf" value="${csrf}"><div class="actions"><a class="cancel" href="/">Cancel</a><button class="approve" type="submit">Continue with GitHub</button></div></form>
 <p class="hint">${grant.accountControls ? "Sign in with the GitHub account whose DoneState service data you intend to inspect." : "Cloud Browser users: if GitHub asks you to confirm access, use your password or authenticator app. Passkeys are not supported in Cloud Browser."}</p>
 ${grant.accountControls ? "" : `<details class="reviewer"><summary>OpenAI reviewer test account</summary><p>For OpenAI review only. This account can inspect the sample repository and existing evidence but cannot create credentials, change repository selection, start work, open pull requests, merge, deploy, release, or submit verification.</p>
@@ -389,7 +390,7 @@ function home(env: DoneStateEnv): Response {
 
     <footer class="footer">
       <span>DoneState by Proof &amp; State</span>
-      <span><a href="https://proofandstate.com/docs/donestate">Documentation</a> · <a href="https://github.com/AyobamiH/donestate">Source</a> · <a href="https://proofandstate.com/donestate">Proof &amp; State</a></span>
+      <span><a href="https://proofandstate.com/docs/donestate">Documentation</a> · <a href="https://github.com/AyobamiH/donestate">Source</a> · <a href="https://proofandstate.com/donestate">Proof &amp; State</a> · <a href="https://proofandstate.com/privacy">Privacy</a> · <a href="https://proofandstate.com/terms">Terms</a> · <a href="https://github.com/AyobamiH/donestate/issues">Support</a></span>
     </footer>
   </main>
 </div>
@@ -427,6 +428,21 @@ export const authHandler = {
       if (url.pathname === "/" && request.method === "GET") return home(env);
       return new Response("Not found", { status: 404 });
     } catch (error) {
+      if (error instanceof AuthorizationError
+        && new URL(request.url).pathname === "/authorize"
+        && request.method === "GET") {
+        const parameters = new URLSearchParams({ error: error.code, error_description: "Invalid OAuth authorization request" });
+        // The provider only attaches this URI after validating the registered client and redirect.
+        if (error.redirectUri) {
+          const target = new URL(error.redirectUri);
+          for (const [key, value] of parameters) target.searchParams.set(key, value);
+          if (error.state) target.searchParams.set("state", error.state);
+          if (error.issuer) target.searchParams.set("iss", error.issuer);
+          return new Response(null, { status: 302, headers: { Location: target.href, "Cache-Control": "no-store" } });
+        }
+        const status = error.code === "server_error" ? 500 : error.code === "temporarily_unavailable" ? 503 : 400;
+        return Response.json(Object.fromEntries(parameters), { status, headers: { "Cache-Control": "no-store" } });
+      }
       const message = error instanceof Error ? error.message : "unknown authorization error";
       console.error(JSON.stringify({ message: "authorization request failed", error: message }));
       return new Response("Authorization failed", { status: 500 });
