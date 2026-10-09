@@ -1,5 +1,13 @@
 # Standalone hosted MCP setup
 
+## Current acceptance checkpoint: 9 October 2026
+
+The publisher has accepted **Northampton, Northamptonshire, UK** as the supplied public location. Existing support/privacy and confidential-security contact declarations are retained. This is a recorded publisher decision with town/county/country granularity, not a legal-compliance certification; another address approval is not awaited.
+
+Fresh OneClickPostFactory selected-App registration and repository read discovery succeeded through installation `157513439` with schedules and automatic repair disabled. Its temporary selection/findings were removed, and fresh account inspection confirmed complete empty indexed state. See [the scoped App readiness receipt](../evidence/launch-continuation-20261009/selected-app-readiness.json). These observations do not prove a new GitHub signup or App write-objective admission. The customer execution credential was securely reconnected on 9 October. One fresh non-starting App-backed objective was rejected before creating a run; the current customer repository role is read. The checked admission repair explicitly inspects the customer writer role with the installation token; exact deployment and temporary customer Write confirmation are required before a new bounded execution. Earlier dated credential, customer-run and cleanup receipts below remain historical observations and are not reused as a new outcome.
+
+Website PR [28](https://github.com/AyobamiH/proof-and-state-website/pull/28) merged and its exact-main deployment succeeded. Both canonical legal pages returned 200 and matched the approved location/date/contact text on desktop/mobile. See [the exact live policy readback](../evidence/launch-continuation-20261009/live-policy-readback.json). Publication, production readback and fresh customer acceptance remain separate states.
+
 DoneState can be used through its owned Proof & State MCP service without waiting for an OpenAI directory listing or GitHub Marketplace publication.
 
 ## Endpoint
@@ -40,7 +48,7 @@ Do not grant a class merely because it is available. A normal PR-producing objec
 
 The currently proven customer path is public-repository execution through the authenticated GitHub identity.
 
-Private repositories require a selected DoneState GitHub App installation in `pr_only` mode. The existing production maintenance App is deliberately restricted; do not describe arbitrary private-repository self-service as generally available until a fresh external-account acceptance proves that path.
+Private repositories require a selected DoneState GitHub App installation in `pr_only` mode and authenticated customer write/admin repository authority. The installation token must also carry the existing bounded contents/pull-request write permissions. App access does not itself grant the customer a writer role. The existing production maintenance App is deliberately restricted; do not describe arbitrary private-repository self-service as generally available until a fresh external-account acceptance proves that path.
 
 ## Distribution channels
 

@@ -1,0 +1,96 @@
+{
+  "schema": "donestate.live-policy-readback.v1",
+  "date": "2026-10-09",
+  "repository": "AyobamiH/proof-and-state-website",
+  "pullRequest": 28,
+  "candidateCommit": "7d8aa6375e837d45274b50243a9b2c84fb62ddad",
+  "mergeCommit": "e3bc6c58c6a4badd9b389ab7197a0be6c66e78fd",
+  "candidateAndMergeTree": "131bc04986e4f94f6c90f9550c0a09a1c7cf22b8",
+  "candidateCi": {
+    "verifyRun": 37889303517,
+    "integrationRun": 37889303510,
+    "conclusion": "success"
+  },
+  "exactMergeCi": {
+    "verifyRun": 37889489170,
+    "integrationRun": 37889489205,
+    "conclusion": "success"
+  },
+  "production": {
+    "runId": 37889489223,
+    "jobId": 113686934947,
+    "conclusion": "success",
+    "workerVersion": "d2cd1ddb-5ce9-4820-8f85-0ee5e127d98a",
+    "origin": "https://proofandstate.com"
+  },
+  "artifact": {
+    "id": 11597438990,
+    "name": "branding-production-e3bc6c58c6a4badd9b389ab7197a0be6c66e78fd-1",
+    "sha256": "cc474af70f28944651a18f4508c8e0dca6e269502747d56013ed905e7d544ccc",
+    "expiresAt": "2027-01-07T05:37:48Z"
+  },
+  "browserReport": {
+    "status": "passed",
+    "checks": [
+      {
+        "viewport": "desktop",
+        "hydration_navigation_theme": "passed",
+        "vendor_requests": 0,
+        "page_errors": 0,
+        "diagnostic_listener": "passed",
+        "legal_policy_readbacks": [
+          {
+            "path": "/legal/privacy",
+            "http_status": 200,
+            "operating_location": "Northampton, Northamptonshire, UK",
+            "last_updated": "9 October 2026",
+            "support_privacy_contact": "hello@proofandstate.com",
+            "html_sha256": "42c90c0a90ef2a0eb46c6e7147bd18662f23588b8e4acb929ce131e4f0117b35",
+            "observed_at": "2026-10-09T05:39:32.579586+00:00"
+          },
+          {
+            "path": "/legal/terms",
+            "http_status": 200,
+            "operating_location": "Northampton, Northamptonshire, UK",
+            "last_updated": "9 October 2026",
+            "support_privacy_contact": "hello@proofandstate.com",
+            "html_sha256": "add369c8e15b60996e44e990db864a1d45c3ba7bb64e3999b5a9d8dde3082a81",
+            "observed_at": "2026-10-09T05:39:33.208983+00:00"
+          }
+        ]
+      },
+      {
+        "viewport": "mobile",
+        "hydration_navigation_theme": "passed",
+        "vendor_requests": 0,
+        "page_errors": 0,
+        "diagnostic_listener": "passed",
+        "legal_policy_readbacks": [
+          {
+            "path": "/legal/privacy",
+            "http_status": 200,
+            "operating_location": "Northampton, Northamptonshire, UK",
+            "last_updated": "9 October 2026",
+            "support_privacy_contact": "hello@proofandstate.com",
+            "html_sha256": "42c90c0a90ef2a0eb46c6e7147bd18662f23588b8e4acb929ce131e4f0117b35",
+            "observed_at": "2026-10-09T05:39:37.834857+00:00"
+          },
+          {
+            "path": "/legal/terms",
+            "http_status": 200,
+            "operating_location": "Northampton, Northamptonshire, UK",
+            "last_updated": "9 October 2026",
+            "support_privacy_contact": "hello@proofandstate.com",
+            "html_sha256": "add369c8e15b60996e44e990db864a1d45c3ba7bb64e3999b5a9d8dde3082a81",
+            "observed_at": "2026-10-09T05:39:38.456401+00:00"
+          }
+        ]
+      }
+    ]
+  },
+  "state": "LIVE_POLICY_CONTENT_CONFIRMED_BY_PRODUCTION_WORKFLOW",
+  "readbackScope": "Canonical privacy and terms pages returned 200 and visibly matched the approved location, 9 October date and existing contact links in desktop/mobile checks. Public page HTML and SHA-256 are preserved.",
+  "directClient403HistoricalObservationPreserved": true,
+  "generalClientReachabilityFixClaimed": false,
+  "independentVerifierSignature": false
+}

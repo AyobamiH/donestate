@@ -1,0 +1,21 @@
+{
+  "schema": "donestate.publisher-address-acceptance.v1",
+  "date": "2026-10-09",
+  "publicLocation": "Northampton, Northamptonshire, UK",
+  "granularity": "town_county_country",
+  "ownerAcceptance": "Publisher explicitly accepts the already supplied location/address and instructs progress through remaining work",
+  "additionalPublicAddressRequested": false,
+  "privateHomeAddressPublished": false,
+  "utrPublished": false,
+  "fullGeographicServiceAddressProvided": false,
+  "legalComplianceCertification": false,
+  "acceptedDecisionScope": "Current public location/contact choice is accepted. This does not represent a town/county/country location as a full postal or geographic service address or certify statutory compliance.",
+  "sourcePolicies": [
+    "docs/PRIVACY.md",
+    "docs/TERMS.md"
+  ],
+  "supportPrivacyEmail": "hello@proofandstate.com",
+  "securityEmail": "security@proofandstate.com",
+  "territoryDecision": "Worldwide where legally permitted",
+  "ukOnlyProcessingPromised": false
+}

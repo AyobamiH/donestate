@@ -81,15 +81,31 @@ export interface RepositoryAccess {
   private: boolean;
 }
 
-export async function getRepositoryAccess(token: string, repository: string): Promise<RepositoryAccess> {
+export async function getRepositoryAccess(
+  token: string,
+  repository: string,
+  installationActorLogin?: string,
+): Promise<RepositoryAccess> {
   const data = await githubRequest<{
     default_branch: string;
     private: boolean;
     permissions?: { push?: boolean };
   }>(token, `/repos/${repository}`);
+  let canPush = data.permissions?.push === true;
+  if (installationActorLogin !== undefined) {
+    // An installation token is an App actor. Its repository metadata does not
+    // establish the authenticated customer's authority to write that repository.
+    const actor = await githubRequest<{
+      permission?: string;
+      user?: { login?: string };
+    }>(token, `/repos/${repository}/collaborators/${encodeURIComponent(installationActorLogin)}/permission`);
+    canPush = Boolean(installationActorLogin)
+      && actor.user?.login?.toLowerCase() === installationActorLogin.toLowerCase()
+      && (actor.permission === "write" || actor.permission === "admin");
+  }
   return {
     defaultBranch: data.default_branch,
-    canPush: data.permissions?.push === true,
+    canPush,
     private: data.private,
   };
 }

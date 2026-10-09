@@ -1,9 +1,65 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { discoverMaintenanceCandidates } from "../src/github";
+import { discoverMaintenanceCandidates, getRepositoryAccess, GitHubError } from "../src/github";
 
 afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
+});
+
+describe("repository write admission", () => {
+  it.each([true, false])("preserves OAuth push permission %s without an App actor lookup", async (canPush) => {
+    const request = vi.fn(async () => Response.json({
+      default_branch: "main", private: false, permissions: { push: canPush },
+    }));
+    vi.stubGlobal("fetch", request);
+    expect(await getRepositoryAccess("oauth-test-token", "owner/repository")).toEqual({
+      defaultBranch: "main", private: false, canPush,
+    });
+    expect(request).toHaveBeenCalledTimes(1);
+  });
+
+  it.each(["write", "admin"])("admits an authorised App-backed %s user when repository push metadata is absent", async (permission) => {
+    const request = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      expect(init?.headers).toMatchObject({ Authorization: "Bearer installation-test-token" });
+      if (String(input).endsWith("/collaborators/Customer/permission")) {
+        return Response.json({ permission, user: { login: "customer" } });
+      }
+      return Response.json({ default_branch: "main", private: true });
+    });
+    vi.stubGlobal("fetch", request);
+    expect(await getRepositoryAccess("installation-test-token", "owner/repository", "Customer")).toEqual({
+      defaultBranch: "main", private: true, canPush: true,
+    });
+    expect(request).toHaveBeenCalledTimes(2);
+  });
+
+  it.each(["read", "none", "unknown", undefined])("rejects an App-backed user role %s even if App metadata says push", async (permission) => {
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
+      return String(input).endsWith("/permission")
+        ? Response.json({ permission, user: { login: "Customer" } })
+        : Response.json({ default_branch: "main", private: false, permissions: { push: true } });
+    }));
+    expect((await getRepositoryAccess("installation-test-token", "owner/repository", "Customer")).canPush).toBe(false);
+  });
+
+  it.each(["different-customer", undefined])("rejects permission evidence for a mismatched or missing identity %s", async (login) => {
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
+      return String(input).endsWith("/permission")
+        ? Response.json({ permission: "write", user: { login } })
+        : Response.json({ default_branch: "main", private: false });
+    }));
+    expect((await getRepositoryAccess("installation-test-token", "owner/repository", "Customer")).canPush).toBe(false);
+  });
+
+  it("fails closed when the App cannot read collaborator authority", async () => {
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
+      return String(input).endsWith("/permission")
+        ? Response.json({ message: "Not Found" }, { status: 404 })
+        : Response.json({ default_branch: "main", private: false, permissions: { push: true } });
+    }));
+    await expect(getRepositoryAccess("installation-test-token", "owner/repository", "Customer"))
+      .rejects.toBeInstanceOf(GitHubError);
+  });
 });
 
 describe("maintenance discovery", () => {

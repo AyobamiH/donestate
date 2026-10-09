@@ -431,7 +431,11 @@ export function createServer(): McpServer {
         githubToken = installation.token;
         credentialSource = "github_app_installation";
       }
-      const access = await getRepositoryAccess(githubToken, input.repository);
+      const access = await getRepositoryAccess(
+        githubToken,
+        input.repository,
+        credentialSource === "github_app_installation" ? identity.login : undefined,
+      );
       if (access.private && credentialSource !== "github_app_installation") {
         throw new Error("BLOCKED_CAPABILITY: private repositories require a selected GitHub App installation");
       }
