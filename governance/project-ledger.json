@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-10-09",
+  "updatedAt": "2026-10-10",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {
@@ -384,11 +384,11 @@
       "stream": "go-to-market",
       "status": "active",
       "owner": "Proof & State maintainers",
-      "lastUpdated": "2026-10-09",
-      "staleDate": "2026-10-16",
-      "nextAction": "Use the anonymous strict cohort review for the first consenting external bounded public-repository-fix cohort. Record customer-accepted independently verified results, seven-day eligible repeat use, real priced-offer commitments/payments and support burden; improve the largest evidenced constraint one variable at a time.",
-      "waitCondition": "Owned-domain entry gates are complete under E-118. Review tooling and the focused first-cohort experiment are implemented; no real external customer cohort, demand, retention or payment evidence is supplied. Empty input reports not_observed, never market fit.",
-      "reentryCondition": "Keep active through real external cohort entry and review within seven days. Preserve channel/cohort separation and independent-verifier authority; promote private-repository, billing or adapter work only against evidenced customer constraints.",
+      "lastUpdated": "2026-10-10",
+      "staleDate": "2026-10-17",
+      "nextAction": "Continue improving the public first-job and recovery path while distribution runs alongside development. Review incoming consenting external use for independently verified usefulness, eligible repeat jobs, real offer/payment evidence and support burden; fix the largest evidenced constraint. Customer recruitment and a fixed cohort size are not development gates.",
+      "waitCondition": "Owned-domain GA is accepted under E-118. External customer evidence may arrive naturally as the product is used; no supplied customer observation currently establishes demand, retention, payment or market fit. Missing observations do not pause development.",
+      "reentryCondition": "Review real observations as they arrive, within seven days of first entry. Preserve channel/cohort separation, consent, independent-verifier authority and existing permission boundaries. Post-Once publishing integration is a later reconciliation, not certified by this slice.",
       "dependencies": [
         "CUST-001",
         "CUST-002"
@@ -397,7 +397,8 @@
         "E-044",
         "E-047",
         "E-048",
-        "E-119"
+        "E-119",
+        "E-120"
       ]
     },
     {
@@ -2639,6 +2640,23 @@
       "outcome": "The next market-fit experiment has an executable honest review boundary; real market fit remains unproven and GTM-001 stays active. No production tracking, billing integration, runtime deployment, permissions, external message or provider listing changes.",
       "content": "Strict local anonymous cohort review, failure-path tests, empty unobserved input, operator experiment/runbook, measurement documentation and current-status reconciliation.",
       "measurement": "Six semantic regression tests; ten bounded aggregate counts; nine fixed friction categories; six evidence kinds; three separately attributed channels; zero supplied external cohort observations or new production data collection."
+    },
+    {
+      "id": "E-120",
+      "date": "2026-10-10",
+      "identity": "Continuous first-use development with organic customer learning",
+      "situation": "The publisher wants to keep building while Post-Once warms visibility and conversation. A separate recruitment programme or a five-customer threshold must not delay DoneState development. Public first-use guidance needs a bounded first job, execution funding clarity and safe recovery.",
+      "verification": "Website PR #30 changes only the public DoneState get-started and troubleshooting routes. Candidate 1b746dfc7e40d6f1b97cd6dd52803de5f78cad72 passed CI 38002928213 and owned toolchain integration 38002928130. Merge c049d83f699f5247050a8c09efe332c88d3952e3 has exact tree 7765ba05560ea9dd313f811c1b0a3805776bd0ba and parents bc803c1be8b47de27fe72d55adfcb47b492adf97 then candidate. Exact merge CI 38003153832, owned toolchain integration 38003153811 and deploy workflow 38003153792/job 114065760847 all pass. Deployment uploaded the proof-and-state-website Worker at 2026-10-09T23:12:21.8236147Z and deployed triggers at 23:12:22.7611074Z with version 24d5f046-de25-447f-84be-04b5210727be. Public browser readback at 23:12:43.360Z shows the new guide, funding/verifier boundaries, autoStart default, bounded brief and result/cleanup guidance. Its actual recovery link reaches #first-attempt with all five recovery cases at 23:13:09.140Z. Copy-button feedback is visible but clipboard contents were not independently confirmed. evidence/first-use-20261010/website-release.json retains the exact release and observation subjects. Full local npm run check passes all 72 tests, contract, documentation, governance and package dry-run checks. Primary learning-loop documentation and empty-report nextAction now continue first-use development and observe incoming consented use without a recruitment gate. Historical E-119 remains an accurate record of the earlier proposal.",
+      "accountability": {
+        "owner": "Proof & State maintainers",
+        "status": "active",
+        "nextAction": "Continue improving the public first-job and recovery path while distribution runs alongside development. Review incoming consenting external use for independently verified usefulness, eligible repeat jobs, real offer/payment evidence and support burden; fix the largest evidenced constraint. Customer recruitment and a fixed cohort size are not development gates.",
+        "waitCondition": "Owned-domain GA is accepted under E-118. External customer evidence may arrive naturally as the product is used; no supplied customer observation currently establishes demand, retention, payment or market fit. Missing observations do not pause development.",
+        "staleDate": "2026-10-17"
+      },
+      "outcome": "The public first-use guide and recovery are live on the deployed website. Customer learning now continues alongside development without a recruitment gate or a market-fit claim. Post-Once publishing/learning integration remains uninspected for a later slice. DoneState MCP runtime and completed launch acceptance remain unchanged.",
+      "content": "Public guide and first-attempt recovery, current learning-loop strategy, actual empty-input report and website release evidence.",
+      "measurement": "Two website routes; zero additional execution starts, customer tracking, permissions, billing integration or external messages. Empty report remains not_observed and marketFit not_established."
     }
   ]
 }
