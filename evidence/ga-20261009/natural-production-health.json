@@ -1,0 +1,117 @@
+{
+  "workflowRun": 37941829386,
+  "jobId": 113857880758,
+  "sourceCommit": "8be787a8cf758bc3529f046f1c54a889cb81aa38",
+  "conclusion": "success",
+  "receipt": {
+    "schema": "donestate.ga-production-preflight.v1",
+    "startedAt": "2026-10-09T14:07:32.444Z",
+    "productionMutations": 0,
+    "syntheticCronInvocations": 0,
+    "credentialSetups": 0,
+    "modelStarts": 0,
+    "passed": true,
+    "publicPreflight": {
+      "observedAt": "2026-10-09T14:07:32.444Z",
+      "issuer": "https://donestate.proofandstate.com",
+      "resource": "https://donestate.proofandstate.com/mcp",
+      "probes": [
+        {
+          "name": "landing",
+          "path": "/",
+          "expectedStatus": 200,
+          "observedStatus": 200,
+          "bodySha256": "4c2a1f5e74ec4547023e1e5310a3fdbaad0527241f5c5700cd75a8a73534f7b5",
+          "observedAt": "2026-10-09T14:07:32.644Z",
+          "bodyPublished": true
+        },
+        {
+          "name": "execution_resource_without_token",
+          "path": "/mcp",
+          "expectedStatus": 401,
+          "observedStatus": 401,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "observedAt": "2026-10-09T14:07:32.662Z",
+          "canonicalChallengePresent": true
+        },
+        {
+          "name": "account_resource_without_token",
+          "path": "/mcp/account/v1",
+          "expectedStatus": 401,
+          "observedStatus": 401,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "observedAt": "2026-10-09T14:07:32.882Z",
+          "canonicalChallengePresent": true
+        },
+        {
+          "name": "unknown_oauth_client",
+          "path": "/authorize?client_id=ga-preflight-not-registered&response_type=code",
+          "expectedStatus": 400,
+          "observedStatus": 400,
+          "bodySha256": "58a4275d202d34a26a4bab74eb4846c44266f098e0cfcdac1cababb266573dd9",
+          "observedAt": "2026-10-09T14:07:32.970Z"
+        },
+        {
+          "name": "malformed_client_registration",
+          "path": "/oauth/register",
+          "expectedStatus": 400,
+          "observedStatus": 400,
+          "bodySha256": "486c9134aa34fbadd4c14bdbd0180aaa5427bc171118a22950fdfd73485ea1a5",
+          "observedAt": "2026-10-09T14:07:32.980Z"
+        }
+      ],
+      "discovery": {
+        "issuer": "https://donestate.proofandstate.com",
+        "authorizationEndpoint": "https://donestate.proofandstate.com/authorize",
+        "tokenEndpoint": "https://donestate.proofandstate.com/oauth/token",
+        "pkce": "S256",
+        "publicClient": true
+      },
+      "passed": true
+    },
+    "operations": {
+      "deploymentBefore": {
+        "id": "a5a08435-e095-4e98-b785-5667ea4e4d29",
+        "createdAt": "2026-10-09T13:54:49.201156Z",
+        "versions": [
+          {
+            "id": "164602a6-35a5-464a-ac70-1ffd00a01066",
+            "percentage": 100
+          }
+        ]
+      },
+      "deploymentAfter": {
+        "id": "a5a08435-e095-4e98-b785-5667ea4e4d29",
+        "createdAt": "2026-10-09T13:54:49.201156Z",
+        "versions": [
+          {
+            "id": "164602a6-35a5-464a-ac70-1ffd00a01066",
+            "percentage": 100
+          }
+        ]
+      },
+      "deploymentUnchangedDuringObservation": true,
+      "eventVersionMatches": true,
+      "naturalSweep": {
+        "cron": "0 * * * *",
+        "scheduledAt": "2026-10-09T15:00:26.000Z",
+        "observedAt": "2026-10-09T15:00:34.882Z",
+        "outcome": "ok",
+        "workerVersion": "164602a6-35a5-464a-ac70-1ffd00a01066",
+        "marketplaceWebhook": {
+          "schema": "donestate.marketplace-webhook-health.v1",
+          "unresolvedRecent": 0,
+          "unresolvedConfiguration": 0,
+          "unresolvedProcessing": 0,
+          "escalationRequired": false
+        },
+        "healthy": true
+      },
+      "observationSource": "provider_live_scheduled_log",
+      "tailSessionCreated": true,
+      "tailSessionRemoved": true,
+      "passed": true
+    },
+    "finishedAt": "2026-10-09T15:00:36.038Z"
+  }
+}
