@@ -13,6 +13,7 @@ import type { DoneStateEnv } from "./environment";
 import { exchangeGitHubCode, getAuthenticatedUser } from "./github";
 import type { GitHubAuthProps } from "./types";
 import { DONESTATE_UI_CSS } from "./ui";
+import { gaOAuthPage } from "./ga-oauth-page";
 
 export const EXECUTION_SCOPE = "donestate:execute";
 
@@ -412,6 +413,7 @@ export const authHandler = {
           },
         });
       }
+      if (url.pathname === "/acceptance/oauth") return gaOAuthPage(request);
       if (url.pathname === "/authorize" && request.method === "GET") return await consent(request, env);
       if (url.pathname === "/authorize" && request.method === "POST") return await approve(request, env);
       if (url.pathname === "/authorize/reviewer" && request.method === "POST") return await reviewerApprove(request, env);
