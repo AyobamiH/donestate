@@ -233,20 +233,21 @@
       "id": "LEGAL-001",
       "title": "Complete public operator contact and jurisdiction decisions",
       "stream": "legal",
-      "status": "blocked",
+      "status": "complete",
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-09",
-      "staleDate": "2026-10-17",
-      "nextAction": "Publish the approved Northampton, Northamptonshire, UK operating location and align repository policy contacts with the existing canonical publisher routes. Before unrestricted onboarding, complete an appropriate public geographic business/service address. Preserve worldwide availability where legally permitted and retake the ICO self-assessment when business activity begins.",
-      "waitCondition": "The publisher approved the public locality Northampton, Northamptonshire, UK. Existing canonical Proof & State pages explicitly publish hello@proofandstate.com for support/privacy and security@proofandstate.com for confidential reports, and the parent privacy notice covers hosted DoneState. Those contact declarations are now aligned in repository policies. A complete appropriate geographic business/service address remains unprovided. No inbox delivery test or unrestricted legal clearance is claimed.",
-      "reentryCondition": "Resume the remaining complete geographic service-address requirement when exact publishable details are available. The approved locality and existing public contacts need no repeated permission; preserve the prohibition on publishing private home details or UTR.",
+      "staleDate": "2026-12-01",
+      "nextAction": "Retain the publisher-accepted Northampton, Northamptonshire, UK public location and existing support/privacy/security contacts. Reassess the ICO position when business activity begins and revisit operator details if the publisher changes them. Record accepted town/county/country granularity without certifying it as a full geographic service address or legal compliance.",
+      "waitCondition": "None for the publisher public-location/contact decision. The publisher explicitly accepts the supplied address/location and instructs continued work; no further address approval is awaited. Only town/county/country granularity was supplied. A full geographic service address and statutory compliance are not certified by this decision.",
+      "reentryCondition": "Reopen on an actual operator-detail change or a concrete compliance requirement. Do not ask again for the already accepted location or publish private home details/UTR.",
       "dependencies": [
         "GOV-001"
       ],
       "evidenceIds": [
         "E-004",
         "E-041",
-        "E-102"
+        "E-102",
+        "E-103"
       ]
     },
     {
@@ -550,9 +551,9 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-09",
       "staleDate": "2026-10-10",
-      "nextAction": "Preserve the completed OneClickPostFactory indexed-service cleanup receipt and fresh empty readback. Complete the separate fresh clean-account signup and selected-repository GitHub App admission acceptance, and LEGAL-001 appropriate complete geographic business/service address, before unrestricted GA. Approved public location and existing support/privacy contacts are recorded in E-102. Do not repeat verified PR 172, known run/key/temporary-Write cleanup or the confirmed account purge.",
-      "waitCondition": "PR 173 is merged and deployed. The supported separate account-controls MCP connection authenticated OneClickPostFactory; one approved deletion returned receipt 3ce7dd8f1a3c484ba5fff6d1e05d14b3bd950019268790b5eafd4f2f11fc7904 at 2026-10-08T22:55:39.653Z. Digest validation and fresh inspection at 22:56:06.979Z confirmed a complete empty indexed inventory, no credential or active run, and dailyRunsUsed 0. Fresh clean-account signup/App admission and LEGAL-001 remain unproven; the deletion receipt is service evidence, not an independent signature. The publisher has approved Northampton, Northamptonshire, UK as the operating location; a complete geographic service address remains separate. Existing public support/privacy contacts have been recovered from canonical publisher pages and aligned in policy copy.",
-      "reentryCondition": "Resume only the remaining fresh onboarding/App and public publisher/legal decisions. Existing customer execution and service cleanup are complete within their recorded scope and need no repeated model run, account purge or approval. Preserve deletion receipt exclusions: unindexed legacy objectives, external GitHub resources and upstream key/OAuth revocation were not covered. Reopen cleanup only on new contradictory state or an actual regression.",
+      "nextAction": "Merge and deploy the selected-App write-admission repair after exact-head CI, then confirm temporary OneClickPostFactory repository Write authority and run one fresh bounded selected-App objective. Observe exact-head CI and pinned independent OpsTruth verification, inspect new account state, and clean up only the new acceptance artefacts and temporary grant. Accepted public-location/contact decisions and exact live policy text checks are complete.",
+      "waitCondition": "The publisher accepts the supplied public location/contact decision with its recorded granularity. Website PR 28 is merged as e3bc6c58c6a4badd9b389ab7197a0be6c66e78fd; exact-merge CI and production deployment 37889489223 succeeded. Both legal pages returned 200 and matched the approved location/date/contact links on desktop/mobile. The customer execution credential was securely reconnected at 2026-10-09T05:39:39.553Z and independent inspection confirmed it is idle. A fresh selected-App draft was rejected before objective creation. Independent GitHub readback gives OneClickPostFactory permission read; no run or model execution started. E-107 repairs App admission to inspect the authenticated user permission with the existing installation token, rather than treating App metadata push as customer authority. That repair is locally checked but not yet deployed in this checkpoint; temporary customer Write confirmation and the fresh execution journey remain pending.",
+      "reentryCondition": "After exact-head checks, authorised merge/deployment and independent customer Write readback, create and start exactly one new bounded selected-App objective. Keep the existing verifier pin, PR-only authority and scheduling/automatic-repair disabled. Preserve the old PR 172/customer deletion receipts; do not reuse a historical run or retry ambiguous effects. Complete scoped cleanup for only the new run/selection/credential and new temporary grant. Fresh first-time signup/OAuth remains a distinct unproven observation unless actually exercised.",
       "dependencies": [
         "VERIFY-004",
         "CUST-001",
@@ -587,7 +588,12 @@
         "E-099",
         "E-100",
         "E-101",
-        "E-102"
+        "E-102",
+        "E-103",
+        "E-104",
+        "E-105",
+        "E-106",
+        "E-107"
       ]
     },
     {
@@ -1851,7 +1857,7 @@
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication \u2192 v2 handoff \u2192 OpsTruth verification loop, then reconcile the final public documentation state.",
+        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication → v2 handoff → OpsTruth verification loop, then reconcile the final public documentation state.",
         "waitCondition": "The npm publication itself is complete. Remaining work is external product acceptance and public documentation closure, not package publication.",
         "staleDate": "2026-10-10"
       },
@@ -1987,7 +1993,7 @@
       "accountability": {
         "owner": "DoneState maintainers and publisher owner",
         "status": "blocked",
-        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up \u2192 connect \u2192 select repo \u2192 create objective \u2192 execute \u2192 unmerged PR \u2192 OpsTruth VERIFIED \u2192 inspect account \u2192 delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
+        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up → connect → select repo → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
         "waitCondition": "Customer execution credential must be reconnected securely. LEGAL-001 remains blocked on its existing publisher requirements.",
         "staleDate": "2026-10-09"
       },
@@ -2317,6 +2323,91 @@
       "outcome": "The requested public locality and existing canonical support/privacy contacts are aligned in repository policies, with a two-route website candidate. LEGAL-001 remains blocked by a complete appropriate geographic service address; fresh onboarding/App acceptance remains a separate RELEASE-001 gate.",
       "content": "Publisher location approval, two policy location lines and dates, explicit remaining address/email scope, and preserved customer-cleanup evidence.",
       "measurement": "Two repository policies updated; two canonical legal routes prepared; one explicit locality decision recorded; existing support/privacy/security email declarations recovered. Zero private address/UTR values, invented email aliases, sent messages, new model runs, account purges or hosted MCP runtime changes."
+    },
+    {
+      "id": "E-103",
+      "date": "2026-10-09",
+      "identity": "Publisher accepts the supplied public location and directs remaining launch work",
+      "situation": "The publisher explicitly states they are fine with the address already provided and requests progress through all remaining verification and signup/App acceptance work.",
+      "verification": "The accepted published location is Northampton, Northamptonshire, UK. Existing hello@proofandstate.com support/privacy and security@proofandstate.com confidential security declarations remain unchanged. evidence/launch-continuation-20261009/publisher-address-acceptance.json records the express decision, town/county/country granularity, no private address/UTR publication and no full geographic-address or legal-compliance certification. Earlier E-102 remains unchanged as its dated earlier state.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "complete",
+        "nextAction": "Retain the accepted public-location/contact decision and its exact scope; pursue remaining technical acceptance.",
+        "waitCondition": "None for the accepted supplied location/contact decision.",
+        "staleDate": "2026-12-01"
+      },
+      "outcome": "LEGAL-001 publisher decisions are accepted and no repeated address approval is awaited. Statutory compliance is not certified. RELEASE-001 still tracks the genuinely unproven fresh customer/admission and live-policy checks.",
+      "content": "Separate owner acceptance of a public location from address granularity and legal compliance; preserve earlier evidence.",
+      "measurement": "One explicit publisher acceptance recorded; zero new address requests, private-detail publications, territory changes or unrestricted-GA certifications."
+    },
+    {
+      "id": "E-104",
+      "date": "2026-10-09",
+      "identity": "Fresh customer selected-App registration and read access confirmed and cleaned up",
+      "situation": "The customer service account remained empty after the previous completed deletion. The user authorised finishing remaining customer/App acceptance; the existing native connection was used for a scoped fresh registration/readiness check.",
+      "verification": "Authenticated inspection at 2026-10-09T05:10:23.140Z identifies OneClickPostFactory with complete empty indexed inventory, disconnected credential and dailyRunsUsed 0. App 4761698 slug donestate-maintenance-ayobamih is configured. A fresh PR-only selection of AyobamiH/donestate at 05:32:10.254Z resolves existing installation 157513439; schedules and automatic repair are false and exact check names are retained. A separate list readback confirms the selection. App-backed repository discovery succeeds at 05:33:17.297Z with bounded findings and every runId null. The newly added selection/findings are removed once; list readback is empty and independent inspect_account at 05:33:31.260Z confirms complete zero-count indexed state, no credential/active run and dailyRunsUsed 0. Full scoped payloads are recorded in evidence/launch-continuation-20261009/selected-app-readiness.json.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "complete",
+        "nextAction": "Retain this successful selected installation/read-access checkpoint. Finish separate new signup/App write-objective admission and execution only when required customer capabilities are available.",
+        "waitCondition": "None for the fresh scoped App registration/read check and its temporary-state cleanup.",
+        "staleDate": "2026-12-01"
+      },
+      "outcome": "Fresh customer App registration and read access are confirmed. A new GitHub signup, App write-objective admission and complete fresh model/PR/independent-verification journey are not proved by this checkpoint. The customer execution credential is disconnected and no objective was created.",
+      "content": "Keep fresh registration, installation identity, App read discovery, objective write admission, model execution and scoped cleanup distinct. Retain E-101/PF-E-057 historical account deletion and PR 172 verifier outcome unchanged.",
+      "measurement": "One fresh selection, one selection readback, one bounded discovery and one removal of only the newly added selection/findings; fresh empty inspection and list readbacks. Zero account-deletion repeats, model executions, repository writes, Write grants, new objectives, schedule/automatic repairs or App installation-scope changes."
+    },
+    {
+      "id": "E-105",
+      "date": "2026-10-09",
+      "identity": "Exact canonical live legal-policy wording confirmed on desktop and mobile",
+      "situation": "Earlier successful publication checks did not assert legal-page text; a separate direct client returned 403 and search exposed older wording. The user requested completion of this remaining verification.",
+      "verification": "Website PR 28 final head 7d8aa6375e837d45274b50243a9b2c84fb62ddad passed verify run 37889303517 and integration run 37889303510, then merged as e3bc6c58c6a4badd9b389ab7197a0be6c66e78fd with matching tree 131bc04986e4f94f6c90f9550c0a09a1c7cf22b8. Exact-merge CI 37889489170 and integration 37889489205 passed. Production deployment 37889489223 succeeded and reported website Worker d2cd1ddb-5ce9-4820-8f85-0ee5e127d98a. Its existing browser acceptance step read /legal/privacy and /legal/terms on desktop/mobile: every HTTP status 200; exact Northampton, Northamptonshire, UK location, 9 October 2026 update date and established public contact links matched. Four timestamped observations, full-page HTML SHA-256 values and production artifact 11597438990 with digest cc474af70f28944651a18f4508c8e0dca6e269502747d56013ed905e7d544ccc are preserved in evidence/launch-continuation-20261009/live-policy-readback.json and the provider artifact.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "complete",
+        "staleDate": "2026-12-01",
+        "nextAction": "Retain the exact live policy readback and production artifact; reopen only on new contradictory public content.",
+        "waitCondition": "None for the scoped legal-page content verification."
+      },
+      "outcome": "The previously unconfirmed live legal-policy text is now observed through the established production workflow. The historical direct-client 403 remains an observation, not a claim that universal client reachability was fixed. No independent-verifier signature or DoneState self-certification is claimed.",
+      "content": "Add both legal routes to established acceptance checks; keep production readback separate from source, merge and provider deployment.",
+      "measurement": "Two legal pages, two viewports, four 200/visible-text observations. Zero authentication/firewall/user-agent changes, alternate hosts, blocked account-console navigation or customer model runs."
+    },
+    {
+      "id": "E-106",
+      "date": "2026-10-09",
+      "identity": "Customer credential reconnected; fresh selected-App draft rejected before execution",
+      "situation": "The user completed the supported secure customer-key setup and directed continued acceptance. A new bounded three-file PR-only candidate was prepared and dry-run before one non-starting App admission attempt.",
+      "verification": "The supported credential status and separate account inspection identify OneClickPostFactory with connected credential created 2026-10-09T05:39:39.553Z, no last use/active run and dailyRunsUsed 0. A fresh PR-only selection at 05:42:01.993Z uses existing installation 157513439 with scheduling and automatic repair disabled. Independent GitHub permission readback reports read for OneClickPostFactory on AyobamiH/donestate. The exactly-three-file candidate dry-run preserved all prior stories, unrelated work items and RELEASE-001 blocked identity/dependencies. One create_objective autoStart false request returned INVALID_ARGUMENT: authenticated GitHub user cannot push to this repository. It returned no run ID and started no model. evidence/launch-continuation-20261009/selected-app-objective-admission.json records these scoped observations without a setup ticket or secret.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "blocked",
+        "nextAction": "Deploy the checked App admission repair, confirm an authorised temporary customer Write grant and perform one fresh selected-App acceptance.",
+        "waitCondition": "The current customer repository role is read and the App admission repair has not yet been deployed in this checkpoint.",
+        "staleDate": "2026-10-10"
+      },
+      "outcome": "The missing execution credential is resolved. The fresh selected-App objective remains uncreated because admission failed closed. Existing customer PR 172 and earlier account deletion remain unchanged; no new verified journey or first-time signup claim.",
+      "content": "Separate secure setup, credential readiness, repository role, App selection, non-starting admission and execution.",
+      "measurement": "One secure customer setup, one credential readback and independent account inspection, one fresh selection and one rejected non-starting objective request. Zero model starts, new objective IDs, GitHub writes, scope expansions, account purges or automatic retries."
+    },
+    {
+      "id": "E-107",
+      "date": "2026-10-09",
+      "identity": "Check authenticated customer repository authority explicitly for App-backed objectives",
+      "situation": "Selected-App objective admission evaluated a user-style permissions.push field on installation-token repository metadata. That field does not independently establish the authenticated customer role; selected App and customer authority must both be present.",
+      "verification": "getRepositoryAccess accepts an authenticated actor login only for the selected-App path and reads GitHub GET /repos/{owner}/{repo}/collaborators/{username}/permission with the already scoped installation token. It admits only matching user identity with the documented write/admin base permission, rejects read/none/unknown/missing roles and identity mismatches, and propagates failed authority readback. The installation-token helper still validates the existing contents/pull-request write grants. The OAuth path remains unchanged. GitHub official collaborator API documentation confirms installation-token support with Metadata read and maintain-to-write mapping. Worker sandbox/version alignment, TypeScript build and all 174 Worker tests pass, including 11 new admission cases. Root npm run check, 44 core tests, documentation/contract checks and pack dry-run passed before these final evidence additions. Exact-head CI, merge/deployment and live objective readback are separate pending steps.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "complete",
+        "staleDate": "2026-12-01",
+        "nextAction": "Publish the checked candidate, require all exact-head CI checks, merge/deploy under existing authority and verify the exact deployed subject before the fresh customer attempt.",
+        "waitCondition": "None for the locally checked implementation; publication/deployment and live acceptance remain separate."
+      },
+      "outcome": "The prepared admission repair distinguishes App token capability from actual customer write authority. It cannot turn read-only access into write authority and does not grant or expand repository permissions. The product has not yet deployed this candidate in this checkpoint.",
+      "content": "One explicit actor-permission read for App-backed objective admission and failure-path regression coverage; preserve OAuth semantics, App scope and independent-verifier boundary.",
+      "measurement": "Two source files and one existing test file changed; 11 added admission cases; 174 Worker tests passed. Zero new tool names, installation-scope changes, permission grants, token exposures, model executions or unproven deployment claims."
     }
   ]
 }

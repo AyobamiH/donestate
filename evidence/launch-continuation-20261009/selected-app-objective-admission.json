@@ -1,0 +1,73 @@
+{
+  "schema": "donestate.selected-app-objective-admission.v1",
+  "date": "2026-10-09",
+  "account": "OneClickPostFactory",
+  "repository": "AyobamiH/donestate",
+  "credentialStatus": {
+    "connected": true,
+    "fingerprint": "44c7550c978b",
+    "createdAt": "2026-10-09T05:39:39.553Z",
+    "updatedAt": "2026-10-09T05:39:39.553Z",
+    "lastUsedAt": null,
+    "dailyRunsUsed": 0,
+    "dailyRunLimit": 12,
+    "activeRunId": null,
+    "billingOwner": "authenticated_user"
+  },
+  "independentAccountInspection": {
+    "schema": "donestate.account-inspection.v1",
+    "observedAt": "2026-10-09T05:40:30.725Z",
+    "credential": {
+      "connected": true,
+      "fingerprint": "44c7550c978b",
+      "createdAt": "2026-10-09T05:39:39.553Z",
+      "updatedAt": "2026-10-09T05:39:39.553Z",
+      "lastUsedAt": null,
+      "dailyRunsUsed": 0,
+      "dailyRunLimit": 12,
+      "activeRunId": null
+    },
+    "repositories": [],
+    "runs": [],
+    "summary": {
+      "schema": "donestate.account-data-summary.v1",
+      "ownerLogin": "OneClickPostFactory",
+      "selectedRepositories": 0,
+      "findings": 0,
+      "indexedRuns": 0,
+      "marketplaceUserEntitlements": 0,
+      "marketplaceOrganizationAuthorizations": 0
+    },
+    "inventoryComplete": true
+  },
+  "selectedRepository": {
+    "schema": "donestate.selected-repository.v1",
+    "ownerLogin": "OneClickPostFactory",
+    "repository": "AyobamiH/donestate",
+    "defaultBranch": "main",
+    "installationId": 157513439,
+    "mode": "pr_only",
+    "scheduleEnabled": false,
+    "autoRepair": false,
+    "requiredCheckNames": [
+      "core (22)",
+      "core (24)",
+      "hosted-plugin"
+    ],
+    "createdAt": "2026-10-09T05:42:01.993Z",
+    "updatedAt": "2026-10-09T05:42:01.993Z"
+  },
+  "authenticatedUserRepositoryPermission": "read",
+  "attempt": {
+    "autoStart": false,
+    "result": "REJECTED_BEFORE_OBJECTIVE_CREATION",
+    "errorCode": "INVALID_ARGUMENT",
+    "message": "authenticated GitHub user cannot push to this repository",
+    "runId": null,
+    "modelExecutionStarted": false
+  },
+  "remaining": "Deploy the explicit App/customer authorisation check and obtain independently read-back temporary customer Write permission before a new PR-only acceptance attempt.",
+  "originalCompletedCustomerRunUnchanged": true,
+  "originalAccountDeletionNotRepeated": true,
+  "appInstallationScopeExpanded": false
+}
