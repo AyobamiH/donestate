@@ -360,8 +360,8 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-09",
       "staleDate": "2026-10-10",
-      "nextAction": "After the authorised OAuth repair deployment, observe one natural hourly production sweep with GA production preflight; require zero unresolved recent Marketplace failures and no escalation. Do not manufacture a production failure or invoke cron manually.",
-      "waitCondition": "Historical implementation/deployment proof remains preserved. A new protected read-only provider/log observation workflow is prepared; current natural health is not yet observed.",
+      "nextAction": "Run the corrected GA production preflight: recognise the provider schedule wrapper and read current-deployment stored natural scheduled health before live tail fallback. Close only on a real successful hourly sweep with zero unresolved recent failures and no escalation.",
+      "waitCondition": "Production PR 179 is deployed as Worker 164602a6-35a5-464a-ac70-1ffd00a01066 and canonical onboarding probes pass. The first observer stopped on its incorrect schedule-response assumption before reading health; it is not evidence of a missing cron or production failure. Corrected observer source and regression tests are prepared.",
       "reentryCondition": "Close OPS-002 after one healthy natural scheduled sweep is observed. If the sweep reports unresolved Marketplace webhook failures, follow docs/INCIDENT-RESPONSE.md and keep the item active until reconciled.",
       "dependencies": [
         "OPS-001",
@@ -370,7 +370,8 @@
       "evidenceIds": [
         "E-045",
         "E-046",
-        "E-111"
+        "E-111",
+        "E-112"
       ]
     },
     {
@@ -554,8 +555,8 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-09",
       "staleDate": "2026-10-10",
-      "nextAction": "Deploy and observe the OAuth rejection repair and visible support/policy links; complete CUST-003 fresh new-client consent and OPS-002 natural hourly health observation. Record the separate owned-domain GA decision only against actual passing evidence. Preserve E-109 and leave customer PR 177 unmerged; no repeated model run, deletion, key setup, Write grant or address approval.",
-      "waitCondition": "Fresh selected-App run bca89cb4-f7f3-4ac4-ab98-7d59854b5135 was admitted through github_app_installation at exact base f5a00d20d70a41827911d8fb148590891bbaad42 after independent customer Write confirmation. All nine actions and 44 isolated core tests succeeded. PR 177 remains unmerged at 1bf4c2823ca95da50c053dc888703e61e68a2464, with exactly three agreed files and all three required exact-head checks green in run 37898537150. Initial automatic uncertain verification is preserved; a fresh pinned OpsTruth decision issued 2026-10-09T07:23:09.661Z produced VERIFIED, snapshot c442bfdb17b9b031a2c963835c0c358cbaac18c00e2077f089d26adef73e3db4. Exactly one new indexed-service cleanup at 2026-10-09T09:20:54.571Z deleted only the new known run/selection/key. Receipt dd110686e72cb1d902f8b1320bed214b8ce7956e1952ae4f9a014e813ffa94a8 matched local SHA-256 integrity; separate inspection at 09:21:30.935Z confirms a complete empty inventory and absent credential. After the publisher removed the new temporary grant, separate GitHub readback confirms read. A further complete account inspection at 2026-10-09T09:26:48.857Z confirms the account remains empty and key absent. First-time signup/OAuth and unrestricted GA remain unproven separately. The accepted public-location decision and exact live policy wording remain complete. E-111 prepares a real new-client PKCE handoff, public production preflight and bounded support drill; its local tests do not prove customer consent or live deployment.",
+      "nextAction": "Retain the deployed PR 179 OAuth rejection repair and passing canonical production prerequisites. Complete CUST-003 real new-client browser consent and OPS-002 natural scheduled health, then record the already authorised broader owned-domain GA decision against actual results and residual risks. No new address approval, model run, key setup, deletion, temporary Write grant or customer PR 177 merge is needed.",
+      "waitCondition": "Fresh selected-App run bca89cb4-f7f3-4ac4-ab98-7d59854b5135 was admitted through github_app_installation at exact base f5a00d20d70a41827911d8fb148590891bbaad42 after independent customer Write confirmation. All nine actions and 44 isolated core tests succeeded. PR 177 remains unmerged at 1bf4c2823ca95da50c053dc888703e61e68a2464, with exactly three agreed files and all three required exact-head checks green in run 37898537150. Initial automatic uncertain verification is preserved; a fresh pinned OpsTruth decision issued 2026-10-09T07:23:09.661Z produced VERIFIED, snapshot c442bfdb17b9b031a2c963835c0c358cbaac18c00e2077f089d26adef73e3db4. Exactly one new indexed-service cleanup at 2026-10-09T09:20:54.571Z deleted only the new known run/selection/key. Receipt dd110686e72cb1d902f8b1320bed214b8ce7956e1952ae4f9a014e813ffa94a8 matched local SHA-256 integrity; separate inspection at 09:21:30.935Z confirms a complete empty inventory and absent credential. After the publisher removed the new temporary grant, separate GitHub readback confirms read. A further complete account inspection at 2026-10-09T09:26:48.857Z confirms the account remains empty and key absent. First-time signup/OAuth and unrestricted GA remain unproven separately. The accepted public-location decision and exact live policy wording remain complete. E-111 prepares a real new-client PKCE handoff, public production preflight and bounded support drill; its local tests do not prove customer consent or live deployment. E-112 records exact source/CI/deployment and passing public readback; only fresh customer OAuth, natural operational health and the separately recorded release decision remain. The initial observer schedule-shape failure is retained and corrected separately.",
       "reentryCondition": "Re-enter only to observe the distinct unproven first-time signup/OAuth or remaining operational/support release evidence. The fresh selected-App run, new-state cleanup and temporary Write removal are complete within their recorded scope. Preserve all exact customer PR 177 subjects, prior PR 172 and dated deletion records; never retry their completed effects or relabel the existing authenticated connection as a first-time signup.",
       "dependencies": [
         "VERIFY-004",
@@ -601,7 +602,8 @@
         "E-107",
         "E-108",
         "E-109",
-        "E-111"
+        "E-111",
+        "E-112"
       ]
     },
     {
@@ -901,7 +903,8 @@
         "CUST-002"
       ],
       "evidenceIds": [
-        "E-111"
+        "E-111",
+        "E-112"
       ]
     }
   ],
@@ -2486,6 +2489,23 @@
       "outcome": "A real first-authorization helper and natural production observation lane are concrete and reviewable. Expected invalid-client authorization errors are corrected in source and customer policy/support routes are visible before consent. Customer OAuth, deployment and unrestricted GA are not inferred from preparation.",
       "content": "scripts/ga-oauth.mjs, scripts/ga-production.mjs, scripts/ga-acceptance.test.mjs, .github/workflows/ga-production-preflight.yml, docs/GA-LAUNCH.md and the bounded support-drill receipt. E-110 remains reserved by unmerged customer PR 177; E-111 is distinct. Public OpsTruth audit tools were unavailable; native GitHub/source/local tests are not relabelled as an independent GA audit.",
       "measurement": "Twelve helper tests and 23 auth tests pass; one typed OAuth error repair and policy/support link addition. Zero new model starts, credential setups, repository authority grants, customer acceptance PR merges, repeated account deletions, manufactured failures or sent support messages."
+    },
+    {
+      "id": "E-112",
+      "date": "2026-10-09",
+      "identity": "OAuth rejection repair deployed and public prerequisites observed; provider observer corrected",
+      "situation": "PR 179 passed exact-head CI and was merged/deployed. The automatic GA observer passed every public prerequisite but stopped because it expected an array instead of the provider schedule wrapper.",
+      "verification": "Candidate d9d0375ab558512a51f12d891780f66546cf4c9d and merge f7e72100781253853947a42d90737f9d0e5360f4 share tree f20a2b1e1805a13c007124ad1458d112fc37f3b4. All required candidate checks in run 37940002092 and merge checks in 37940171593 passed. Deployment 37940171590/job 113852234807 succeeded with Worker 164602a6-35a5-464a-ac70-1ffd00a01066. Both the action and separate direct canonical readback observed public landing 200, execution/account challenges 401, unknown client 400 and malformed registration 400; policy/support links and S256/public-client discovery are present. evidence/ga-20261009/source-runtime-readback.json preserves exact source/CI/deploy and the initial observer failure; public-preflight.json preserves the separate HTTP readback. Corrected observer recognises wrapped schedules and uses the documented scoped, dry Workers Observability query for stored natural scheduled logs before live tail fallback. Fourteen helper tests pass, including wrapped schedules, narrow query authority and stored-log redaction.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "complete",
+        "nextAction": "Publish the corrected observer after exact-head CI and record actual natural operational health and customer browser OAuth separately.",
+        "waitCondition": "None for exact deployed repair and public prerequisite readback. Natural operational health and customer consent remain outstanding.",
+        "staleDate": "2026-12-01"
+      },
+      "outcome": "The real public OAuth rejection defect is repaired in production and every anonymous onboarding prerequisite passes. The observer failure is accounted for and corrected in source; it is not converted into a cron outage or a healthy sweep claim. No first-time consent or unrestricted GA is claimed.",
+      "content": "Exact source-runtime/public HTTP receipts; documented provider schedule normalization and scoped dry stored-log query; unchanged completed App/cleanup history.",
+      "measurement": "One approved functional deployment; three green required candidate and merge checks; five public HTTP probes pass on each of two independent execution surfaces; 14 helper tests pass. Zero new model starts, key setups, authority grants, manufactured cron events, support messages or repeated account deletions."
     }
   ]
 }

@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { request as httpRequest } from "node:http";
 import { ORIGIN, RESOURCE, SCOPE, consentSession, validateCallback, discover, exerciseGrant, registerClient } from "./ga-oauth.mjs";
-import { maintenanceEvidence, observeNaturalSweep, providerClient } from "./ga-production.mjs";
+import { hasHourlyCron, maintenanceEvidence, observeNaturalSweep, providerClient, storedMaintenanceEvidence } from "./ga-production.mjs";
 
 function callback(redirect, state, extra = {}) {
   const url = new URL(redirect);
@@ -143,8 +143,28 @@ test("provider lane permits only deployment/schedule reads and ephemeral tail li
   const provider = providerClient({ accountId: "a".repeat(32), token: "private-api-token" }, async () => { sent++; return Response.json({ success: true, result: [] }); });
   await assert.rejects(provider("/schedules", "PUT"), /PROVIDER_OPERATION_NOT_ALLOWED/);
   await assert.rejects(provider("/secrets"), /PROVIDER_PATH_NOT_ALLOWED/);
+  await assert.rejects(provider("/telemetry-query", "POST", { dry: false, parameters: {} }), /TELEMETRY_QUERY_NOT_SCOPED/);
   await provider("/schedules");
   assert.equal(sent, 1);
+});
+
+test("provider schedule wrapper is recognised without accepting a missing or different cron", () => {
+  assert.equal(hasHourlyCron({ schedules: [{ cron: "0 * * * *" }] }), true);
+  assert.equal(hasHourlyCron([{ cron: "0 * * * *" }]), true);
+  assert.equal(hasHourlyCron({ schedules: [{ cron: "*/5 * * * *" }] }), false);
+  assert.equal(hasHourlyCron({}), false);
+});
+
+test("stored logs require the exact service, dataset and scheduled trigger and retain only aggregate health", () => {
+  const event = healthyEvent();
+  const log = { dataset: "cloudflare-workers", $metadata: { service: "donestate-mcp" }, $workers: { eventType: "scheduled", ...event }, source: event.logs[0].message[0] };
+  const observed = storedMaintenanceEvidence(log);
+  assert.equal(observed.healthy, true);
+  assert.doesNotMatch(JSON.stringify(observed), /private-account|private-secret|private\/repository/);
+  log.$workers.eventType = "fetch";
+  assert.equal(storedMaintenanceEvidence(log), null);
+  log.$workers.eventType = "scheduled"; log.$metadata.service = "another-service";
+  assert.equal(storedMaintenanceEvidence(log), null);
 });
 
 test("natural observation checks deployment stability and removes its ephemeral tail", async () => {
@@ -153,6 +173,7 @@ test("natural observation checks deployment stability and removes its ephemeral 
     calls.push([path, method]);
     if (path === "/deployments") return { deployments: [{ id: "deployment", created_on: "2026-10-09T00:00:00Z", versions: [{ version_id: "worker-version", percentage: 100 }] }] };
     if (path === "/schedules") return [{ cron: "0 * * * *" }];
+    if (path === "/telemetry-query") return { events: { events: [] } };
     if (path === "/tails") return { id: "tail-fixture", url: "wss://tail.developers.workers.dev/?private-ticket" };
     if (path === "/tails/tail-fixture" && method === "DELETE") return null;
     assert.fail("Unexpected provider operation");

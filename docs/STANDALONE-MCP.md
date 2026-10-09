@@ -12,6 +12,8 @@ Website PR [28](https://github.com/AyobamiH/proof-and-state-website/pull/28) mer
 
 DoneState can be used through its owned Proof & State MCP service without waiting for an OpenAI directory listing or GitHub Marketplace publication.
 
+The fresh-client signup/OAuth helper, support drill, production observer and remaining owned-domain GA gates are in [Owned-domain launch acceptance](GA-LAUNCH.md). PR 179 deployed the OAuth rejection repair and visible policy/support links; public endpoint checks pass. Customer browser consent and natural scheduled-health evidence are recorded separately.
+
 ## Endpoint
 
 Use the canonical remote MCP endpoint:
@@ -71,7 +73,9 @@ The same account console can delete indexed DoneState account data. Deletion req
 
 The owner-level run index is new. Historical maintenance runs are backfilled from maintenance findings, but a direct objective created before the account-controls release may not be discoverable automatically. Delete any such historical run with `delete_objective` using its known run ID or submit a privacy request.
 
-## Current owned-channel release gates — 7 October 2026
+## Historical owned-channel release observations — 7 October 2026
+
+This section preserves the dated 7 October observations. Use the 9 October checkpoint and [launch acceptance](GA-LAUNCH.md) for current state.
 
 CUST-001 and CUST-002 are complete following [PR #164](https://github.com/AyobamiH/donestate/pull/164), with account-layout, real disposable-account deletion and controlled production stale-write-fencing evidence in E-064/E-065. They remain satisfied prerequisites in the dependency graph, not open launch blockers.
 

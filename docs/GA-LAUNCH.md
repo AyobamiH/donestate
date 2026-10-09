@@ -20,7 +20,7 @@ This proves first authorization for a newly registered client. It does not estab
 
 ## Production and support evidence
 
-`GA production preflight` runs after a successful main-branch hosted Worker deployment, or by manual dispatch. It checks the canonical public onboarding endpoints and expected authorization rejections. Using the existing protected provider capability, it reads deployment and cron state and opens one temporary live-log session. It waits up to 65 minutes for an actual hourly scheduled sweep, then deletes that log session. It never invokes the cron, changes schedules or deploys a Worker.
+`GA production preflight` runs after a successful main-branch hosted Worker deployment, after an observer update on main, or by manual dispatch. It checks the canonical public onboarding endpoints and expected authorization rejections. Using the existing protected provider capability, it reads deployment and cron state. It first queries stored natural scheduled logs from the current deployment, scoped to DoneState and the aggregate sweep message with no query persistence. If no qualifying stored event is available, it opens one temporary live-log session, waits up to 65 minutes for an actual hourly scheduled sweep, then deletes that session. It never invokes the cron, changes schedules or deploys a Worker.
 
 Only the scheduled timestamp, Worker version when supplied, deployment identities and aggregate Marketplace health are published. Request URLs, account/repository data, secrets and unrelated logs are discarded. A healthy result requires zero unresolved recent failures, no escalation, successful invocation and an unchanged deployment during observation. A failed result keeps OPS-002 open and enters the incident runbook.
 
@@ -33,7 +33,7 @@ The support drill in `evidence/ga-20261009/support-drill.json` exercises the pub
 | Selected-App objective and cleanup | E-109 exact run, PR head, verifier and removal receipts | Complete |
 | Policy and public-location acceptance | E-103/E-105 exact live wording | Complete |
 | Fresh client signup/OAuth | New helper receipt with consent, code exchange, MCP access, refresh and scoped revocation | Awaiting customer consent |
-| Production prerequisites | Exact deployed source plus canonical HTTP receipt | Awaiting new deployment observation |
+| Production prerequisites | Exact deployed source plus canonical HTTP receipt | Complete: PR 179, Worker `164602a6-35a5-464a-ac70-1ffd00a01066`, all public probes passed |
 | Natural Marketplace health | Successful scheduled sweep receipt, no recent unresolved failures or escalation | OPS-002 active |
 | Support procedure | Bounded tabletop receipt and visible support/policy links | Drill complete; live customer delivery not claimed |
 | Initial owned-domain access | Publisher authority, bounded objective controls, support and stop criteria | Approved preparation; fresh OAuth and runtime gates still apply |
