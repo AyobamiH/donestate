@@ -32,3 +32,5 @@ Internal `maintenance_pr` execution does not contribute to customer objective-st
 The existing hourly maintenance sweep emits the current UTC day's aggregate funnel snapshot alongside operational health. No public analytics endpoint or new MCP tool is added.
 
 These aggregate counts can show stage volume and rough stage ratios, but they cannot prove unique users, repeat users, per-user conversion, retention cohorts, or attribution. Those measurements require bounded manual cohort evidence or a separately reviewed privacy-preserving design. OpenAI and GitHub Marketplace channel attribution must remain separate from owned-domain counts when those channels publish.
+
+The [customer learning loop](MARKET-FIT.md) supplies a strict anonymous operator-review input and `scripts/review-market-fit.mjs`. It measures manually evidenced customer-accepted useful results, eligible repeat use, actual paid conversion and support burden per cohort. It does not pool cohorts into unique-user totals, treat unknown denominators as zero, or certify market fit. The checked-in empty input records that external cohort outcomes have not yet been observed.

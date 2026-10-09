@@ -4,7 +4,13 @@
 
 The canonical recovery order, owners, wait conditions, stale dates, and Evidence Story Bank are generated from `governance/project-ledger.json` into [Project state](PROJECT-STATE.md). Any consequential code, workflow, contract, deployment, distribution, or external-state change must update that ledger in the same change. Generated project state is never hand-edited.
 
-As of 2026-09-04, the production DoneState-to-OpsTruth maintenance loop has one complete fresh end-to-end `VERIFIED` successor. This does not rewrite any historical `AWAITING_VERIFICATION`, `AMBIGUOUS_EFFECT`, `BLOCKED_CAPABILITY`, or failed-safe run.
+## Current checkpoint, 9 October 2026
+
+Owned-domain GA is recorded in E-118 after actual OneClickPostFactory fresh-client OAuth passed: code exchange, read-only MCP, token refresh and confirmed scoped revocation. Selected-App execution, pinned independent verification, indexed test-state cleanup, temporary Write removal, live policy text and current deployed-version natural health are separately complete. DoneState PR #185 and Proof & State PR #41 merged with all required candidate and exact-merge checks green. See [launch acceptance](GA-LAUNCH.md) for exact subjects and limits.
+
+Market fit remains unproven. The next active work is [the customer learning loop](MARKET-FIT.md): external useful outcomes, eligible repeat use, paid conversion and support burden for one bounded public-repository job. Marketplace and directory review remain separate channel states. Historical checkpoints below describe their observation dates; they do not reopen completed current gates.
+
+As of 2026-09-04, the production DoneState-to-OpsTruth maintenance loop had one complete fresh end-to-end `VERIFIED` successor. This does not rewrite any historical `AWAITING_VERIFICATION`, `AMBIGUOUS_EFFECT`, `BLOCKED_CAPABILITY`, or failed-safe run.
 
 ## Fresh customer continuation, 7 October 2026
 
