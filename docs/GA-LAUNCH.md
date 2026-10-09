@@ -20,7 +20,7 @@ The helper binds only to `127.0.0.1`, validates callback state and issuer, consu
 
 This proves first authorization for a newly registered client. It does not establish that the GitHub identity has never used DoneState before. Existing authenticated ChatGPT connections, reviewer login, metadata discovery and an already completed coding run cannot substitute for the new consent/code/token round trip.
 
-The real installed SDK defaults reject browser Origins on custom domains. Both MCP handlers use the explicit canonical hostname `donestate.proofandstate.com`; foreign origins remain rejected. This changes no token, resource, scope or tool authority checks. The failed customer receipt and its successful own-grant cleanup are retained in `evidence/ga-20261009/https-oauth-failure.json`.
+The real installed SDK defaults reject browser Origins on custom domains. Both MCP handlers use the explicit canonical hostname `donestate.proofandstate.com`; foreign origins remain rejected. This changes no token, resource, scope or tool authority checks. The failed customer receipt and its successful own-grant cleanup are retained in `evidence/ga-20261009/https-oauth-failure.json`. PR 183 deploys the repair. The repaired-runtime browser session reached GitHub account selection, but the secure request was interrupted without a result and its fifteen-minute state expired. `https-oauth-interrupted.json` preserves this distinct boundary. Resume secure selection only after the user requests it, with a fresh session; never replay an old callback or substitute an already authenticated connection.
 
 ## Production and support evidence
 
@@ -36,9 +36,9 @@ The support drill in `evidence/ga-20261009/support-drill.json` exercises the pub
 | --- | --- | --- |
 | Selected-App objective and cleanup | E-109 exact run, PR head, verifier and removal receipts | Complete |
 | Policy and public-location acceptance | E-103/E-105 exact live wording | Complete |
-| Fresh client signup/OAuth | New helper receipt with consent, code exchange, MCP access, refresh and scoped revocation | Real new-client consent and code exchange succeeded; MCP failed and own grant was revoked. Origin repair pending deployment and new acceptance |
-| Production prerequisites | Exact deployed source plus canonical HTTP receipt | PR 182 deployed at `430c195e1e8ab82aef8f345521c33141542d4b04`, Worker `77bf6431-39b6-4807-9f14-59e71ba38802`; HTTPS page and public probes pass |
-| Natural Marketplace health | Successful scheduled sweep receipt, no recent unresolved failures or escalation | E-113 remains valid for the older Worker. Latest observer ended before the next sweep; current-version observation is pending |
+| Fresh client signup/OAuth | New helper receipt with consent, code exchange, MCP access, refresh and scoped revocation | Earlier consent/code exchange succeeded, MCP failed and own grant was revoked. Origin repair is deployed; repaired-runtime secure GitHub selection was interrupted and expired. Fresh passing acceptance remains pending |
+| Production prerequisites | Exact deployed source plus canonical HTTP receipt | PR 183 deployed at `3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a`, Worker `3c9564a7-3800-4727-b791-b5b88c354183`; exact candidate/merge checks, provider deployment and all five public probes pass |
+| Natural Marketplace health | Successful scheduled sweep receipt, no recent unresolved failures or escalation | Complete: E-117, natural `2026-10-09T19:00:45Z` sweep on current Worker `3c9564a7-3800-4727-b791-b5b88c354183`; zero unresolved failures, unchanged deployment, both temporary tails removed |
 | Support procedure | Bounded tabletop receipt and visible support/policy links | Drill complete; live customer delivery not claimed |
 | Initial owned-domain access | Publisher authority, bounded objective controls, support and stop criteria | Approved implementation, merge and deployment; actual OAuth and current runtime gates still apply |
 | Unrestricted owned-domain GA | Separately recorded publisher decision against the completed gates and accepted residual risks | Not declared |

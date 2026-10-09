@@ -356,12 +356,12 @@
       "id": "OPS-002",
       "title": "Detect and escalate Marketplace webhook failures",
       "stream": "operations",
-      "status": "active",
+      "status": "complete",
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-09",
-      "staleDate": "2026-10-10",
-      "nextAction": "Publish the bounded owned-tail lifecycle repair, then observe one actual natural sweep with exact current Worker version and unchanged deployment; confirm every temporary tail deletion.",
-      "waitCondition": "E-113 remains a valid natural health observation on old Worker 164602a6. Latest Worker 77bf6431 observer 37963469985 passed all public probes but its temporary tail closed before the next hourly sweep. It removed that tail and reported failure; no latest-version sweep or production outage is inferred.",
+      "staleDate": "2026-12-01",
+      "nextAction": "Retain current-version natural health receipt and monitor future sweeps; follow the incident runbook if aggregate failures or escalation appear.",
+      "waitCondition": "None. Workflow 37973398818/job 113965473927 succeeded on exact source 3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a. Actual natural 2026-10-09T19:00:45Z sweep completed with outcome ok and all unresolved webhook counts zero, no escalation. Worker 3c9564a7-3800-4727-b791-b5b88c354183 matches unchanged deployment f609425c-8f23-48c1-a0b7-d3793da78fe3. Two bounded owned tail sessions were confirmed removed; all five public probes passed.",
       "reentryCondition": "Close after a healthy natural scheduled sweep on the current exact Worker version with stable deployment and confirmed owned-tail cleanup. Connection errors and ambiguous tail creation/deletion fail closed without retries.",
       "dependencies": [
         "OPS-001",
@@ -373,7 +373,9 @@
         "E-111",
         "E-112",
         "E-113",
-        "E-115"
+        "E-115",
+        "E-116",
+        "E-117"
       ]
     },
     {
@@ -557,8 +559,8 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-09",
       "staleDate": "2026-10-10",
-      "nextAction": "Complete actual new-client browser MCP/refresh/revocation acceptance and current-version natural health, then record the already authorised owned-domain GA decision with the identity-history and channel-review limits.",
-      "waitCondition": "The previously completed selected-App execution, pinned verification, scoped cleanup, temporary Write removal and live accepted policy wording remain unchanged. HTTPS acceptance source/CI/deployment are confirmed separately. The new-client attempt exchanged its code but failed MCP and revoked its own grant. Current-version health observer lost its temporary connection before observing a sweep. CUST-003 and OPS-002 remain active; neither failure establishes an outage or completion.",
+      "nextAction": "Resume secure GitHub account selection only after a new user instruction; require a fresh passing cloud-browser MCP/refresh/own-grant-revocation receipt, then record the already authorised owned-domain GA decision. No renewed merge/deploy approval or additional production health wait is needed.",
+      "waitCondition": "The Origin repair is merged/deployed with all exact candidate/merge checks green. Current-version natural health now passes with unchanged deployment and both owned tails removed (E-117). Existing App execution/independent verification/cleanup/Write removal/policies and support procedure remain complete. Only repaired-runtime fresh OAuth acceptance remains unproven after the secure picker request was interrupted without a result and its session expired. GA is not declared.",
       "reentryCondition": "Re-enter only to observe the distinct unproven first-time signup/OAuth or remaining operational/support release evidence. The fresh selected-App run, new-state cleanup and temporary Write removal are complete within their recorded scope. Preserve all exact customer PR 177 subjects, prior PR 172 and dated deletion records; never retry their completed effects or relabel the existing authenticated connection as a first-time signup.",
       "dependencies": [
         "VERIFY-004",
@@ -607,7 +609,9 @@
         "E-111",
         "E-112",
         "E-113",
-        "E-115"
+        "E-115",
+        "E-116",
+        "E-117"
       ]
     },
     {
@@ -899,8 +903,8 @@
       "owner": "Publisher owner",
       "lastUpdated": "2026-10-09",
       "staleDate": "2026-10-10",
-      "nextAction": "Deploy the tested explicit canonical MCP browser-origin policy, then exercise one new public client in the cloud browser and record actual MCP, refresh and own-grant revocation results.",
-      "waitCondition": "HTTPS acceptance is deployed at exact merge 430c195e1e8ab82aef8f345521c33141542d4b04 / Worker 77bf6431-39b6-4807-9f14-59e71ba38802. Customer OneClickPostFactory consent, callback validation and code exchange succeeded at 18:09Z. Authenticated MCP failed because the SDK default excludes custom-domain browser Origins. Its own grant was revoked and revoked access rejected. Preserve that failed receipt; no ambiguous exchange replay. The repair and fresh passing acceptance remain pending.",
+      "nextAction": "Resume only when the user requests a new secure GitHub account selection as OneClickPostFactory; start a fresh short-lived public-client session, then record actual MCP, refresh and own-grant revocation. No renewed merge/deploy approval is needed.",
+      "waitCondition": "PR 183 canonical browser Origin repair passed candidate and exact-merge CI and deployed Worker 3c9564a7-3800-4727-b791-b5b88c354183. A fresh browser session reached DoneState consent and GitHub account selection, but browserAuth was interrupted without a result; the final visible page remains the picker and its 15-minute session has expired. No code/token/MCP/cleanup result from that new session is established. Do not silently retry sign-in or replay the old response. Earlier failed grant revocation remains confirmed.",
       "reentryCondition": "Close only with a passing new-client OAuth receipt. Preserve failed or ambiguous effects without replay; record identity-history limits and any failed grant cleanup.",
       "dependencies": [
         "CUST-001",
@@ -910,7 +914,8 @@
         "E-111",
         "E-112",
         "E-114",
-        "E-115"
+        "E-115",
+        "E-116"
       ]
     }
   ],
@@ -2563,6 +2568,40 @@
       "outcome": "Source fixes the reproduced custom-domain Origin defect without wildcarding or bypassing auth. The observation lane can cover an hourly wait within bounded owned-session cleanup. Actual failed receipts and historical health remain append-only; no GA decision is made by preparation.",
       "content": "Shared canonical MCP Origin policy on both handlers, real installed SDK regressions, bounded provider-tail lifecycle tests, exact HTTPS deployment and failed OAuth/observer receipts. Workflow push selection defers Worker-changing candidates to the successful-deployment trigger, avoiding an old-version observation ahead of deployment.",
       "measurement": "Seven new real SDK origin tests and three new observer lifecycle tests. Zero new execution credentials, repository Write grants, model starts, account purges, customer PR 177 merges, manufactured cron events or sent support messages."
+    },
+    {
+      "id": "E-116",
+      "date": "2026-10-09",
+      "identity": "Canonical browser MCP repair deployed; secure account selection interrupted",
+      "situation": "The user approved continuation. The reproduced custom-domain MCP Origin defect and bounded observer lifecycle repair were published through the existing consequence-authorised GitHub lane. Fresh browser acceptance reached GitHub but the secure account-selection request was interrupted without returning a choice.",
+      "verification": "PR 183 candidate db0aa1562093b3c52a623cf6b2e86d2b730db27d passed core (22), core (24) and hosted-plugin in run 37972990538. Merge 3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a has exact tree 5b7183d02be35b3377dbabe0d529c470f9d5c948 and ordered parents 430c195e1e8ab82aef8f345521c33141542d4b04 / db0aa1562093b3c52a623cf6b2e86d2b730db27d. All three exact-merge checks passed in 37973107182. Deployment 37973107201/job 113964491436 succeeded; Worker 3c9564a7-3800-4727-b791-b5b88c354183 was uploaded at 18:25:44.811Z and deployed triggers at 18:27:20.281Z. The early push observer 37973107194 skipped probing because Worker files changed; its green job is not health evidence. The successful-deployment observer 37973398818/job 113965473927 is the actual current-version observation. The new HTTPS client reached DoneState consent and the GitHub picker, showing customer OneClickPostFactory and owner AyobamiH. The required browserAuth request was interrupted after 1364 seconds with no result; the picker remained visible and the 15-minute acceptance state expired. evidence/ga-20261009/canonical-browser-repair-deployment.json and https-oauth-interrupted.json preserve these separate results. No successful code exchange, token grant or revocation from this interrupted session is claimed.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "complete",
+        "nextAction": "Retain exact deployed subject; finish the independent current-version observer and await a new instruction before resuming secure customer selection.",
+        "waitCondition": "None for the confirmed repair deployment and interrupted-session reconciliation; customer acceptance remains separate.",
+        "staleDate": "2026-12-01"
+      },
+      "outcome": "The tested canonical Origin repair is deployed. Secure account selection did not finish, so fresh repaired-runtime acceptance and owned-domain GA remain unproven. Earlier failed OAuth cleanup and all completed customer effects remain unchanged.",
+      "content": "Exact candidate, merge/tree, CI and Worker receipt; sanitized interrupted-session record; browser screenshot of the actual picker. No bypass of browserAuth or substitution of an old ChatGPT connection for fresh-client acceptance.",
+      "measurement": "One approved repair merge/deployment; three successful candidate and exact-merge required checks; one fresh public-client browser session and interrupted secure picker request. Zero new coding runs, execution keys, Write grants, account purges, customer PR merges or sent messages."
+    },
+    {
+      "id": "E-117",
+      "date": "2026-10-09",
+      "identity": "Current production Worker natural health confirmed with bounded tail rotation",
+      "situation": "The latest pre-repair observer closed before a sweep. The repaired observer now ran after successful deployment of the canonical MCP Origin fix, without synthesising cron events or changing production schedules.",
+      "verification": "Workflow 37973398818/job 113965473927 completed successfully on exact source 3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a. evidence/ga-20261009/current-production-health.json preserves the bounded receipt: five canonical public probes passed, actual 0 * * * * sweep scheduled at 2026-10-09T19:00:45.000Z was observed at 19:00:55.977Z with outcome ok. Worker 3c9564a7-3800-4727-b791-b5b88c354183 matches unchanged deployment f609425c-8f23-48c1-a0b7-d3793da78fe3 at 100 percent. All unresolved recent/configuration/processing webhook counts are zero and escalationRequired false. The first owned tail reached its bounded rotation window and was confirmed removed before the second was created; the second observed the natural sweep and was also removed. The receipt finished at 19:00:58.200Z.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "complete",
+        "nextAction": "Monitor current production health and complete the separately blocked fresh customer OAuth before the authorised launch decision.",
+        "waitCondition": "None for current-version natural health, stable deployment and owned-tail cleanup.",
+        "staleDate": "2026-12-01"
+      },
+      "outcome": "OPS-002 is complete against actual current Worker evidence. The earlier failed observer and older health receipt remain intact. Customer OAuth and GA are not inferred from operational success.",
+      "content": "Whitelisted protected-provider receipt, exact workflow/source/Worker/deployment subjects and two confirmed ephemeral-tail cleanup records.",
+      "measurement": "One real natural scheduled sweep; five passing anonymous public probes; zero unresolved failures; two temporary tails created and removed. Zero synthetic cron calls, schedule changes, coding runs, execution credential setups or production data mutations."
     }
   ]
 }

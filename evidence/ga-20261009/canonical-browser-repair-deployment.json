@@ -1,0 +1,47 @@
+{
+  "schema": "donestate.canonical-browser-repair-deployment.v1",
+  "sourceCommit": "3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a",
+  "sourceTree": "5b7183d02be35b3377dbabe0d529c470f9d5c948",
+  "candidateCommit": "db0aa1562093b3c52a623cf6b2e86d2b730db27d",
+  "pullRequest": 183,
+  "candidateCiRun": 37972990538,
+  "candidateRequiredChecks": [
+    "core (22)",
+    "core (24)",
+    "hosted-plugin"
+  ],
+  "candidateCiConclusion": "success",
+  "mergeCiRun": 37973107182,
+  "mergeRequiredChecks": [
+    "core (22)",
+    "core (24)",
+    "hosted-plugin"
+  ],
+  "mergeCiConclusion": "success",
+  "deploymentRun": 37973107201,
+  "deploymentJob": 113964491436,
+  "deploymentConclusion": "success",
+  "workerVersion": "3c9564a7-3800-4727-b791-b5b88c354183",
+  "uploadedAt": "2026-10-09T18:25:44.8110364Z",
+  "deployedTriggersAt": "2026-10-09T18:27:20.2807324Z",
+  "preDeploymentObserver": {
+    "run": 37973107194,
+    "probeStep": "skipped",
+    "healthEvidence": false
+  },
+  "actualObserver": {
+    "run": 37973398818,
+    "job": 113965473927,
+    "conclusion": "success",
+    "receipt": "current-production-health.json"
+  },
+  "customerAcceptance": {
+    "status": "pending",
+    "accountSelectionRequest": "interrupted_without_result",
+    "visibleFinalPage": "GitHub account picker",
+    "callbackOrGrantResultObserved": false,
+    "sessionExpiry": "15-minute acceptance session elapsed; do not replay",
+    "oldGrantCleanup": "Earlier failed grant revoked and revoked access rejected; see https-oauth-failure.json"
+  },
+  "broaderGaDeclared": false
+}
