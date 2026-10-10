@@ -682,9 +682,9 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-10",
       "staleDate": "2026-10-17",
-      "nextAction": "Deploy the tested private clone credential transport, confirm protected pilot configuration is preserved, then complete one fresh bounded PR-only private acceptance and independent exact-commit verification.",
-      "waitCondition": "Selected App access, caller writer authority, funding, separate read-only verifier and protected expiring policy are confirmed. The first private run failed safely before writes because clone authentication was absent. The clone fix still needs candidate CI, deployment and fresh acceptance.",
-      "reentryCondition": "Resume the private run after the exact clone-fix deployment succeeds and protected configuration is freshly confirmed. Never replay the settled failed objective.",
+      "nextAction": "Deploy single-attempt isolated branch publication with command-scoped credentials and bounded read-only reconciliation; then complete a fresh bounded private PR acceptance and independent exact-commit verification.",
+      "waitCondition": "The clone fix is merged and deployed and private clone, implementation, validation and local commit succeeded. Publication exited 143 with no visible remote branch; the run is terminal AMBIGUOUS_EFFECT and will not be replayed. Publication hardening still needs candidate CI, deployment and fresh acceptance.",
+      "reentryCondition": "Resume through one new objective after the exact publication deployment and protected configuration readback. Keep the settled ambiguous run and its missing-ref observations as evidence.",
       "dependencies": [
         "MKT-007",
         "CUST-002"
@@ -692,7 +692,8 @@
       "evidenceIds": [
         "E-121",
         "E-122",
-        "E-123"
+        "E-123",
+        "E-124"
       ]
     },
     {
@@ -2701,17 +2702,34 @@
       "date": "2026-10-10",
       "identity": "Private clone authentication without implementation credential exposure",
       "situation": "The first authorised private repository objective failed safely during anonymous cloning before any branch, commit or pull request. Publication credentials were configured only after implementation, so public acceptance had not exercised private clone transport.",
-      "verification": "Fresh repository visibility is checked before cloning. Private clone requires local_read and secret_access, supplies a repository-scoped Git HTTP Authorization header only through command-local environment, clears credential helpers, rejects redirects and performs one attempt. Public clone remains anonymous with bounded fresh-sandbox retries. No clone credential is placed in a command, remote URL, file, implementation environment or journal. Raw and encoded credentials are redacted from clone failures and cleanup logs. Eight Worker regression tests pass for private success, public anonymity, both authority gates, revoked access, authentication rejection, transport/cleanup redaction and missing credentials. Full local npm run check passes all 72 core tests, contract lock, governance/documentation closure and package dry-run. Worker sandbox version alignment, type generation, TypeScript build and all 198 tests pass across 27 files. Public clone journal intent remains compatible with previously settled public clones. Candidate CI, deployment and fresh private acceptance remain to be recorded.",
+      "verification": "Fresh repository visibility is checked before cloning. Private clone requires local_read and secret_access, supplies a repository-scoped Git HTTP Authorization header only through command-local environment, clears credential helpers, rejects redirects and performs one attempt. Public clone remains anonymous with bounded fresh-sandbox retries. No clone credential is placed in a command, remote URL, file, implementation environment or journal. Raw and encoded credentials are redacted from clone failures and cleanup logs. Eight Worker regression tests pass for private success, public anonymity, both authority gates, revoked access, authentication rejection, transport/cleanup redaction and missing credentials. Full local npm run check passes all 72 core tests, contract lock, governance/documentation closure and package dry-run. Worker sandbox version alignment, type generation, TypeScript build and all 198 tests pass across 27 files. Public clone journal intent remains compatible with previously settled public clones. PR #190 candidate 4f9688e88c346db896ace5dbc1e622d2cc351dc5 passed CI 38035328944. Merge 3f3dd9ff00b3844c4afa68df0cf4fdfaf072ca00 has exact tree 763ab6c11cc66840a71ad8c866899405f1f21a1f and passed CI 38035405295 and deployment 38035405331/job 114164681492. Worker version 1a32d8d0-2984-4acf-bc65-2425cd37cb79 is deployed at 100%; private configuration secret names are preserved in both services. A fresh private run proved cloning, implementation, validation and local commit, then stopped with an ambiguous interrupted push and no remote branch at two owner readbacks.",
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Deploy the tested private clone credential transport, confirm protected pilot configuration is preserved, then complete one fresh bounded PR-only private acceptance and independent exact-commit verification.",
-        "waitCondition": "Selected App access, caller writer authority, funding, separate read-only verifier and protected expiring policy are confirmed. The first private run failed safely before writes because clone authentication was absent. The clone fix still needs candidate CI, deployment and fresh acceptance.",
+        "nextAction": "Deploy single-attempt isolated branch publication with command-scoped credentials and bounded read-only reconciliation; then complete a fresh bounded private PR acceptance and independent exact-commit verification.",
+        "waitCondition": "The clone fix is merged and deployed and private clone, implementation, validation and local commit succeeded. Publication exited 143 with no visible remote branch; the run is terminal AMBIGUOUS_EFFECT and will not be replayed. Publication hardening still needs candidate CI, deployment and fresh acceptance.",
         "staleDate": "2026-10-17"
       },
-      "outcome": "Private clone blocker has a tested source fix. Live private acceptance and independent verification remain incomplete; protected pilot configuration is already provisioned. No private repository name, installation identifiers, account policy digest, bearer token or key material is published in this evidence.",
+      "outcome": "Private clone blocker is resolved in production and exercised successfully. The private pilot remains incomplete because publication was interrupted; E-124 tracks that separate blocker.",
       "content": "Private clone transport, authority and redaction regression coverage, governance update and bounded public evidence.",
       "measurement": "Eight new failure/success tests; one authenticated private clone attempt maximum; zero repository changes from the failed acceptance; zero clone credential files."
+    },
+    {
+      "id": "E-124",
+      "date": "2026-10-10",
+      "identity": "Single-attempt isolated publication with read-only effect reconciliation",
+      "situation": "A fresh private objective cloned, implemented, validated and committed locally, but its foreground Git push returned exit 143 without output. The expected remote ref was absent during control-plane probing and two owner readbacks. The terminal ambiguous objective must not be replayed. The underlying signal source is not established.",
+      "verification": "Publication now uses one setsid-isolated Git push to the declared repository URL with repository-scoped command-local HTTP authentication and no credential file or global Git helper. Push and secret_access are required before launch. Four bounded read-only ref probes can reconcile a delayed exact commit after an interrupted transport. A wrong or absent commit, inaccessible probe or unresolved transport remains AMBIGUOUS_EFFECT; no push is retried. Eight new regression cases cover isolated transport, both authority gates, delayed visibility after exit 143, bounded absent effects, a wrong ref, transport/probe redaction and settled-publication replay rejection. The focused clone/publication suite passes all 16 cases. Full local npm run check passes all 72 core tests, contract lock, governance/documentation closure and package dry-run. Worker Sandbox version alignment, type generation, TypeScript build and all 206 tests across 28 files pass. An actual Linux probe confirms a distinct session/process group and preserved child exit status. Candidate CI, deployment and live publication remain to be recorded.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Deploy single-attempt isolated branch publication with command-scoped credentials and bounded read-only reconciliation; then complete a fresh bounded private PR acceptance and independent exact-commit verification.",
+        "waitCondition": "The clone fix is merged and deployed and private clone, implementation, validation and local commit succeeded. Publication exited 143 with no visible remote branch; the run is terminal AMBIGUOUS_EFFECT and will not be replayed. Publication hardening still needs candidate CI, deployment and fresh acceptance.",
+        "staleDate": "2026-10-17"
+      },
+      "outcome": "Publication has a tested mitigation and honest effect-reconciliation boundary. Live private PR acceptance and independent verification remain incomplete.",
+      "content": "Process-isolated publication, command-local credentials, bounded read-only reconciliation, regression coverage and private-pilot governance.",
+      "measurement": "One mutating push maximum; four read-only probes maximum; zero credential files; eight new publication regression cases; zero target PRs from the interrupted run."
     }
   ]
 }
