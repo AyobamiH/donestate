@@ -1,0 +1,22 @@
+{
+  "schema": "donestate.private-clone-fix-evidence.v1",
+  "date": "2026-10-10",
+  "workItem": "PRIVATE-001",
+  "evidenceId": "E-123",
+  "originalAcceptance": "FAILED_SAFE_before_repository_writes",
+  "cause": "anonymous_clone_before_publication_credentials",
+  "protectedConfiguration": "provisioned",
+  "candidate": "pending_ci_and_deployment",
+  "independentPrivateAcceptance": "not_yet_observed",
+  "newRegressionTests": 8,
+  "credentialsPublished": false,
+  "validation": {
+    "coreTests": 72,
+    "workerTests": 198,
+    "workerTestFiles": 27,
+    "rootCheck": "passed",
+    "workerBuild": "passed",
+    "sandboxVersionCheck": "passed",
+    "diffCheck": "passed"
+  }
+}

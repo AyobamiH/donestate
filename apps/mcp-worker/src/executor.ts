@@ -2,6 +2,7 @@ import { getSandbox, type ExecOptions, type Sandbox } from "@cloudflare/sandbox"
 import { boundedOutput, digest, redact } from "./canonical";
 import type { DoneStateEnv } from "./environment";
 import { createPullRequest, findOpenPullRequest, getBranchHead, GitHubError } from "./github";
+import { repositoryCloneAccess } from "./repository-clone-access";
 import {
   IMPLEMENTATION_RECEIPT_DIR, IMPLEMENTATION_RECEIPT_SCHEMA,
   implementationReceiptDeadlineMs, implementationReceiptLogPath, implementationReceiptPath,
@@ -297,23 +298,26 @@ async function waitForPublicCloneRetry(attempt: number): Promise<void> {
   await new Promise<void>((resolve) => setTimeout(resolve, publicCloneRetryDelayMs(attempt)));
 }
 
-async function clonePublicRepository(
+async function cloneRepository(
   env: DoneStateEnv,
   journal: ExecutionJournal,
   objective: HostedObjective,
   repositoryPath: string,
+  githubToken: string,
 ): Promise<{ sandbox: Sandbox; sandboxId: string; executed: boolean }> {
   const id = "clone";
-  const authority: AuthorityClass = "local_read";
-  if (!objective.authorities.includes(authority)) throw new RunFailure("BLOCKED_AUTHORITY", authority + " authority is required for " + id);
+  if (!objective.authorities.includes("local_read")) throw new RunFailure("BLOCKED_AUTHORITY", "local_read authority is required for " + id);
   if (journal.cancelled()) throw new RunFailure("FAILED_SAFE", "objective was cancelled before the next action");
 
+  const access = await repositoryCloneAccess(objective, githubToken);
+  const maxAttempts = access.authentication === "anonymous" ? PUBLIC_CLONE_MAX_ATTEMPTS : 1;
   const command = publicCloneCommand(objective, repositoryPath);
-  const previousResult = await journal.startAction(id, authority, {
+  const previousResult = await journal.startAction(id, access.authority, {
     schema: "donestate.action-intent.v1",
     idempotencyKey: actionIdempotency(objective.runId, id),
     commandDigest: await digest(command),
-    maxAttempts: PUBLIC_CLONE_MAX_ATTEMPTS,
+    ...(access.authentication === "anonymous" ? {} : { authentication: access.authentication }),
+    maxAttempts,
     retryIsolation: "fresh_sandbox_per_attempt",
   });
   if (previousResult) {
@@ -327,20 +331,20 @@ async function clonePublicRepository(
   let lastResult: Record<string, unknown> = {
     success: false,
     attempts: 0,
-    maxAttempts: PUBLIC_CLONE_MAX_ATTEMPTS,
+    maxAttempts,
   };
 
-  for (let attempt = 1; attempt <= PUBLIC_CLONE_MAX_ATTEMPTS; attempt += 1) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const sandboxId = publicCloneSandboxId(objective.runId, attempt);
     const sandbox = getSandbox(env.Sandbox, sandboxId, SANDBOX_RUNTIME_OPTIONS);
     try {
       await sandbox.mkdir("/workspace/home", { recursive: true });
-      const raw = await sandbox.exec(command, { timeout: Math.min(objective.maxDurationMs, 600_000) });
+      const raw = await sandbox.exec(command, { timeout: Math.min(objective.maxDurationMs, 600_000), env: access.env });
       const result = {
-        ...resultRecord(raw, []),
+        ...resultRecord(raw, access.secrets),
         attempt,
         attempts: attempt,
-        maxAttempts: PUBLIC_CLONE_MAX_ATTEMPTS,
+        maxAttempts,
         sandboxId,
       };
       if (raw.success) {
@@ -353,9 +357,9 @@ async function clonePublicRepository(
         success: false,
         attempt,
         attempts: attempt,
-        maxAttempts: PUBLIC_CLONE_MAX_ATTEMPTS,
+        maxAttempts,
         sandboxId,
-        error: redact(error instanceof Error ? error.message : "sandbox clone command failed", []),
+        error: redact(error instanceof Error ? error.message : "sandbox clone command failed", access.secrets),
       };
     }
 
@@ -366,17 +370,19 @@ async function clonePublicRepository(
         message: "failed clone sandbox cleanup",
         runId: objective.runId,
         attempt,
-        error: error instanceof Error ? error.message : "unknown clone sandbox cleanup error",
+        error: redact(error instanceof Error ? error.message : "unknown clone sandbox cleanup error", access.secrets),
       }));
     }
 
-    if (attempt < PUBLIC_CLONE_MAX_ATTEMPTS) {
+    if (attempt < maxAttempts) {
       await waitForPublicCloneRetry(attempt);
     }
   }
 
   await journal.settleAction(id, { state: "FAILED", result: lastResult });
-  throw new RunFailure("FAILED_SAFE", `clone failed after ${PUBLIC_CLONE_MAX_ATTEMPTS} attempts`, lastResult);
+  const capabilityFailure = access.authentication !== "anonymous"
+    && /authentication failed|could not read Username|repository not found|returned error: (401|403|404)/i.test(String(lastResult.stderr ?? ""));
+  throw new RunFailure(capabilityFailure ? "BLOCKED_CAPABILITY" : "FAILED_SAFE", `clone failed after ${maxAttempts} attempts`, lastResult);
 }
 
 async function preparePublicationCredentials(
@@ -662,7 +668,7 @@ export async function executeObjective(
         return deferredExecution(Date.now() + POST_IMPLEMENTATION_RUNTIME_QUIESCENCE_MS);
       }
     } else {
-      const cloned = await clonePublicRepository(env, journal, objective, repositoryPath);
+      const cloned = await cloneRepository(env, journal, objective, repositoryPath, githubToken);
       sandbox = cloned.sandbox;
       activeSandbox = sandbox;
       const clonedHead = await sandbox.exec("git rev-parse HEAD", { cwd: repositoryPath, timeout: 30_000 });
