@@ -682,16 +682,17 @@
       "owner": "DoneState maintainers",
       "lastUpdated": "2026-10-10",
       "staleDate": "2026-10-17",
-      "nextAction": "Complete exact selected executor App access, resolve authenticated caller writer authority, and provision a distinct read-only verifier App plus protected expiring policy through provider-controlled setup. Then run bounded PR-only private acceptance.",
-      "waitCondition": "Approved source is merged and deployed. New private verifier secrets are absent, selected executor installation is absent and the current authenticated caller lacks target writer authority. No model run has started.",
-      "reentryCondition": "Resume private acceptance when exact App access, separate verifier identity/permissions, expiring account-bound policy, writer authority and execution funding are freshly confirmed.",
+      "nextAction": "Deploy the tested private clone credential transport, confirm protected pilot configuration is preserved, then complete one fresh bounded PR-only private acceptance and independent exact-commit verification.",
+      "waitCondition": "Selected App access, caller writer authority, funding, separate read-only verifier and protected expiring policy are confirmed. The first private run failed safely before writes because clone authentication was absent. The clone fix still needs candidate CI, deployment and fresh acceptance.",
+      "reentryCondition": "Resume the private run after the exact clone-fix deployment succeeds and protected configuration is freshly confirmed. Never replay the settled failed objective.",
       "dependencies": [
         "MKT-007",
         "CUST-002"
       ],
       "evidenceIds": [
         "E-121",
-        "E-122"
+        "E-122",
+        "E-123"
       ]
     },
     {
@@ -2694,6 +2695,23 @@
       "outcome": "The approved disabled-by-default pilot code is deployed. Private permissions, secret provisioning, execution and independent private acceptance remain incomplete. Existing public launch acceptance is separate; new-version natural hourly health is not inferred from the older observation.",
       "content": "Provider-pattern sources, exact source/CI/deployment identities, bounded endpoint observations and explicit private access gaps.",
       "measurement": "Two source merges and two deployments; zero private configuration writes, new App grants, coding runs or private target identifiers in public evidence."
+    },
+    {
+      "id": "E-123",
+      "date": "2026-10-10",
+      "identity": "Private clone authentication without implementation credential exposure",
+      "situation": "The first authorised private repository objective failed safely during anonymous cloning before any branch, commit or pull request. Publication credentials were configured only after implementation, so public acceptance had not exercised private clone transport.",
+      "verification": "Fresh repository visibility is checked before cloning. Private clone requires local_read and secret_access, supplies a repository-scoped Git HTTP Authorization header only through command-local environment, clears credential helpers, rejects redirects and performs one attempt. Public clone remains anonymous with bounded fresh-sandbox retries. No clone credential is placed in a command, remote URL, file, implementation environment or journal. Raw and encoded credentials are redacted from clone failures and cleanup logs. Eight Worker regression tests pass for private success, public anonymity, both authority gates, revoked access, authentication rejection, transport/cleanup redaction and missing credentials. Full local npm run check passes all 72 core tests, contract lock, governance/documentation closure and package dry-run. Worker sandbox version alignment, type generation, TypeScript build and all 198 tests pass across 27 files. Public clone journal intent remains compatible with previously settled public clones. Candidate CI, deployment and fresh private acceptance remain to be recorded.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Deploy the tested private clone credential transport, confirm protected pilot configuration is preserved, then complete one fresh bounded PR-only private acceptance and independent exact-commit verification.",
+        "waitCondition": "Selected App access, caller writer authority, funding, separate read-only verifier and protected expiring policy are confirmed. The first private run failed safely before writes because clone authentication was absent. The clone fix still needs candidate CI, deployment and fresh acceptance.",
+        "staleDate": "2026-10-17"
+      },
+      "outcome": "Private clone blocker has a tested source fix. Live private acceptance and independent verification remain incomplete; protected pilot configuration is already provisioned. No private repository name, installation identifiers, account policy digest, bearer token or key material is published in this evidence.",
+      "content": "Private clone transport, authority and redaction regression coverage, governance update and bounded public evidence.",
+      "measurement": "Eight new failure/success tests; one authenticated private clone attempt maximum; zero repository changes from the failed acceptance; zero clone credential files."
     }
   ]
 }
