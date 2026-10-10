@@ -4,6 +4,7 @@ import { sealSecret, unsealSecret, verifyAttestation } from "./crypto";
 import type { DoneStateEnv } from "./environment";
 import { destroyExecutionSandbox, executeObjective, parseExecutionCheckpoint, type ActionSettlement, type ExecutionCheckpoint, type ExecutionCheckpointDraft, type ExecutionJournal, type ImplementationActionStart } from "./executor";
 import { requestOpsTruthAttestation, requestOpsTruthVerification } from "./opstruth";
+import { privateVerificationChannel } from "./private-verification";
 import {
   VERIFICATION_CONTRACT_VERSION,
   RunFailure,
@@ -460,7 +461,8 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
     const objective = JSON.parse(run.objective_json) as HostedObjective;
     const handoff = await this.handoff(ownerLogin);
     if (objective.verificationContractVersion === VERIFICATION_CONTRACT_VERSION) {
-      const response = await requestOpsTruthVerification(this.env.OPSTRUTH_MCP_URL, handoff);
+      const channel = await privateVerificationChannel(this.env, run.owner_login, objective.repository);
+      const response = await requestOpsTruthVerification(this.env.OPSTRUTH_MCP_URL, handoff, channel ?? undefined);
       return this.submitVerificationResponse(ownerLogin, response);
     }
     const attestation = await requestOpsTruthAttestation(this.env.OPSTRUTH_MCP_URL, handoff);

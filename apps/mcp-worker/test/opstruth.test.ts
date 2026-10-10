@@ -1,4 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { privateVerificationChannel } from "../src/private-verification";
+import { digest } from "../src/canonical";
+import type { DoneStateEnv } from "../src/environment";
 import { requestOpsTruthAttestation, requestOpsTruthVerification } from "../src/opstruth";
 import { VERIFICATION_CONTRACT_VERSION, type VerificationAttestationV2, type VerificationHandoff } from "../src/types";
 
@@ -156,5 +159,56 @@ describe("OpsTruth verification bridge", () => {
     await expect(requestOpsTruthAttestation("https://opstruth.example/mcp", handoff))
       .rejects.toThrow("did not contain an attestation");
     expect(request).toHaveBeenCalledTimes(4);
+  });
+});
+
+
+describe("private verification admission and transport", () => {
+  const endpoint = "https://mcp.opstruth.io/internal/donestate-private-verification";
+  const token = "fixture_private_bridge_" + "a".repeat(32);
+  async function privateEnv(overrides: Record<string, unknown> = {}) {
+    const policy = { accountSubjectSha256: await digest("donestate.private-verification.account.v1\0github:example"), repository: handoff.subject.repository, issuedAt: new Date(Date.now() - 1000).toISOString(), expiresAt: new Date(Date.now() + 3600000).toISOString() };
+    return { OPSTRUTH_PRIVATE_VERIFICATION_URL: endpoint, OPSTRUTH_PRIVATE_BRIDGE_TOKEN: token, OPSTRUTH_PRIVATE_VERIFICATION_POLICY: JSON.stringify(policy), ...overrides } as DoneStateEnv;
+  }
+  it("derives identity from authenticated owner and isolates the exact repository", async () => {
+    const env = await privateEnv();
+    const channel = await privateVerificationChannel(env, "Example", handoff.subject.repository);
+    expect(channel?.accountSubjectSha256).toBe(await digest("donestate.private-verification.account.v1\0github:example"));
+    await expect(privateVerificationChannel(env, "Another", handoff.subject.repository)).rejects.toThrow("admission is unavailable");
+    await expect(privateVerificationChannel(env, "Example", "Other/public")).resolves.toBeNull();
+    await expect(privateVerificationChannel({} as DoneStateEnv, "Example", handoff.subject.repository)).resolves.toBeNull();
+    for (const changes of [
+      { OPSTRUTH_PRIVATE_VERIFICATION_URL: "https://other.test/internal/donestate-private-verification" },
+      { OPSTRUTH_PRIVATE_BRIDGE_TOKEN: "short" },
+      { OPSTRUTH_PRIVATE_VERIFICATION_POLICY: "{}" },
+      { OPSTRUTH_PRIVATE_VERIFICATION_POLICY: JSON.stringify({ ...JSON.parse(env.OPSTRUTH_PRIVATE_VERIFICATION_POLICY!), expiresAt: new Date(Date.now() - 1).toISOString() }) },
+    ]) await expect(privateVerificationChannel(await privateEnv(changes), "Example", handoff.subject.repository)).rejects.toThrow("admission is unavailable");
+  });
+  it("sends a server-only bearer and preserves strict v2 envelope validation", async () => {
+    const channel = (await privateVerificationChannel(await privateEnv(), "Example", handoff.subject.repository))!;
+    const report = { schema: "opstruth.donestate-verification-report.v1", runId: handoff.runId };
+    const request = vi.fn(async (url: RequestInfo | URL, init?: RequestInit) => {
+      expect(url).toBe(endpoint);
+      expect(init?.redirect).toBe("error");
+      expect(init?.signal).toBeDefined();
+      expect(init?.headers).toEqual({ "Content-Type": "application/json", Authorization: `Bearer ${token}` });
+      expect(JSON.parse(String(init?.body))).toEqual({ accountSubjectSha256: channel.accountSubjectSha256, handoff });
+      return Response.json({ contractVersion: VERIFICATION_CONTRACT_VERSION, report, attestation });
+    });
+    vi.stubGlobal("fetch", request);
+    await expect(requestOpsTruthVerification("https://public.example/mcp", handoff, channel)).resolves.toEqual({ contractVersion: VERIFICATION_CONTRACT_VERSION, report, attestation });
+    expect(request).toHaveBeenCalledOnce();
+    request.mockResolvedValueOnce(Response.json({ contractVersion: VERIFICATION_CONTRACT_VERSION, report, attestation, extra: true }));
+    await expect(requestOpsTruthVerification("https://public.example/mcp", handoff, channel)).rejects.toThrow("strict verification contract bundle");
+  });
+  it("redacts network/provider failures, rejects oversized bodies and never retries", async () => {
+    const channel = (await privateVerificationChannel(await privateEnv(), "Example", handoff.subject.repository))!;
+    const request = vi.fn()
+      .mockRejectedValueOnce(new Error("secret-provider-body"))
+      .mockResolvedValueOnce(new Response("secret-provider-body", { status: 403 }))
+      .mockResolvedValueOnce(new Response("x".repeat(512 * 1024 + 1)));
+    vi.stubGlobal("fetch", request);
+    for (let i = 0; i < 3; i += 1) await expect(requestOpsTruthVerification("https://public.example/mcp", handoff, channel)).rejects.toThrow("Private OpsTruth verification is unavailable");
+    expect(request).toHaveBeenCalledTimes(3);
   });
 });

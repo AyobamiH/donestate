@@ -4,6 +4,7 @@ import {
   type VerificationHandoff,
   type VerificationResponseV2,
 } from "./types";
+import type { PrivateVerificationChannel } from "./private-verification";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -66,8 +67,11 @@ async function callOpsTruth(endpoint: string, handoff: VerificationHandoff): Pro
 export async function requestOpsTruthVerification(
   endpoint: string,
   handoff: VerificationHandoff,
+  privateChannel?: PrivateVerificationChannel,
 ): Promise<VerificationResponseV2> {
-  const structured = await callOpsTruth(endpoint, handoff);
+  const structured = privateChannel
+    ? await callPrivateOpsTruth(privateChannel, handoff)
+    : await callOpsTruth(endpoint, handoff);
   assertStrictVerificationEnvelope(structured);
   if (structured.contractVersion !== VERIFICATION_CONTRACT_VERSION
     || !structured.report || typeof structured.report !== "object" || Array.isArray(structured.report)) {
@@ -78,6 +82,39 @@ export async function requestOpsTruthVerification(
     report: structured.report as VerificationResponseV2["report"],
     attestation: structured.attestation as VerificationResponseV2["attestation"],
   };
+}
+
+async function callPrivateOpsTruth(channel: PrivateVerificationChannel, handoff: VerificationHandoff): Promise<Record<string, unknown>> {
+  try {
+    if (channel.endpoint !== "https://mcp.opstruth.io/internal/donestate-private-verification") throw new Error();
+    const response = await fetch(channel.endpoint, {
+      method: "POST", redirect: "error", signal: AbortSignal.timeout(30_000),
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${channel.token}` },
+      body: JSON.stringify({ accountSubjectSha256: channel.accountSubjectSha256, handoff }),
+    });
+    if (!response.ok || !response.body) throw new Error();
+    const reader = response.body.getReader();
+    const chunks: Uint8Array[] = [];
+    let length = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        length += value.byteLength;
+        if (length > 512 * 1024) throw new Error();
+        chunks.push(value);
+      }
+    } catch (error) {
+      await reader.cancel().catch(() => {});
+      throw error;
+    } finally { reader.releaseLock(); }
+    const bytes = new Uint8Array(length);
+    let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+    const structured: unknown = JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: false }).decode(bytes));
+    if (!isRecord(structured)) throw new Error();
+    return structured;
+  } catch { throw new Error("Private OpsTruth verification is unavailable"); }
 }
 
 /**
