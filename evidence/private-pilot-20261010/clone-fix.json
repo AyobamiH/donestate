@@ -6,8 +6,8 @@
   "originalAcceptance": "FAILED_SAFE_before_repository_writes",
   "cause": "anonymous_clone_before_publication_credentials",
   "protectedConfiguration": "provisioned",
-  "candidate": "pending_ci_and_deployment",
-  "independentPrivateAcceptance": "not_yet_observed",
+  "candidate": "merged_and_deployed",
+  "independentPrivateAcceptance": "clone_implementation_validation_succeeded_publication_incomplete",
   "newRegressionTests": 8,
   "credentialsPublished": false,
   "validation": {
@@ -18,5 +18,17 @@
     "workerBuild": "passed",
     "sandboxVersionCheck": "passed",
     "diffCheck": "passed"
+  },
+  "release": {
+    "pullRequest": 190,
+    "candidate": "4f9688e88c346db896ace5dbc1e622d2cc351dc5",
+    "merge": "3f3dd9ff00b3844c4afa68df0cf4fdfaf072ca00",
+    "tree": "763ab6c11cc66840a71ad8c866899405f1f21a1f",
+    "candidateCI": 38035328944,
+    "mergeCI": 38035405295,
+    "deployRun": 38035405331,
+    "deployJob": 114164681492,
+    "workerVersion": "1a32d8d0-2984-4acf-bc65-2425cd37cb79",
+    "privateConfigurationPreserved": true
   }
 }

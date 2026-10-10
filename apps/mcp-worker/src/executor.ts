@@ -3,6 +3,7 @@ import { boundedOutput, digest, redact } from "./canonical";
 import type { DoneStateEnv } from "./environment";
 import { createPullRequest, findOpenPullRequest, getBranchHead, GitHubError } from "./github";
 import { repositoryCloneAccess } from "./repository-clone-access";
+import { pushRepositoryBranch } from "./repository-publication";
 import {
   IMPLEMENTATION_RECEIPT_DIR, IMPLEMENTATION_RECEIPT_SCHEMA,
   implementationReceiptDeadlineMs, implementationReceiptLogPath, implementationReceiptPath,
@@ -385,53 +386,6 @@ async function cloneRepository(
   throw new RunFailure(capabilityFailure ? "BLOCKED_CAPABILITY" : "FAILED_SAFE", `clone failed after ${maxAttempts} attempts`, lastResult);
 }
 
-async function preparePublicationCredentials(
-  sandbox: Sandbox,
-  journal: ExecutionJournal,
-  objective: HostedObjective,
-  githubToken: string,
-): Promise<boolean> {
-  const id = "prepare-publication-credentials";
-  if (!objective.authorities.includes("secret_access")) {
-    throw new RunFailure("BLOCKED_AUTHORITY", `secret_access authority is required for ${id}`);
-  }
-  const previous = await journal.startAction(id, "secret_access", {
-    schema: "donestate.action-intent.v1",
-    idempotencyKey: actionIdempotency(objective.runId, id),
-    credentialTarget: "github.com",
-  });
-  if (previous) return false;
-  try {
-    await sandbox.writeFile("/workspace/.git-credentials", `https://x-access-token:${encodeURIComponent(githubToken)}@github.com\n`);
-    const configured = await sandbox.exec(
-      "chmod 600 /workspace/.git-credentials && git config --global credential.helper 'store --file=/workspace/.git-credentials'",
-      { timeout: 30_000 },
-    );
-    const result = resultRecord(configured, [githubToken]);
-    await journal.settleAction(id, { state: configured.success ? "SUCCEEDED" : "FAILED", result });
-    if (!configured.success) throw new RunFailure("FAILED_SAFE", "publication credentials could not be prepared", result);
-    return true;
-  } catch (error) {
-    if (error instanceof RunFailure) throw error;
-    const message = redact(error instanceof Error ? error.message : "credential preparation failed", [githubToken]);
-    await journal.settleAction(id, { state: "FAILED", result: { error: message } });
-    throw new RunFailure("BLOCKED_CAPABILITY", "publication credentials could not be prepared", { error: message });
-  }
-}
-
-async function cleanupPublicationCredentials(sandbox: Sandbox, runId: string): Promise<void> {
-  try {
-    await sandbox.exec("git config --global --unset-all credential.helper", { timeout: 30_000 });
-    await sandbox.deleteFile("/workspace/.git-credentials");
-  } catch (error) {
-    console.error(JSON.stringify({
-      message: "publication credential cleanup failed",
-      runId,
-      error: error instanceof Error ? error.message : "unknown credential cleanup error",
-    }));
-  }
-}
-
 async function hasFile(sandbox: Sandbox, path: string): Promise<boolean> {
   try {
     await sandbox.readFile(path);
@@ -635,7 +589,6 @@ export async function executeObjective(
   const branchName = `donestate/${objective.runId}`;
   const repositoryOwner = objective.repository.split("/")[0]!;
   let commitSha = "";
-  let publicationCredentialsTouched = false;
   let activeSandbox: Sandbox | null = null;
   let preserveSandbox = false;
   let repositoryGovernanceRequired = checkpoint?.repositoryGovernanceRequired ?? false;
@@ -796,29 +749,7 @@ export async function executeObjective(
     const existingHead = await getBranchHead(githubToken, objective.repository, branchName);
     if (existingHead && existingHead !== commitSha) throw new RunFailure("BLOCKED_SAFETY", "publication branch already exists at another commit");
     if (!existingHead) {
-      publicationCredentialsTouched = true;
-      await preparePublicationCredentials(sandbox, journal, objective, githubToken);
-      const previousPush = await journal.startAction("push-branch", "push", {
-        schema: "donestate.action-intent.v1",
-        idempotencyKey: actionIdempotency(objective.runId, "push-branch"),
-        repository: objective.repository,
-        branchName,
-        expectedHeadSha: commitSha,
-        expectedBaseSha: objective.baseHeadSha,
-      });
-      if (previousPush) {
-        throw new RunFailure("BLOCKED_SAFETY", "a settled branch publication was not visible during reconciliation");
-      }
-      const push = await sandbox.exec(`git push origin HEAD:refs/heads/${branchName}`, { cwd: repositoryPath, timeout: 300_000 });
-      const probedHead = await getBranchHead(githubToken, objective.repository, branchName);
-      if (probedHead !== commitSha) {
-        const result = resultRecord(push, [githubToken]);
-        await journal.settleAction("push-branch", { state: "AMBIGUOUS", result: { ...result, probedHead } });
-        throw new RunFailure("AMBIGUOUS_EFFECT", "branch push could not be reconciled to the intended commit", { probedHead, expectedHead: commitSha });
-      }
-      await journal.settleAction("push-branch", { state: "SUCCEEDED", result: { branchName, branchHeadSha: commitSha, probe: "github_ref_match" } });
-      await cleanupPublicationCredentials(sandbox, objective.runId);
-      publicationCredentialsTouched = false;
+      await pushRepositoryBranch(sandbox, journal, objective, githubToken, branchName, commitSha, repositoryPath);
       journal.recordPublication({ branchName, branchHeadSha: commitSha });
       preserveSandbox = true;
       return deferredExecution();
@@ -883,7 +814,6 @@ export async function executeObjective(
       },
     };
   } finally {
-    if (publicationCredentialsTouched && activeSandbox) await cleanupPublicationCredentials(activeSandbox, objective.runId);
     if (activeSandbox && !preserveSandbox) {
       try {
         await activeSandbox.destroy();

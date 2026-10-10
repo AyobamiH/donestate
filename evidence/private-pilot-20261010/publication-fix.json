@@ -1,0 +1,24 @@
+{
+  "schema": "donestate.publication-fix-evidence.v1",
+  "date": "2026-10-10",
+  "workItem": "PRIVATE-001",
+  "evidenceId": "E-124",
+  "precedingAcceptance": "AMBIGUOUS_EFFECT_after_exit_143",
+  "remoteRefOwnerReadbacks": "absent_twice",
+  "signalSource": "not_established",
+  "mitigation": "isolated_single_push_with_command_scoped_authentication_and_read_only_reconciliation",
+  "candidate": "pending_ci_and_deployment",
+  "independentPrivateAcceptance": "not_yet_observed",
+  "newRegressionTests": 8,
+  "credentialsPublished": false,
+  "validation": {
+    "coreTests": 72,
+    "workerTests": 206,
+    "workerTestFiles": 28,
+    "rootCheck": "passed",
+    "workerBuild": "passed",
+    "sandboxVersionCheck": "passed",
+    "linuxSessionProbe": "passed",
+    "diffCheck": "passed"
+  }
+}
