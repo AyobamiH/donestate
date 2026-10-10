@@ -1,0 +1,66 @@
+{
+  "schema": "donestate.private-verification-pilot-release.v1",
+  "date": "2026-10-10",
+  "privateActivation": "not_configured",
+  "privateAcceptance": "not_started",
+  "modelStarts": 0,
+  "privateIdentifiersPublished": false,
+  "designSources": [
+    "https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app",
+    "https://developers.cloudflare.com/workers/configuration/secrets/"
+  ],
+  "donestate": {
+    "pullRequest": 188,
+    "candidate": "303a3df9e41fe97c7dfb04a1491da94d8d0a23a0",
+    "merge": "d4bdc8ed14c7a45e24603eea113fd686b14b9067",
+    "tree": "782b5e4cf713f1e90c18d57bc8641799e394d004",
+    "ciRun": 38009971983,
+    "deploymentRun": 38009971991,
+    "deploymentJob": 114087467009,
+    "workerVersion": "2cf5721c-3d2a-4482-b830-4c302d127f95",
+    "deploymentId": "961332f6-22e9-4105-a4a2-f41ee40d2baa",
+    "trafficPercentage": 100,
+    "uploadedAt": "2026-10-10T00:40:12.4206146Z",
+    "triggersDeployedAt": "2026-10-10T00:42:49.1882948Z",
+    "publicCurlProbes": [
+      {
+        "path": "/",
+        "status": 200
+      },
+      {
+        "path": "/mcp",
+        "status": 401
+      },
+      {
+        "path": "/mcp/account/v1",
+        "status": 401
+      },
+      {
+        "path": "/.well-known/oauth-authorization-server",
+        "status": 200
+      }
+    ]
+  },
+  "opstruth": {
+    "pullRequest": 38,
+    "candidate": "e4e0e3f2c966855602c62de78422fa72515b3aa2",
+    "merge": "9b38520ca93577283cec88bae0b55e67ad7afa8a",
+    "tree": "634b8c36be02512151196bd226472215709ad9a5",
+    "ciRun": 38009963155,
+    "deploymentRun": 38009963152,
+    "deploymentJob": 114087435908,
+    "workerVersion": "fc6adec2-0997-4f3b-b663-aefef84402ce",
+    "triggersDeployedAt": "2026-10-10T00:39:35.5840787Z",
+    "productionSmokePassed": true,
+    "healthCommitMatches": true,
+    "unauthenticatedPrivatePostStatus": 401,
+    "privateSecretNamesPresent": false
+  },
+  "limitations": [
+    "The Python HTTP observer returned 403; normal curl probes returned the expected statuses. The cause of the client-dependent difference was not independently established.",
+    "Separate private verifier App and protected configuration are not provisioned.",
+    "Selected executor installation and authenticated caller writer authority remain unconfirmed or absent.",
+    "No private objective, independent private verification, external customer demand or market fit is established.",
+    "A new production deployment does not inherit an older natural hourly health observation."
+  ]
+}
