@@ -5,6 +5,9 @@
   "compatibility_date": "2026-08-28",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "workers_dev": true,
+  "analytics_engine_datasets": [
+    { "binding": "DISCOVERY_ANALYTICS", "dataset": "donestate_discovery" }
+  ],
   "routes": [
     { "pattern": "donestate.proofandstate.com", "custom_domain": true }
   ],
