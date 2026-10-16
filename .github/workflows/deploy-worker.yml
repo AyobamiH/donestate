@@ -76,5 +76,13 @@ jobs:
           GITHUB_CLIENT_SECRET: ${{ secrets.DONESTATE_GITHUB_CLIENT_SECRET }}
           GITHUB_MARKETPLACE_WEBHOOK_SECRET: ${{ secrets.DONE_STATE_GITHUB_MARKETPLACE_WEBHOOK_SECRET }}
           TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
+      - name: Verify agent discovery and emit bounded crawler canary
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error -A "GPTBot/1.2" https://donestate.proofandstate.com/agents.txt > /tmp/agents.txt
+          grep --fixed-strings --quiet "https://donestate.proofandstate.com/mcp" /tmp/agents.txt
+          curl --fail --silent --show-error -A "OAI-SearchBot/1.0" https://donestate.proofandstate.com/llms.txt > /tmp/llms.txt
+          grep --fixed-strings --quiet "DoneState" /tmp/llms.txt
+          curl --fail --silent --show-error https://donestate.proofandstate.com/robots.txt | grep --fixed-strings --quiet "OAI-SearchBot"
       - name: Record deployment URL
         run: echo "### ${{ steps.deploy.outputs.deployment-url }}" >> "$GITHUB_STEP_SUMMARY"
