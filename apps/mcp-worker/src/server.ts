@@ -25,6 +25,7 @@ import {
   type VerificationResponseV2,
 } from "./types";
 import { assertRef, assertRepository } from "./validation";
+import { publicDiscoveryResponse, recordDiscoveryObservation } from "./crawler-telemetry";
 
 export { RunCoordinator } from "./coordinator";
 export { CredentialVault } from "./credential-vault";
@@ -659,20 +660,35 @@ const oauthProvider = new OAuthProvider({
 
 export default {
   async fetch(request: Request, workerEnv: DoneStateEnv, ctx: ExecutionContext) {
-    if (isMarketplaceDevelopment(workerEnv)) {
-      if (!allowsMarketplaceDevelopmentRequest(request)) return new Response("Not found", { status: 404 });
-      return authHandler.fetch(request, workerEnv as AuthEnv, ctx);
+    const discovered = publicDiscoveryResponse(request);
+    if (discovered) {
+      recordDiscoveryObservation(request, discovered.status, workerEnv);
+      return discovered;
     }
+
+    let response: Response;
+    if (isMarketplaceDevelopment(workerEnv)) {
+      response = !allowsMarketplaceDevelopmentRequest(request)
+        ? new Response("Not found", { status: 404 })
+        : await authHandler.fetch(request, workerEnv as AuthEnv, ctx);
+      recordDiscoveryObservation(request, response.status, workerEnv);
+      return response;
+    }
+
     const url = new URL(request.url);
     if (url.pathname === `/.well-known/oauth-protected-resource${ACCOUNT_MCP_PATH}` && request.method === "GET") {
-      return accountResourceMetadata(url.origin);
+      response = accountResourceMetadata(url.origin);
+      recordDiscoveryObservation(request, response.status, workerEnv);
+      return response;
     }
-    const response = await oauthProvider.fetch(request, workerEnv, ctx);
+
+    response = await oauthProvider.fetch(request, workerEnv, ctx);
     if (url.pathname === ACCOUNT_MCP_PATH && (response.status === 401 || response.status === 403)) {
       const headers = new Headers(response.headers);
       headers.set("WWW-Authenticate", accountChallenge(url.origin));
-      return new Response(response.body, { status: response.status, headers });
+      response = new Response(response.body, { status: response.status, headers });
     }
+    recordDiscoveryObservation(request, response.status, workerEnv);
     return response;
   },
   scheduled(_controller: ScheduledController, workerEnv: DoneStateEnv, ctx: ExecutionContext) {
