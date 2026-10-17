@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-10-10",
+  "updatedAt": "2026-10-17",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {
@@ -287,10 +287,10 @@
       "stream": "marketplace",
       "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-02",
-      "staleDate": "2026-10-16",
+      "lastUpdated": "2026-10-17",
+      "staleDate": "2026-10-18",
       "nextAction": "Continue exercising changed, pending_change, and pending_change_cancelled through the owner-only draft listing and capture non-personal receipts without touching production listing state.",
-      "waitCondition": "Marketplace development remains a parallel distribution-validation lane; it is not a prerequisite for owned-domain standalone launch.",
+      "waitCondition": "Marketplace development remains a parallel distribution-validation lane; it is not a prerequisite for owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
       "reentryCondition": "Continue through authenticated development-listing controls while keeping the draft isolated from production.",
       "dependencies": [
         "GOV-002"
@@ -300,7 +300,8 @@
         "E-008",
         "E-009",
         "E-010",
-        "E-011"
+        "E-011",
+        "E-126"
       ]
     },
     {
@@ -446,17 +447,19 @@
       "stream": "verification",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-02",
-      "staleDate": "2026-10-16",
+      "lastUpdated": "2026-10-17",
+      "staleDate": "2026-10-18",
       "nextAction": "Build and validate the exact installable OpenAI/plugin archive before the next directory release, including manifests, skills, secret scan, digest and CI.",
-      "waitCondition": "This is required for the OpenAI distribution channel but is not a prerequisite for the owned-domain standalone launch.",
+      "waitCondition": "This is required for the OpenAI distribution channel but is not a prerequisite for the owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
       "reentryCondition": "Begin when the next OpenAI directory submission or resubmission requires a new archive.",
       "dependencies": [
         "MKT-001",
         "MKT-002",
         "MKT-003"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-126"
+      ]
     },
     {
       "id": "VERIFY-006",
@@ -541,16 +544,17 @@
       "stream": "verification",
       "status": "active",
       "owner": "DoneState and AgentProof maintainers",
-      "lastUpdated": "2026-10-07",
-      "staleDate": "2026-10-14",
-      "nextAction": "Treat AgentProof RC6 as the active consequence-receipt track. Complete the first npm registry bootstrap from the exact GitHub RC6 artifact with maintainer review and 2FA, preserve clean-install evidence, then run the planned independent-installation cohort. After adoption evidence, add a production authority/signing provider and select exactly one DoneState lifecycle action for canary integration, with release.v1 preferred because its exact package/tag/provenance subject is deterministic.",
-      "waitCondition": "AgentProof RC6 is published on GitHub and the release lane is proven, but @oneclicksystems/agentproof is not yet published to npm. Production authority/signing and any DoneState merge/deploy/release runtime action remain separate gates; the existing DoneState-to-OpsTruth production path is unchanged.",
-      "reentryCondition": "Advance to the first DoneState runtime integration only after npm publication and clean-install/adoption evidence plus a production authority/signing provider. Do not enable merge, deployment or release consequence authority from RC6 alone.",
+      "lastUpdated": "2026-10-17",
+      "staleDate": "2026-10-24",
+      "nextAction": "Preserve AgentProof RC6 publication and the accepted 17/17 protected GitHub OIDC production repository-patch canary. Run real independent first-installation observations (target ten without counting owner/harness runs) and address any evidenced onboarding defects. Build exactly one evidence-demanded DoneState consequence action, with release.v1 as the deterministic first candidate: define exact package/tag/provenance subject, separate production policy/approval and signer role, durable provider reconciliation, action-specific OpsTruth fixture, and a single bounded real canary. Maintain explicit independent VERIFIED decision and negative rollback/ambiguous-effect evidence; do not broaden the working disposable repo-patch signer into release authority.",
+      "waitCondition": "No wait for npm bootstrap or the bounded production repository-patch canary: @oneclicksystems/agentproof@0.1.0-rc.6 is published (npm next) with exact release integrity, and the Cloudflare-hosted production canary passed 17/17 on reviewed source afaa79663e59cc55fb0213eed0f570549b5e0875. The deployed provider is restricted to one disposable repository patch under one GitHub OIDC workflow, with software-managed keys. Ten independent users, generic production approval/signing custody, DoneState release/merge/deploy authority, action-specific OpsTruth independent verification and live consequences are NOT established. The existing DoneState-to-OpsTruth production path remains unchanged.",
+      "reentryCondition": "Review actual independent adoption reports as they arrive, without fabricating cohort evidence or pausing safe engineering. For release.v1, require a reviewed action schema/threat model, bounded exact-target authority, deterministic effect reconciliation, independent OpsTruth postcondition verification, and an authenticated real consequence canary before enabling any DoneState runtime permission. Treat any new AgentProof main SHA as a separate provider source-pin/acceptance event. Avoid new npm publication claims without staged maintainer 2FA.",
       "dependencies": [
         "VERIFY-004"
       ],
       "evidenceIds": [
-        "E-069"
+        "E-069",
+        "E-125"
       ]
     },
     {
@@ -623,17 +627,18 @@
       "stream": "marketplace",
       "status": "deferred",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-09-01",
-      "staleDate": "2026-10-15",
+      "lastUpdated": "2026-10-17",
+      "staleDate": "2026-10-18",
       "nextAction": "Choose flat-rate Pro, per-seat organisation, trial, or continued free access from observed usage and cost.",
-      "waitCondition": "Keep the free public-repository plan while the listing remains pending and activation evidence is absent.",
+      "waitCondition": "Keep the free public-repository plan while the listing remains pending and activation evidence is absent. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
       "reentryCondition": "Resume after publication, real usage, organisation ownership, publisher eligibility, and the applicable user threshold.",
       "dependencies": [
         "GTM-001"
       ],
       "evidenceIds": [
         "E-001",
-        "E-013"
+        "E-013",
+        "E-126"
       ]
     },
     {
@@ -642,17 +647,18 @@
       "stream": "marketplace",
       "status": "deferred",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-09-01",
-      "staleDate": "2026-10-15",
+      "lastUpdated": "2026-10-17",
+      "staleDate": "2026-10-18",
       "nextAction": "Review Marketplace Insights, transactions, cancellations, support incidents, and entitlement reconciliation after publication without treating preview display counts as activation.",
-      "waitCondition": "The submission is Pending for publish and explicitly unpublished; the owner preview's displayed count of 1 is not public install or transaction evidence.",
+      "waitCondition": "The submission is Pending for publish and explicitly unpublished; the owner preview's displayed count of 1 is not public install or transaction evidence. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
       "reentryCondition": "Resume when GitHub reports publication or the first real production transaction appears.",
       "dependencies": [
         "MKT-004"
       ],
       "evidenceIds": [
         "E-001",
-        "E-013"
+        "E-013",
+        "E-126"
       ]
     },
     {
@@ -818,17 +824,18 @@
       "stream": "distribution",
       "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-03",
-      "staleDate": "2026-10-10",
+      "lastUpdated": "2026-10-17",
+      "staleDate": "2026-10-18",
       "nextAction": "Deploy the corrected cancellation annotation and accurate account-console link description, complete the owned-website privacy correction, rescan the canonical 0.3.2 draft and distinguish correctable findings from provider-required review before resubmission.",
-      "waitCondition": "The old publisher entry was deleted with explicit owner authority. The replacement 0.3.1 submission was withdrawn with owner approval to correct GitHub-facing links; 0.3.2 is currently a draft with reviewer information retained. Website privacy and MCP findings remain under correction; no approval or publication is claimed.",
+      "waitCondition": "The old publisher entry was deleted with explicit owner authority. The replacement 0.3.1 submission was withdrawn with owner approval to correct GitHub-facing links; 0.3.2 is currently a draft with reviewer information retained. Website privacy and MCP findings remain under correction; no approval or publication is claimed. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
       "reentryCondition": "Advance on exact-head CI and production deployment, then record fresh publisher scan evidence and any explicit owner submission confirmation.",
       "dependencies": [],
       "evidenceIds": [
         "E-005",
         "E-040",
         "E-041",
-        "E-061"
+        "E-061",
+        "E-126"
       ]
     },
     {
@@ -853,15 +860,17 @@
       "stream": "ecosystem",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-15",
+      "lastUpdated": "2026-10-17",
+      "staleDate": "2026-10-18",
       "nextAction": "Select stable product-agnostic instructions, remove transient evidence, and open a tracked ai-prompts PR.",
-      "waitCondition": "No matching branch or PR exists in AyobamiH/ai-prompts.",
+      "waitCondition": "No matching branch or PR exists in AyobamiH/ai-prompts. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
       "reentryCondition": "Begin after VERIFY-003.",
       "dependencies": [
         "VERIFY-003"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-126"
+      ]
     },
     {
       "id": "CLI-001",
@@ -2730,6 +2739,40 @@
       "outcome": "Publication has a tested mitigation and honest effect-reconciliation boundary. Live private PR acceptance and independent verification remain incomplete.",
       "content": "Process-isolated publication, command-local credentials, bounded read-only reconciliation, regression coverage and private-pilot governance.",
       "measurement": "One mutating push maximum; four read-only probes maximum; zero credential files; eight new publication regression cases; zero target PRs from the interrupted run."
+    },
+    {
+      "id": "E-125",
+      "date": "2026-10-17",
+      "identity": "AgentProof published RC6 and independently checked narrow hosted production approval/signing canary",
+      "situation": "DoneState AGENTPROOF-001 had remained stale since 7 October, incorrectly claiming RC6 was absent from npm and hosted production authority unavailable. In parallel AgentProof completed the scoped first live authority canary after repairing its immutable GitHub OIDC subject mismatch.",
+      "verification": "npm package @oneclicksystems/agentproof@0.1.0-rc.6 exists under dist-tag next, while latest remains rc.5; the exact original GitHub release/registry SHA-256 f9dd7eb65f5809c69584624272c0c7dc13a84209c4a2daee338dfee43f5050ca and earlier clean-installed consumer acceptance are preserved. AgentProof PR #10 merged at 3d09ce011abfd5f129edf3ca01c6bc0c16283d27, PR #11 at 6be99716ab15fbdff912ecea757a6b39851dd7e0, PR #12 at 47587087565ac312b56909cf7a5d32a4d371d7c4, PR #13 at afaa79663e59cc55fb0213eed0f570549b5e0875. Protected main has GitHub ruleset 25292351 and a protected deployment environment. Initial failed workflow runs 39007128303 and 39007674293 are preserved with separate result hashes; Workers were disabled/revoked between them. Successful run 39008214371 passed 17/17 then its two receipts were independently checked offline. Documentation PR #13 advanced main, causing deliberate exact-source repinning: approval deployment 6bc1cea2-c932-4955-ae3c-5097761b5559 and receipt deployment 072e7a1c-ba1b-41fb-b160-c514c185ac56 now report main afaa79663e59cc55fb0213eed0f570549b5e0875. Final protected-main canary https://github.com/AyobamiH/agentproof/actions/runs/39008821740 passes 17/17, archived report SHA-256 0703d7fa155a190451fe8c260a6ee806815baf11028e43327ce807bece3f5f85. A separate local offline verifier accepted the initial and authenticated compensation successor receipts and rejected an orphan successor. Anonymous calls to both services returned HTTP 401. These are live engineering proofs for the exact disposable repository-patch policy, not evidence of independent adoption or DoneState release authority.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "active",
+        "nextAction": "Preserve AgentProof RC6 publication and the accepted 17/17 protected GitHub OIDC production repository-patch canary. Run real independent first-installation observations (target ten without counting owner/harness runs) and address any evidenced onboarding defects. Build exactly one evidence-demanded DoneState consequence action, with release.v1 as the deterministic first candidate: define exact package/tag/provenance subject, separate production policy/approval and signer role, durable provider reconciliation, action-specific OpsTruth fixture, and a single bounded real canary. Maintain explicit independent VERIFIED decision and negative rollback/ambiguous-effect evidence; do not broaden the working disposable repo-patch signer into release authority.",
+        "waitCondition": "No wait for npm bootstrap or the bounded production repository-patch canary: @oneclicksystems/agentproof@0.1.0-rc.6 is published (npm next) with exact release integrity, and the Cloudflare-hosted production canary passed 17/17 on reviewed source afaa79663e59cc55fb0213eed0f570549b5e0875. The deployed provider is restricted to one disposable repository patch under one GitHub OIDC workflow, with software-managed keys. Ten independent users, generic production approval/signing custody, DoneState release/merge/deploy authority, action-specific OpsTruth independent verification and live consequences are NOT established. The existing DoneState-to-OpsTruth production path remains unchanged.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "RC6 npm publication and a restricted real Cloudflare approval/receipt-signing canary are complete and independently checked; the obsolete unpublished/unprovisioned blocker is removed. Ten genuinely independent installs, action-specific production release/merge/deployment authority and an OpsTruth-attested DoneState consequence canary remain active separate gates. No DoneState runtime, verifier signing identity, credentials, hosting or package changed.",
+      "content": "Authenticated GitHub PR/CI readback, GitHub OIDC immutable-sub configuration, exact Worker version/source health, successful protected-run receipt artifact and checksum, independent offline signed initial/compensation verification, failed-run history and producer/consumer trust boundaries.",
+      "measurement": "Published RC6: 1; accepted exact-source canaries: 2 historical passes (the final one is current main); final 17/17 checks; final signed receipts 2; orphan successor rejected; actual qualifying independent adoption records 0 observed; DoneState consequence canaries 0; HSM custody claims 0."
+    },
+    {
+      "id": "E-126",
+      "date": "2026-10-17",
+      "identity": "Governance stale-item triage without fabricated external outcomes",
+      "situation": "Rendering the focused AgentProof governance correction exposed six unrelated overdue non-complete work items, whose stale dates preceded the current date. Silently bypassing the strict stale gate would hide unreviewed work.",
+      "verification": "The canonical governance/project-ledger.json was examined for MKT-004, VERIFY-003, MKT-005, MKT-006, OPENAI-001 and SKILLS-001. The previous owner, status, next action, dependencies and re-entry remain untouched. No new Marketplace/provider/OpenAI submission, acceptance, deployment, payment, installation or plugin approval was independently checked in this AgentProof continuation. Each receives an explicit next-day review deadline, no closure claim, and a retained reference to this administrative triage. All historical evidence records are preserved.",
+      "accountability": {
+        "owner": "DoneState publisher and maintainers",
+        "status": "active",
+        "nextAction": "Re-examine each overdue work item against its own authoritative external evidence or project owner decision by the next review, record a new evidence item and update that work item without conflating the AgentProof canary with those unrelated channels.",
+        "waitCondition": "No new external Marketplace or OpenAI provider events were verified by this AgentProof-focused review. These statuses must not be represented as completed or published.",
+        "staleDate": "2026-10-18"
+      },
+      "outcome": "Six overdue items are visible and due for fresh review on 18 October; none was completed, launched, approved or externally verified by this administrative step.",
+      "content": "Ledger-only overdue item triage, preserving all six prior statuses and next actions with a dated re-entry and explicit unverified boundary.",
+      "measurement": "Six overdue work items, zero new external provider readbacks, zero status closures, zero runtime/provider mutations."
     }
   ]
 }
