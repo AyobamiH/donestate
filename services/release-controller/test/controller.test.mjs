@@ -153,12 +153,13 @@ test("same-run recovery can refresh an expired handoff without authorising a new
 test("handoff renewal cannot extend the receipt deadline for settlement",async()=>{
   const f=setup(),c=f.controller,r=f.record,e=f.evidence;
   await c.receipt(f.claims,{runId:r.runId,receipt:e.receipt},f.now);
-  const fresh=await c.refresh(f.claims,{runId:r.runId,receiptPayloadDigest:e.receipt.proof.payloadDigest},f.now+1199000);
-  assert.equal(Date.parse(fresh.handoff.expiresAt),Date.parse(e.receipt.payload.issuedAt)+1200000);
-  const observedAt=new Date(f.now+1199000).toISOString();
+  const deadline=Date.parse(e.receipt.payload.issuedAt)+1200000;
+  const fresh=await c.refresh(f.claims,{runId:r.runId,receiptPayloadDigest:e.receipt.proof.payloadDigest},deadline-2000);
+  assert.equal(Date.parse(fresh.handoff.expiresAt),deadline);
+  const observedAt=new Date(deadline-2000).toISOString();
   const decision=e.signReport({...e.signedOpsTruthDecision,observedAt,
     observation:{...e.signedOpsTruthDecision.observation,observedAt}});
   const before=c.get();
-  assert.throws(()=>c.settle(f.claims,{runId:r.runId,decision},f.now+1200001),/receipt_recovery_window_expired/);
+  assert.throws(()=>c.settle(f.claims,{runId:r.runId,decision},deadline+1),/receipt_recovery_window_expired/);
   assert.deepEqual(c.get(),before);
 });
