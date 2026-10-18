@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-10-17",
+  "updatedAt": "2026-10-18",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {
@@ -547,8 +547,8 @@
       "owner": "DoneState and AgentProof maintainers",
       "lastUpdated": "2026-10-18",
       "staleDate": "2026-10-24",
-      "nextAction": "Review and merge the disabled isolated release controller, bind separate production trust identities and one exact disposable release, then run the protected canary through real publication, independent OpsTruth byte verification and durable DoneState terminal acceptance. Do not count fixtures or the completed patch canary as release acceptance.",
-      "waitCondition": "Patch source drift is repaired: current AgentProof main 39d4ea766d60fe12275c10dbf1e326f97941bd7d passed 17/17 live checks in run 39113765551; independent receipt and compensation verification passed. Disposable release 416342082 exists as an unpublished draft at tag v0.0.0-rc.2026101801 / commit 1231076c12485a02fae3c38b0b850a25274985d5. The new DoneState controller is a source candidate, disabled by default; separate production release keys, protected workflow and real release-to-VERIFIED acceptance remain open. Independent adoption remains 0 qualifying observations.",
+      "nextAction": "Review and merge the header/reservation and bounded recovery changes, update the protected canary source pins, reverify current-main patch acceptance, then perform one publication of the existing exact draft through the permanent fence.",
+      "waitCondition": "Release 416342082 remains a draft; original DoneState run 12741172-631f-47b4-88c2-a63eeb1f9574 is AUTHORISED only. All temporary release authority is being disabled during repair.",
       "reentryCondition": "Use exact protected source and source-pinned canary identities. Preserve five distinct signing roles, permanent target fences, existing production runtimes and historical evidence. A receipt alone must remain awaiting independent verification. Never reset a claim or repeat an ambiguous publication.",
       "dependencies": [
         "VERIFY-004"
@@ -559,7 +559,8 @@
         "E-127",
         "E-128",
         "E-129",
-        "E-130"
+        "E-130",
+        "E-132"
       ]
     },
     {
@@ -2864,6 +2865,23 @@
       "outcome": "Review dates refreshed after evidence review; both items remain active with existing acceptance conditions and historical evidence unchanged.",
       "content": "Two item review dates and one append-only evidence story; no runtime or product-status change.",
       "measurement": "Two overdue records reviewed; zero completion claims, starts, pushes or customer publications."
+    },
+    {
+      "id": "E-132",
+      "date": "2026-10-18",
+      "identity": "Real pre-publication refusal and fenced unexecuted-authorisation recovery candidate",
+      "situation": "Protected workflow 39118530819 authorised the exact disposable release but failed during AgentProof preparation because its GitHub adapter omitted the required User-Agent. The GitHub draft remains unpublished; there was no execute call, receipt or independent verdict. A new workflow must not silently overwrite the original durable DoneState authorisation.",
+      "verification": "The failed authorization/publication artifacts, their checksums and GitHub draft readback are retained. Read-only no-User-Agent HTTP reproduced GitHub 403. The candidate recovery requires a fresh AgentProof signed reserved-state attestation from the unchanged permanent target fence, exact new workflow/run/subject/transaction, all five unchanged trust keys and explicitly configured predecessor workflow/run. It preserves the complete original authority and audit chain, admits only an AUTHORISED record with no receipt/handoff/decision, and requires subsequent execution after recovery. Attempted or differently claimed AgentProof fences cannot issue a new reservation. Protected review and CI are required; no real release acceptance is claimed. Independent AgentProof PR #21 review identified missing workflow-attempt binding; the issuer now signs the producing attempt and this consumer rejects a mismatch. Canary draft PR #2 CI run 39119425333 established that contents-read cannot observe the unpublished draft. Reservation and recovery therefore occur before execution in the existing contents-write publisher job, without forwarding its credential to DoneState; the authorizer remains read-only and verifies the preserved predecessor. The failed CI result is retained. Independent DoneState PR #198 review found that cross-runtime timestamps cannot establish causal ordering. The follow-up commits recovery before signing a separate domain-separated authorisation grant with the existing handoff key. AgentProof permanently records recovery-required policy and refuses execution until that exact grant activates the reserved fence; the signed completion binds the grant digest. Disabling recovery configuration cannot bypass an existing gate. Tests cover withheld/forged/foreign/expired grants, signer outage after commit and idempotent activation. A subsequent review required same-attempt enforcement even on the idempotent/post-commit recovery path and complete receipt issuance under recovery signer configuration. The route now checks the authenticated producing attempt before any return or signature, including crash recovery. Both committed AgentProof release configurations require recovery while disabled, health exposes that setting, and the canary requires it on both roles. The reservation signs the required gate policy; DoneState rejects ungated reservations. Local tests now cover the recovered AgentProof receipt and wrong-attempt retries before and after grant persistence.",
+      "accountability": {
+        "owner": "DoneState / AgentProof maintainers",
+        "status": "active",
+        "nextAction": "Review and merge the header/reservation and bounded recovery changes, update the protected canary source pins, reverify current-main patch acceptance, then perform one publication of the existing exact draft through the permanent fence.",
+        "waitCondition": "Release 416342082 remains a draft; original DoneState run 12741172-631f-47b4-88c2-a63eeb1f9574 is AUTHORISED only. All temporary release authority is being disabled during repair.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Recovery candidate only; previous failure and authorisation remain preserved. No effect retry or terminal VERIFIED claim.",
+      "content": "User-Agent compliance, signed durable reservation, strictly configured authorisation recovery, negative tests and retained failed workflow.",
+      "measurement": "Published release effects 0; real OpsTruth decisions 0; real DoneState VERIFIED 0; qualified external installations 0."
     }
   ]
 }
