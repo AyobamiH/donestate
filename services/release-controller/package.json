@@ -1,0 +1,16 @@
+{
+  "name": "donestate-isolated-release-controller",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "npm test && wrangler deploy --dry-run"
+  },
+  "dependencies": {
+    "jose": "6.2.12"
+  },
+  "devDependencies": {
+    "wrangler": "4.151.1"
+  }
+}
