@@ -1,0 +1,37 @@
+{
+  "name": "donestate-release-canary",
+  "account_id": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-10-18",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": true,
+  "preview_urls": false,
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "RUNS",
+        "class_name": "ReleaseRun"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "ReleaseRun"
+      ]
+    }
+  ],
+  "vars": {
+    "ENABLED": "false",
+    "TRUSTED_SOURCE_SHA": "0000000000000000000000000000000000000000",
+    "SERVICE_SOURCE_SHA": "0000000000000000000000000000000000000000",
+    "AUDIENCE": "https://donestate-release-canary.woeinvests.workers.dev",
+    "TARGET_SUBJECT_JSON": ""
+  },
+  "observability": {
+    "enabled": false
+  }
+}

@@ -385,8 +385,8 @@
       "stream": "go-to-market",
       "status": "active",
       "owner": "Proof & State maintainers",
-      "lastUpdated": "2026-10-10",
-      "staleDate": "2026-10-17",
+      "lastUpdated": "2026-10-18",
+      "staleDate": "2026-10-25",
       "nextAction": "Continue improving the public first-job and recovery path while distribution runs alongside development. Review incoming consenting external use for independently verified usefulness, eligible repeat jobs, real offer/payment evidence and support burden; fix the largest evidenced constraint. Customer recruitment and a fixed cohort size are not development gates.",
       "waitCondition": "Owned-domain GA is accepted under E-118. External customer evidence may arrive naturally as the product is used; no supplied customer observation currently establishes demand, retention, payment or market fit. Missing observations do not pause development.",
       "reentryCondition": "Review real observations as they arrive, within seven days of first entry. Preserve channel/cohort separation, consent, independent-verifier authority and existing permission boundaries. Post-Once publishing integration is a later reconciliation, not certified by this slice.",
@@ -399,7 +399,8 @@
         "E-047",
         "E-048",
         "E-119",
-        "E-120"
+        "E-120",
+        "E-131"
       ]
     },
     {
@@ -544,11 +545,11 @@
       "stream": "verification",
       "status": "active",
       "owner": "DoneState and AgentProof maintainers",
-      "lastUpdated": "2026-10-17",
+      "lastUpdated": "2026-10-18",
       "staleDate": "2026-10-24",
-      "nextAction": "Use completed, reviewed source and disabled infrastructure without rebuilding it: AgentProof PR #16 merged release-only Durable Object permanent effect fence, distinct disabled approval/signing Workers and passing protected CI; OpsTruth PR #42 merged a separate read-only byte/provenance verification and independently signed outcome service, with post-merge CI passing and disabled Worker deployed; DoneState PR #195 merged source-only signed handoff, post-merge CI passing and E-128 cross-project fixture accepted. Immediate P0 is to restore current-main source-pin alignment of the existing repository-patch provider via an explicitly permitted deployment and fresh 17/17 canary (AgentProof #17), preserving its keys and denying unintended release permissions. Then, only when permitted, prepare a real disposable test-only GitHub draft with exact tag and signed provenance and approve the credential-bearing protected workflow; separately provision release-specific signing identities/fixed targets, activate only the one-release policy, and observe a genuine one-mutation release and independently signed OpsTruth/DonesState terminal outcome. Continue collecting ten independently reviewed first-install observations via AgentProof #14 with no fixture credit.",
-      "waitCondition": "The earlier OpsTruth PR #42 merge blocker cleared: reviewed head 8e01f376716b9f7b7a922c86e36f688b7666fc0a merged into main 08c53c4d78e6e280a78e4bb0e95de896108be401. Both post-merge workflows succeeded; the isolated OpsTruth release verifier was deployed at Cloudflare version 5e642434-56dc-4ccc-8e59-5a4ce7f88452 disabled, zero trusted SHA, no signing key, and anonymous POST 401. AgentProof release approval and receipt Worker versions 294c04d6-3dbd-44f0-8102-950b8db61a03 and a17f3b21-96b4-467a-9306-3eac1d89a148 likewise remain disabled with zero source pins and no target. The existing repository-patch approval/receipt Workers are healthy but remain pinned to older source 2ed24b95ec90f36d52132cc3f98fc9d937ade4da instead of current main b6724b1927e26aa7284371ec7fdd974aeefcbf42; rejected activation/re-pin action and new current-main live canary are tracked at AgentProof #17. Creating a genuine disposable GitHub draft and credential-bearing orchestrator was separately refused by platform controls. No live release, production OpsTruth release verdict, DoneState terminal verified release, npm republish or independent outside installation exists in accepted evidence.",
-      "reentryCondition": "Check authoritative source and CI readbacks before resuming. Do not bypass previously refused external mutation/deployment actions, supply secrets in a report, broaden the existing patch signer, or mark a synthetic release test as real. First safely close source drift AgentProof #17 with exact-SHA 17/17 verification, then pursue permitted disposable release draft and protected workflow, separate release signer and provenance issuer custody, exact read-only OpsTruth verification and signed DoneState result. Mark the real consequence milestone complete only with independently corroborated released bytes and a run-bound production signature; verify outside developers separately for #14.",
+      "nextAction": "Review and merge the disabled isolated release controller, bind separate production trust identities and one exact disposable release, then run the protected canary through real publication, independent OpsTruth byte verification and durable DoneState terminal acceptance. Do not count fixtures or the completed patch canary as release acceptance.",
+      "waitCondition": "Patch source drift is repaired: current AgentProof main 39d4ea766d60fe12275c10dbf1e326f97941bd7d passed 17/17 live checks in run 39113765551; independent receipt and compensation verification passed. Disposable release 416342082 exists as an unpublished draft at tag v0.0.0-rc.2026101801 / commit 1231076c12485a02fae3c38b0b850a25274985d5. The new DoneState controller is a source candidate, disabled by default; separate production release keys, protected workflow and real release-to-VERIFIED acceptance remain open. Independent adoption remains 0 qualifying observations.",
+      "reentryCondition": "Use exact protected source and source-pinned canary identities. Preserve five distinct signing roles, permanent target fences, existing production runtimes and historical evidence. A receipt alone must remain awaiting independent verification. Never reset a claim or repeat an ambiguous publication.",
       "dependencies": [
         "VERIFY-004"
       ],
@@ -557,7 +558,8 @@
         "E-125",
         "E-127",
         "E-128",
-        "E-129"
+        "E-129",
+        "E-130"
       ]
     },
     {
@@ -569,7 +571,7 @@
       "lastUpdated": "2026-10-09",
       "staleDate": "2026-12-01",
       "nextAction": "Retain passing OAuth and authorised owned-domain GA evidence; monitor the published controls and review first-cohort outcomes within seven days of entry.",
-      "waitCondition": "None for the owned-domain launch slice. Actual secure GitHub account choice submitted as OneClickPostFactory. Canonical HTTPS receipt at 2026-10-09T22:25:29.744Z–22:25:33.617Z passes discovery, callback state/issuer, code exchange, authenticated read-only MCP, refresh and refreshed MCP. Own new grant revocation is confirmed and revoked access denied. Credential absent; zero model starts, credential setups or repository mutations. Client-ID SHA256 22ee9a4bcc2d7e5f5e145c2bbb4b457706fa81fb82d2499d870cfe724a037902. Fresh client consent does not establish first-ever identity history. Non-secret client registration metadata remains under the provider public API limit. E-117 records the actual healthy 19:00:45Z scheduled sweep on Worker 3c9564a7-3800-4727-b791-b5b88c354183, unchanged deployment f609425c-8f23-48c1-a0b7-d3793da78fe3, zero unresolved failures and both owned tails removed. Latest successful hosted deployment remains workflow 37973107201/source 3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a; subsequent main 4f3dd65bbb77bd548fde7aa17bea39b4812457e5 is evidence-only with successful CI 37977860318.",
+      "waitCondition": "None for the owned-domain launch slice. Actual secure GitHub account choice submitted as OneClickPostFactory. Canonical HTTPS receipt at 2026-10-09T22:25:29.744Z\u201322:25:33.617Z passes discovery, callback state/issuer, code exchange, authenticated read-only MCP, refresh and refreshed MCP. Own new grant revocation is confirmed and revoked access denied. Credential absent; zero model starts, credential setups or repository mutations. Client-ID SHA256 22ee9a4bcc2d7e5f5e145c2bbb4b457706fa81fb82d2499d870cfe724a037902. Fresh client consent does not establish first-ever identity history. Non-secret client registration metadata remains under the provider public API limit. E-117 records the actual healthy 19:00:45Z scheduled sweep on Worker 3c9564a7-3800-4727-b791-b5b88c354183, unchanged deployment f609425c-8f23-48c1-a0b7-d3793da78fe3, zero unresolved failures and both owned tails removed. Latest successful hosted deployment remains workflow 37973107201/source 3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a; subsequent main 4f3dd65bbb77bd548fde7aa17bea39b4812457e5 is evidence-only with successful CI 37977860318.",
       "reentryCondition": "Re-open for a real OAuth, deletion, authority, verifier or production-health regression. Future channel releases keep their own work items and provider evidence; do not replay completed acceptance effects.",
       "dependencies": [
         "VERIFY-004",
@@ -689,8 +691,8 @@
       "stream": "product",
       "status": "active",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-10",
-      "staleDate": "2026-10-17",
+      "lastUpdated": "2026-10-18",
+      "staleDate": "2026-10-25",
       "nextAction": "Deploy single-attempt isolated branch publication with command-scoped credentials and bounded read-only reconciliation; then complete a fresh bounded private PR acceptance and independent exact-commit verification.",
       "waitCondition": "The clone fix is merged and deployed and private clone, implementation, validation and local commit succeeded. Publication exited 143 with no visible remote branch; the run is terminal AMBIGUOUS_EFFECT and will not be replayed. Publication hardening still needs candidate CI, deployment and fresh acceptance.",
       "reentryCondition": "Resume through one new objective after the exact publication deployment and protected configuration readback. Keep the settled ambiguous run and its missing-ref observations as evidence.",
@@ -702,7 +704,8 @@
         "E-121",
         "E-122",
         "E-123",
-        "E-124"
+        "E-124",
+        "E-131"
       ]
     },
     {
@@ -924,7 +927,7 @@
       "lastUpdated": "2026-10-09",
       "staleDate": "2026-12-01",
       "nextAction": "Retain passing OAuth and authorised owned-domain GA evidence; monitor the published controls and review first-cohort outcomes within seven days of entry.",
-      "waitCondition": "None for the owned-domain launch slice. Actual secure GitHub account choice submitted as OneClickPostFactory. Canonical HTTPS receipt at 2026-10-09T22:25:29.744Z–22:25:33.617Z passes discovery, callback state/issuer, code exchange, authenticated read-only MCP, refresh and refreshed MCP. Own new grant revocation is confirmed and revoked access denied. Credential absent; zero model starts, credential setups or repository mutations. Client-ID SHA256 22ee9a4bcc2d7e5f5e145c2bbb4b457706fa81fb82d2499d870cfe724a037902. Fresh client consent does not establish first-ever identity history. Non-secret client registration metadata remains under the provider public API limit. E-117 records the actual healthy 19:00:45Z scheduled sweep on Worker 3c9564a7-3800-4727-b791-b5b88c354183, unchanged deployment f609425c-8f23-48c1-a0b7-d3793da78fe3, zero unresolved failures and both owned tails removed. Latest successful hosted deployment remains workflow 37973107201/source 3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a; subsequent main 4f3dd65bbb77bd548fde7aa17bea39b4812457e5 is evidence-only with successful CI 37977860318.",
+      "waitCondition": "None for the owned-domain launch slice. Actual secure GitHub account choice submitted as OneClickPostFactory. Canonical HTTPS receipt at 2026-10-09T22:25:29.744Z\u201322:25:33.617Z passes discovery, callback state/issuer, code exchange, authenticated read-only MCP, refresh and refreshed MCP. Own new grant revocation is confirmed and revoked access denied. Credential absent; zero model starts, credential setups or repository mutations. Client-ID SHA256 22ee9a4bcc2d7e5f5e145c2bbb4b457706fa81fb82d2499d870cfe724a037902. Fresh client consent does not establish first-ever identity history. Non-secret client registration metadata remains under the provider public API limit. E-117 records the actual healthy 19:00:45Z scheduled sweep on Worker 3c9564a7-3800-4727-b791-b5b88c354183, unchanged deployment f609425c-8f23-48c1-a0b7-d3793da78fe3, zero unresolved failures and both owned tails removed. Latest successful hosted deployment remains workflow 37973107201/source 3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a; subsequent main 4f3dd65bbb77bd548fde7aa17bea39b4812457e5 is evidence-only with successful CI 37977860318.",
       "reentryCondition": "Re-open for a real OAuth, deletion, authority, verifier or production-health regression. Future channel releases keep their own work items and provider evidence; do not replay completed acceptance effects.",
       "dependencies": [
         "CUST-001",
@@ -1919,7 +1922,7 @@
       "accountability": {
         "owner": "DoneState maintainers",
         "status": "active",
-        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication → v2 handoff → OpsTruth verification loop, then reconcile the final public documentation state.",
+        "nextAction": "Use the Cloudflare-backed test apparatus for one real local publication \u2192 v2 handoff \u2192 OpsTruth verification loop, then reconcile the final public documentation state.",
         "waitCondition": "The npm publication itself is complete. Remaining work is external product acceptance and public documentation closure, not package publication.",
         "staleDate": "2026-10-10"
       },
@@ -2055,7 +2058,7 @@
       "accountability": {
         "owner": "DoneState maintainers and publisher owner",
         "status": "blocked",
-        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up → connect → select repo → create objective → execute → unmerged PR → OpsTruth VERIFIED → inspect account → delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
+        "nextAction": "Keep controlled owned-domain access live. Reconnect the disposable customer execution credential through the secure form, then prove one fresh sign up \u2192 connect \u2192 select repo \u2192 create objective \u2192 execute \u2192 unmerged PR \u2192 OpsTruth VERIFIED \u2192 inspect account \u2192 delete account journey with evidence at every step. Complete the remaining LEGAL-001 publisher requirements before unrestricted self-serve GA. Continue external distribution channels independently.",
         "waitCondition": "Customer execution credential must be reconnected securely. LEGAL-001 remains blocked on its existing publisher requirements.",
         "staleDate": "2026-10-09"
       },
@@ -2629,7 +2632,7 @@
       "date": "2026-10-09",
       "identity": "Fresh customer OAuth passes and authorised owned-domain GA decision recorded",
       "situation": "The user requested a renewed approval prompt after expired secure requests. A new short-lived client session reached GitHub; the secure chooser submitted the customer account and the actual canonical callback completed. Earlier failed and interrupted attempts remain historical.",
-      "verification": "Actual secure GitHub account choice submitted as OneClickPostFactory. Canonical HTTPS receipt at 2026-10-09T22:25:29.744Z–22:25:33.617Z passes discovery, callback state/issuer, code exchange, authenticated read-only MCP, refresh and refreshed MCP. Own new grant revocation is confirmed and revoked access denied. Credential absent; zero model starts, credential setups or repository mutations. Client-ID SHA256 22ee9a4bcc2d7e5f5e145c2bbb4b457706fa81fb82d2499d870cfe724a037902. Fresh client consent does not establish first-ever identity history. Non-secret client registration metadata remains under the provider public API limit. Receipt: evidence/ga-20261009/https-oauth-passed.json. E-117 records the actual healthy 19:00:45Z scheduled sweep on Worker 3c9564a7-3800-4727-b791-b5b88c354183, unchanged deployment f609425c-8f23-48c1-a0b7-d3793da78fe3, zero unresolved failures and both owned tails removed. Latest successful hosted deployment remains workflow 37973107201/source 3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a; subsequent main 4f3dd65bbb77bd548fde7aa17bea39b4812457e5 is evidence-only with successful CI 37977860318. E-109 preserves selected-App execution, pinned OpsTruth VERIFIED, scoped indexed deletion and temporary Write removal. E-103/E-105 preserve live policy wording; support-drill.json preserves procedural support evidence.",
+      "verification": "Actual secure GitHub account choice submitted as OneClickPostFactory. Canonical HTTPS receipt at 2026-10-09T22:25:29.744Z\u201322:25:33.617Z passes discovery, callback state/issuer, code exchange, authenticated read-only MCP, refresh and refreshed MCP. Own new grant revocation is confirmed and revoked access denied. Credential absent; zero model starts, credential setups or repository mutations. Client-ID SHA256 22ee9a4bcc2d7e5f5e145c2bbb4b457706fa81fb82d2499d870cfe724a037902. Fresh client consent does not establish first-ever identity history. Non-secret client registration metadata remains under the provider public API limit. Receipt: evidence/ga-20261009/https-oauth-passed.json. E-117 records the actual healthy 19:00:45Z scheduled sweep on Worker 3c9564a7-3800-4727-b791-b5b88c354183, unchanged deployment f609425c-8f23-48c1-a0b7-d3793da78fe3, zero unresolved failures and both owned tails removed. Latest successful hosted deployment remains workflow 37973107201/source 3d56bb97c2f8bcc2d3a7e263f10b416c00eb8f7a; subsequent main 4f3dd65bbb77bd548fde7aa17bea39b4812457e5 is evidence-only with successful CI 37977860318. E-109 preserves selected-App execution, pinned OpsTruth VERIFIED, scoped indexed deletion and temporary Write removal. E-103/E-105 preserve live policy wording; support-drill.json preserves procedural support evidence.",
       "accountability": {
         "owner": "Publisher owner",
         "status": "complete",
@@ -2827,6 +2830,40 @@
       "outcome": "The previously unmerged independent release verifier is now merged and its separate Worker has been deployed in verified disabled/no-key configuration. All three release-only service roles exist, disabled. No real release consequence authority, current-main repository-patch production acceptance, independent OpsTruth release verdict, DoneState verified terminal release or external adopter credit is claimed.",
       "content": "Exact PR source hashes and CI run URLs, Cloudflare release-verifier health and deployment version, previously deployed release-service readbacks, source drift issue and explicit denied external actions.",
       "measurement": "OpsTruth source PR merged: 1; exact postmerge workflows green: 2; release-specific disabled Workers deployed: 3; independent release-verifier service tests: 9 passing; authenticated real release publication effects: 0; current-main patch canary acceptance: 0; independently qualified external users: 0 observed."
+    },
+    {
+      "id": "E-130",
+      "date": "2026-10-18",
+      "identity": "Exact-main patch recovery and isolated release controller candidate",
+      "situation": "Live patch Workers lagged reviewed main; release contracts had no durable DoneState runtime or separately held handoff signer.",
+      "verification": "Patch canary https://github.com/AyobamiH/agentproof/actions/runs/39113765551 passed 17/17 on 39d4ea766d60fe12275c10dbf1e326f97941bd7d. Approval version 4dafbc91-aa20-4d55-9eaf-0c40692d6503 and receipt version e84edbc6-9071-434e-831f-e70ee6b25517 preserve public fingerprints and key bindings; live health and HTTP 401 checked. Downloaded report SHA-256 c6cee2634b312b98deacadb65f3fc8806fbc0be32406d8442327ea4f64468cc6; initial/successor trust and orphan rejection independently verified. The new isolated controller exercises durable intent, receipt-only pending state, signed handoff and separately signed exact-subject outcome; its synthetic tests are not production evidence. Independent GitHub review of PR #197 at 14def58659c77508efd8d1ee293c6df5439aac7e found trust drift, omitted negative verdict retention and two recovery gaps. The follow-up candidate freezes all five pins and workflow identity in durable intent, persists valid signed negative terminal outcomes, admits same-run evidence recovery and preserves audited handoff renewals inside the existing receipt freshness window. All 10 controller tests and dry-run deployment pass; updated-head CI and independent re-review remain required. A second independent pass identified settlement beyond the receipt deadline after late handoff refresh; the follow-up rechecks the deadline before first settlement and caps renewed handoff expiry to it. A boundary regression preserves refusal state. The first boundary-test run failed because the fixture receipt predates the supplied clock; the test now derives its deadline from the signed issuedAt. The corrected suite passes 11/11 and the deployment dry run. The premature PR test-count statement is corrected explicitly; failure history remains retained.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "active",
+        "nextAction": "Review and merge the disabled isolated release controller, bind separate production trust identities and one exact disposable release, then run the protected canary through real publication, independent OpsTruth byte verification and durable DoneState terminal acceptance. Do not count fixtures or the completed patch canary as release acceptance.",
+        "waitCondition": "Patch source drift is repaired: current AgentProof main 39d4ea766d60fe12275c10dbf1e326f97941bd7d passed 17/17 live checks in run 39113765551; independent receipt and compensation verification passed. Disposable release 416342082 exists as an unpublished draft at tag v0.0.0-rc.2026101801 / commit 1231076c12485a02fae3c38b0b850a25274985d5. The new DoneState controller is a source candidate, disabled by default; separate production release keys, protected workflow and real release-to-VERIFIED acceptance remain open. Independent adoption remains 0 qualifying observations.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Patch recovery complete; release runtime remains an inactive candidate awaiting protected review and genuine publication acceptance.",
+      "content": "Separate disabled service, exact OIDC policy, durable run transitions, five-role trust pins, handoff, failure-path tests and no-credential CI. Review findings and their failure histories remain public in PR #197.",
+      "measurement": "Current-main patch checks 17/17; published disposable releases 0; live independently verified DoneState release outcomes 0; independent adopters 0 observed."
+    },
+    {
+      "id": "E-131",
+      "date": "2026-10-18",
+      "identity": "Bounded review of overdue GTM and private-pilot governance",
+      "situation": "Two review dates expired on 17 October and correctly prevented unrelated release governance from rendering.",
+      "verification": "Re-read active GTM-001 and PRIVATE-001 and their E-120/E-124 evidence. Current protected DoneState main remains 73f6eca228be804674927f7087ec8d5a903c0d78. A fresh GitHub issue query since 10 October shows only the separate release-consequence issue #193; the reviewed current worktree contains no newer publication runtime commit since that date. No new consenting customer observation or private publication acceptance was supplied. This is a bounded record review, not an exhaustive customer-data audit or new deployment verification.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "active",
+        "nextAction": "Retain existing GTM learning and private-publication next actions; review new authoritative evidence by 25 October without replaying the ambiguous run.",
+        "waitCondition": "No new demand, payment, private-publication deployment or independently verified private outcome is established by this review.",
+        "staleDate": "2026-10-25"
+      },
+      "outcome": "Review dates refreshed after evidence review; both items remain active with existing acceptance conditions and historical evidence unchanged.",
+      "content": "Two item review dates and one append-only evidence story; no runtime or product-status change.",
+      "measurement": "Two overdue records reviewed; zero completion claims, starts, pushes or customer publications."
     }
   ]
 }
