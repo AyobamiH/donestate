@@ -1,0 +1,609 @@
+{
+  "schema": "donestate.agentproof.release-canary-checkpoint.v1",
+  "observedAt": "2026-10-18T11:58:16.278351+00:00",
+  "scope": "One previously drafted disposable GitHub prerelease; engineering acceptance only.",
+  "status": "PUBLISHED_RECEIPT_BLOCKED",
+  "sources": {
+    "agentproof": "74c12b4e42c8109d34e4764fa0e4864513cab4a9",
+    "donestate": "08ac9539748ddf3fce31a3f1627119c406cc84b6",
+    "opstruth": "61395a6363e6634f6f97dc47ec57bba9556f2403",
+    "producingWorkflow": "d74a0d6c6b712d3ecfb428997f24d264175c20c1"
+  },
+  "acceptedPullRequests": [
+    "https://github.com/AyobamiH/agentproof/pull/21",
+    "https://github.com/AyobamiH/donestate/pull/198",
+    "https://github.com/AyobamiH/agentproof-release-canary/pull/2",
+    "https://github.com/AyobamiH/agentproof/pull/22",
+    "https://github.com/AyobamiH/agentproof-release-canary/pull/4"
+  ],
+  "patchAcceptance": {
+    "runId": 39124046639,
+    "artifactId": 12135451397,
+    "archiveSha256": "29828fee8f7f91046391b0468a01572aae7e947cf079ef1d5f061270dcce5370",
+    "reportSha256": "ad6f58bdd7bd3eeb41400c6260851daac17801c570c17ce45e3e79cd14e2c440",
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "deployed_exact_source:agentproof-approval.woeinvests.workers.dev",
+        "status": "PASS"
+      },
+      {
+        "name": "reject_unauthenticated:agentproof-approval.woeinvests.workers.dev",
+        "status": "PASS"
+      },
+      {
+        "name": "deployed_exact_source:agentproof-receipt.woeinvests.workers.dev",
+        "status": "PASS"
+      },
+      {
+        "name": "reject_unauthenticated:agentproof-receipt.woeinvests.workers.dev",
+        "status": "PASS"
+      },
+      {
+        "name": "reject_cross_service_token",
+        "status": "PASS"
+      },
+      {
+        "name": "prepare_exact_patch",
+        "status": "PASS"
+      },
+      {
+        "name": "reject_wrong_request",
+        "status": "PASS"
+      },
+      {
+        "name": "live_production_approval",
+        "status": "PASS"
+      },
+      {
+        "name": "durable_approval_retry",
+        "status": "PASS"
+      },
+      {
+        "name": "reject_development_environment_before_mutation",
+        "status": "PASS"
+      },
+      {
+        "name": "recoverable_lost_signing_response",
+        "status": "PASS"
+      },
+      {
+        "name": "reconcile_without_reexecution",
+        "status": "PASS"
+      },
+      {
+        "name": "independent_offline_cli_verification",
+        "status": "PASS"
+      },
+      {
+        "name": "exactly_once_retry_without_signing",
+        "status": "PASS"
+      },
+      {
+        "name": "reject_altered_authority_at_signer",
+        "status": "PASS"
+      },
+      {
+        "name": "authenticated_compensation",
+        "status": "PASS"
+      },
+      {
+        "name": "offline_successor_chain_and_restored_repository",
+        "status": "PASS"
+      }
+    ],
+    "offlineReceipts": [
+      {
+        "schema": "agentproof.protocol.receipt-verification-result",
+        "schemaVersion": "2.0.0",
+        "cryptographicallyValid": true,
+        "trusted": true,
+        "signerFingerprint": "sha256:1a0e9ff45192afbce25e695bbb0a7d6443f72ee194bf0353f8ea7f03e3f79c2b",
+        "reason": "trusted",
+        "verifiedClaims": {
+          "receiptId": "5f090511-6ab1-42ee-af9f-fa9988e97ba4",
+          "actionType": "agentproof.repository_patch.v1",
+          "transactionId": "ffb3dc5f-e991-41d6-9e82-7cf490d09d21",
+          "correlationId": "production-canary:39124046639-1",
+          "authorityEnvironment": "production",
+          "policyVersion": "agentproof.repository-patch.v1",
+          "executionState": "executed",
+          "verificationState": "verified",
+          "compensationState": null,
+          "payloadDigest": "93a10c0f697add09ea89c0b437326d0f3b75c4d8cc3509405ad8e0ab12d56407",
+          "predecessorPayloadDigest": null
+        },
+        "unverifiedTransportMetadata": null,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "schema": "agentproof.protocol.receipt-verification-result",
+        "schemaVersion": "2.0.0",
+        "cryptographicallyValid": true,
+        "trusted": true,
+        "signerFingerprint": "sha256:1a0e9ff45192afbce25e695bbb0a7d6443f72ee194bf0353f8ea7f03e3f79c2b",
+        "reason": "trusted",
+        "verifiedClaims": {
+          "receiptId": "df0eaf47-e695-4ebe-a313-24cf53b72ecc",
+          "actionType": "agentproof.repository_patch.v1",
+          "transactionId": "ffb3dc5f-e991-41d6-9e82-7cf490d09d21",
+          "correlationId": "production-canary:39124046639-1",
+          "authorityEnvironment": "production",
+          "policyVersion": "agentproof.repository-patch.v1",
+          "executionState": "executed",
+          "verificationState": "verified",
+          "compensationState": "compensated",
+          "payloadDigest": "5e29714e9c4b5dc0d601346210dbb410e65d8107e3f87e67ee87ce26d94544ee",
+          "predecessorPayloadDigest": "93a10c0f697add09ea89c0b437326d0f3b75c4d8cc3509405ad8e0ab12d56407"
+        },
+        "unverifiedTransportMetadata": null,
+        "errors": [],
+        "warnings": []
+      }
+    ],
+    "ok": true
+  },
+  "releaseRun": {
+    "url": "https://github.com/AyobamiH/agentproof-release-canary/actions/runs/39124373253",
+    "id": 39124373253,
+    "attempts": [
+      {
+        "attempt": 1,
+        "completionFileSha256": "1004d55715a3bec00ff57485c6c647217e3dcb2eedf613ccfbc779523f796839",
+        "failure": {
+          "at": "2026-10-18T11:43:39.429Z",
+          "error": "receipt refused: public_readback_unavailable"
+        },
+        "receiptPresent": false
+      },
+      {
+        "attempt": 2,
+        "completionFileSha256": "1004d55715a3bec00ff57485c6c647217e3dcb2eedf613ccfbc779523f796839",
+        "failure": {
+          "at": "2026-10-18T11:45:42.917Z",
+          "error": "receipt refused: public_readback_unavailable"
+        },
+        "receiptPresent": false,
+        "readOnlyRecovery": {
+          "githubRunAttempt": 2,
+          "publicationRequests": 0
+        }
+      },
+      {
+        "attempt": 3,
+        "completionFileSha256": "1004d55715a3bec00ff57485c6c647217e3dcb2eedf613ccfbc779523f796839",
+        "failure": {
+          "at": "2026-10-18T11:51:46.833Z",
+          "error": "receipt refused: public_readback_unavailable"
+        },
+        "receiptPresent": false,
+        "readOnlyRecovery": {
+          "githubRunAttempt": 3,
+          "publicationRequests": 0
+        }
+      }
+    ],
+    "conclusion": "failure",
+    "publicationRequests": 1,
+    "transactionId": "38cec4aa-b4d9-43fe-9712-e5eaec86cf21",
+    "doneStateRunId": "12741172-631f-47b4-88c2-a63eeb1f9574"
+  },
+  "releaseArtifacts": [
+    {
+      "id": 12134729148,
+      "name": "publication-1",
+      "archiveSha256": "1e22bbb1f094c428d265f2c57302d4aaeefb5c29a4a9461d01a4a0411940ae96"
+    },
+    {
+      "id": 12135259092,
+      "name": "publication-2",
+      "archiveSha256": "37b7137887a36a79983b5d9ae0a6017afe66e398c240d9d63c2aea738ae7ef2b"
+    },
+    {
+      "id": 12135901635,
+      "name": "publication-3",
+      "archiveSha256": "94bef8311c64710aa72c9b53e045c9d7060f52ba2d5c1a104f116c3d12e4313a"
+    }
+  ],
+  "originalCompletion": {
+    "schema": "agentproof.release-canary.execution-evidence.v1",
+    "sourceCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+    "transactionId": "38cec4aa-b4d9-43fe-9712-e5eaec86cf21",
+    "requestDigest": "c64d14f7ae4cffd164daa09613111cd3e4fd707f0d2263475dd2b226bf573167",
+    "subjectDigest": "5a14f49405c358d42658bab4a3cc1215b3f5eb079595523214b8e2a7f567a0e4",
+    "attemptedAt": "2026-10-18T11:43:36.818Z",
+    "verifiedAt": "2026-10-18T11:43:38.649Z",
+    "before": {
+      "schema": "agentproof.release.observation.v1",
+      "ownerId": 47716486,
+      "repositoryId": 1423718326,
+      "releaseId": 416342082,
+      "tagName": "v0.0.0-rc.2026101801",
+      "tagCommit": "1231076c12485a02fae3c38b0b850a25274985d5",
+      "packageAssetId": 653036082,
+      "packageAssetName": "agentproof-disposable-canary.tgz",
+      "packageDigest": "sha256:064f989c25b86269004401959b1e2aa68cc0b3acbf310ba647b892aa5e28b186",
+      "provenanceAssetId": 653046879,
+      "provenanceDigest": "sha256:fa76d7de87ba327ccd81943563af7daed1c87775e049e52a047df59c5b1475b4",
+      "assetCount": 2,
+      "draft": true,
+      "prerelease": true,
+      "publishedAt": null
+    },
+    "after": {
+      "schema": "agentproof.release.observation.v1",
+      "ownerId": 47716486,
+      "repositoryId": 1423718326,
+      "releaseId": 416342082,
+      "tagName": "v0.0.0-rc.2026101801",
+      "tagCommit": "1231076c12485a02fae3c38b0b850a25274985d5",
+      "packageAssetId": 653036082,
+      "packageAssetName": "agentproof-disposable-canary.tgz",
+      "packageDigest": "sha256:064f989c25b86269004401959b1e2aa68cc0b3acbf310ba647b892aa5e28b186",
+      "provenanceAssetId": 653046879,
+      "provenanceDigest": "sha256:fa76d7de87ba327ccd81943563af7daed1c87775e049e52a047df59c5b1475b4",
+      "assetCount": 2,
+      "draft": false,
+      "prerelease": true,
+      "publishedAt": "2026-10-18T11:43:37.000Z"
+    },
+    "recoveryAuthorisationDigest": "ddbc2c03fc5dd167aade880669264df5d21bbe91692d74adbdfe348b92a20304",
+    "signatureBase64": "bXsKpep6fR9XDyeFNWU4312Tahr86AvMt7pGgFkfsgS27E+7VGmuxZI0K+Jx1MqcjpwqO70a/jW5WcCVZwuDBg=="
+  },
+  "completionVerification": {
+    "completionSignatureValid": true,
+    "recoveryGrantDigestBound": true
+  },
+  "publicReleaseReadback": {
+    "at": "2026-10-18T11:56:03.940Z",
+    "readOnly": true,
+    "independentVerifierDecision": false,
+    "status": 200,
+    "release": {
+      "id": 416342082,
+      "tagName": "v0.0.0-rc.2026101801",
+      "draft": false,
+      "prerelease": true,
+      "publishedAt": "2026-10-18T11:43:37Z",
+      "url": "https://github.com/AyobamiH/agentproof-release-canary/releases/tag/v0.0.0-rc.2026101801"
+    },
+    "assets": [
+      {
+        "id": 653036082,
+        "name": "agentproof-disposable-canary.tgz",
+        "size": 240,
+        "recordedDigest": "sha256:064f989c25b86269004401959b1e2aa68cc0b3acbf310ba647b892aa5e28b186",
+        "sha256": "064f989c25b86269004401959b1e2aa68cc0b3acbf310ba647b892aa5e28b186",
+        "matches": true
+      },
+      {
+        "id": 653046879,
+        "name": "provenance.json",
+        "size": 729,
+        "recordedDigest": "sha256:fa76d7de87ba327ccd81943563af7daed1c87775e049e52a047df59c5b1475b4",
+        "sha256": "fa76d7de87ba327ccd81943563af7daed1c87775e049e52a047df59c5b1475b4",
+        "matches": true
+      }
+    ],
+    "ok": true
+  },
+  "publicCloudflareProbe": {
+    "at": "2026-10-18T11:51:07.339Z",
+    "readOnly": true,
+    "observations": [
+      {
+        "path": "",
+        "status": 200,
+        "contentType": "application/json; charset=utf-8",
+        "remaining": "20",
+        "reset": "1792324578",
+        "retryAfter": null,
+        "requestId": "3291:17B9E3:1660868:22DB68E:6AD4B2AA"
+      },
+      {
+        "path": "/git/ref/tags/v0.0.0-rc.2026101801",
+        "status": 200,
+        "contentType": "application/json; charset=utf-8",
+        "remaining": "19",
+        "reset": "1792324578",
+        "retryAfter": null,
+        "requestId": "3291:17B9E3:166089B:22DB6D4:6AD4B2AB"
+      },
+      {
+        "path": "/releases/416342082",
+        "status": 200,
+        "contentType": "application/json; charset=utf-8",
+        "remaining": "59",
+        "reset": "1792327867",
+        "retryAfter": null,
+        "requestId": "2AA1:1E84B2:15C4C5E:22422F3:6AD4B2AB"
+      }
+    ]
+  },
+  "readbackDiagnosis": "The receipt service returned public_readback_unavailable on all three attempts. A separate credential-free Cloudflare preview returned HTTP 200 for repository, tag and release. This does not establish the HTTP status or cause inside the receipt service; an anonymous API rate limit remains unproven.",
+  "freshnessBoundary": {
+    "verifiedAt": "2026-10-18T11:43:38.649Z",
+    "maximumAgeMilliseconds": 600000,
+    "expiresAt": "2026-10-18T11:53:38.649Z",
+    "policyChanged": false,
+    "backdated": false,
+    "additionalPublicationPermitted": false
+  },
+  "activation": {
+    "at": "2026-10-18T11:40:10.701735+00:00",
+    "services": [
+      {
+        "name": "donestate-release-canary",
+        "source": "08ac9539748ddf3fce31a3f1627119c406cc84b6",
+        "namespaces": [
+          "c9e53762e1de4fbb9f440ff74c675962"
+        ],
+        "secrets": [
+          "HANDOFF_PRIVATE_KEY_PEM"
+        ],
+        "deployAttempted": true,
+        "dryRunPassed": true,
+        "exitCode": 0,
+        "versions": [
+          {
+            "version_id": "893ffa2f-520e-4574-a1f7-b992170783dd",
+            "percentage": 100
+          }
+        ],
+        "checked": true
+      },
+      {
+        "name": "opstruth-release-verify",
+        "source": "61395a6363e6634f6f97dc47ec57bba9556f2403",
+        "namespaces": [],
+        "secrets": [
+          "SIGNING_PRIVATE_KEY_PEM"
+        ],
+        "deployAttempted": true,
+        "dryRunPassed": true,
+        "exitCode": 0,
+        "versions": [
+          {
+            "version_id": "c03c1316-66fb-47d0-ab8e-8c531e069e25",
+            "percentage": 100
+          }
+        ],
+        "checked": true
+      },
+      {
+        "name": "agentproof-release-sign",
+        "source": "74c12b4e42c8109d34e4764fa0e4864513cab4a9",
+        "namespaces": [
+          "3a739e4c6eb348888dbdbcf208b31a5c"
+        ],
+        "secrets": [
+          "SIGNING_PRIVATE_KEY_PEM"
+        ],
+        "deployAttempted": true,
+        "dryRunPassed": true,
+        "exitCode": 0,
+        "versions": [
+          {
+            "version_id": "a45b2175-f256-4d4d-a249-0669b7f22762",
+            "percentage": 100
+          }
+        ],
+        "checked": true
+      },
+      {
+        "name": "agentproof-release-approval",
+        "source": "74c12b4e42c8109d34e4764fa0e4864513cab4a9",
+        "namespaces": [
+          "1bce61e3dfcf4a228a9ae1e8c6581bc0"
+        ],
+        "secrets": [
+          "SIGNING_PRIVATE_KEY_PEM"
+        ],
+        "deployAttempted": true,
+        "dryRunPassed": true,
+        "exitCode": 0,
+        "versions": [
+          {
+            "version_id": "b4651352-66d7-4a40-91fe-6129708fb770",
+            "percentage": 100
+          }
+        ],
+        "checked": true
+      }
+    ],
+    "workflowCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+    "ok": true
+  },
+  "closure": {
+    "at": "2026-10-18T11:56:27.884884+00:00",
+    "reason": "published once; receipt public readback failed three attempts; original completion freshness expired",
+    "workflowCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+    "services": [
+      {
+        "name": "agentproof-release-approval",
+        "source": "74c12b4e42c8109d34e4764fa0e4864513cab4a9",
+        "deployAttempted": false,
+        "namespaces": [
+          "1bce61e3dfcf4a228a9ae1e8c6581bc0"
+        ],
+        "secretBindingNames": [
+          "SIGNING_PRIVATE_KEY_PEM"
+        ],
+        "health": {
+          "service": "agentproof-release-canary",
+          "role": "approval",
+          "enabled": false,
+          "custody": "cloudflare-encrypted-worker-secret",
+          "sourceCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+          "trustedWorkflowCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+          "serviceSourceCommit": "74c12b4e42c8109d34e4764fa0e4864513cab4a9",
+          "recoveryRequired": true,
+          "targetConfigured": true
+        },
+        "versions": [
+          {
+            "version_id": "e2c4f5af-2270-41da-99e6-43b806a3a26c",
+            "percentage": 100
+          }
+        ],
+        "checked": true,
+        "reconciledWithoutRedeploy": true
+      },
+      {
+        "name": "agentproof-release-sign",
+        "source": "74c12b4e42c8109d34e4764fa0e4864513cab4a9",
+        "deployAttempted": true,
+        "namespaces": [
+          "3a739e4c6eb348888dbdbcf208b31a5c"
+        ],
+        "secretBindingNames": [
+          "SIGNING_PRIVATE_KEY_PEM"
+        ],
+        "previousVersions": [
+          {
+            "version_id": "a45b2175-f256-4d4d-a249-0669b7f22762",
+            "percentage": 100
+          }
+        ],
+        "exitCode": 0,
+        "health": {
+          "service": "agentproof-release-canary",
+          "role": "signing",
+          "enabled": false,
+          "custody": "cloudflare-encrypted-worker-secret",
+          "sourceCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+          "trustedWorkflowCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+          "serviceSourceCommit": "74c12b4e42c8109d34e4764fa0e4864513cab4a9",
+          "recoveryRequired": true,
+          "targetConfigured": true
+        },
+        "versions": [
+          {
+            "version_id": "b66a1652-a1b6-46c3-95ba-7bf6e0216bdd",
+            "percentage": 100
+          }
+        ],
+        "checked": true
+      },
+      {
+        "name": "opstruth-release-verify",
+        "source": "61395a6363e6634f6f97dc47ec57bba9556f2403",
+        "deployAttempted": true,
+        "namespaces": [],
+        "secretBindingNames": [
+          "SIGNING_PRIVATE_KEY_PEM"
+        ],
+        "previousVersions": [
+          {
+            "version_id": "c03c1316-66fb-47d0-ab8e-8c531e069e25",
+            "percentage": 100
+          }
+        ],
+        "exitCode": 0,
+        "health": {
+          "service": "opstruth-release-verifier",
+          "enabled": false,
+          "sourceCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+          "trustedWorkflowCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+          "serviceSourceCommit": "61395a6363e6634f6f97dc47ec57bba9556f2403",
+          "readOnly": true,
+          "independentSignerConfigured": true
+        },
+        "versions": [
+          {
+            "version_id": "40ffded1-593d-47b5-8ffe-2c81c06fb184",
+            "percentage": 100
+          }
+        ],
+        "checked": true
+      },
+      {
+        "name": "donestate-release-canary",
+        "source": "08ac9539748ddf3fce31a3f1627119c406cc84b6",
+        "deployAttempted": true,
+        "namespaces": [
+          "c9e53762e1de4fbb9f440ff74c675962"
+        ],
+        "secretBindingNames": [
+          "HANDOFF_PRIVATE_KEY_PEM"
+        ],
+        "previousVersions": [
+          {
+            "version_id": "893ffa2f-520e-4574-a1f7-b992170783dd",
+            "percentage": 100
+          }
+        ],
+        "exitCode": 0,
+        "health": {
+          "service": "donestate-isolated-release-controller",
+          "enabled": false,
+          "sourceCommit": "08ac9539748ddf3fce31a3f1627119c406cc84b6",
+          "trustedWorkflowCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+          "targetConfigured": true,
+          "signerConfigured": true
+        },
+        "versions": [
+          {
+            "version_id": "161c67b1-385b-4a1c-9125-14e820de18e0",
+            "percentage": 100
+          }
+        ],
+        "checked": true
+      }
+    ],
+    "run": {
+      "id": 39124373253,
+      "status": "completed",
+      "conclusion": "failure",
+      "run_attempt": 3
+    },
+    "ok": true,
+    "finishedAt": "2026-10-18T11:57:30.662617+00:00"
+  },
+  "npmRegistry": {
+    "at": "2026-10-18T11:23:19.167Z",
+    "name": "@oneclicksystems/agentproof",
+    "distTags": {
+      "next": "0.1.0-rc.6",
+      "latest": "0.1.0-rc.5"
+    },
+    "published": "2026-10-09T12:47:53.005Z",
+    "version": "0.1.0-rc.6",
+    "integrity": "sha512-+PoO/Q2su6AreygVjMzmeVQEA/+H2/LXVHqNw+ttVh/n+7m0tl52j3JiEm3tj2fo36sJq20mzEhEsnvub8tRFA==",
+    "shasum": "791a23ec91489eaf5af2c0ce9aa03ff01440bb6f",
+    "tarball": "https://registry.npmjs.org/@oneclicksystems/agentproof/-/agentproof-0.1.0-rc.6.tgz"
+  },
+  "npmReconciliation": {
+    "source": "a0ee17a70d05bc3c339c0c15be6bb38b4517771a",
+    "githubRelease": "https://github.com/AyobamiH/agentproof/releases/tag/v0.1.0-rc.6",
+    "releaseAndRegistryTarballSha256": "f9dd7eb65f5809c69584624272c0c7dc13a84209c4a2daee338dfee43f5050ca",
+    "cleanInstallEvidence": "https://github.com/AyobamiH/agentproof/blob/74c12b4e42c8109d34e4764fa0e4864513cab4a9/docs/evidence/npm-rc6-registry-reconciliation.md",
+    "cleanInstallObservedOn": "2026-10-09",
+    "cleanInstallResults": {
+      "exactVersion": "0.1.0-rc.6",
+      "cliHelp": "passed",
+      "rootSdkExports": 20,
+      "developmentAuthorityExports": 2,
+      "jsonSchemas": 9,
+      "registrySignature": "verified"
+    },
+    "republished": false,
+    "newerServiceCodeIncludedInRc6": false
+  },
+  "remainingBoundaries": {
+    "releaseReceiptV2Established": false,
+    "opsTruthReleaseDecisionEstablished": false,
+    "doneStateReleaseVerifiedEstablished": false,
+    "independentAdoptions": 0,
+    "independentAdoptionTarget": 10,
+    "adoptionEvidence": "https://github.com/AyobamiH/agentproof/issues/14",
+    "hardwareKeyCustodyProven": false,
+    "generalCustomerConsequenceAuthorityProven": false,
+    "signerReceivedPublisherToken": false,
+    "persistentNpmWriteCredentialIntroduced": false,
+    "futureNpmStagesRequireMaintainer2FA": true,
+    "authentication": "Existing Cloudflare OAuth and GitHub CLI sessions worked. This checkpoint is blocked by public readback and evidence freshness, not a request for fresh npm approval."
+  },
+  "nextAction": "Add bounded credential-free HTTP status diagnostics to the separate receipt readback path and obtain independent review of a recovery protocol for the original settled execution after expiry. Preserve original timestamps, producing identity, all five signer roles, the original DoneState audit chain and the permanent target fence. No new target, new publication, clock extension or self-issued VERIFIED is authorised by this checkpoint."
+}

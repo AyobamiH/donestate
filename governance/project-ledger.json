@@ -543,12 +543,12 @@
       "id": "AGENTPROOF-001",
       "title": "Complete AgentProof consequence-receipt integration",
       "stream": "verification",
-      "status": "active",
+      "status": "blocked",
       "owner": "DoneState and AgentProof maintainers",
       "lastUpdated": "2026-10-18",
       "staleDate": "2026-10-24",
-      "nextAction": "Review and merge the header/reservation and bounded recovery changes, update the protected canary source pins, reverify current-main patch acceptance, then perform one publication of the existing exact draft through the permanent fence.",
-      "waitCondition": "Release 416342082 remains a draft; original DoneState run 12741172-631f-47b4-88c2-a63eeb1f9574 is AUTHORISED only. All temporary release authority is being disabled during repair.",
+      "nextAction": "Add bounded credential-free HTTP status diagnostics to the separate receipt readback path and obtain independent review of a recovery protocol for the original settled execution after expiry. Preserve original timestamps, producing identity, all five signer roles, the original DoneState audit chain and the permanent target fence. No new target, new publication, clock extension or self-issued VERIFIED is authorised by this checkpoint.",
+      "waitCondition": "The disposable release was published once by run 39124373253 at 11:43:37 UTC. Receipt issuance failed public readback on attempts 1, 2 and 3; attempts 2 and 3 submitted zero publication requests and retained identical completion bytes. The original completion freshness expired at 11:53:38.649 UTC. All four temporary release services are now disabled with unchanged key bindings and target-fence namespaces. No release Receipt V2, independent OpsTruth decision or DoneState VERIFIED outcome is established.",
       "reentryCondition": "Use exact protected source and source-pinned canary identities. Preserve five distinct signing roles, permanent target fences, existing production runtimes and historical evidence. A receipt alone must remain awaiting independent verification. Never reset a claim or repeat an ambiguous publication.",
       "dependencies": [
         "VERIFY-004"
@@ -560,7 +560,9 @@
         "E-128",
         "E-129",
         "E-130",
-        "E-132"
+        "E-132",
+        "E-133",
+        "E-134"
       ]
     },
     {
@@ -2882,6 +2884,40 @@
       "outcome": "Recovery candidate only; previous failure and authorisation remain preserved. No effect retry or terminal VERIFIED claim.",
       "content": "User-Agent compliance, signed durable reservation, strictly configured authorisation recovery, negative tests and retained failed workflow.",
       "measurement": "Published release effects 0; real OpsTruth decisions 0; real DoneState VERIFIED 0; qualified external installations 0."
+    },
+    {
+      "id": "E-133",
+      "date": "2026-10-18",
+      "identity": "Accepted recovery sources, current-source patch proof and Workers-runtime release refusal",
+      "situation": "AgentProof #21, DoneState #198 and protected canary #2 merged. The next genuine canary passed authorisation but failed during preparation; source and CI acceptance had not exercised the Workers fetch redirect-mode boundary.",
+      "verification": "Accepted sources: AgentProof d89f6d54709830ff49373ab7c2797c927ced8ac9, DoneState 08ac9539748ddf3fce31a3f1627119c406cc84b6, OpsTruth 61395a6363e6634f6f97dc47ec57bba9556f2403, canary cc1dfb79c1a63a62e69049473b6170674667d8d1. Patch run https://github.com/AyobamiH/agentproof/actions/runs/39121692291 passed 17/17; downloaded archive SHA-256 19fc32f653dbdd54ec18dfa2b9dc0856443a54c0dda712f5d8a424ffde619ad0 and report 8e33c6e3501ea23db8d818f5afce5279589579177fa43ad59c2e0c9da4bcd597. Both receipt signatures and the compensation predecessor chain were independently rechecked offline under the existing public pin. Release run https://github.com/AyobamiH/agentproof-release-canary/actions/runs/39122966755 failed with approval refused: release_policy_rejected; publication artifact SHA-256 de151fc8a32090fb6916803de230d37b56a2e99aa2657c3193ad15471f49fdca matched its downloaded bytes. It contains no reservation, recovery grant, receipt or verifier outcome. A local GET-only Workers-runtime reproduction identifies redirect: error as unsupported before any GitHub request. Candidate AgentProof PR #22 changes both affected readers to manual redirects while retaining exact-200 refusal. The corrected Workers probe observes the same draft and matching assets with three HTTP 200 GETs. Build, provider tests and deployment dry-runs pass; this is not production consequence acceptance. Public health confirms all four isolated release services disabled again at 11:32:55 UTC. RC6 npm next remains 0.1.0-rc.6 with unchanged integrity; latest remains RC5.",
+      "accountability": {
+        "owner": "DoneState / AgentProof maintainers",
+        "status": "active",
+        "nextAction": "Merge the reviewed Workers redirect-compatibility repair (AgentProof PR #22), pin its actual merge source in the protected canary, then deploy the four isolated services with unchanged keys and target and complete one fenced publication with independent OpsTruth verification.",
+        "waitCondition": "Run 39122966755 failed at preparation before recovery/publication; release 416342082 remains a draft. All four temporary release services are disabled again. No real release receipt, independent verdict or DoneState VERIFIED outcome is established.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Merged recovery implementation and bounded patch acceptance complete; a reproduced platform-compatibility blocker still prevents the real release acceptance.",
+      "content": "Retained failed canary and runtime before/after evidence in AgentProof PR #22; no target reset, duplicate publication or public OpsTruth MCP change.",
+      "measurement": "Current-source patch checks 17/17; real release publications 0; real OpsTruth release decisions 0; real DoneState release VERIFIED outcomes 0; qualifying independent installations 0 of 10."
+    },
+    {
+      "id": "E-134",
+      "date": "2026-10-18",
+      "identity": "One real release publication; separate receipt readback and freshness boundary",
+      "situation": "After E-133, the reviewed Workers redirect repair merged as AgentProof #22 and the protected source-pin update merged as canary #4. The accepted workflow reached one real GitHub publication, but downstream receipt issuance failed independently.",
+      "verification": "AgentProof 74c12b4e42c8109d34e4764fa0e4864513cab4a9; DoneState 08ac9539748ddf3fce31a3f1627119c406cc84b6; OpsTruth 61395a6363e6634f6f97dc47ec57bba9556f2403; producing workflow d74a0d6c6b712d3ecfb428997f24d264175c20c1. Patch run https://github.com/AyobamiH/agentproof/actions/runs/39124046639 passed 17/17; downloaded archive SHA-256 29828fee8f7f91046391b0468a01572aae7e947cf079ef1d5f061270dcce5370 and report ad6f58bdd7bd3eeb41400c6260851daac17801c570c17ce45e3e79cd14e2c440. Both receipt signatures and the compensation predecessor chain were reverified offline under the pinned key. Release run https://github.com/AyobamiH/agentproof-release-canary/actions/runs/39124373253 published release 416342082 once at 11:43:37 UTC. Anonymous downloads of both assets match GitHub-recorded SHA-256 digests. All three downloaded publication archives match their recorded digests, preserve identical signed completion bytes, and contain public_readback_unavailable with no receipt. Later attempts record zero publication requests. A separate credential-free Cloudflare probe got three HTTP 200 responses; the cause inside the receipt service remains unknown. Exact artifacts, source pins, npm integrity, prior clean-install results, deployment versions and disabled health readbacks are recorded in docs/evidence/agentproof-release-publication-checkpoint-20261018.json.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Add bounded credential-free HTTP status diagnostics to the separate receipt readback path and obtain independent review of a recovery protocol for the original settled execution after expiry. Preserve original timestamps, producing identity, all five signer roles, the original DoneState audit chain and the permanent target fence. No new target, new publication, clock extension or self-issued VERIFIED is authorised by this checkpoint.",
+        "waitCondition": "The disposable release was published once by run 39124373253 at 11:43:37 UTC. Receipt issuance failed public readback on attempts 1, 2 and 3; attempts 2 and 3 submitted zero publication requests and retained identical completion bytes. The original completion freshness expired at 11:53:38.649 UTC. All four temporary release services are now disabled with unchanged key bindings and target-fence namespaces. No release Receipt V2, independent OpsTruth decision or DoneState VERIFIED outcome is established.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "The real publication step completed; the consequence acceptance did not. The original evidence window expired without a signed release receipt. Temporary release activation is closed without deleting the target fence, changing keys, extending freshness, republishing or issuing VERIFIED.",
+      "content": "This is the successor to historical E-133, not a rewrite of its pre-publication observations. RC6 remains the immutable previously published developer prerelease; service changes are not retroactively inside that tarball. Manual byte checks and engineering canaries are not independent OpsTruth decisions or independent adoption.",
+      "measurement": "Current-source patch checks 17/17; real release publications 1; additional publication requests in recovery attempts 0; real release receipts 0; independent OpsTruth release decisions 0; real DoneState release VERIFIED outcomes 0; qualifying independent installations 0 of 10."
     }
   ]
 }
