@@ -17,13 +17,16 @@ export function verifyReservation(request, reservation, record, claims, env, now
   demand(request.transactionId === record.transactionId && digest(request.subject) === record.subjectDigest &&
     request.stateDirectory === "/tmp/agentproof-release-canary-" + claims.githubRunId &&
     request.nonce === stamp && request.idempotencyKey === stamp, "reservation_request_binding");
-  exact(reservation,["schema","state","requestDigest","subjectDigest","transactionId","githubRunId",
+  exact(reservation,["schema","state","recoveryPolicy","requestDigest","subjectDigest","transactionId","githubRunId",
     "githubRunAttempt","workflowCommit","issuedAt","expiresAt","authorityPublicKeyPem","signatureBase64"]);
   demand(reservation.schema === "agentproof.release-reservation.v1" && reservation.state === "reserved" &&
     reservation.requestDigest === digest(request) && reservation.subjectDigest === record.subjectDigest &&
     reservation.transactionId === record.transactionId && reservation.githubRunId === claims.githubRunId &&
     reservation.githubRunAttempt === claims.githubRunAttempt &&
     reservation.workflowCommit === env.TRUSTED_SOURCE_SHA, "reservation_binding");
+  exact(reservation.recoveryPolicy,["fingerprint","runId"]);
+  demand(reservation.recoveryPolicy.fingerprint === env.HANDOFF_FINGERPRINT &&
+    reservation.recoveryPolicy.runId === record.runId, "reservation_causal_gate_required");
   const issued = time(reservation.issuedAt), expires = time(reservation.expiresAt);
   demand(issued <= now && expires > now && expires - issued > 0 && expires - issued <= 300000,
     "reservation_expired_or_future");

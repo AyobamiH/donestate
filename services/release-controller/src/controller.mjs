@@ -100,6 +100,8 @@ export class Controller {
   }
   async recover(claims, body, now = Date.now()) {
     exact(body, ["runId", "previousGithubRunId", "request", "reservation"]);
+    demand(claims.githubRunAttempt === 1 && body.reservation?.githubRunAttempt === claims.githubRunAttempt,
+      "recovery_attempt_changed",409);
     const configured = configuration(this.env);
     const recovered = this.storage.transactionSync(() => {
       const current = this.get();
