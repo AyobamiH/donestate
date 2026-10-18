@@ -52,7 +52,7 @@ export class ReleaseRun {
       const { claims, input } = await request.json();
       const path = new URL(request.url).pathname;
       if (path === "/v1/start") return reply(this.controller.start(claims, input));
-      if (path === "/v1/recover") return reply(this.controller.recover(claims, input));
+      if (path === "/v1/recover") return reply(await this.controller.recover(claims, input));
       if (path === "/v1/receipt") return reply(await this.controller.receipt(claims, input));
       if (path === "/v1/refresh") return reply(await this.controller.refresh(claims, input));
       if (path === "/v1/settle") return reply(this.controller.settle(claims, input));

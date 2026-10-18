@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createPrivateKey } from "node:crypto";
+import { createPrivateKey, createPublicKey, verify } from "node:crypto";
 import { canonicalJson } from "../../../dist/hash.js";
 import { Controller, digest } from "../src/controller.mjs";
 import { validateClaims } from "../src/identity.mjs";
@@ -176,7 +176,7 @@ function recovery(f) {
     approval:f.evidence.receipt.payload.approval};
   const unsigned={schema:"agentproof.release-reservation.v1",state:"reserved",
     requestDigest:digest(request),subjectDigest:f.record.subjectDigest,
-    transactionId:f.record.transactionId,githubRunId:claims.githubRunId,
+    transactionId:f.record.transactionId,githubRunId:claims.githubRunId,githubRunAttempt:claims.githubRunAttempt,
     workflowCommit:f.env.TRUSTED_SOURCE_SHA,issuedAt:request.approval.decidedAt,
     expiresAt:request.approval.expiresAt,authorityPublicKeyPem:f.evidence.roles.authority.publicKeyPem};
   const signReservation=(value,key=f.evidence.roles.authority)=>{
@@ -188,12 +188,12 @@ function recovery(f) {
 }
 test("fresh signed fence reservation resumes exact unexecuted authority and preserves history",async()=>{
   const f=setup(),r=recovery(f),original=f.controller.get();
-  const resumed=f.controller.recover(r.claims,r.body,f.now);
+  const resumed=await f.controller.recover(r.claims,r.body,f.now);
   assert.deepEqual(resumed.authorisationHistory,[original]);assert.equal(resumed.audit.length,2);
   assert.equal(resumed.githubRunId,r.claims.githubRunId);assert.equal(resumed.runId,original.runId);
   assert.equal(resumed.transactionId,original.transactionId);assert.equal(resumed.status,"AUTHORISED");
   assert.equal(resumed.executionNotBefore,new Date(f.now).toISOString());
-  assert.deepEqual(f.controller.recover(r.claims,r.body,f.now+900000),resumed);
+  assert.deepEqual(await f.controller.recover(r.claims,r.body,f.now+900000),resumed);
   assert.throws(()=>f.controller.bound(f.claims),/already_claimed/);
   const fresh=fixture({roles:f.evidence.roles,runId:resumed.runId,transactionId:resumed.transactionId,
     nonce:"release-canary:"+r.claims.githubRunId,idempotencyKey:"release-canary:"+r.claims.githubRunId,now:f.now+40000});
@@ -201,9 +201,9 @@ test("fresh signed fence reservation resumes exact unexecuted authority and pres
   assert.equal(pending.status,"AWAITING_INDEPENDENT_VERIFICATION");
   assert.equal(f.controller.settle(r.claims,{runId:resumed.runId,decision:fresh.signedOpsTruthDecision},f.now+40000).status,"VERIFIED");
 });
-test("recovery rejects stale, tampered, foreign, attempted and changed authority proofs without writes",()=>{
+test("recovery rejects stale, tampered, foreign, attempted and changed authority proofs without writes",async()=>{
   for(const mode of ["expired","future","tampered","wrong-signature","wrong-key","wrong-run","wrong-workflow",
-    "wrong-transaction","wrong-target","attempted","wrong-predecessor","trust-drift","unconfigured","rerun"]) {
+    "wrong-transaction","wrong-target","wrong-attempt","attempted","wrong-predecessor","trust-drift","unconfigured","rerun"]) {
     const f=setup(),r=recovery(f),before=f.controller.get();let now=f.now;
     if(mode==="expired")now+=600001;
     if(mode==="future")now=Date.parse(r.body.reservation.issuedAt)-1;
@@ -211,6 +211,7 @@ test("recovery rejects stale, tampered, foreign, attempted and changed authority
     if(mode==="wrong-signature")r.body.reservation.signatureBase64="A".repeat(86)+"==";
     if(mode==="wrong-key") {const key=pair();r.body.reservation=r.signReservation({...r.body.reservation,authorityPublicKeyPem:key.publicKeyPem},key);}
     if(mode==="wrong-run")r.body.reservation=r.signReservation({...r.body.reservation,githubRunId:"111111111"});
+    if(mode==="wrong-attempt")r.body.reservation=r.signReservation({...r.body.reservation,githubRunAttempt:2});
     if(mode==="wrong-workflow")r.body.reservation=r.signReservation({...r.body.reservation,workflowCommit:"c".repeat(40)});
     if(mode==="wrong-transaction")r.body.request.transactionId="00000000-0000-0000-0000-000000000000";
     if(mode==="wrong-target")r.body.request={...r.body.request,subject:{...r.body.request.subject,releaseId:999}};
@@ -219,7 +220,7 @@ test("recovery rejects stale, tampered, foreign, attempted and changed authority
     if(mode==="trust-drift")f.env.OPSTRUTH_FINGERPRINT=pair().fingerprint;
     if(mode==="unconfigured")delete f.env.RECOVERY_FROM_GITHUB_RUN_ID;
     if(mode==="rerun")r.claims.githubRunAttempt=2;
-    assert.throws(()=>f.controller.recover(r.claims,r.body,now),undefined,mode);
+    await assert.rejects(f.controller.recover(r.claims,r.body,now),undefined,mode);
     assert.deepEqual(f.controller.get(),before,mode);
   }
 });
@@ -227,13 +228,38 @@ test("receipt or terminal evidence forbids recovery and execution before recover
   for(const terminal of [false,true]) {
     const f=setup();await f.controller.receipt(f.claims,{runId:f.record.runId,receipt:f.evidence.receipt},f.now);
     if(terminal)f.controller.settle(f.claims,{runId:f.record.runId,decision:f.evidence.signedOpsTruthDecision},f.now);
-    const r=recovery(f),before=f.controller.get();assert.throws(()=>f.controller.recover(r.claims,r.body,f.now),/after_evidence/);
+    const r=recovery(f),before=f.controller.get();await assert.rejects(f.controller.recover(r.claims,r.body,f.now),/after_evidence/);
     assert.deepEqual(f.controller.get(),before);
   }
-  const f=setup(),r=recovery(f);f.controller.recover(r.claims,r.body,f.now);
+  const f=setup(),r=recovery(f);await f.controller.recover(r.claims,r.body,f.now);
   const premature=fixture({roles:f.evidence.roles,runId:f.record.runId,transactionId:f.record.transactionId,
     nonce:"release-canary:"+r.claims.githubRunId,idempotencyKey:"release-canary:"+r.claims.githubRunId,now:f.now});
   const before=f.controller.get();await assert.rejects(f.controller.receipt(r.claims,{runId:f.record.runId,receipt:premature.receipt},f.now),/not_authorised/);
   assert.deepEqual(f.controller.get(),before);
-  assert.throws(()=>f.controller.recover(r.claims,{...r.body,previousGithubRunId:"111111111"},f.now),/evidence_changed/);
+  await assert.rejects(f.controller.recover(r.claims,{...r.body,previousGithubRunId:"111111111"},f.now),/evidence_changed/);
+});
+
+test("recovery grant is signed only after durable commit and signer outage cannot admit a receipt",async()=>{
+  const f=setup(),r=recovery(f),key=f.env.HANDOFF_PRIVATE_KEY_PEM;
+  let inTransaction=false;
+  f.storage.transactionSync=fn=>{inTransaction=true;try{return fn();}finally{inTransaction=false;}};
+  Object.defineProperty(f.env,'HANDOFF_PRIVATE_KEY_PEM',{configurable:true,get(){
+    assert.equal(inTransaction,false,'recovery signature must follow committed authority');return key;
+  }});
+  const resumed=await f.controller.recover(r.claims,r.body,f.now);
+  const grant=resumed.recoveryAuthorisation;
+  assert.equal(grant.authorisationAuditDigest,resumed.audit.at(-1).digest);
+  assert.equal(grant.reservationDigest,digest(r.body.reservation));
+  const {signatureBase64,...unsigned}=grant;
+  assert(verify(null,Buffer.from('donestate.release-recovery-authorisation.v1\0'+canonicalJson(unsigned)),
+    createPublicKey(grant.publicKeyPem),Buffer.from(signatureBase64,'base64')));
+  const g=setup(),recoveryRequest=recovery(g),privateKey=g.env.HANDOFF_PRIVATE_KEY_PEM;
+  g.env.HANDOFF_PRIVATE_KEY_PEM='';
+  await assert.rejects(g.controller.recover(recoveryRequest.claims,recoveryRequest.body,g.now));
+  const committed=g.controller.get();assert.equal(committed.githubRunId,recoveryRequest.claims.githubRunId);
+  assert.equal(committed.recoveryAuthorisation,null);assert.equal(committed.authorisationHistory.length,1);
+  await assert.rejects(g.controller.receipt(recoveryRequest.claims,{runId:g.record.runId,receipt:g.evidence.receipt},g.now),/not_signed/);
+  g.env.HANDOFF_PRIVATE_KEY_PEM=privateKey;
+  const recovered=await g.controller.recover(recoveryRequest.claims,recoveryRequest.body,g.now+1000);
+  assert.equal(recovered.audit.length,committed.audit.length);assert(recovered.recoveryAuthorisation);
 });

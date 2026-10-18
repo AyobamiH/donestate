@@ -34,3 +34,5 @@ It retains the complete old record in `authorisationHistory`, appends a linked a
 and rejects receipts whose execution predates recovery. Identical recovery is read-only/idempotent.
 No endpoint clears the target fence or changes a terminal outcome. This recovery cannot repair
 an ambiguous execution: preserve evidence and reconcile such executions under their original run.
+
+Recovery now uses a causal signature gate: DoneState commits the preserved-authority transition before signing a domain-separated grant with its existing handoff key. AgentProof requires that exact grant to activate the same permanent reserved fence before execution. The signed completion records its digest. Timestamp checks remain additional freshness bounds, never the sole ordering proof. Withheld, forged, stale or wrong-attempt grants cannot execute; disabling recovery configuration cannot clear the stored gate.
