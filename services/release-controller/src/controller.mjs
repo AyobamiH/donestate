@@ -145,8 +145,10 @@ export class Controller {
     if (Date.parse(record.handoff.expiresAt) > now) return record;
     const trust = handoffPolicy(record, this.env);
     const { trustedHandoffFingerprint, otherRoleFingerprints, ...binding } = trust;
+    const ttl = Math.min(300000, Date.parse(record.receipt.payload.issuedAt) + 1200000 - now);
+    demand(ttl >= 1000, "receipt_recovery_window_expired", 409);
     const handoff = await createReleaseV1Handoff(binding, handoffSigner(this.env),
-      { trustedHandoffFingerprint, otherRoleFingerprints }, now);
+      { trustedHandoffFingerprint, otherRoleFingerprints }, now, ttl);
     return this.storage.transactionSync(() => {
       const current = this.bound(claims);
       demand(current.status === "AWAITING_INDEPENDENT_VERIFICATION", "independent_verification_not_pending", 409);
@@ -167,6 +169,8 @@ export class Controller {
     }
     demand(record.status === "AWAITING_INDEPENDENT_VERIFICATION",
       "independent_verification_not_pending", 409);
+    demand(now - Date.parse(record.receipt.payload.issuedAt) <= 1200000,
+      "receipt_recovery_window_expired", 409);
     verifyReleaseV1Handoff(record.handoff, { ...handoffPolicy(record,this.env), now });
     const outcome = classifyReleaseV1Outcome({ policy: policy(record,this.env),
       receipt: record.receipt, signedOpsTruthDecision: body.decision, now });
