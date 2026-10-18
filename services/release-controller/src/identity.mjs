@@ -21,9 +21,9 @@ export function validateClaims(claims, env) {
   };
   for (const [key, value] of Object.entries(expected))
     demand(claims[key] === value, "workload_rejected");
-  demand(/^[1-9]\d{0,19}$/.test(claims.run_id) && claims.run_attempt === "1",
+  demand(/^[1-9]\d{0,19}$/.test(claims.run_id) && /^[1-9]\d{0,3}$/.test(claims.run_attempt),
     "new_attempt_not_authorised");
-  return { githubRunId: claims.run_id };
+  return { githubRunId: claims.run_id, githubRunAttempt: Number(claims.run_attempt) };
 }
 export async function authenticate(request, env, resolver = keys) {
   const value = request.headers.get("authorization");

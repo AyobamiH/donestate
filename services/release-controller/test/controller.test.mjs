@@ -18,7 +18,7 @@ function setup() {
   const data = new Map();
   const storage = {kv:{get:k=>structuredClone(data.get(k)),put:(k,v)=>data.set(k,structuredClone(v))},
     transactionSync:fn=>fn()};
-  const controller = new Controller(storage,env), claims={githubRunId:"123456789"};
+  const controller = new Controller(storage,env), claims={githubRunId:"123456789",githubRunAttempt:1};
   const record=controller.start(claims,{},now-60000);
   const evidence=fixture({roles:f.roles,runId:record.runId,transactionId:record.transactionId,
     nonce:"release-canary:"+claims.githubRunId,idempotencyKey:"release-canary:"+claims.githubRunId,now});
@@ -85,7 +85,7 @@ test("signer outage and colliding roles cannot reserve or advance a run",async()
   f.env.PROVENANCE_FINGERPRINT=f.env.OPSTRUTH_FINGERPRINT;
   assert.throws(()=>f.controller.bound(f.claims),/distinct_trust/);
 });
-test("OIDC exact identity, disabled controller and workflow retries are denied",()=>{
+test("OIDC exact identity rejects foreign claims and admits authenticated recovery attempts",()=>{
   const env={ENABLED:"true",TRUSTED_SOURCE_SHA:"a".repeat(40)};
   const claims={repository:"AyobamiH/agentproof-release-canary",repository_id:"1423718326",
     repository_owner_id:"47716486",actor_id:"47716486",ref:"refs/heads/main",
@@ -94,10 +94,10 @@ test("OIDC exact identity, disabled controller and workflow retries are denied",
     workflow_sha:env.TRUSTED_SOURCE_SHA,sha:env.TRUSTED_SOURCE_SHA,
     sub:"repo:AyobamiH@47716486/agentproof-release-canary@1423718326:environment:agentproof-release-canary",
     run_id:"123456789",run_attempt:"1"};
-  assert.deepEqual(validateClaims(claims,env),{githubRunId:"123456789"});
+  assert.deepEqual(validateClaims(claims,env),{githubRunId:"123456789",githubRunAttempt:1});
   for(const key of Object.keys(claims))
     assert.throws(()=>validateClaims({...claims,[key]:"foreign"},env));
-  assert.throws(()=>validateClaims({...claims,run_attempt:"2"},env));
+  assert.deepEqual(validateClaims({...claims,run_attempt:"2"},env),{githubRunId:"123456789",githubRunAttempt:2});
   assert.throws(()=>validateClaims(claims,{...env,ENABLED:"false"}));
 });
 test("anonymous, publisher credential and unsupported route requests are rejected",async()=>{
@@ -107,4 +107,45 @@ test("anonymous, publisher credential and unsupported route requests are rejecte
     headers:{"x-github-token":"test-token","content-type":"application/json"},body:"{}"});
   assert.equal((await handle(request,f.env,async()=>f.claims)).status,403);
   assert.equal((await handle(new Request("https://example/v1/delete",{method:"POST"}),f.env)).status,404);
+});
+
+test("every trust role is frozen before receipt and settlement",async()=>{
+  for(const key of ["APPROVAL_FINGERPRINT","RECEIPT_FINGERPRINT","OPSTRUTH_FINGERPRINT","PROVENANCE_FINGERPRINT","HANDOFF_FINGERPRINT"]) {
+    for(const pending of [false,true]) {
+      const f=setup();
+      if(pending)await f.controller.receipt(f.claims,{runId:f.record.runId,receipt:f.evidence.receipt},f.now);
+      const before=f.controller.get();f.env[key]=pair().fingerprint;
+      assert.throws(()=>f.controller.bound(f.claims),/trust_configuration_changed/);
+      assert.deepEqual(f.controller.get(),before);
+    }
+  }
+});
+test("valid signed negative decisions are immutable terminal outcomes",async()=>{
+  for(const [decision,status] of [["failed","CONTRADICTED"],["uncertain","UNPROVEN"]]) {
+    const f=setup(),c=f.controller;
+    await c.receipt(f.claims,{runId:f.record.runId,receipt:f.evidence.receipt},f.now);
+    const original=f.evidence.signedOpsTruthDecision;
+    const report=f.evidence.signReport({...original,decision,observation:{...original.observation,verdict:status}});
+    const final=c.settle(f.claims,{runId:f.record.runId,decision:report},f.now);
+    assert.equal(final.status,status);assert.equal(final.audit.length,3);
+    assert.deepEqual(c.settle(f.claims,{runId:f.record.runId,decision:report},f.now),final);
+    assert.throws(()=>c.settle(f.claims,{runId:f.record.runId,decision:original},f.now),/immutable/);
+  }
+});
+test("same-run recovery can refresh an expired handoff without authorising a new release",async()=>{
+  const f=setup(),c=f.controller,recovery={...f.claims,githubRunAttempt:2};
+  const pending=await c.receipt(f.claims,{runId:f.record.runId,receipt:f.evidence.receipt},f.now);
+  assert.deepEqual(c.start(recovery,{},f.now),pending);
+  const body={runId:f.record.runId,receiptPayloadDigest:f.evidence.receipt.proof.payloadDigest};
+  const later=f.now+300001;
+  const fresh=await c.refresh(recovery,body,later);
+  assert.equal(fresh.handoffHistory.length,2);assert.deepEqual(fresh.handoffHistory[0],pending.handoff);
+  assert.notDeepEqual(fresh.handoff,pending.handoff);assert.equal(fresh.audit.length,3);
+  assert.deepEqual(await c.refresh(recovery,body,later),fresh);
+  const final=c.settle(recovery,{runId:f.record.runId,decision:f.evidence.signedOpsTruthDecision},later);
+  assert.equal(final.status,"VERIFIED");assert.equal(final.audit.length,4);
+  const empty={kv:{get:()=>undefined,put:()=>assert.fail("unexpected write")},transactionSync:fn=>fn()};
+  assert.throws(()=>new Controller(empty,f.env).start(recovery,{},later),/new_attempt_not_authorised/);
+  const g=setup();await g.controller.receipt(g.claims,{runId:g.record.runId,receipt:g.evidence.receipt},g.now);
+  await assert.rejects(g.controller.refresh(g.claims,{runId:g.record.runId,receiptPayloadDigest:g.evidence.receipt.proof.payloadDigest},g.now+1200001),/window_expired/);
 });

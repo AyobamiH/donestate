@@ -35,7 +35,7 @@ export function configuration(env) {
     /^sha256:[a-f0-9]{64}$/.test(subject.packageDigest) &&
     /^sha256:[a-f0-9]{64}$/.test(subject.provenanceDigest),
     "target_not_allowed", 503);
-  return { subject, pins };
+  return { subject, pins, trustDigest: digest({ pins, workflowCommit: env.TRUSTED_SOURCE_SHA }) };
 }
 function handoffSigner(env) {
   const key = createPrivateKey(env.HANDOFF_PRIVATE_KEY_PEM);
@@ -74,24 +74,26 @@ export class Controller {
     const record = this.get();
     demand(record, "run_not_started", 409);
     demand(record.githubRunId === claims.githubRunId, "release_already_claimed", 409);
-    demand(record.subjectDigest === digest(configuration(this.env).subject),
-      "target_configuration_changed", 409);
+    const configured = configuration(this.env);
+    demand(record.subjectDigest === digest(configured.subject), "target_configuration_changed", 409);
+    demand(record.trustDigest === configured.trustDigest, "trust_configuration_changed", 409);
     return record;
   }
   start(claims, body, now = Date.now()) {
     exact(body, []);
-    const { subject } = configuration(this.env);
-    // Fail before reserving the release if the separate signer is unavailable.
-    handoffSigner(this.env);
+    const { subject, pins, trustDigest } = configuration(this.env);
     return this.storage.transactionSync(() => {
       if (this.get()) return this.bound(claims);
+      demand(claims.githubRunAttempt === 1, "new_attempt_not_authorised", 409);
+      // A recovery attempt may read an existing run, never authorise a new one.
+      handoffSigner(this.env);
       const record = { schema: "donestate.release-canary-run.v1",
         runId: randomUUID(), transactionId: randomUUID(), githubRunId: claims.githubRunId,
-        subject, subjectDigest: digest(subject), status: "AUTHORISED",
+        subject, subjectDigest: digest(subject), trustPins: pins, trustDigest, status: "AUTHORISED",
         authorisedAt: new Date(now).toISOString(), receipt: null, handoff: null,
-        decision: null, outcome: null, audit: [] };
+        decision: null, outcome: null, handoffHistory: [], audit: [] };
       record.audit = event(record, "authorise_exact_release",
-        { subjectDigest: record.subjectDigest }, now);
+        { subjectDigest: record.subjectDigest, trustDigest }, now);
       return this.put(record);
     });
   }
@@ -126,10 +128,33 @@ export class Controller {
         return current;
       }
       demand(current.status === "AUTHORISED", "invalid_state", 409);
-      return this.put({ ...current, receipt: received, handoff,
+      return this.put({ ...current, receipt: received, handoff, handoffHistory: [handoff],
         status: "AWAITING_INDEPENDENT_VERIFICATION", outcome,
         audit: event(current, "accept_receipt_and_issue_handoff",
           { receiptPayloadDigest: received.proof.payloadDigest, handoffDigest: digest(handoff) }, now) });
+    });
+  }
+  async refresh(claims, body, now = Date.now()) {
+    exact(body, ["runId", "receiptPayloadDigest"]);
+    const record = this.bound(claims);
+    demand(body.runId === record.runId && body.receiptPayloadDigest === record.receipt?.proof.payloadDigest,
+      "refresh_binding_changed", 409);
+    demand(record.status === "AWAITING_INDEPENDENT_VERIFICATION", "independent_verification_not_pending", 409);
+    // Do not extend the receipt freshness boundary while renewing the short handoff.
+    demand(now - Date.parse(record.receipt.payload.issuedAt) <= 1200000, "receipt_recovery_window_expired", 409);
+    if (Date.parse(record.handoff.expiresAt) > now) return record;
+    const trust = handoffPolicy(record, this.env);
+    const { trustedHandoffFingerprint, otherRoleFingerprints, ...binding } = trust;
+    const handoff = await createReleaseV1Handoff(binding, handoffSigner(this.env),
+      { trustedHandoffFingerprint, otherRoleFingerprints }, now);
+    return this.storage.transactionSync(() => {
+      const current = this.bound(claims);
+      demand(current.status === "AWAITING_INDEPENDENT_VERIFICATION", "independent_verification_not_pending", 409);
+      if (digest(current.handoff) !== digest(record.handoff)) return current;
+      return this.put({ ...current, handoff, handoffHistory: [...current.handoffHistory, handoff],
+        audit: event(current, "refresh_verification_handoff", {
+          previousHandoffDigest: digest(record.handoff), handoffDigest: digest(handoff),
+          receiptPayloadDigest: body.receiptPayloadDigest }, now) });
     });
   }
   settle(claims, body, now = Date.now()) {
@@ -145,8 +170,8 @@ export class Controller {
     verifyReleaseV1Handoff(record.handoff, { ...handoffPolicy(record,this.env), now });
     const outcome = classifyReleaseV1Outcome({ policy: policy(record,this.env),
       receipt: record.receipt, signedOpsTruthDecision: body.decision, now });
-    demand(outcome.status === "VERIFIED" && outcome.independentlySignedDecision,
-      "independent_verified_outcome_required", 409);
+    demand(["VERIFIED", "CONTRADICTED", "UNPROVEN"].includes(outcome.status) && outcome.independentlySignedDecision,
+      "independent_signed_outcome_required", 409);
     return this.storage.transactionSync(() => {
       const current = this.bound(claims);
       if (current.decision) {
@@ -154,8 +179,8 @@ export class Controller {
         return current;
       }
       demand(current.status === "AWAITING_INDEPENDENT_VERIFICATION", "invalid_state", 409);
-      return this.put({ ...current, decision: body.decision, outcome, status: "VERIFIED",
-        audit: event(current, "accept_independent_verified_outcome",
+      return this.put({ ...current, decision: body.decision, outcome, status: outcome.status,
+        audit: event(current, "accept_independent_outcome",
           { decisionDigest: digest(body.decision), verifier: this.env.OPSTRUTH_FINGERPRINT }, now) });
     });
   }

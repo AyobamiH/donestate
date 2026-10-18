@@ -13,3 +13,9 @@ Build the root first, then run npm ci --ignore-scripts and npm run check in this
 Recovery: inspect /v1/status and AgentProof's permanent target fence read-only. Never reset/delete a run or its ledger to retry publication. Preserve an uncertain result and its evidence. Disable by deploying ENABLED=false with the same namespace/key; disabled OIDC requests fail closed. Do not overwrite a key. A new run after a consumed claim requires a new explicitly reviewed disposable target and its own evidence.
 
 Design references: Cloudflare SQLite storage transactions and output gates (https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/); GitHub repository-scoped GITHUB_TOKEN (https://docs.github.com/en/actions/concepts/security/github_token); exact OIDC claims (https://docs.github.com/en/actions/reference/security/oidc). The canary executor uses a short-lived repository-only token; neither verifier nor DoneState receives that token.
+
+## Reviewed recovery boundaries
+
+The durable authorisation freezes all five trust pins plus the permitted workflow commit. Any drift rejects continuation. Valid independently signed VERIFIED, CONTRADICTED and UNPROVEN decisions are terminal and immutable; unsigned verifier failures never imply acceptance.
+
+An authenticated rerun of the same GitHub run may read status, submit existing evidence and settle; only attempt 1 can create a new authorisation. Recovery orchestration must use the AgentProof read-only reconcile route and must never repeat publication. POST /v1/refresh takes runId and receiptPayloadDigest and renews an expired handoff for the same receipt, preserving every prior handoff and an audit event. It never changes release authority and cannot extend the existing 20-minute receipt freshness window. Beyond upstream freshness limits, stop, preserve pending state and request a separately reviewed recovery decision; do not repeat the release mutation.
