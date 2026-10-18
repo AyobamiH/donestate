@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createPrivateKey } from "node:crypto";
+import { canonicalJson } from "../../../dist/hash.js";
 import { Controller, digest } from "../src/controller.mjs";
 import { validateClaims } from "../src/identity.mjs";
 import { handle } from "../src/worker.mjs";
@@ -162,4 +163,77 @@ test("handoff renewal cannot extend the receipt deadline for settlement",async()
   const before=c.get();
   assert.throws(()=>c.settle(f.claims,{runId:r.runId,decision},deadline+1),/receipt_recovery_window_expired/);
   assert.deepEqual(c.get(),before);
+});
+
+function recovery(f) {
+  f.env.RECOVERY_FROM_WORKFLOW_SHA=f.env.TRUSTED_SOURCE_SHA;
+  f.env.RECOVERY_FROM_GITHUB_RUN_ID=f.claims.githubRunId;
+  f.env.TRUSTED_SOURCE_SHA="b".repeat(40);
+  const claims={githubRunId:"987654321",githubRunAttempt:1};
+  const request={stateDirectory:"/tmp/agentproof-release-canary-"+claims.githubRunId,
+    transactionId:f.record.transactionId,nonce:"release-canary:"+claims.githubRunId,
+    idempotencyKey:"release-canary:"+claims.githubRunId,subject:f.record.subject,
+    approval:f.evidence.receipt.payload.approval};
+  const unsigned={schema:"agentproof.release-reservation.v1",state:"reserved",
+    requestDigest:digest(request),subjectDigest:f.record.subjectDigest,
+    transactionId:f.record.transactionId,githubRunId:claims.githubRunId,
+    workflowCommit:f.env.TRUSTED_SOURCE_SHA,issuedAt:request.approval.decidedAt,
+    expiresAt:request.approval.expiresAt,authorityPublicKeyPem:f.evidence.roles.authority.publicKeyPem};
+  const signReservation=(value,key=f.evidence.roles.authority)=>{
+    const {signatureBase64:_old,...raw}=value;
+    return {...raw,signatureBase64:key.signature("agentproof.release-reservation.v1\0"+canonicalJson(raw))};
+  };
+  return {claims,signReservation,body:{runId:f.record.runId,previousGithubRunId:f.claims.githubRunId,
+    request,reservation:signReservation(unsigned)}};
+}
+test("fresh signed fence reservation resumes exact unexecuted authority and preserves history",async()=>{
+  const f=setup(),r=recovery(f),original=f.controller.get();
+  const resumed=f.controller.recover(r.claims,r.body,f.now);
+  assert.deepEqual(resumed.authorisationHistory,[original]);assert.equal(resumed.audit.length,2);
+  assert.equal(resumed.githubRunId,r.claims.githubRunId);assert.equal(resumed.runId,original.runId);
+  assert.equal(resumed.transactionId,original.transactionId);assert.equal(resumed.status,"AUTHORISED");
+  assert.equal(resumed.executionNotBefore,new Date(f.now).toISOString());
+  assert.deepEqual(f.controller.recover(r.claims,r.body,f.now+900000),resumed);
+  assert.throws(()=>f.controller.bound(f.claims),/already_claimed/);
+  const fresh=fixture({roles:f.evidence.roles,runId:resumed.runId,transactionId:resumed.transactionId,
+    nonce:"release-canary:"+r.claims.githubRunId,idempotencyKey:"release-canary:"+r.claims.githubRunId,now:f.now+40000});
+  const pending=await f.controller.receipt(r.claims,{runId:resumed.runId,receipt:fresh.receipt},f.now+40000);
+  assert.equal(pending.status,"AWAITING_INDEPENDENT_VERIFICATION");
+  assert.equal(f.controller.settle(r.claims,{runId:resumed.runId,decision:fresh.signedOpsTruthDecision},f.now+40000).status,"VERIFIED");
+});
+test("recovery rejects stale, tampered, foreign, attempted and changed authority proofs without writes",()=>{
+  for(const mode of ["expired","future","tampered","wrong-signature","wrong-key","wrong-run","wrong-workflow",
+    "wrong-transaction","wrong-target","attempted","wrong-predecessor","trust-drift","unconfigured","rerun"]) {
+    const f=setup(),r=recovery(f),before=f.controller.get();let now=f.now;
+    if(mode==="expired")now+=600001;
+    if(mode==="future")now=Date.parse(r.body.reservation.issuedAt)-1;
+    if(mode==="tampered")r.body.reservation.requestDigest="f".repeat(64);
+    if(mode==="wrong-signature")r.body.reservation.signatureBase64="A".repeat(86)+"==";
+    if(mode==="wrong-key") {const key=pair();r.body.reservation=r.signReservation({...r.body.reservation,authorityPublicKeyPem:key.publicKeyPem},key);}
+    if(mode==="wrong-run")r.body.reservation=r.signReservation({...r.body.reservation,githubRunId:"111111111"});
+    if(mode==="wrong-workflow")r.body.reservation=r.signReservation({...r.body.reservation,workflowCommit:"c".repeat(40)});
+    if(mode==="wrong-transaction")r.body.request.transactionId="00000000-0000-0000-0000-000000000000";
+    if(mode==="wrong-target")r.body.request={...r.body.request,subject:{...r.body.request.subject,releaseId:999}};
+    if(mode==="attempted")r.body.reservation=r.signReservation({...r.body.reservation,state:"attempted"});
+    if(mode==="wrong-predecessor")r.body.previousGithubRunId="111111111";
+    if(mode==="trust-drift")f.env.OPSTRUTH_FINGERPRINT=pair().fingerprint;
+    if(mode==="unconfigured")delete f.env.RECOVERY_FROM_GITHUB_RUN_ID;
+    if(mode==="rerun")r.claims.githubRunAttempt=2;
+    assert.throws(()=>f.controller.recover(r.claims,r.body,now),undefined,mode);
+    assert.deepEqual(f.controller.get(),before,mode);
+  }
+});
+test("receipt or terminal evidence forbids recovery and execution before recovery is refused",async()=>{
+  for(const terminal of [false,true]) {
+    const f=setup();await f.controller.receipt(f.claims,{runId:f.record.runId,receipt:f.evidence.receipt},f.now);
+    if(terminal)f.controller.settle(f.claims,{runId:f.record.runId,decision:f.evidence.signedOpsTruthDecision},f.now);
+    const r=recovery(f),before=f.controller.get();assert.throws(()=>f.controller.recover(r.claims,r.body,f.now),/after_evidence/);
+    assert.deepEqual(f.controller.get(),before);
+  }
+  const f=setup(),r=recovery(f);f.controller.recover(r.claims,r.body,f.now);
+  const premature=fixture({roles:f.evidence.roles,runId:f.record.runId,transactionId:f.record.transactionId,
+    nonce:"release-canary:"+r.claims.githubRunId,idempotencyKey:"release-canary:"+r.claims.githubRunId,now:f.now});
+  const before=f.controller.get();await assert.rejects(f.controller.receipt(r.claims,{runId:f.record.runId,receipt:premature.receipt},f.now),/not_authorised/);
+  assert.deepEqual(f.controller.get(),before);
+  assert.throws(()=>f.controller.recover(r.claims,{...r.body,previousGithubRunId:"111111111"},f.now),/evidence_changed/);
 });

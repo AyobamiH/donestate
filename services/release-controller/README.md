@@ -19,3 +19,18 @@ Design references: Cloudflare SQLite storage transactions and output gates (http
 The durable authorisation freezes all five trust pins plus the permitted workflow commit. Any drift rejects continuation. Valid independently signed VERIFIED, CONTRADICTED and UNPROVEN decisions are terminal and immutable; unsigned verifier failures never imply acceptance.
 
 An authenticated rerun of the same GitHub run may read status, submit existing evidence and settle; only attempt 1 can create a new authorisation. Recovery orchestration must use the AgentProof read-only reconcile route and must never repeat publication. POST /v1/refresh takes runId and receiptPayloadDigest and renews an expired handoff for the same receipt, preserving every prior handoff and an audit event. It never changes release authority and cannot extend the existing 20-minute receipt freshness window. Beyond upstream freshness limits, stop, preserve pending state and request a separately reviewed recovery decision; do not repeat the release mutation.
+
+
+## Recovery before execution
+
+A failed preparation can leave a DoneState authorisation without any AgentProof reservation.
+`/v1/recover` is disabled unless deployment explicitly pins `RECOVERY_FROM_GITHUB_RUN_ID`
+and `RECOVERY_FROM_WORKFLOW_SHA` to that predecessor. A new protected first-attempt workflow
+must first obtain a fresh signed AgentProof reservation for the same target and transaction.
+The permanent AgentProof fence refuses any changed seed already reserved or attempted.
+DoneState verifies the reservation signature, exact new workflow and run, all unchanged trust keys,
+and its original AUTHORISED state without any accepted receipt, handoff or decision.
+It retains the complete old record in `authorisationHistory`, appends a linked audit event,
+and rejects receipts whose execution predates recovery. Identical recovery is read-only/idempotent.
+No endpoint clears the target fence or changes a terminal outcome. This recovery cannot repair
+an ambiguous execution: preserve evidence and reconcile such executions under their original run.

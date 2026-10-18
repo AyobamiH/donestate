@@ -3,6 +3,7 @@ import { canonicalJson } from "../../../dist/hash.js";
 import { classifyReleaseV1Outcome } from "../../../dist/release-v1-evidence.js";
 import { createReleaseV1Handoff, verifyReleaseV1Handoff } from "../../../dist/release-v1-handoff.js";
 import { demand } from "./identity.mjs";
+import { verifyReservation } from "./reservation.mjs";
 export const digest = value => createHash("sha256").update(canonicalJson(value)).digest("hex");
 const fp = pem => "sha256:" + createHash("sha256").update(
   createPublicKey(pem).export({ type: "spki", format: "der" })).digest("hex");
@@ -97,6 +98,41 @@ export class Controller {
       return this.put(record);
     });
   }
+  recover(claims, body, now = Date.now()) {
+    exact(body, ["runId", "previousGithubRunId", "request", "reservation"]);
+    const configured = configuration(this.env);
+    return this.storage.transactionSync(() => {
+      const current = this.get();
+      demand(current && body.runId === current.runId, "recovery_run_missing", 409);
+      const evidenceDigest = digest(body);
+      if (current.githubRunId === claims.githubRunId) {
+        this.bound(claims);
+        demand(current.recoveryEvidenceDigest === evidenceDigest, "recovery_evidence_changed", 409);
+        return current;
+      }
+      demand(claims.githubRunAttempt === 1 && /^\d{1,20}$/.test(this.env.RECOVERY_FROM_GITHUB_RUN_ID ?? "") &&
+        /^[a-f0-9]{40}$/.test(this.env.RECOVERY_FROM_WORKFLOW_SHA ?? "") &&
+        this.env.RECOVERY_FROM_WORKFLOW_SHA !== this.env.TRUSTED_SOURCE_SHA &&
+        current.githubRunId === this.env.RECOVERY_FROM_GITHUB_RUN_ID &&
+        body.previousGithubRunId === current.githubRunId, "recovery_not_configured", 409);
+      demand(current.status === "AUTHORISED" && !current.receipt && !current.handoff &&
+        !current.decision && !current.outcome, "recovery_after_evidence_forbidden", 409);
+      demand(current.subjectDigest === digest(configured.subject) &&
+        digest(current.trustPins) === digest(configured.pins) &&
+        current.trustDigest === digest({pins:configured.pins,workflowCommit:this.env.RECOVERY_FROM_WORKFLOW_SHA}),
+        "recovery_trust_changed", 409);
+      const reservationDigest = verifyReservation(body.request, body.reservation, current, claims, this.env, now);
+      // Preserve the complete original authority. No release fence or receipt is cleared.
+      const next = { ...current, githubRunId: claims.githubRunId, trustDigest: configured.trustDigest,
+        executionNotBefore: new Date(now).toISOString(), recoveryEvidenceDigest: evidenceDigest,
+        recoveryReservation: body.reservation, authorisationHistory: [current],
+        audit: event(current, "resume_unexecuted_authorisation", {
+          previousGithubRunId:current.githubRunId, githubRunId:claims.githubRunId,
+          previousTrustDigest:current.trustDigest, trustDigest:configured.trustDigest,
+          reservationDigest }, now) };
+      return this.put(next);
+    });
+  }
   async receipt(claims, body, now = Date.now()) {
     exact(body, ["runId", "receipt"]);
     const record = this.bound(claims);
@@ -112,7 +148,7 @@ export class Controller {
     demand(outcome.status === "AWAITING_INDEPENDENT_VERIFICATION" &&
       received.payload.nonce === "release-canary:" + claims.githubRunId &&
       received.payload.idempotencyKey === "release-canary:" + claims.githubRunId &&
-      Date.parse(received.payload.attemptedAt) >= Date.parse(record.authorisedAt) &&
+      Date.parse(received.payload.attemptedAt) >= Date.parse(record.executionNotBefore ?? record.authorisedAt) &&
       Date.parse(received.payload.issuedAt) <= now + 60000 &&
       now - Date.parse(received.payload.issuedAt) <= 1200000,
       "receipt_not_authorised");

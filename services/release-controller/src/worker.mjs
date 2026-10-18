@@ -33,7 +33,7 @@ export async function handle(request, env, auth = authenticate) {
       targetConfigured: !!env.TARGET_SUBJECT_JSON, signerConfigured: !!env.HANDOFF_PUBLIC_KEY_PEM,
     });
     demand(request.method === "POST" &&
-      ["/v1/start","/v1/receipt","/v1/settle","/v1/status","/v1/refresh"].includes(url.pathname), "route_not_found", 404);
+      ["/v1/start","/v1/receipt","/v1/settle","/v1/status","/v1/refresh","/v1/recover"].includes(url.pathname), "route_not_found", 404);
     const claims = await auth(request, env);
     demand(!request.headers.has("x-github-token"), "publisher_token_not_allowed");
     const { subject } = configuration(env);
@@ -52,6 +52,7 @@ export class ReleaseRun {
       const { claims, input } = await request.json();
       const path = new URL(request.url).pathname;
       if (path === "/v1/start") return reply(this.controller.start(claims, input));
+      if (path === "/v1/recover") return reply(this.controller.recover(claims, input));
       if (path === "/v1/receipt") return reply(await this.controller.receipt(claims, input));
       if (path === "/v1/refresh") return reply(await this.controller.refresh(claims, input));
       if (path === "/v1/settle") return reply(this.controller.settle(claims, input));
