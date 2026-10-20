@@ -549,9 +549,9 @@
       "owner": "DoneState and AgentProof maintainers",
       "lastUpdated": "2026-10-20",
       "staleDate": "2026-10-24",
-      "nextAction": "Resolve the observed GitHub account billing lock and rerun existing required checks on each final recovery PR head without bypassing protected-branch policy. Then record exact deployed source/version/health while preserving original namespaces, target, workflow and five signing roles; resume only readback/signing/independent verification for run 12741172-631f-47b4-88c2-a63eeb1f9574. Retain the actual signed receipt, fresh sidecar, OpsTruth decision, durable settlement and disabled-service closure before recording acceptance. Pi Durable / PiHarness remains deferred; independent adoption remains separate.",
-      "waitCondition": "E-137 retains local source hashes, passing command output, real local Workers SQLite restart/native alarms and synthetic three-service VERIFIED interoperability. GitHub refused to start required OpsTruth PR #44 verification at head 40ebd2c1201c1dfeaada58ba49a535c6ebacd1e8 because the account is locked due to a billing issue. Required checks are not satisfied; merge and deployment are blocked. No new recovery deployment, signed original-release receipt, independent live OpsTruth outcome or original-run terminal settlement is recorded. Original publication remains one; no mutation replay is authorised.",
-      "reentryCondition": "Required exact-head checks and review complete, then independently recorded deployment and private recovery evidence for the unchanged target fence and original DoneState run 12741172-631f-47b4-88c2-a63eeb1f9574. Public activation and READBACK_RECOVERY_ENABLED remain separate; never reissue publication, change trust roles or self-verify. Preserve all historical refused attempts and append a successor checkpoint for every acceptance or closure claim. PiHarness requires a separately accepted broader orchestration need.",
+      "nextAction": "Reuse the existing Cloudflare estate for CI and complete or verify an independent Cloudflare lifecycle and trusted exact-commit result reporter. First reconcile current shared capacity and spending bounds, then retain startup, execution, bounded retry, cancellation and cleanup evidence. Review the CI provider contract before changing any required-check source; preserve real macOS coverage and all required validations. Once final-head checks and review pass, deploy the recovery sources with original namespaces, target, workflow and five signing roles; collect the signed receipt, fresh sidecar, independent OpsTruth decision, original-run settlement and disabled-service closure. Pi Durable / PiHarness remains deferred.",
+      "waitCondition": "E-137 retains locally validated recovery source and the exact GitHub Actions billing refusal. E-138 confirms real historical validation on existing Cloudflare compute, but the inspected runner interface and provisioning/cleanup workflow still depend on GitHub Actions orchestration. No independent Cloudflare CI controller/reporter acceptance for these recovery PRs is recorded. DoneState and OpsTruth guards pin required checks to GitHub Actions App 15368; AgentProof also requires a real macOS job. Current capacity and any provider transition remain separate gates. Required checks, recovery deployment and independent release acceptance remain pending; original publication remains one.",
+      "reentryCondition": "Retain current capacity and bounded execution evidence, accept an explicit trusted CI provider contract with equivalent required coverage, and obtain genuine successful results for each final PR head. Any check-source migration must update reviewed source guards and protected-branch policy together; no copied green status, protection bypass or macOS claim from Linux compute. Then record deployment and private recovery evidence for unchanged original DoneState run 12741172-631f-47b4-88c2-a63eeb1f9574. Preserve original publication, five trust roles, audit history and historical refused attempts. Public activation, recovery activation, terminal verification and disabled closure remain separate.",
       "dependencies": [
         "VERIFY-004"
       ],
@@ -566,7 +566,8 @@
         "E-133",
         "E-134",
         "E-135",
-        "E-137"
+        "E-137",
+        "E-138"
       ]
     },
     {
@@ -2988,6 +2989,27 @@
       "artifact": {
         "path": "docs/evidence/agentproof-release-recovery-source-checkpoint-20261020.json",
         "sha256": "c2326beb7717c1da101000e583ce9cf854e5046aaa08dc15b3ab539f2c5e1856"
+      }
+    },
+    {
+      "id": "E-138",
+      "date": "2026-10-20",
+      "identity": "Cloudflare CI estate recovered; continuation corrected from billing-only routing",
+      "situation": "The owner identified an existing Cloudflare CI estate after the prior checkpoint directed continuation only through resolving GitHub billing. The immediate provider refusal is retained, while infrastructure reuse and the CI trust contract need separate reconciliation.",
+      "verification": "Read-only inspection confirmed a successful historical ClawSweeper Cloudflare run 36323734781 at source 7fbaa16dfeed371584b4ae03601ca1f1017ae310. The later Workers SDK validation workload ran on Cloudflare in run 37385428501 but failed; it is not a green proof. Its workflow at 16ac12c9b3d86aaa7ad876e566802838650ee5ef provisions and cleans up through ubuntu-latest GitHub jobs. Current inspected ClawSweeper source a559377cbf0bf98fb018f512712fec3f150deefb exposes GitHub JIT runner start/stop, not a separately accepted native CI controller/reporter. The three recovery PRs remain open with unsatisfied Actions checks and no external reports on the observed heads. DoneState and OpsTruth source guards require App 15368; AgentProof requires real macOS validation. Public source/run links and exact observed heads are retained in the successor checkpoint.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Reuse the existing Cloudflare estate for CI and complete or verify an independent Cloudflare lifecycle and trusted exact-commit result reporter. First reconcile current shared capacity and spending bounds, then retain startup, execution, bounded retry, cancellation and cleanup evidence. Review the CI provider contract before changing any required-check source; preserve real macOS coverage and all required validations. Once final-head checks and review pass, deploy the recovery sources with original namespaces, target, workflow and five signing roles; collect the signed receipt, fresh sidecar, independent OpsTruth decision, original-run settlement and disabled-service closure. Pi Durable / PiHarness remains deferred.",
+        "waitCondition": "E-137 retains locally validated recovery source and the exact GitHub Actions billing refusal. E-138 confirms real historical validation on existing Cloudflare compute, but the inspected runner interface and provisioning/cleanup workflow still depend on GitHub Actions orchestration. No independent Cloudflare CI controller/reporter acceptance for these recovery PRs is recorded. DoneState and OpsTruth guards pin required checks to GitHub Actions App 15368; AgentProof also requires a real macOS job. Current capacity and any provider transition remain separate gates. Required checks, recovery deployment and independent release acceptance remain pending; original publication remains one.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Cloudflare-first reuse is the continuation path. Billing refusal is the observed proximate failure; independently orchestrated execution, trusted result reporting, coverage and current spending bounds remain unfinished acceptance work. Historical evidence and the accepted recovery architecture are unchanged. Release acceptance remains PENDING.",
+      "content": "Documentation-only successor with existing compute evidence, explicit CI provider-contract requirements, capacity recheck and exact-head acceptance obligations. No ruleset, source guard, workflow, runtime or private credential was changed.",
+      "measurement": "One routing correction; three open recovery PRs with required CI still unsatisfied; zero new compute runs, provider migrations, recovery deployments, publication requests or live release acceptance claims.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-release-recovery-ci-routing-20261020.json",
+        "sha256": "b2cdfbfc3f73a61b9c2965fb031d5196ea04a1cec460e4922e4d6f9ec93068e0"
       }
     }
   ]
