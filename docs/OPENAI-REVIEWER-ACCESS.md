@@ -7,16 +7,23 @@ Updated: 20 October 2026. Work item: OPENAI-001; evidence: E-133.
 Live protocol acceptance now passes from reviewer username/password through real
 sandbox execution, local validation, PR publication and independent VERIFIED.
 See [the exact acceptance record](evidence/openai-reviewer-acceptance-20261020.json).
-The publisher browser connection now succeeds. Returning the existing submission
-to draft allowed a fresh scan to inspect the repaired tool definition. It surfaced
-two findings: a new-definition review hold and an incorrect `destructiveHint: false`.
-Issuing a settings link revokes the previous unused link, so the annotation is now
-`destructiveHint: true` and explicitly `idempotentHint: false`. The regression
-checks old-link rejection, current-link success, replay rejection and unchanged
-credential state. Deployment and a fresh scan must prove this specific finding
-cleared; the provider review hold must be recorded separately. Reviewer details
-and walkthrough still need updating before resubmission. The app is currently
-draft, not approved or published.
+The publisher browser connection succeeds. A fresh draft scan discovered the
+current tool definition and flagged its incorrect `destructiveHint: false`.
+The existing operation replaces the previous unused settings ticket, so it now
+declares `destructiveHint: true` and `idempotentHint: false`. The build and 17
+focused tests pass, including old-link rejection, current-link success, replay
+rejection and unchanged credential state. Worker version
+`03d2405f-fb4c-4618-a244-f6f91dba6988` is active at 100%. Wrangler then failed to
+rebuild the unchanged container because Docker registry metadata returned EOF;
+no container update is claimed. The production scan confirms the corrected
+annotation and removal of that specific finding (two findings reduced to one).
+
+Five positive cases, three negative non-trigger cases and corrected reviewer
+instructions were saved in the existing app. The remaining alert is exactly:
+“This new tool definition needs further review before it can be published.”
+The existing 0.3.3 submission is draft while final resubmission awaits approval
+to reaffirm the displayed OpenAI terms and compliance declarations. This is not
+provider approval or publication. See the [recorded evidence walkthrough](evidence/openai-reviewer-walkthrough-20261020.md), which explains actual stored results and does not claim a new execution.
 
 Keep the existing app `asdk_app_6abf3b8d3cb08191b1b4e670a707e652`.
 Do not remove or rename a tool to evade its review finding.
