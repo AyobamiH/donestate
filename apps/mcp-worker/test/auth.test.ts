@@ -266,6 +266,13 @@ describe("OAuth authorisation security policy", () => {
     expect(page).toContain("Passkeys are not supported in Cloud Browser");
     expect(page).toContain('action="/authorize/reviewer"');
     expect(page).toContain("OpenAI reviewer test account");
+    expect(page).toContain('<section class="reviewer" aria-labelledby="reviewer-login-title">');
+    expect(page).toContain('id="reviewer-login-title"');
+    expect(page).toContain("No GitHub sign-in, MFA, email verification or API key is required.");
+    expect(page).not.toContain('<details class="reviewer">');
+    expect(page).toContain('value="openai-reviewer"');
+    expect(page).toContain("OpenAI reviewers:");
+    expect(page.indexOf("OpenAI reviewers:")).toBeLessThan(page.indexOf("Continue with GitHub"));
   });
 
   it("authorizes the dedicated reviewer account without GitHub or MFA", async () => {

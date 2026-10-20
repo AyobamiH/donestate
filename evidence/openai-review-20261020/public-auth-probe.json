@@ -1,0 +1,47 @@
+{
+  "schema": "donestate.review-auth-probe.v1",
+  "observedAt": "2026-10-20T08:13:05.557Z",
+  "origin": "https://donestate.proofandstate.com",
+  "steps": {
+    "discovery": {
+      "status": 200,
+      "issuerCorrect": true,
+      "codeChallengeS256": true,
+      "registrationEndpoint": true,
+      "authorizationEndpoint": true
+    },
+    "resource": {
+      "status": 200,
+      "resourceCorrect": true,
+      "supportedScope": true
+    },
+    "registration": {
+      "status": 201,
+      "publicClient": true,
+      "exactRedirect": true
+    },
+    "consent": {
+      "status": 200,
+      "reviewerForm": true,
+      "reviewerInDetails": true,
+      "namedReviewer": true,
+      "githubPrimary": true,
+      "csrfPresent": true,
+      "sealedStatePresent": true,
+      "contentSecurityPolicy": true
+    },
+    "invalidLogin": {
+      "status": 401,
+      "rejectedWithoutGitHub": true
+    },
+    "primaryGithubLogin": {
+      "status": 302,
+      "redirectsToGithub": true
+    }
+  },
+  "privacy": "No OAuth code, token, reviewer password, registration secret, CSRF secret, or authorization state retained",
+  "discoveryPassed": true,
+  "reviewerAccessPathReachable": true,
+  "actualReviewerCredentialsValidated": false,
+  "successfulReviewerLoginProven": false
+}
