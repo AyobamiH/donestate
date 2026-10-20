@@ -4,11 +4,13 @@ Updated: 20 October 2026. Work item: OPENAI-001; evidence: E-133.
 
 ## Release gate
 
-This is a code repair candidate, not a completed production acceptance. The
-previous owner-mapped read-only reviewer could authenticate but could not invoke
-`create_openai_credential_setup` or execute the advertised workflow. The current
-submission has one generic tool-definition finding. Do not call the repair done
-until fresh production acceptance and a portal rescan have been recorded.
+Live protocol acceptance now passes from reviewer username/password through real
+sandbox execution, local validation, PR publication and independent VERIFIED.
+See [the exact acceptance record](evidence/openai-reviewer-acceptance-20261020.json).
+The cloud-browser connection is still pending after a rejected password attempt.
+The last publisher status is “Complete MCP setup”; the earlier generic tool
+finding has not been proven cleared. Reviewer details, walkthrough and a fresh
+connected scan are still required. This is not directory approval or publication.
 
 Keep the existing app `asdk_app_6abf3b8d3cb08191b1b4e670a707e652`.
 Do not remove or rename a tool to evade its review finding.
@@ -92,3 +94,26 @@ Update the existing app's reviewer information and real walkthrough, then rescan
 Record the exact remaining findings. Submission or a “non-blocking” label does not
 clear a finding. If OpenAI retains a provider-review hold, keep that gate open and
 retain the exact message; do not claim code can override the provider's decision.
+
+## Observed production acceptance
+
+The isolated reviewer created run `2e0184b7-0771-4651-b6c1-88aa41e2a4f0` and
+[fixture PR #2](https://github.com/AyobamiH/donestate-review-fixture/pull/2) at
+`306facf9002075ee16deb07e4fcafc94291f9021`. Only the fixture total changed to 55;
+all nine local fixture tests passed. OpsTruth independently verified both the
+exact JSON value and bounded one-file diff at 20:40:42 UTC. The existing pinned
+signer produced report digest
+`bd2d268d4c2c632714d8bf21a49b853657d680af4dde5527037038f7527ce48b`.
+No hosted CI pass is asserted.
+
+The live acceptance rejected incorrect username/password, invalid CSRF, replayed
+settings links, secret tool input, foreign repository selection, scheduling,
+automatic repair, excess files/duration, an untrusted verifier, branch-only
+publication and deployment authority. A separate unstarted objective was cancelled
+and deleted, then became unreadable. Deleting the demo credential and selection
+followed by fresh username/password OAuth restored only the prepared demo setup,
+preserved the VERIFIED run and kept daily usage at one of three starts. Revoked
+tokens returned 401. Whole-account deletion remains code-test coverage only.
+
+Gmail authenticates the publisher dashboard only. Reviewers use the dedicated
+username and password and need no Gmail, GitHub login or OpenAI API key.
