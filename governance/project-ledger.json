@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-10-18",
+  "updatedAt": "2026-10-20",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {
@@ -287,10 +287,10 @@
       "stream": "marketplace",
       "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-21",
       "nextAction": "Continue exercising changed, pending_change, and pending_change_cancelled through the owner-only draft listing and capture non-personal receipts without touching production listing state.",
-      "waitCondition": "Marketplace development remains a parallel distribution-validation lane; it is not a prerequisite for owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "Marketplace development remains a parallel distribution-validation lane; it is not a prerequisite for owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure. Administrative triage on 20 October during reviewer repair: previous status is preserved; no new acceptance evidence for this item was established. Recheck its authoritative evidence on the next review.",
       "reentryCondition": "Continue through authenticated development-listing controls while keeping the draft isolated from production.",
       "dependencies": [
         "GOV-002"
@@ -448,10 +448,10 @@
       "stream": "verification",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-21",
       "nextAction": "Build and validate the exact installable OpenAI/plugin archive before the next directory release, including manifests, skills, secret scan, digest and CI.",
-      "waitCondition": "This is required for the OpenAI distribution channel but is not a prerequisite for the owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "This is required for the OpenAI distribution channel but is not a prerequisite for the owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure. Administrative triage on 20 October during reviewer repair: previous status is preserved; no new acceptance evidence for this item was established. Recheck its authoritative evidence on the next review.",
       "reentryCondition": "Begin when the next OpenAI directory submission or resubmission requires a new archive.",
       "dependencies": [
         "MKT-001",
@@ -633,10 +633,10 @@
       "stream": "marketplace",
       "status": "deferred",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-21",
       "nextAction": "Choose flat-rate Pro, per-seat organisation, trial, or continued free access from observed usage and cost.",
-      "waitCondition": "Keep the free public-repository plan while the listing remains pending and activation evidence is absent. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "Keep the free public-repository plan while the listing remains pending and activation evidence is absent. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure. Administrative triage on 20 October during reviewer repair: previous status is preserved; no new acceptance evidence for this item was established. Recheck its authoritative evidence on the next review.",
       "reentryCondition": "Resume after publication, real usage, organisation ownership, publisher eligibility, and the applicable user threshold.",
       "dependencies": [
         "GTM-001"
@@ -653,10 +653,10 @@
       "stream": "marketplace",
       "status": "deferred",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-21",
       "nextAction": "Review Marketplace Insights, transactions, cancellations, support incidents, and entitlement reconciliation after publication without treating preview display counts as activation.",
-      "waitCondition": "The submission is Pending for publish and explicitly unpublished; the owner preview's displayed count of 1 is not public install or transaction evidence. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "The submission is Pending for publish and explicitly unpublished; the owner preview's displayed count of 1 is not public install or transaction evidence. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure. Administrative triage on 20 October during reviewer repair: previous status is preserved; no new acceptance evidence for this item was established. Recheck its authoritative evidence on the next review.",
       "reentryCondition": "Resume when GitHub reports publication or the first real production transaction appears.",
       "dependencies": [
         "MKT-004"
@@ -831,18 +831,19 @@
       "stream": "distribution",
       "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
-      "nextAction": "Deploy the corrected cancellation annotation and accurate account-console link description, complete the owned-website privacy correction, rescan the canonical 0.3.2 draft and distinguish correctable findings from provider-required review before resubmission.",
-      "waitCondition": "The old publisher entry was deleted with explicit owner authority. The replacement 0.3.1 submission was withdrawn with owner approval to correct GitHub-facing links; 0.3.2 is currently a draft with reviewer information retained. Website privacy and MCP findings remain under correction; no approval or publication is claimed. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
-      "reentryCondition": "Advance on exact-head CI and production deployment, then record fresh publisher scan evidence and any explicit owner submission confirmation.",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-21",
+      "nextAction": "Complete the isolated reviewer account repair, prove fresh OAuth plus account settings and real bounded execution with independent verification, then deploy and rescan the existing app. Keep the red finding open until the portal clears it.",
+      "waitCondition": "Reviewer OAuth now succeeds, but production maps the reviewer onto the owner and blocks writes. The account-settings tool fails with BLOCKED_AUTHORITY. Version 0.3.3 is in review with one unresolved tool-definition finding; login success and submission do not establish completion.",
+      "reentryCondition": "Advance only with positive and negative code tests, dedicated demo credential/repository provisioning, real end-to-end acceptance and a fresh publisher scan. Record provider-held review separately from code defects.",
       "dependencies": [],
       "evidenceIds": [
         "E-005",
         "E-040",
         "E-041",
         "E-061",
-        "E-126"
+        "E-126",
+        "E-133"
       ]
     },
     {
@@ -867,10 +868,10 @@
       "stream": "ecosystem",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-21",
       "nextAction": "Select stable product-agnostic instructions, remove transient evidence, and open a tracked ai-prompts PR.",
-      "waitCondition": "No matching branch or PR exists in AyobamiH/ai-prompts. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "No matching branch or PR exists in AyobamiH/ai-prompts. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure. Administrative triage on 20 October during reviewer repair: previous status is preserved; no new acceptance evidence for this item was established. Recheck its authoritative evidence on the next review.",
       "reentryCondition": "Begin after VERIFY-003.",
       "dependencies": [
         "VERIFY-003"
@@ -2882,6 +2883,23 @@
       "outcome": "Recovery candidate only; previous failure and authorisation remain preserved. No effect retry or terminal VERIFIED claim.",
       "content": "User-Agent compliance, signed durable reservation, strictly configured authorisation recovery, negative tests and retained failed workflow.",
       "measurement": "Published release effects 0; real OpsTruth decisions 0; real DoneState VERIFIED 0; qualified external installations 0."
+    },
+    {
+      "id": "E-133",
+      "date": "2026-10-20",
+      "identity": "Isolated OpenAI reviewer workflow repair",
+      "situation": "Reviewer OAuth succeeded but the owner-mapped read-only principal could not invoke create_openai_credential_setup or execute the advertised workflow. The publisher portal still displays one generic tool-definition review finding.",
+      "verification": "Candidate Worker build and 224 tests across 30 files pass, including the real MCP wire call, isolated reviewer identity, strict settings input/output, owner denial and scope failures. Root npm run check passes 86 tests and package audit; only disposable test repositories use an invocation-local signing override because the SSH signing key is locked. The package secret scan passes over all 99 included files. The isolated public fixture is AyobamiH/donestate-review-fixture (1427217995), signed seed ab56672b2f009f152d3dc0c0464add7e9e2f0e8c. A fresh production reviewer OAuth recheck completed login, callback, exchange, MCP read and revocation at 2026-10-20T16:24:52Z; this was the old read-only deployment, not repaired full-flow acceptance. The demo project initially had zero keys and no Worker execution secret or saved demo key. One newly provisioned demo key was then recovered from the authorised private clipboard, stored mode 0600, validated with a 200 models request and installed as OPENAI_REVIEW_EXECUTION_KEY; no second key was created. Its observed expiry is 2026-11-19. The demo GitHub App installation and independent verifier access remain required before deploying the candidate. No repaired production full-flow result or cleared provider finding is claimed.",
+      "accountability": {
+        "owner": "Publisher owner",
+        "status": "active",
+        "nextAction": "Complete the isolated reviewer account repair, prove fresh OAuth plus account settings and real bounded execution with independent verification, then deploy and rescan the existing app. Keep the red finding open until the portal clears it.",
+        "waitCondition": "Reviewer OAuth now succeeds, but production maps the reviewer onto the owner and blocks writes. The account-settings tool fails with BLOCKED_AUTHORITY. Version 0.3.3 is in review with one unresolved tool-definition finding; login success and submission do not establish completion.",
+        "staleDate": "2026-10-21"
+      },
+      "outcome": "Open; code and provider acceptance remain distinct gates.",
+      "content": "Separate reviewer principal and execution credential, dedicated repository boundary, narrowed GitHub tokens, run limits, truthful account-settings schema and positive/negative regression coverage. Demo key is held privately, never in the repository or evidence. OpsTruth dependency candidate retains the pinned signer and read-only exact-repository scope; its 148 tests and all repository checks pass, but activation is not yet claimed. Stale unrelated work items received administrative triage only: MKT-004, VERIFY-003, MKT-005, MKT-006, SKILLS-001. No outcome was advanced.",
+      "measurement": "Repaired production full-flow acceptances 0; newly cleared review findings 0."
     }
   ]
 }
