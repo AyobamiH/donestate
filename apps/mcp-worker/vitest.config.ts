@@ -4,6 +4,9 @@ import { defineConfig } from "vitest/config";
 const workers = {
   miniflare: {
     bindings: {
+      COOKIE_ENCRYPTION_KEY: "test-cookie-secret-with-no-live-access",
+      GITHUB_CLIENT_ID: "test-github-client",
+      GITHUB_CLIENT_SECRET: "test-github-client-secret",
       TOKEN_ENCRYPTION_KEY: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
       USER_CREDENTIAL_ENCRYPTION_KEY: "AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE=",
     },

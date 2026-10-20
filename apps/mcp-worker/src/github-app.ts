@@ -1,4 +1,5 @@
 import { boundedOutput, redact } from "./canonical";
+import { assertRepository } from "./validation";
 
 const GITHUB_API = "https://api.github.com";
 
@@ -123,7 +124,10 @@ export async function createInstallationToken(
   credentials: GitHubAppCredentials,
   installationId: number,
   mode: "read" | "pr_only",
+  repository: string,
 ): Promise<GitHubInstallationToken> {
+  assertRepository(repository);
+  if (!Number.isSafeInteger(installationId) || installationId < 1) throw new Error("GitHub App installation id is invalid");
   const jwt = await createGitHubAppJwt(credentials);
   const permissions = mode === "read"
     ? { actions: "read", contents: "read", issues: "read", metadata: "read", pull_requests: "read" } as const
@@ -132,15 +136,19 @@ export async function createInstallationToken(
     token: string;
     expires_at: string;
     permissions?: { contents?: string; pull_requests?: string };
+    repositories?: { full_name: string }[];
   }>(
     jwt,
     `/app/installations/${installationId}/access_tokens`,
-    { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ permissions }) },
+    { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ permissions, repositories: [repository.split("/")[1]] }) },
   );
   if (!result.token || !Number.isFinite(Date.parse(result.expires_at))) throw new Error("GitHub returned an invalid installation token");
   if (result.permissions?.contents !== permissions.contents
     || result.permissions?.pull_requests !== permissions.pull_requests) {
     throw new Error("GitHub did not grant the requested installation token permissions");
+  }
+  if (result.repositories?.length !== 1 || result.repositories[0]?.full_name?.toLowerCase() !== repository.toLowerCase()) {
+    throw new Error("GitHub did not confirm the exact installation token repository scope");
   }
   return {
     token: result.token,

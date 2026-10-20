@@ -1,3 +1,4 @@
+import { OPENAI_REVIEW_LOGIN, prepareReviewAccount } from "./review-access";
 import { AuthorizationError, type AuthRequest, type OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 import { digest } from "./canonical";
 import { doneStateGrantScopes } from "./account-authorization";
@@ -198,17 +199,18 @@ async function consent(request: Request, env: AuthEnv): Promise<Response> {
     : `<p>GitHub will ask for repository access. DoneState will still require an explicit authority envelope for every objective. It cannot silently push or open a pull request.</p><ul><li>Use your separately connected OpenAI API key for your runs</li><li>Run a coding agent in an isolated sandbox</li><li>Validate and commit bounded repository changes</li><li>Push or open a pull request only when granted</li><li>Stop before claiming completion until an independent verifier signs the exact snapshot</li></ul>`;
   return html(`<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Authorise DoneState</title>
-<style>body{font-family:system-ui,sans-serif;background:#f5f6f8;color:#15171a;margin:0}.card{max-width:620px;margin:8vh auto;background:white;padding:32px;border:1px solid #dfe3e8;border-radius:14px;box-shadow:0 10px 32px #0001}h1{margin-top:0}.scope{background:#f3f5f7;padding:12px;border-radius:8px}li{margin:.6rem 0}.actions{display:flex;gap:12px;margin-top:24px}button,a,input{font:inherit;padding:11px 18px;border-radius:8px;text-decoration:none}.approve{border:0;background:#15171a;color:white}.cancel{border:1px solid #ccd1d7;color:#15171a}.reviewer{margin-top:24px;padding-top:20px;border-top:1px solid #dfe3e8}.reviewer label{display:block;margin:12px 0}.reviewer input{display:block;width:100%;box-sizing:border-box;margin-top:6px;border:1px solid #aeb6c0}.hint{font-size:.9rem;color:#4b5563}</style></head>
+<style>body{font-family:system-ui,sans-serif;background:#f5f6f8;color:#15171a;margin:0}.card{max-width:620px;margin:8vh auto;background:white;padding:32px;border:1px solid #dfe3e8;border-radius:14px;box-shadow:0 10px 32px #0001}h1{margin-top:0}.scope{background:#f3f5f7;padding:12px;border-radius:8px}li{margin:.6rem 0}.actions{display:flex;gap:12px;margin-top:24px}button,a,input{font:inherit;padding:11px 18px;border-radius:8px;text-decoration:none}.approve{border:0;background:#15171a;color:white}.cancel{border:1px solid #ccd1d7;color:#15171a}.reviewer{margin-top:24px;padding-top:20px;border-top:1px solid #dfe3e8}.reviewer h2{font-size:1.1rem}.reviewer label{display:block;margin:12px 0}.reviewer input{display:block;width:100%;box-sizing:border-box;margin-top:6px;border:1px solid #aeb6c0}.hint{font-size:.9rem;color:#4b5563}</style></head>
 <body><main class="card"><h1>Authorise DoneState</h1><p><strong>${clientName}</strong> is requesting access to your DoneState ${accessPurpose}.</p>
 <p class="scope"><strong>Client scopes:</strong> ${scopes}</p>
+${grant.accountControls ? "" : '<p class="hint reviewer-notice"><strong>OpenAI reviewers:</strong> use the dedicated test account form below, not Continue with GitHub.</p>'}
 ${permissions}
 <p class="hint"><a href="https://proofandstate.com/privacy">Privacy</a> · <a href="https://proofandstate.com/terms">Terms</a> · <a href="https://github.com/AyobamiH/donestate/issues">Support</a></p>
 <form method="post" action="/authorize"><input type="hidden" name="approval_state" value="${escapeHtml(approvalState)}"><input type="hidden" name="csrf" value="${csrf}"><div class="actions"><a class="cancel" href="/">Cancel</a><button class="approve" type="submit">Continue with GitHub</button></div></form>
 <p class="hint">${grant.accountControls ? "Sign in with the GitHub account whose DoneState service data you intend to inspect." : "Cloud Browser users: if GitHub asks you to confirm access, use your password or authenticator app. Passkeys are not supported in Cloud Browser."}</p>
-${grant.accountControls ? "" : `<details class="reviewer"><summary>OpenAI reviewer test account</summary><p>For OpenAI review only. This account can inspect the sample repository and existing evidence but cannot create credentials, change repository selection, start work, open pull requests, merge, deploy, release, or submit verification.</p>
+${grant.accountControls ? "" : `<section class="reviewer" aria-labelledby="reviewer-login-title"><h2 id="reviewer-login-title">OpenAI reviewer test account</h2><p>No GitHub sign-in, MFA, email verification or API key is required. Enter the password provided privately in the submission's Review details.</p><p>For OpenAI review only. This separate demo account can open account settings, inspect sample work, run bounded tasks and open pull requests in its dedicated demo repository. Independent verification is required. Runs are limited to 5 changed files, 5 minutes and 3 starts per UTC day. Merge, deployment and release are unavailable. Signing in again restores the prepared demo credential and repository if you removed them.</p>
 <form method="post" action="/authorize/reviewer"><input type="hidden" name="approval_state" value="${escapeHtml(approvalState)}"><input type="hidden" name="csrf" value="${csrf}">
-<label>Username<input name="username" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label>
-<button class="approve" type="submit">Sign in to review</button></form></details>`}</main></body></html>`, 200, OAUTH_FORM_ACTION);
+<label>Username<input name="username" autocomplete="username" value="openai-reviewer" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+<button class="approve" type="submit">Sign in to review</button></form></section>`}</main></body></html>`, 200, OAUTH_FORM_ACTION);
 }
 
 async function approve(request: Request, env: AuthEnv): Promise<Response> {
@@ -252,28 +254,33 @@ async function reviewerApprove(request: Request, env: AuthEnv): Promise<Response
     return new Response("CSRF validation failed", { status: 400 });
   }
   const expectedDigest = env.OPENAI_REVIEW_PASSWORD_SHA256;
-  const owner = env.PLATFORM_OWNER_LOGIN;
   const validPassword = typeof expectedDigest === "string"
     && /^[a-f0-9]{64}$/.test(expectedDigest)
     && await constantTimeEqual(expectedDigest, await digest(password));
-  if (username !== OPENAI_REVIEW_USERNAME || !validPassword || !owner) {
+  if (username !== OPENAI_REVIEW_USERNAME || !validPassword) {
     return new Response("Reviewer sign-in failed", { status: 401 });
   }
   const grant = doneStateGrantScopes(pending.oauthRequest, pending.authorizationOrigin ?? new URL(request.url).origin, EXECUTION_SCOPE);
   if (!grant || grant.accountControls) {
     return new Response("Required DoneState scope was not requested", { status: 400 });
   }
+  try {
+    await prepareReviewAccount(env);
+  } catch {
+    return new Response("Reviewer demo is not ready. Contact the publisher; no GitHub sign-up or API key is required.", { status: 503 });
+  }
   const { redirectTo } = await env.OAUTH_PROVIDER.completeAuthorization({
     request: pending.oauthRequest,
-    userId: owner,
+    // The provider uses colons as token delimiters; keep the vault identity separate.
+    userId: encodeURIComponent(OPENAI_REVIEW_LOGIN),
     metadata: { label: "OpenAI reviewer" },
     scope: grant.scopes,
     props: {
-      userId: owner,
-      login: owner,
+      userId: OPENAI_REVIEW_LOGIN,
+      login: OPENAI_REVIEW_LOGIN,
       name: "OpenAI Reviewer",
       email: null,
-      accessToken: "github-app-reviewer-read-only",
+      accessToken: "github-app-isolated-reviewer",
       origin: new URL(request.url).origin,
       reviewMode: true,
     } satisfies GitHubAuthProps,

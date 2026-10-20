@@ -1,0 +1,309 @@
+{
+  "schema": "donestate.openai-reviewer-acceptance.v1",
+  "observedAt": "2026-10-20T20:41:58.307Z",
+  "acceptanceScope": "Live username/password OAuth and MCP protocol, real PR and independent VERIFIED; reviewer browser connection and saved review cases confirmed. Existing package 0.3.3 submitted with user approval; portal In review. Provider approval and publication remain pending.",
+  "doneState": {
+    "commit": "efb815eed0ba52e14345012eec5d16f38490feb6",
+    "workerVersion": "c5f0531d-1945-4d56-b1ec-5e3cb3dc174f",
+    "workerTests": 225,
+    "rootTests": 86
+  },
+  "opsTruth": {
+    "commit": "a17c9958938a07cddf77303dbbbca365d5ea990d",
+    "workerVersion": "f73ea53f-0b86-4a6b-82b3-4b269b1ab8e7",
+    "tests": 150,
+    "productionSmokePassed": true,
+    "runtimeRegression": {
+      "runtime": "local workerd",
+      "compatibilityDate": "2026-08-22",
+      "legacyRedirectModeRejected": true,
+      "successfulRequests": 2,
+      "redirectRejections": 10
+    }
+  },
+  "reviewer": {
+    "username": "openai-reviewer",
+    "account": "review:openai:v1",
+    "dailyRunLimit": 3,
+    "dailyRunsUsed": 1,
+    "passwordAndKeysOmitted": true
+  },
+  "execution": {
+    "id": "2e0184b7-0771-4651-b6c1-88aa41e2a4f0",
+    "state": "VERIFIED",
+    "branchHeadSha": "306facf9002075ee16deb07e4fcafc94291f9021",
+    "pullRequestUrl": "https://github.com/AyobamiH/donestate-review-fixture/pull/2",
+    "verificationSnapshotDigest": "62d8e1b75412c2ba6477cbe5cfb309db48fe4f7b72661ec81641da64a8315950",
+    "verifierDecisionSummary": {
+      "schema": "donestate.verification-attestation.v2",
+      "decision": "verified",
+      "issuedAt": "2026-10-20T20:40:42.972Z",
+      "issuedBy": "urn:opstruth:service:public-verifier",
+      "evidenceRefs": [
+        "https://github.com/AyobamiH/donestate-review-fixture/commit/306facf9002075ee16deb07e4fcafc94291f9021",
+        "https://github.com/AyobamiH/donestate-review-fixture/compare/ab56672b2f009f152d3dc0c0464add7e9e2f0e8c...306facf9002075ee16deb07e4fcafc94291f9021"
+      ],
+      "verificationReportDigest": "bd2d268d4c2c632714d8bf21a49b853657d680af4dde5527037038f7527ce48b",
+      "signerFingerprint": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
+    }
+  },
+  "localValidation": {
+    "command": "npm test",
+    "passed": 9,
+    "failed": 0,
+    "hostedCiClaimed": false
+  },
+  "cases": [
+    {
+      "id": "wrong_password",
+      "passed": true,
+      "http": 401
+    },
+    {
+      "id": "wrong_username",
+      "passed": true,
+      "http": 401
+    },
+    {
+      "id": "invalid_csrf",
+      "passed": true,
+      "http": 400
+    },
+    {
+      "id": "prepared_demo_credential",
+      "passed": true
+    },
+    {
+      "id": "repaired_settings_contract",
+      "passed": true
+    },
+    {
+      "id": "isolated_repository",
+      "passed": true
+    },
+    {
+      "id": "settings_output",
+      "passed": true
+    },
+    {
+      "id": "settings_page",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "id": "setup_link_replay_denied",
+      "passed": true,
+      "http": 400
+    },
+    {
+      "id": "secret_tool_input_denied",
+      "passed": true
+    },
+    {
+      "id": "foreign_repository_denied",
+      "passed": true
+    },
+    {
+      "id": "scheduled_work_denied",
+      "passed": true
+    },
+    {
+      "id": "automatic_repair_denied",
+      "passed": true
+    },
+    {
+      "id": "oversized_run_denied",
+      "passed": true
+    },
+    {
+      "id": "long_run_denied",
+      "passed": true
+    },
+    {
+      "id": "untrusted_verifier_denied",
+      "passed": true
+    },
+    {
+      "id": "branch_only_publication_denied",
+      "passed": true
+    },
+    {
+      "id": "deployment_authority_denied",
+      "passed": true
+    },
+    {
+      "id": "create_unstarted_objective",
+      "passed": true
+    },
+    {
+      "id": "cancel_unstarted_objective",
+      "passed": true
+    },
+    {
+      "id": "delete_cancelled_objective",
+      "passed": true
+    },
+    {
+      "id": "deleted_objective_unavailable",
+      "passed": true
+    },
+    {
+      "id": "real_demo_started",
+      "passed": true
+    },
+    {
+      "id": "real_demo_published",
+      "passed": true,
+      "state": "AWAITING_VERIFICATION"
+    },
+    {
+      "id": "independent_verification",
+      "passed": true,
+      "observedAt": "2026-10-20T20:40:45.972Z"
+    },
+    {
+      "id": "verified_before_restore",
+      "passed": true
+    },
+    {
+      "id": "credential_deleted",
+      "passed": true
+    },
+    {
+      "id": "selection_removed",
+      "passed": true
+    },
+    {
+      "id": "previous_grant_revoked",
+      "passed": true
+    },
+    {
+      "id": "credential_restored",
+      "passed": true
+    },
+    {
+      "id": "quota_preserved",
+      "passed": true,
+      "dailyRunsUsed": 1
+    },
+    {
+      "id": "exact_selection_restored",
+      "passed": true
+    },
+    {
+      "id": "verified_run_preserved",
+      "passed": true
+    }
+  ],
+  "tokenRevocation": {
+    "passed": true,
+    "revokedRequestHttp": 401
+  },
+  "failuresObservedAndRepaired": [
+    {
+      "failure": "Reviewer login callback succeeded but token exchange returned 400",
+      "fix": "Encode only the reserved OAuth provider subject; real-provider PKCE/exchange/refresh/revocation regression added."
+    },
+    {
+      "failure": "Real PR was created but OpsTruth could not send the GitHub verification request",
+      "fix": "Replace Workers-unsupported redirect error mode with manual mode and reject every 3xx before retry handling."
+    },
+    {
+      "failure": "The fresh draft scan flagged destructiveHint false for the settings-link tool",
+      "fix": "Declare destructiveHint true and idempotentHint false because the existing behavior revokes the previous unused link. The production rescan removed this specific finding."
+    }
+  ],
+  "pending": [
+    "Await OpenAI provider review decision for the submitted package 0.3.3; portal In review and Not published.",
+    "OpenAI retains the new-tool-definition review hold; the red review alert is not fully cleared and approval/publication are not claimed.",
+    "Travel booking, email and merge/deploy/release non-trigger cases are saved for reviewer evaluation; model routing has not been exercised in the submitted plugin.",
+    "Whole-account deletion has code-test coverage only; credential/selection deletion and reconnect were tested live."
+  ],
+  "sourceEvidenceSha256": {
+    "donestate-reviewer-full-acceptance-v2-20261020.json": "2592b3dd5873f131732f1f7f33c6c06cee5b7003494e85623c298d3a78cc04aa",
+    "donestate-reviewer-verifier-after-fix-20261020.json": "b5bd6479e0a37dbb90b20785966a0543f9359292b59d19c3b5d3250a6f7cbb0c",
+    "donestate-reviewer-restore-20261020.json": "4ef6f4977ff61a5958044d0d54ccd7203a9c43a198e57c4b143ed4cf43f7f0f3"
+  },
+  "annotationRepair": {
+    "commit": "57bad60c2862bb5c616090d39e751150977a194b",
+    "workerVersion": "03d2405f-fb4c-4618-a244-f6f91dba6988",
+    "deployment": {
+      "deploymentId": "ac1eb425-bb8f-4c5a-afee-72fc6b8a58d0",
+      "createdOn": "2026-10-20T21:08:49.110359Z",
+      "versions": [
+        {
+          "version_id": "03d2405f-fb4c-4618-a244-f6f91dba6988",
+          "percentage": 100
+        }
+      ],
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      }
+    },
+    "buildPassed": true,
+    "focusedTestsPassed": 17,
+    "codeMatchesTestedWorkspaceAfterTrailingNewlineNormalization": true,
+    "fullWorkerSuiteBeforeThisAnnotationChange": 225,
+    "rootTestsBeforeThisAnnotationChange": 86,
+    "docsCheckPassed": true,
+    "behavior": "A new account-console link invalidates the previous unused ticket, so the tool now declares destructiveHint true and idempotentHint false.",
+    "regression": "Through real MCP calls: superseded link 400, current link 200, replay 400, account credential unchanged.",
+    "deploymentCaveat": "Wrangler uploaded and activated the Worker, then failed rebuilding the unchanged container on a Docker registry EOF. Read-only deployments list confirms this Worker at 100%; no container update or retry is claimed."
+  },
+  "publisherReview": {
+    "recordedAt": "2026-10-20T21:27:20.494Z",
+    "appId": "asdk_app_6abf3b8d3cb08191b1b4e670a707e652",
+    "packageVersion": "0.3.3",
+    "browserConnection": "Account connected; Reconnect available",
+    "authentication": "Authorized",
+    "domain": "Domain verified",
+    "status": "In review",
+    "priorReviewCancelledToEdit": true,
+    "positiveCasesSaved": 5,
+    "negativeNonTriggerCasesSaved": 3,
+    "privatePasswordPreserved": true,
+    "scanDisplayTime": "10/20/2026, 2:13:22 PM (portal display timezone)",
+    "findingCountBeforeAnnotationRepair": 2,
+    "findingCountAfterAnnotationRepair": 1,
+    "clearedFinding": "This tool is marked destructiveHint: false, but its behavior appears to cause material loss or a hard-to-reverse change.",
+    "remainingFindings": [
+      "This new tool definition needs further review before it can be published."
+    ],
+    "scannedAnnotations": {
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "readOnlyHint": false
+    },
+    "publication": "Not published",
+    "walkthrough": {
+      "path": "assets/donestate-reviewer-evidence-20261020.mp4",
+      "seconds": 90,
+      "sha256": "0252e1a81aabc26c9748d1a6c65d4c81fb6cd927140cea1ad70198dffe801a9e",
+      "description": "Silent evidence walkthrough of actual recorded live acceptance, not a new UI session or execution.",
+      "transcript": "docs/evidence/openai-reviewer-walkthrough-20261020.md",
+      "url": "https://github.com/AyobamiH/donestate/blob/7c27cbc6b8f228e34c76b29ee98c83de445659dd/assets/donestate-reviewer-evidence-20261020.mp4",
+      "publicDownloadHttp": 200,
+      "publishedBytesMatch": true,
+      "savedUrlReadbackMatched": true
+    },
+    "savedCaseReadback": {
+      "positive": 5,
+      "negativeNonTrigger": 3,
+      "allExactMatches": true
+    },
+    "submission": {
+      "observedAt": "2026-10-20T21:27:20.494Z",
+      "userActionTimeApproval": "yes submit",
+      "finalSubmitClickedOnce": true,
+      "status": "In review",
+      "metadataAndSkillsVersion": "0.3.3",
+      "publication": "Not published",
+      "mcpConfiguration": "Configured",
+      "portalUrl": "https://platform.openai.com/plugins/manage/plugin_asdk_app_6abf3b8d3cb08191b1b4e670a707e652",
+      "listVersionLabel": "1.0.0",
+      "versionNote": "The plugins list labels the associated app 1.0.0; the submitted detail page explicitly confirms Metadata & skills version 0.3.3 In review."
+    }
+  }
+}

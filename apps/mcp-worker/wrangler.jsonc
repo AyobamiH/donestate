@@ -51,11 +51,12 @@
     // Bounded production override after issue #110 failed closed before any Codex launch.
     "USER_DAILY_RUN_LIMIT": "12",
     "PLATFORM_OWNER_LOGIN": "AyobamiH",
+    "OPENAI_REVIEW_REPOSITORY": "AyobamiH/donestate-review-fixture",
     "CANONICAL_ORIGIN": "https://donestate.proofandstate.com",
     // Public proof required by the OpenAI Apps domain-verification flow.
     "OPENAI_APPS_CHALLENGE": "VGfoWKKZx7N8MuzA0jQ0kaKC4A1ofTziFyPLOk0Kn2A",
     // SHA-256 of the high-entropy password supplied only in the OpenAI review portal.
-    "OPENAI_REVIEW_PASSWORD_SHA256": "f29bfd7af82b519a8c6aac3b11acd4be201a43872d4fedf9092481a1dc3f3b01",
+    "OPENAI_REVIEW_PASSWORD_SHA256": "b330170461ffaff4da768a0747474dcdbb62e3f46fcb6146261c9b2e8fe1b185",
     "OPSTRUTH_MCP_URL": "https://mcp.opstruth.io/mcp",
     "OPSTRUTH_VERIFIER_FINGERPRINT": "09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86"
   },

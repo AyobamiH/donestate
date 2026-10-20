@@ -1,3 +1,5 @@
+import { migrateMaintenanceRegistry } from "./maintenance-schema";
+import { assertReviewRepository, assertReviewSelection, isReviewIdentity, REVIEW_MAX_CHANGED_FILES, REVIEW_MAX_DURATION_MS } from "./review-access";
 import { DurableObject } from "cloudflare:workers";
 import { digest } from "./canonical";
 import { sealSecret, unsealSecret } from "./crypto";
@@ -15,371 +17,42 @@ import {
 } from "./types";
 import { assertFingerprint, assertRepository, assertRef } from "./validation";
 
-interface AppRow extends Record<string, SqlStorageValue> {
-  app_id: number;
-  slug: string;
-  name: string;
-  html_url: string;
-  sealed_private_key: string;
-  sealed_webhook_secret: string;
-  configured_by: string;
-  updated_at: string;
-}
-
-interface RepositoryRow extends Record<string, SqlStorageValue> {
-  owner_login: string;
-  repository: string;
-  default_branch: string;
-  installation_id: number | null;
-  mode: SelectedRepository["mode"];
-  schedule_enabled: number;
-  auto_repair: number;
-  required_checks_json: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface FindingRow extends Record<string, SqlStorageValue> {
-  id: string;
-  owner_login: string;
-  repository: string;
-  source: MaintenanceFinding["source"];
-  source_id: string;
-  title: string;
-  detail: string;
-  url: string;
-  repair_eligible: number;
-  state: MaintenanceFinding["state"];
-  run_id: string | null;
-  discovered_at: string;
-  updated_at: string;
-}
-
-interface MarketplaceEntitlementRow extends Record<string, SqlStorageValue> {
-  account_id: number;
-  account_login: string;
-  account_type: MarketplaceEntitlement["accountType"];
-  authorized_by_login: string | null;
-  plan_id: number;
-  plan_name: string;
-  state: MarketplaceEntitlement["state"];
-  effective_at: string;
-  updated_at: string;
-}
-
-interface MarketplaceWebhookReceipt {
-  schema: "donestate.marketplace-webhook-receipt.v1";
-  accepted: true;
-  deliveryId: string;
-  action: MarketplacePurchaseAction;
-  duplicate: boolean;
-  stale: boolean | null;
-  currentState: MarketplaceEntitlement["state"];
-  currentEffectiveAt: string;
-}
-
-interface MarketplaceWebhookFailureRow extends Record<string, SqlStorageValue> {
-  id: number;
-  category: "configuration" | "processing";
-  delivery_id: string | null;
-  event_name: string;
-  status_code: number;
-  detail: string;
-  observed_at: string;
-  resolved_at: string | null;
-}
-
-export interface MarketplaceWebhookHealth {
-  schema: "donestate.marketplace-webhook-health.v1";
-  unresolvedRecent: number;
-  unresolvedConfiguration: number;
-  unresolvedProcessing: number;
-  latestObservedAt: string | null;
-  escalationRequired: boolean;
-}
-
-interface AccountRunRow extends Record<string, SqlStorageValue> {
-  owner_login: string;
-  run_id: string;
-  repository: string;
-  objective_class: "operator" | "maintenance_pr";
-  created_at: string;
-  updated_at: string;
-}
-
-interface AccountControlRow extends Record<string, SqlStorageValue> {
-  owner_key: string;
-  deleting: number;
-  generation: number;
-  updated_at: string;
-}
-
-export interface AccountRunRecord {
-  schema: "donestate.account-run.v1";
-  ownerLogin: string;
-  runId: string;
-  repository: string;
-  objectiveClass: "operator" | "maintenance_pr";
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface AccountDataSummary {
-  schema: "donestate.account-data-summary.v1";
-  ownerLogin: string;
-  selectedRepositories: number;
-  findings: number;
-  indexedRuns: number;
-  marketplaceUserEntitlements: number;
-  marketplaceOrganizationAuthorizations: number;
-}
-
-export const FUNNEL_EVENTS = [
-  "oauth_connection_completed",
-  "credential_setup_issued",
-  "account_console_opened",
-  "credential_connected",
-  "repository_selected",
-  "objective_created",
-  "objective_started",
-  "pull_request_opened",
-  "verification_verified",
-  "verification_failed",
-  "verification_uncertain",
-  "account_deletion_completed",
-] as const;
-
-export type FunnelEvent = (typeof FUNNEL_EVENTS)[number];
-
-interface FunnelDailyRow extends Record<string, SqlStorageValue> {
-  day_utc: string;
-  event_name: FunnelEvent;
-  event_count: number;
-  updated_at: string;
-}
-
-export interface FunnelDailySnapshot {
-  schema: "donestate.funnel-daily.v1";
-  dayUtc: string;
-  counts: Partial<Record<FunnelEvent, number>>;
-  totalEvents: number;
-}
-
-const MAX_SCHEDULED_REPOSITORIES = 20;
-const MAX_AUTOMATIC_REPAIRS_PER_SWEEP = 2;
-
-export function workflowVerificationRetryEligible(run: PublicRunRecord, repository: string, headSha: string): boolean {
-  return run.state === "AWAITING_VERIFICATION"
-    && run.objective.repository === repository
-    && run.branchHeadSha === headSha;
-}
-
-export function webhookAutoRepairEligible(repository: SelectedRepository, finding: MaintenanceFinding): boolean {
-  return repository.mode === "pr_only"
-    && repository.scheduleEnabled
-    && repository.autoRepair
-    && repository.installationId !== null
-    && repository.requiredCheckNames.length > 0
-    && finding.ownerLogin === repository.ownerLogin
-    && finding.repository === repository.repository
-    && finding.repairEligible
-    && finding.state === "OPEN";
-}
-
-export function doneStateRunIdFromBranch(branch: string): string | null {
-  const match = /^donestate\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/.exec(branch);
-  return match?.[1] ?? null;
-}
-
-export function verifiedMergedMaintenanceBranchRetirementEligible(
-  run: PublicRunRecord,
-  subject: PullRequestLifecycleSubject,
-): boolean {
-  return subject.merged
-    && subject.state === "closed"
-    && subject.headRepository === subject.repository
-    && run.state === "VERIFIED"
-    && run.objective.objectiveClass === "maintenance_pr"
-    && run.objective.repository === subject.repository
-    && run.objective.baseRef === subject.baseRef
-    && run.branchName === `donestate/${run.id}`
-    && run.branchName === subject.headRef
-    && run.branchHeadSha === subject.headSha
-    && run.pullRequestNumber === subject.number;
-}
-
-function repositoryRecord(row: RepositoryRow): SelectedRepository {
-  return {
-    schema: "donestate.selected-repository.v1",
-    ownerLogin: row.owner_login,
-    repository: row.repository,
-    defaultBranch: row.default_branch,
-    installationId: row.installation_id,
-    mode: row.mode,
-    scheduleEnabled: row.schedule_enabled === 1,
-    autoRepair: row.auto_repair === 1,
-    requiredCheckNames: JSON.parse(row.required_checks_json) as string[],
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
-  };
-}
-
-function findingRecord(row: FindingRow): MaintenanceFinding {
-  return {
-    schema: "donestate.maintenance-finding.v1",
-    id: row.id,
-    ownerLogin: row.owner_login,
-    repository: row.repository,
-    source: row.source,
-    sourceId: row.source_id,
-    title: row.title,
-    detail: row.detail,
-    url: row.url,
-    repairEligible: row.repair_eligible === 1,
-    state: row.state,
-    runId: row.run_id,
-    discoveredAt: row.discovered_at,
-    updatedAt: row.updated_at,
-  };
-}
-
-function accountRunRecord(row: AccountRunRow): AccountRunRecord {
-  return {
-    schema: "donestate.account-run.v1",
-    ownerLogin: row.owner_login,
-    runId: row.run_id,
-    repository: row.repository,
-    objectiveClass: row.objective_class,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
-  };
-}
-
-function marketplaceEntitlementRecord(row: MarketplaceEntitlementRow): MarketplaceEntitlement {
-  return {
-    schema: "donestate.marketplace-entitlement.v1",
-    accountId: row.account_id,
-    accountLogin: row.account_login,
-    accountType: row.account_type,
-    authorizedByLogin: row.authorized_by_login,
-    planId: row.plan_id,
-    planName: row.plan_name,
-    state: row.state,
-    effectiveAt: row.effective_at,
-    updatedAt: row.updated_at,
-  };
-}
-
-function marketplaceState(action: MarketplacePurchaseAction): MarketplaceEntitlement["state"] {
-  if (action === "cancelled") return "CANCELLED";
-  if (action === "pending_change") return "PENDING_CHANGE";
-  return "ACTIVE";
-}
+import {
+  AppRow,
+  RepositoryRow,
+  FindingRow,
+  MarketplaceEntitlementRow,
+  MarketplaceWebhookReceipt,
+  MarketplaceWebhookFailureRow,
+  MarketplaceWebhookHealth,
+  AccountRunRow,
+  AccountControlRow,
+  AccountRunRecord,
+  AccountDataSummary,
+  FUNNEL_EVENTS,
+  FunnelEvent,
+  FunnelDailyRow,
+  FunnelDailySnapshot,
+  MAX_SCHEDULED_REPOSITORIES,
+  MAX_AUTOMATIC_REPAIRS_PER_SWEEP,
+  workflowVerificationRetryEligible,
+  webhookAutoRepairEligible,
+  doneStateRunIdFromBranch,
+  verifiedMergedMaintenanceBranchRetirementEligible,
+  repositoryRecord,
+  findingRecord,
+  accountRunRecord,
+  marketplaceEntitlementRecord,
+  marketplaceState
+} from "./maintenance-records";
+export { MarketplaceWebhookHealth, AccountRunRecord, AccountDataSummary, FUNNEL_EVENTS, FunnelEvent, FunnelDailySnapshot, workflowVerificationRetryEligible, webhookAutoRepairEligible, doneStateRunIdFromBranch, verifiedMergedMaintenanceBranchRetirementEligible } from "./maintenance-records";
 
 export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
   constructor(ctx: DurableObjectState, env: DoneStateEnv) {
     super(ctx, env);
-    ctx.blockConcurrencyWhile(async () => this.migrate());
+    ctx.blockConcurrencyWhile(async () => migrateMaintenanceRegistry(ctx.storage.sql));
   }
 
-  private migrate(): void {
-    this.ctx.storage.sql.exec(`
-      CREATE TABLE IF NOT EXISTS github_app (
-        singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
-        app_id INTEGER NOT NULL,
-        slug TEXT NOT NULL,
-        name TEXT NOT NULL,
-        html_url TEXT NOT NULL,
-        sealed_private_key TEXT NOT NULL,
-        sealed_webhook_secret TEXT NOT NULL,
-        configured_by TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-      );
-      CREATE TABLE IF NOT EXISTS selected_repositories (
-        owner_login TEXT NOT NULL,
-        repository TEXT NOT NULL,
-        default_branch TEXT NOT NULL,
-        installation_id INTEGER,
-        mode TEXT NOT NULL CHECK (mode IN ('observe', 'pr_only')),
-        schedule_enabled INTEGER NOT NULL CHECK (schedule_enabled IN (0, 1)),
-        auto_repair INTEGER NOT NULL CHECK (auto_repair IN (0, 1)),
-        required_checks_json TEXT NOT NULL,
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL,
-        PRIMARY KEY (owner_login, repository)
-      );
-      CREATE TABLE IF NOT EXISTS findings (
-        id TEXT PRIMARY KEY,
-        owner_login TEXT NOT NULL,
-        repository TEXT NOT NULL,
-        source TEXT NOT NULL CHECK (source IN ('github_issue', 'workflow_run')),
-        source_id TEXT NOT NULL,
-        title TEXT NOT NULL,
-        detail TEXT NOT NULL,
-        url TEXT NOT NULL,
-        repair_eligible INTEGER NOT NULL CHECK (repair_eligible IN (0, 1)),
-        state TEXT NOT NULL CHECK (state IN ('OPEN', 'REPAIR_QUEUED', 'CLOSED')),
-        run_id TEXT,
-        discovered_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL,
-        UNIQUE (owner_login, repository, source, source_id),
-        FOREIGN KEY (owner_login, repository) REFERENCES selected_repositories(owner_login, repository) ON DELETE CASCADE
-      );
-      CREATE TABLE IF NOT EXISTS webhook_deliveries (
-        delivery_id TEXT PRIMARY KEY,
-        event_name TEXT NOT NULL,
-        repository TEXT,
-        received_at TEXT NOT NULL
-      );
-      CREATE TABLE IF NOT EXISTS marketplace_webhook_failures (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        category TEXT NOT NULL CHECK (category IN ('configuration', 'processing')),
-        delivery_id TEXT,
-        event_name TEXT NOT NULL,
-        status_code INTEGER NOT NULL,
-        detail TEXT NOT NULL,
-        observed_at TEXT NOT NULL,
-        resolved_at TEXT
-      );
-      CREATE INDEX IF NOT EXISTS idx_marketplace_webhook_failures_open
-        ON marketplace_webhook_failures(resolved_at, observed_at DESC);
-      CREATE TABLE IF NOT EXISTS marketplace_entitlements (
-        account_id INTEGER PRIMARY KEY,
-        account_login TEXT NOT NULL,
-        account_type TEXT NOT NULL CHECK (account_type IN ('User', 'Organization')),
-        authorized_by_login TEXT,
-        plan_id INTEGER NOT NULL,
-        plan_name TEXT NOT NULL,
-        state TEXT NOT NULL CHECK (state IN ('ACTIVE', 'PENDING_CHANGE', 'CANCELLED')),
-        effective_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-      );
-      CREATE TABLE IF NOT EXISTS account_runs (
-        owner_login TEXT NOT NULL,
-        run_id TEXT NOT NULL,
-        repository TEXT NOT NULL,
-        objective_class TEXT NOT NULL CHECK (objective_class IN ('operator', 'maintenance_pr')),
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL,
-        PRIMARY KEY (owner_login, run_id)
-      );
-      CREATE INDEX IF NOT EXISTS idx_account_runs_owner_updated
-        ON account_runs(owner_login, updated_at DESC);
-      CREATE TABLE IF NOT EXISTS account_controls (
-        owner_key TEXT PRIMARY KEY,
-        deleting INTEGER NOT NULL CHECK (deleting IN (0, 1)),
-        generation INTEGER NOT NULL,
-        updated_at TEXT NOT NULL
-      );
-      CREATE TABLE IF NOT EXISTS funnel_daily (
-        day_utc TEXT NOT NULL,
-        event_name TEXT NOT NULL,
-        event_count INTEGER NOT NULL CHECK (event_count >= 0),
-        updated_at TEXT NOT NULL,
-        PRIMARY KEY (day_utc, event_name)
-      );
-    `);
-  }
 
   async recordFunnelEvent(event: FunnelEvent, nowMs = Date.now()): Promise<void> {
     if (!FUNNEL_EVENTS.includes(event)) throw new Error("unsupported funnel event");
@@ -487,6 +160,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     const accountGeneration = await this.assertAccountWritable(login);
     assertRepository(input.repository);
     assertRef(input.defaultBranch);
+    assertReviewSelection(login, input, this.env);
     if (input.autoRepair && (input.mode !== "pr_only" || !input.scheduleEnabled)) {
       throw new Error("automatic repair requires pr_only mode and schedules");
     }
@@ -896,6 +570,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
   }
 
   private repository(login: string, repository: string): SelectedRepository {
+    assertReviewRepository(login, repository, this.env);
     const row = this.ctx.storage.sql.exec<RepositoryRow>(
       "SELECT * FROM selected_repositories WHERE owner_login = ? AND repository = ?",
       login, repository,
@@ -908,14 +583,14 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
     const selected = this.repository(login, repository);
     if (!selected.installationId) throw new Error("selected repository has no GitHub App installation");
     if (mode === "pr_only" && selected.mode !== "pr_only") throw new Error("selected repository is observe-only");
-    return createInstallationToken(await this.appCredentials(), selected.installationId, mode);
+    return createInstallationToken(await this.appCredentials(), selected.installationId, mode, selected.repository);
   }
 
   async discover(login: string, repository: string, fallbackToken?: string): Promise<{ repository: string; findings: MaintenanceFinding[] }> {
     const accountGeneration = await this.assertAccountWritable(login);
     const selected = this.repository(login, repository);
     let token = fallbackToken;
-    if (selected.installationId) token = (await createInstallationToken(await this.appCredentials(), selected.installationId, "read")).token;
+    if (selected.installationId) token = (await createInstallationToken(await this.appCredentials(), selected.installationId, "read", selected.repository)).token;
     if (!token) throw new Error("no read credential is available for maintenance discovery");
     const candidates = await discoverMaintenanceCandidates(token, repository);
     await this.assertAccountWritable(login, accountGeneration);
@@ -971,7 +646,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       throw new Error("independent OpsTruth verification is not configured");
     }
     assertFingerprint(this.env.OPSTRUTH_VERIFIER_FINGERPRINT);
-    const installation = await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only");
+    const installation = await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only", selected.repository);
     const baseHeadSha = await getBranchHead(installation.token, selected.repository, selected.defaultBranch);
     if (!baseHeadSha) throw new Error("selected default branch does not exist");
     const runId = crypto.randomUUID();
@@ -1012,8 +687,8 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
         kind: "github_checks_pass",
         requiredNames: selected.requiredCheckNames,
       }],
-      maxChangedFiles: 25,
-      maxDurationMs: 1_800_000,
+      maxChangedFiles: isReviewIdentity(login) ? REVIEW_MAX_CHANGED_FILES : 25,
+      maxDurationMs: isReviewIdentity(login) ? REVIEW_MAX_DURATION_MS : 1_800_000,
     };
     const admission = await this.recordRun(login, runId, selected.repository, "maintenance_pr", accountGeneration);
     const coordinator = this.env.RUN_COORDINATOR.getByName(runId);
@@ -1083,7 +758,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       const selected = this.repository(ownerLogin, subject.repository);
       if (selected.mode !== "pr_only" || !selected.installationId) return false;
       const token = installationToken
-        ?? (await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only")).token;
+        ?? (await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only", selected.repository)).token;
       const deletion = await deleteBranchRef(token, subject.repository, subject.headRef);
       const now = new Date().toISOString();
       this.ctx.storage.sql.exec(
@@ -1124,7 +799,7 @@ export class MaintenanceRegistry extends DurableObject<DoneStateEnv> {
       ownerLogin, repository,
     ).toArray();
     if (rows.length === 0) return 0;
-    const installation = await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only");
+    const installation = await createInstallationToken(await this.appCredentials(), selected.installationId, "pr_only", selected.repository);
     let retired = 0;
     for (const row of rows) {
       try {

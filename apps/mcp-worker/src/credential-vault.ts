@@ -1,3 +1,4 @@
+import { isReviewIdentity, REVIEW_DAILY_RUN_LIMIT } from "./review-access";
 import { DurableObject } from "cloudflare:workers";
 import { digest } from "./canonical";
 import { sealSecret, unsealSecret } from "./crypto";
@@ -53,7 +54,8 @@ function todayUtc(nowMs: number): string {
   return new Date(nowMs).toISOString().slice(0, 10);
 }
 
-function dailyRunLimit(env: DoneStateEnv): number {
+function dailyRunLimit(env: DoneStateEnv, login: string): number {
+  if (isReviewIdentity(login)) return REVIEW_DAILY_RUN_LIMIT;
   const value = Number.parseInt(env.USER_DAILY_RUN_LIMIT, 10);
   return Number.isSafeInteger(value) && value > 0 && value <= 1_000
     ? value
@@ -160,7 +162,7 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
       updatedAt: credential?.updated_at ?? null,
       lastUsedAt: credential?.last_used_at ?? null,
       dailyRunsUsed: currentDay ? quota?.runs_started ?? 0 : 0,
-      dailyRunLimit: dailyRunLimit(this.env),
+      dailyRunLimit: dailyRunLimit(this.env, ownerLogin),
       activeRunId: active,
     };
   }
@@ -222,7 +224,8 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
     }
     this.ctx.storage.sql.exec("DELETE FROM setup_ticket;");
     this.ctx.storage.sql.exec("DELETE FROM credential WHERE owner_login = ?", ownerLogin);
-    this.ctx.storage.sql.exec("DELETE FROM quota WHERE owner_login = ?", ownerLogin);
+    // Keep only the fixed demo account abuse counter; deletion must not reset its funded run budget.
+    if (!isReviewIdentity(ownerLogin)) this.ctx.storage.sql.exec("DELETE FROM quota WHERE owner_login = ?", ownerLogin);
     this.ctx.storage.sql.exec("DELETE FROM owner WHERE owner_login = ?", ownerLogin);
     this.ctx.storage.sql.exec(
       "UPDATE account_control SET deleting = 0, updated_at = ? WHERE singleton = 1",
@@ -252,7 +255,7 @@ export class CredentialVault extends DurableObject<DoneStateEnv> {
       throw new Error("another objective is already using this execution credential");
     }
     const sameRun = active && quota.active_run_id === runId;
-    if (!sameRun && quota.runs_started >= dailyRunLimit(this.env)) {
+    if (!sameRun && quota.runs_started >= dailyRunLimit(this.env, ownerLogin)) {
       throw new Error("daily autonomous-run limit reached");
     }
     const now = new Date(nowMs).toISOString();
