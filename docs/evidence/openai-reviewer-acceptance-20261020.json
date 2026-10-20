@@ -1,7 +1,7 @@
 {
   "schema": "donestate.openai-reviewer-acceptance.v1",
   "observedAt": "2026-10-20T20:41:58.307Z",
-  "acceptanceScope": "Live username/password OAuth and MCP protocol, real PR and independent VERIFIED; browser reviewer connection and saved review cases confirmed. Final resubmission and provider approval remain pending.",
+  "acceptanceScope": "Live username/password OAuth and MCP protocol, real PR and independent VERIFIED; reviewer browser connection and saved review cases confirmed. Existing package 0.3.3 submitted with user approval; portal In review. Provider approval and publication remain pending.",
   "doneState": {
     "commit": "efb815eed0ba52e14345012eec5d16f38490feb6",
     "workerVersion": "c5f0531d-1945-4d56-b1ec-5e3cb3dc174f",
@@ -214,7 +214,7 @@
     }
   ],
   "pending": [
-    "Final submission requires action-time approval to reaffirm the displayed OpenAI developer terms and plugin compliance declarations.",
+    "Await OpenAI provider review decision for the submitted package 0.3.3; portal In review and Not published.",
     "OpenAI retains the new-tool-definition review hold; the red review alert is not fully cleared and approval/publication are not claimed.",
     "Travel booking, email and merge/deploy/release non-trigger cases are saved for reviewer evaluation; model routing has not been exercised in the submitted plugin.",
     "Whole-account deletion has code-test coverage only; credential/selection deletion and reconnect were tested live."
@@ -252,13 +252,13 @@
     "deploymentCaveat": "Wrangler uploaded and activated the Worker, then failed rebuilding the unchanged container on a Docker registry EOF. Read-only deployments list confirms this Worker at 100%; no container update or retry is claimed."
   },
   "publisherReview": {
-    "recordedAt": "2026-10-20T21:16:38.283814+00:00",
+    "recordedAt": "2026-10-20T21:27:20.494Z",
     "appId": "asdk_app_6abf3b8d3cb08191b1b4e670a707e652",
     "packageVersion": "0.3.3",
     "browserConnection": "Account connected; Reconnect available",
     "authentication": "Authorized",
     "domain": "Domain verified",
-    "status": "Draft / Not submitted",
+    "status": "In review",
     "priorReviewCancelledToEdit": true,
     "positiveCasesSaved": 5,
     "negativeNonTriggerCasesSaved": 3,
@@ -292,6 +292,18 @@
       "positive": 5,
       "negativeNonTrigger": 3,
       "allExactMatches": true
+    },
+    "submission": {
+      "observedAt": "2026-10-20T21:27:20.494Z",
+      "userActionTimeApproval": "yes submit",
+      "finalSubmitClickedOnce": true,
+      "status": "In review",
+      "metadataAndSkillsVersion": "0.3.3",
+      "publication": "Not published",
+      "mcpConfiguration": "Configured",
+      "portalUrl": "https://platform.openai.com/plugins/manage/plugin_asdk_app_6abf3b8d3cb08191b1b4e670a707e652",
+      "listVersionLabel": "1.0.0",
+      "versionNote": "The plugins list labels the associated app 1.0.0; the submitted detail page explicitly confirms Metadata & skills version 0.3.3 In review."
     }
   }
 }

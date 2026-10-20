@@ -21,9 +21,11 @@ annotation and removal of that specific finding (two findings reduced to one).
 Five positive cases, three negative non-trigger cases and corrected reviewer
 instructions were saved in the existing app. The remaining alert is exactly:
 “This new tool definition needs further review before it can be published.”
-The existing 0.3.3 submission is draft while final resubmission awaits approval
-to reaffirm the displayed OpenAI terms and compliance declarations. This is not
-provider approval or publication. See the [recorded evidence walkthrough](evidence/openai-reviewer-walkthrough-20261020.md), which explains actual stored results and does not claim a new execution.
+After the user approved the displayed terms/compliance submission, the existing
+package was submitted. At 2026-10-20 21:27:20 UTC the detail page confirmed
+**Metadata & skills version 0.3.3 · In review**, MCP **Configured**, and
+**Not published**. The list labels the associated app 1.0.0; the detail page
+confirms the submitted package version. OpenAI approval remains pending. See the [recorded evidence walkthrough](evidence/openai-reviewer-walkthrough-20261020.md), which explains actual stored results and does not claim a new execution.
 
 Keep the existing app `asdk_app_6abf3b8d3cb08191b1b4e670a707e652`.
 Do not remove or rename a tool to evade its review finding.
