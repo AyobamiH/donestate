@@ -240,7 +240,8 @@ export function createServer(): McpServer {
       description: "Use when the user asks to open DoneState account settings or manage their execution credential. Create a single-use HTTPS link that expires after 10 minutes and replaces the previous unused link for this account. The link opens the authenticated DoneState account console. The external console lets the user inspect account state and manage their execution credential, selected repositories and eligible account-data deletion. This tool creates the access link only: it does not change a credential or delete account data, accepts no passwords or API keys, and never returns a stored secret. Any credential entry happens on the HTTPS website outside ChatGPT.",
       inputSchema: z.object({}).strict(),
       outputSchema: z.object({ setupUrl: z.string().url(), expiresAt: z.string().datetime() }).strict(),
-      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+      // Issuing a new link revokes the previous unused ticket; this is not additive.
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false },
     },
     async (_input, context) => {
       requireExecutionScope(context);

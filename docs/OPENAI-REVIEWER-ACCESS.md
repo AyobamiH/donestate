@@ -7,10 +7,16 @@ Updated: 20 October 2026. Work item: OPENAI-001; evidence: E-133.
 Live protocol acceptance now passes from reviewer username/password through real
 sandbox execution, local validation, PR publication and independent VERIFIED.
 See [the exact acceptance record](evidence/openai-reviewer-acceptance-20261020.json).
-The cloud-browser connection is still pending after a rejected password attempt.
-The last publisher status is “Complete MCP setup”; the earlier generic tool
-finding has not been proven cleared. Reviewer details, walkthrough and a fresh
-connected scan are still required. This is not directory approval or publication.
+The publisher browser connection now succeeds. Returning the existing submission
+to draft allowed a fresh scan to inspect the repaired tool definition. It surfaced
+two findings: a new-definition review hold and an incorrect `destructiveHint: false`.
+Issuing a settings link revokes the previous unused link, so the annotation is now
+`destructiveHint: true` and explicitly `idempotentHint: false`. The regression
+checks old-link rejection, current-link success, replay rejection and unchanged
+credential state. Deployment and a fresh scan must prove this specific finding
+cleared; the provider review hold must be recorded separately. Reviewer details
+and walkthrough still need updating before resubmission. The app is currently
+draft, not approved or published.
 
 Keep the existing app `asdk_app_6abf3b8d3cb08191b1b4e670a707e652`.
 Do not remove or rename a tool to evade its review finding.

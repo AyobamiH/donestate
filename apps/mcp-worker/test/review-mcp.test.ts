@@ -28,7 +28,7 @@ describe("reviewer MCP regression", () => {
     expect(tool.title).toBe("Open DoneState account settings");
     expect(tool.inputSchema.additionalProperties).toBe(false);
     expect(Object.keys(tool.outputSchema.properties).sort()).toEqual(["expiresAt", "setupUrl"]);
-    expect(tool.annotations).toMatchObject({ readOnlyHint: false, destructiveHint: false, openWorldHint: false });
+    expect(tool.annotations).toMatchObject({ readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false });
   });
 
   it("allows the formerly blocked reviewer tool and opens its own real account console", async () => {
@@ -41,6 +41,20 @@ describe("reviewer MCP regression", () => {
     expect(html).toContain(OPENAI_REVIEW_LOGIN);
     expect(html).toContain("separate review demo is funded by the publisher");
     expect(html).not.toContain("Signed in as <strong>AyobamiH");
+  });
+
+  it("revokes the previous unused settings link while preserving the account credential", async () => {
+    const vault = env.CREDENTIAL_VAULT.getByName(OPENAI_REVIEW_LOGIN);
+    const before = await vault.status(OPENAI_REVIEW_LOGIN);
+    const first = await rpc("tools/call", { name: "create_openai_credential_setup", arguments: {} });
+    const second = await rpc("tools/call", { name: "create_openai_credential_setup", arguments: {} });
+    const oldUrl = first.result.structuredContent.setupUrl;
+    const currentUrl = second.result.structuredContent.setupUrl;
+    expect(currentUrl).not.toBe(oldUrl);
+    expect((await credentialSettingsHandler.fetch(new Request(oldUrl), env)).status).toBe(400);
+    expect((await credentialSettingsHandler.fetch(new Request(currentUrl), env)).status).toBe(200);
+    expect((await credentialSettingsHandler.fetch(new Request(currentUrl), env)).status).toBe(400);
+    expect(await vault.status(OPENAI_REVIEW_LOGIN)).toEqual(before);
   });
 
   it("rejects old owner-mapped reviewer tokens even for read tools", async () => {
