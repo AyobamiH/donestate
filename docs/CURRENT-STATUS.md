@@ -4,6 +4,20 @@
 
 The canonical recovery order, owners, wait conditions, stale dates, and Evidence Story Bank are generated from `governance/project-ledger.json` into [Project state](PROJECT-STATE.md). Any consequential code, workflow, contract, deployment, distribution, or external-state change must update that ledger in the same change. Generated project state is never hand-edited.
 
+## Release recovery checkpoint — 20 October 2026
+
+<!-- Current release recovery evidence: E-137 -->
+
+Release acceptance: **PENDING**.
+
+`AGENTPROOF-001` remains blocked on independent release acceptance. [E-134's immutable checkpoint](evidence/agentproof-release-publication-checkpoint-20261018.json) records one publication of release `416342082`, original DoneState run `12741172-631f-47b4-88c2-a63eeb1f9574`, three receipt readback failures and expired original completion freshness. It records disabled temporary services at closure; no new live readback is implied here.
+
+[ADR 002](adr/002-deterministic-release-recovery.md) records the approved deterministic Cloudflare Durable Object recovery and deferral of Pi Durable / PiHarness. The implementation now persists alarms, stages, budgets and failures and recovers fresh, signed observations without another publication or changes to original authority. [E-137's source validation checkpoint](evidence/agentproof-release-recovery-source-checkpoint-20261020.json) records `LOCAL_VALIDATED`, exact source hashes and passing output: AgentProof 76 core, 20 script and 21 provider tests; DoneState 104 root and 29 provider tests; OpsTruth 146 root and 20 provider tests. Actual local Workers SQLite restart/native alarms and the three-service fixture also passed. These are engineering results; a signed original-release receipt, independently signed live OpsTruth outcome and original durable DoneState settlement remain unmet acceptance gates.
+
+**The current execution blocker is GitHub account billing.** For [OpsTruth PR #44](https://github.com/AyobamiH/opstruth-chatgpt-plugin/pull/44), GitHub refused to start the required [verification job](https://github.com/AyobamiH/opstruth-chatgpt-plugin/actions/runs/39456417332/job/118744366283) at head `40ebd2c1201c1dfeaada58ba49a535c6ebacd1e8`: “The job was not started because your account is locked due to a billing issue.” E-137 retains that exact provider annotation and read endpoint. Required checks are unsatisfied; merge and recovery deployment remain blocked. Resolve the billing lock, rerun the existing required checks on each final PR head, then continue the documented deployment and acceptance gates. This checkpoint records no new live deployment or health observation.
+
+The unrelated [reviewer sign-in repair PR #200](https://github.com/AyobamiH/donestate/pull/200) is active work. Its current repository evidence reports a 19 October OpenAI rejection and a reachable but not positively validated reviewer-login path. E-136 records that bounded review without merging, deploying or resubmitting the auth change.
+
 ## Current checkpoint, 9 October 2026
 
 Owned-domain GA is recorded in E-118 after actual OneClickPostFactory fresh-client OAuth passed: code exchange, read-only MCP, token refresh and confirmed scoped revocation. Selected-App execution, pinned independent verification, indexed test-state cleanup, temporary Write removal, live policy text and current deployed-version natural health are separately complete. DoneState PR #185 and Proof & State PR #41 merged with all required candidate and exact-merge checks green. See [launch acceptance](GA-LAUNCH.md) for exact subjects and limits.

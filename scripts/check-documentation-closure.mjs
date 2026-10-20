@@ -1,5 +1,6 @@
 import { access, readFile } from "node:fs/promises";
 import { isDeepStrictEqual } from "node:util";
+import { validateReleaseRecoveryEvidence } from "./check-release-recovery-evidence.mjs";
 
 for (const file of ["README.md", "CHANGELOG.md", "docs/CURRENT-STATUS.md", "docs/ROADMAP.md", "docs/HOSTED-PLUGIN.md", "docs/DIRECTORY-SUBMISSION.md", "docs/INCIDENT-RESPONSE.md", "docs/GITHUB-MARKETPLACE.md", "docs/GITHUB-MARKETPLACE-PREFLIGHT.md", "docs/GITHUB-MARKETPLACE-DEVELOPMENT.md", "docs/CLI-REFERENCE.md", "docs/USER-WORKFLOW.md", "docs/TROUBLESHOOTING.md", "docs/cli-command-manifest.json", "governance/project-ledger.json", "AGENTS.md"]) {
   await access(new URL(`../${file}`, import.meta.url));
@@ -183,4 +184,5 @@ for (const [file, contents] of [["README.md", readme], ["docs/CURRENT-STATUS.md"
     if (!contents.includes(fact)) throw new Error(`${file} is missing the separate current OpenAI review state: ${fact}`);
   }
 }
+await validateReleaseRecoveryEvidence({ ledger });
 console.log("documentation closure: ok");

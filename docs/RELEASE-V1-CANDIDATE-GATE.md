@@ -1,6 +1,32 @@
-# Source-only DoneState release.v1 consequence verification gate
+# DoneState release.v1 consequence verification gate
 
-Status: **unreleased, unregistered and inactive**. The existing DoneState product/service does not execute release.v1 and no historical run is changed to VERIFIED. This module is not exported from the public SDK index or wired into the hosted Worker.
+<!-- Current release recovery evidence: E-137 -->
+
+Release acceptance: **PENDING**.
+
+Current status, 20 October 2026: **isolated publication observed; durable readback recovery locally validated; required GitHub checks blocked before execution by the account billing lock; live independent acceptance pending**. The hosted DoneState product and public SDK do not gain a general release action. The separate canary controller retains original run `12741172-631f-47b4-88c2-a63eeb1f9574`.
+
+[The preserved 18 October checkpoint](evidence/agentproof-release-publication-checkpoint-20261018.json) establishes one publication of release `416342082` and failed separate receipt readback. It does not establish a signed release receipt, OpsTruth release decision or terminal DoneState VERIFIED. [ADR 002](adr/002-deterministic-release-recovery.md) records the accepted strategy; [E-137's hash-bound source checkpoint](evidence/agentproof-release-recovery-source-checkpoint-20261020.json) retains the passing source/runtime/interop evidence and the exact required-CI billing refusal from OpsTruth PR #44. Resolve that provider lock and pass each final PR head's existing required checks before merge or recovery deployment; no new live deployment is recorded here.
+
+The original source-gate sections below retain their dated rationale. Later provisioning/publication evidence supersedes their previous deployment blockers. No historical failed run becomes VERIFIED merely because a new implementation passes source checks.
+
+## Recording the next recovery outcome
+
+`governance/project-ledger.json` remains the canonical status record. Append a new evidence story and dated checkpoint under `docs/evidence/`; keep the original publication checkpoint and earlier recovery checkpoints byte-identical. Link the new checkpoint as the story's `artifact: {path, sha256}` and make that story the last `AGENTPROOF-001.evidenceIds` entry. Update the current evidence marker, checkpoint link and explicit acceptance state in this document and `CURRENT-STATUS.md`, then run `npm run governance:render` and `npm run docs:check`.
+
+The machine contract is `scripts/check-release-recovery-evidence.mjs`. Every referenced proof is a repository-local `{path, sha256}` artifact. The checkpoint preserves its original release, run, transaction, workflow, completion timestamps and archived trust policy throughout these stages:
+
+| Recorded stage | Required evidence and limits |
+| --- | --- |
+| `implementation.state: LOCAL_VALIDATED` | One `implementation.verification` reference to a `donestate.agentproof.release-recovery-source-checks.v1` report. It records `engineeringOnly: true`, source file SHA-256 inventories, exact passing commands with retained output and output hashes, and the actual `fixtureOnly` cross-service result. The guard compares the DoneState inventory with the current checkout. This is local engineering evidence; acceptance remains `PENDING`. |
+| `deployment.state: DEPLOYED` | An artifact with schema `donestate.agentproof.release-recovery-deployment.v1`, observation time, all three exact repository source commits and all four original Worker services. Each service records its source, preserved namespace bindings, fully deployed version ID and observed health. Public `enabled` remains false; `readbackRecoveryEnabled` is true. Health must bind the exact service source and original producing workflow. |
+| Scheduled, running or blocked recovery | The current `acceptance.controllerSnapshot` artifact must match the declared `recovery.state` and preserve the original authorised record and audit prefix. `BLOCKED` retains its refusal code, stopped scheduling and audited preserved run status; it cannot substitute for an independently signed release outcome. |
+| Terminal release acceptance | `acceptance.receipt`, `readbackAttestation`, `independentDecision` and `controllerSnapshot` each reference the actual retained JSON. The snapshot must contain the original execution evidence, fresh observation, receipt, handoff, signed independent decision and valid append-only audit. `acceptance.settledAt` must equal the recorded durable completion and terminal audit time. Production cryptographic validators recheck the exact original five trust roles and release/run/receipt bindings at that archived settlement time. |
+| Fresh disabled-service closure | `closure.state: DISABLED` references a `donestate.agentproof.release-recovery-closure.v1` artifact through `closure.freshReadback`. It records the same four services, exact source/version/namespace bindings and fresh health with both activation flags false. `AGENTPROOF-001` can become `complete` only after independently `VERIFIED` acceptance and this closure evidence. |
+
+Deployment and closure service entries have the shape `{name, source, namespaces, versions: [{version_id, percentage: 100}], health}`. Their top-level `sources` map must equal `checkpoint.implementation.sources` for `agentproof`, `donestate` and `opstruth`. A pending implementation uses `deployment: {state: "NOT_OBSERVED", artifact: null}` and retains the dated historical closure without claiming a fresh health observation.
+
+The offline guard verifies integrity, consistency and signed acceptance contracts. A hash of an unsigned provider snapshot does not prove its remote origin, persistence, or health after the recorded observation. Retain the actual provider responses and reviewed deployment evidence; record later external changes in a successor checkpoint. A passing fixture, a Boolean completion claim, or a new timestamp alone cannot close the release acceptance gate.
 
 ## Three separate trust domains
 
@@ -14,7 +40,9 @@ To classify an outcome as `VERIFIED` the caller must also present an **independe
 
 This is a *source-only acceptance function*, not a DoneState controller state-transition API. No deployment, GitHub release PATCH, npm publish, Worker authority change, private GitHub grant, credential setup, new public MCP tool, independent end-user installation, or accepted real customer outcome is performed by this module.
 
-## Further real-world acceptance requirements
+## Real-world acceptance requirements and preserved checklist
+
+For this already published target, preserve completed steps as evidence and resume only missing readback/signing/verification. Never replay a publication or replace the original run.
 
 1. Review the AgentProof release.v1 GitHub authority, provision separate release-specific signing keys/policy and durable global target fencing. Do not widen the existing patch-canary signing role.
 2. Create precisely one isolated disposable GitHub draft prerelease and pin its repository/release IDs, exact tag, package and provenance assets. Obtain a proper scoped GitHub write grant for **that** candidate only and record independent authorisation.

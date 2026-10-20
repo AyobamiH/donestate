@@ -5,12 +5,15 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.mjs",
-    "check": "npm test && wrangler deploy --dry-run"
+    "test:runtime": "node test/workerd-recovery.check.mjs",
+    "check": "npm test && npm run test:runtime && wrangler deploy --dry-run"
   },
   "dependencies": {
     "jose": "6.2.12"
   },
   "devDependencies": {
+    "esbuild": "0.28.2",
+    "miniflare": "5.20261012.1-beta",
     "wrangler": "4.151.1"
   }
 }

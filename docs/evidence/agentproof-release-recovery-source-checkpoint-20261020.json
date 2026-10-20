@@ -1,0 +1,126 @@
+{
+  "schema": "donestate.agentproof.release-recovery-checkpoint.v1",
+  "recordedAt": "2026-10-20T16:24:25.962Z",
+  "workItemId": "AGENTPROOF-001",
+  "evidenceId": "E-137",
+  "decision": {
+    "path": "docs/adr/002-deterministic-release-recovery.md",
+    "sha256": "f2da7e04fe43c7cc46b9d2cec30f33d269be47ed5e8992d3bdbd8426884c8819"
+  },
+  "predecessor": {
+    "path": "docs/evidence/agentproof-release-publication-checkpoint-20261018.json",
+    "sha256": "a47132f46afdac54a3053b03a2956c97845cd1d4380be092d08a5f81084bc1a5"
+  },
+  "original": {
+    "releaseId": 416342082,
+    "repositoryId": 1423718326,
+    "tagName": "v0.0.0-rc.2026101801",
+    "tagCommit": "1231076c12485a02fae3c38b0b850a25274985d5",
+    "transactionId": "38cec4aa-b4d9-43fe-9712-e5eaec86cf21",
+    "doneStateRunId": "12741172-631f-47b4-88c2-a63eeb1f9574",
+    "githubRunId": "39124373253",
+    "producingWorkflowCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+    "subjectDigest": "5a14f49405c358d42658bab4a3cc1215b3f5eb079595523214b8e2a7f567a0e4",
+    "completionFileSha256": "1004d55715a3bec00ff57485c6c647217e3dcb2eedf613ccfbc779523f796839",
+    "attemptedAt": "2026-10-18T11:43:36.818Z",
+    "verifiedAt": "2026-10-18T11:43:38.649Z",
+    "artifacts": {
+      "completion": {
+        "path": "docs/evidence/release-20261018/completion.json",
+        "sha256": "1004d55715a3bec00ff57485c6c647217e3dcb2eedf613ccfbc779523f796839"
+      },
+      "prepared": {
+        "path": "docs/evidence/release-20261018/prepared.json",
+        "sha256": "37dedc9dee09849d161ac89a028eb587d13f1770d2d1cb646e81f684e33eeac7"
+      },
+      "authorised": {
+        "path": "docs/evidence/release-20261018/authorised.json",
+        "sha256": "eae7ffc2b19822b891826e0cb98a1fc57e319b4b2c429adcc3572273bd71d093"
+      }
+    }
+  },
+  "implementation": {
+    "state": "LOCAL_VALIDATED",
+    "strategy": "deterministic_cloudflare_durable_objects",
+    "piHarness": "DEFERRED",
+    "sources": {
+      "agentproof": "704f10d78e63707834fcec002a76b97aafe76071",
+      "donestate": null,
+      "opstruth": "40ebd2c1201c1dfeaada58ba49a535c6ebacd1e8"
+    },
+    "verification": [
+      {
+        "path": "docs/evidence/recovery-20261020/source-checks.json",
+        "sha256": "a59d253134066a8d893f0d0eebb2827d5c5f5ce85bcd354769c2323d830a3181"
+      }
+    ]
+  },
+  "recovery": {
+    "state": "SOURCE_VALIDATED",
+    "additionalPublicationRequests": 0,
+    "restartEvidence": null,
+    "policy": {
+      "maxAttempts": 96,
+      "maxDurationMs": 259200000
+    }
+  },
+  "acceptance": {
+    "state": "PENDING",
+    "settledAt": null,
+    "receipt": null,
+    "readbackAttestation": null,
+    "independentDecision": null,
+    "controllerSnapshot": null,
+    "trustPolicy": {
+      "path": "docs/evidence/release-20261018/authorised.json",
+      "sha256": "eae7ffc2b19822b891826e0cb98a1fc57e319b4b2c429adcc3572273bd71d093"
+    }
+  },
+  "closure": {
+    "state": "HISTORICAL_DISABLED",
+    "evidence": "predecessor.closure",
+    "observedAt": "2026-10-18T11:57:30.662617+00:00",
+    "freshReadback": null
+  },
+  "limits": [
+    "The implemented recovery passed retained local checks; no reviewed live deployment or terminal release acceptance is recorded here.",
+    "No live recovery has been executed by this checkpoint.",
+    "The original signed completion and 18 October checkpoint are immutable predecessors.",
+    "Source tests, reviewed CI, deployment, signing, independent verification and durable settlement are separate stages.",
+    "Archived evidence verification is not a current provider health check.",
+    "Independent adoption and immutable npm RC6 distribution are separate from this canary."
+  ],
+  "deployment": {
+    "state": "NOT_OBSERVED",
+    "artifact": null
+  },
+  "review": {
+    "state": "BLOCKED",
+    "reasonCode": "ACCOUNT_BILLING_LOCK",
+    "providerObservation": {
+      "schema": "github.actions.execution-blocker.v1",
+      "observedAt": "2026-10-20T16:21:03.000Z",
+      "repository": "AyobamiH/opstruth-chatgpt-plugin",
+      "pullRequest": 44,
+      "headSha": "40ebd2c1201c1dfeaada58ba49a535c6ebacd1e8",
+      "workflowRunId": 39456417332,
+      "checkRunId": 118744366283,
+      "checkName": "verify",
+      "checkUrl": "https://github.com/AyobamiH/opstruth-chatgpt-plugin/actions/runs/39456417332/job/118744366283",
+      "sourceEndpoint": "https://api.github.com/repos/AyobamiH/opstruth-chatgpt-plugin/check-runs/118744366283/annotations",
+      "annotation": {
+        "path": ".github",
+        "start_line": 1,
+        "end_line": 1,
+        "annotation_level": "failure",
+        "message": "The job was not started because your account is locked due to a billing issue."
+      },
+      "classification": "ACCOUNT_BILLING_LOCK",
+      "testsExecuted": false,
+      "requiredChecksSatisfied": false,
+      "protectionBypassAttempted": false,
+      "deploymentAttempted": false
+    },
+    "nextAction": "Resolve the GitHub account billing lock and rerun every existing required check on each final PR head. Preserve branch protection; merge and recovery deployment remain gated on successful required checks."
+  }
+}

@@ -1,13 +1,19 @@
 {
   "name": "donestate-release-canary",
   "account_id": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
-  "main": "src/worker.mjs",
+  "main": "src/entrypoints.mjs",
   "compatibility_date": "2026-10-18",
   "compatibility_flags": [
     "nodejs_compat"
   ],
   "workers_dev": true,
   "preview_urls": false,
+  "services": [
+    {"binding":"AGENTPROOF_READBACK","service":"agentproof-release-approval","entrypoint":"ReleaseRecovery"},
+    {"binding":"AGENTPROOF_RECEIPTS","service":"agentproof-release-sign","entrypoint":"ReleaseRecovery"},
+    {"binding":"OPSTRUTH_RELEASE","service":"opstruth-release-verify","entrypoint":"ReleaseRecovery"}
+  ],
+  "triggers": {"crons":["*/5 * * * *"]},
   "durable_objects": {
     "bindings": [
       {
@@ -26,6 +32,14 @@
   ],
   "vars": {
     "ENABLED": "false",
+    "READBACK_RECOVERY_ENABLED": "false",
+    "READBACK_RECOVERY_RUN_ID": "",
+    "READBACK_RECOVERY_GITHUB_RUN_ID": "",
+    "READBACK_RECOVERY_TRANSACTION_ID": "",
+    "READBACK_RECOVERY_COMPLETION_DIGEST": "",
+    "READBACK_RECOVERY_AUTHORISATION_DIGEST": "",
+    "READBACK_RECOVERY_MAX_ATTEMPTS": "96",
+    "READBACK_RECOVERY_MAX_DURATION_MS": "259200000",
     "TRUSTED_SOURCE_SHA": "0000000000000000000000000000000000000000",
     "SERVICE_SOURCE_SHA": "0000000000000000000000000000000000000000",
     "AUDIENCE": "https://donestate-release-canary.woeinvests.workers.dev",

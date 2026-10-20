@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-10-18",
+  "updatedAt": "2026-10-20",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {
@@ -287,10 +287,10 @@
       "stream": "marketplace",
       "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Continue exercising changed, pending_change, and pending_change_cancelled through the owner-only draft listing and capture non-personal receipts without touching production listing state.",
-      "waitCondition": "Marketplace development remains a parallel distribution-validation lane; it is not a prerequisite for owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October bounded review of E-011 and docs/GITHUB-MARKETPLACE-DEVELOPMENT.md found retained cancellation evidence, with changed, pending_change and pending_change_cancelled still unproven in the inspected records. No new authenticated provider readback was performed. This isolated development lane remains separate from owned-domain launch.",
       "reentryCondition": "Continue through authenticated development-listing controls while keeping the draft isolated from production.",
       "dependencies": [
         "GOV-002"
@@ -301,7 +301,8 @@
         "E-009",
         "E-010",
         "E-011",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -448,10 +449,10 @@
       "stream": "verification",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Build and validate the exact installable OpenAI/plugin archive before the next directory release, including manifests, skills, secret scan, digest and CI.",
-      "waitCondition": "This is required for the OpenAI distribution channel but is not a prerequisite for the owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October review found no accepted archive for the next submission. distribution/current-release-candidate.json is older channel evidence; PR #200 is an auth repair and does not verify a new installable archive. Preserve the planned archive gate before resubmission.",
       "reentryCondition": "Begin when the next OpenAI directory submission or resubmission requires a new archive.",
       "dependencies": [
         "MKT-001",
@@ -459,7 +460,8 @@
         "MKT-003"
       ],
       "evidenceIds": [
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -545,11 +547,11 @@
       "stream": "verification",
       "status": "blocked",
       "owner": "DoneState and AgentProof maintainers",
-      "lastUpdated": "2026-10-18",
+      "lastUpdated": "2026-10-20",
       "staleDate": "2026-10-24",
-      "nextAction": "Add bounded credential-free HTTP status diagnostics to the separate receipt readback path and obtain independent review of a recovery protocol for the original settled execution after expiry. Preserve original timestamps, producing identity, all five signer roles, the original DoneState audit chain and the permanent target fence. No new target, new publication, clock extension or self-issued VERIFIED is authorised by this checkpoint.",
-      "waitCondition": "The disposable release was published once by run 39124373253 at 11:43:37 UTC. Receipt issuance failed public readback on attempts 1, 2 and 3; attempts 2 and 3 submitted zero publication requests and retained identical completion bytes. The original completion freshness expired at 11:53:38.649 UTC. All four temporary release services are now disabled with unchanged key bindings and target-fence namespaces. No release Receipt V2, independent OpsTruth decision or DoneState VERIFIED outcome is established.",
-      "reentryCondition": "Use exact protected source and source-pinned canary identities. Preserve five distinct signing roles, permanent target fences, existing production runtimes and historical evidence. A receipt alone must remain awaiting independent verification. Never reset a claim or repeat an ambiguous publication.",
+      "nextAction": "Resolve the observed GitHub account billing lock and rerun existing required checks on each final recovery PR head without bypassing protected-branch policy. Then record exact deployed source/version/health while preserving original namespaces, target, workflow and five signing roles; resume only readback/signing/independent verification for run 12741172-631f-47b4-88c2-a63eeb1f9574. Retain the actual signed receipt, fresh sidecar, OpsTruth decision, durable settlement and disabled-service closure before recording acceptance. Pi Durable / PiHarness remains deferred; independent adoption remains separate.",
+      "waitCondition": "E-137 retains local source hashes, passing command output, real local Workers SQLite restart/native alarms and synthetic three-service VERIFIED interoperability. GitHub refused to start required OpsTruth PR #44 verification at head 40ebd2c1201c1dfeaada58ba49a535c6ebacd1e8 because the account is locked due to a billing issue. Required checks are not satisfied; merge and deployment are blocked. No new recovery deployment, signed original-release receipt, independent live OpsTruth outcome or original-run terminal settlement is recorded. Original publication remains one; no mutation replay is authorised.",
+      "reentryCondition": "Required exact-head checks and review complete, then independently recorded deployment and private recovery evidence for the unchanged target fence and original DoneState run 12741172-631f-47b4-88c2-a63eeb1f9574. Public activation and READBACK_RECOVERY_ENABLED remain separate; never reissue publication, change trust roles or self-verify. Preserve all historical refused attempts and append a successor checkpoint for every acceptance or closure claim. PiHarness requires a separately accepted broader orchestration need.",
       "dependencies": [
         "VERIFY-004"
       ],
@@ -562,7 +564,9 @@
         "E-130",
         "E-132",
         "E-133",
-        "E-134"
+        "E-134",
+        "E-135",
+        "E-137"
       ]
     },
     {
@@ -635,10 +639,10 @@
       "stream": "marketplace",
       "status": "deferred",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Choose flat-rate Pro, per-seat organisation, trial, or continued free access from observed usage and cost.",
-      "waitCondition": "Keep the free public-repository plan while the listing remains pending and activation evidence is absent. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October review retained E-013 as historical 1 September unpublished/owner-preview evidence; current provider state was not re-observed. No new usage/cost, paid-plan decision or eligibility evidence was found in the inspected records. Paid-plan work remains deferred.",
       "reentryCondition": "Resume after publication, real usage, organisation ownership, publisher eligibility, and the applicable user threshold.",
       "dependencies": [
         "GTM-001"
@@ -646,7 +650,8 @@
       "evidenceIds": [
         "E-001",
         "E-013",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -655,10 +660,10 @@
       "stream": "marketplace",
       "status": "deferred",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Review Marketplace Insights, transactions, cancellations, support incidents, and entitlement reconciliation after publication without treating preview display counts as activation.",
-      "waitCondition": "The submission is Pending for publish and explicitly unpublished; the owner preview's displayed count of 1 is not public install or transaction evidence. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October review retained the distinction between E-013 owner-preview count and E-011 isolated development cancellation. Neither establishes a production transaction. No new provider transaction readback was performed; production listing/transaction review remains deferred.",
       "reentryCondition": "Resume when GitHub reports publication or the first real production transaction appears.",
       "dependencies": [
         "MKT-004"
@@ -666,7 +671,8 @@
       "evidenceIds": [
         "E-001",
         "E-013",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -833,18 +839,19 @@
       "stream": "distribution",
       "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
-      "nextAction": "Deploy the corrected cancellation annotation and accurate account-console link description, complete the owned-website privacy correction, rescan the canonical 0.3.2 draft and distinguish correctable findings from provider-required review before resubmission.",
-      "waitCondition": "The old publisher entry was deleted with explicit owner authority. The replacement 0.3.1 submission was withdrawn with owner approval to correct GitHub-facing links; 0.3.2 is currently a draft with reviewer information retained. Website privacy and MCP findings remain under correction; no approval or publication is claimed. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
-      "reentryCondition": "Advance on exact-head CI and production deployment, then record fresh publisher scan evidence and any explicit owner submission confirmation.",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
+      "nextAction": "Continue the separately owned reviewer sign-in repair in PR #200 through exact-head checks and authorised deployment. Before resubmission, record a fresh positive reviewer login using the privately configured review credentials, code exchange, read-only MCP access and token revocation; record the actual provider decision separately.",
+      "waitCondition": "20 October read-only inspection of PR #200 head 7eb6c06257faf83934527e6129b2da8b8d0fec44 records a reported 19 October v1.0.0 sign-in/OAuth rejection and an open reviewer-login repair. Discovery/consent and negative-login probe evidence is not positive reviewer-login proof. Provider email/portal was not independently inspected here. No merge, deployment, resubmission or approval is established by this review.",
+      "reentryCondition": "Resume from the actual current PR #200 head and its reviewer-access runbook. Preserve its authentication scope, private credentials and independent review; do not treat a reachable consent page or negative-password rejection as successful sign-in or permission to resubmit.",
       "dependencies": [],
       "evidenceIds": [
         "E-005",
         "E-040",
         "E-041",
         "E-061",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -869,16 +876,17 @@
       "stream": "ecosystem",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Select stable product-agnostic instructions, remove transient evidence, and open a tracked ai-prompts PR.",
-      "waitCondition": "No matching branch or PR exists in AyobamiH/ai-prompts. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October dependency review found VERIFY-003 still planned with no accepted new archive. The inspected ledger has no extraction PR receipt; no fresh ai-prompts inventory was inspected. Begin extraction after the archive gate and record the actual PR when one exists.",
       "reentryCondition": "Begin after VERIFY-003.",
       "dependencies": [
         "VERIFY-003"
       ],
       "evidenceIds": [
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -2918,6 +2926,69 @@
       "outcome": "The real publication step completed; the consequence acceptance did not. The original evidence window expired without a signed release receipt. Temporary release activation is closed without deleting the target fence, changing keys, extending freshness, republishing or issuing VERIFIED.",
       "content": "This is the successor to historical E-133, not a rewrite of its pre-publication observations. RC6 remains the immutable previously published developer prerelease; service changes are not retroactively inside that tarball. Manual byte checks and engineering canaries are not independent OpsTruth decisions or independent adoption.",
       "measurement": "Current-source patch checks 17/17; real release publications 1; additional publication requests in recovery attempts 0; real release receipts 0; independent OpsTruth release decisions 0; real DoneState release VERIFIED outcomes 0; qualifying independent installations 0 of 10."
+    },
+    {
+      "id": "E-135",
+      "date": "2026-10-20",
+      "identity": "Accepted deterministic durable release recovery; PiHarness deferred",
+      "situation": "A published release has no complete consequence receipt chain because the separate receipt readback failed and the original completion freshness expired. The user approved completing recovery on the existing Cloudflare runtime and explicitly required decisions and intentions to stay aligned with project documentation.",
+      "verification": "Reviewed AGENTS.md, existing product boundaries, AgentProof decision/status/roadmap documents, DoneState PR #199 at f3ddc857a617370209e27d749588d32d83b7739d and its unchanged publication checkpoint SHA-256 a47132f46afdac54a3053b03a2956c97845cd1d4380be092d08a5f81084bc1a5. ADR 002 records the accepted strategy, alternatives, authority limits, acceptance obligations and reconsideration trigger. This record contains no completed implementation, CI, deployment or live recovery result. The original public completion, prepared request/reservation and authorised run were recovered from the 18 October run archive and copied byte-for-byte under docs/evidence/release-20261018; the authorised record supplies the original five trust pins, signed grant and preceding audit history. No future receipt supplies its own trust roots.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Implement and review the accepted deterministic Cloudflare Durable Object recovery with persisted alarms, bounded retries and private ReleaseRecovery bindings. Preserve the original release, workflow/run/transaction, five trust roles, completion bytes and audit chain. Recover only fresh readback/signing and independent OpsTruth verification, then record exact durable settlement and closure evidence; Pi Durable / PiHarness remains deferred.",
+        "waitCondition": "E-134 records one publication of release 416342082 and three receipt readback failures; original completion freshness expired at 2026-10-18T11:53:38.649Z. E-135 records the approved recovery decision and implementation pending, with no new activation, receipt, independent release decision or DoneState VERIFIED evidence.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Architectural decision accepted; implementation and real independent acceptance remain pending. The earlier publication and failed readbacks are preserved.",
+      "content": "Deterministic recovery through persisted Durable Object stage/retry/alarm state and named private service bindings; fresh authority-signed readback sidecar linked to original execution; unchanged Receipt V2 and five-role independent verification; canonical ledger and hash-bound checkpoint guard.",
+      "measurement": "One accepted recovery decision; zero additional publication requests; zero new release receipts, independent OpsTruth release verdicts or DoneState VERIFIED outcomes. PiHarness integration deferred.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-release-recovery-checkpoint-20261020.json",
+        "sha256": "e2020396edf2797ce8406521b5685e1007ebae9b1861728dd60bbf100d99187c"
+      }
+    },
+    {
+      "id": "E-136",
+      "date": "2026-10-20",
+      "identity": "Bounded overdue-record review with separate active reviewer-auth evidence",
+      "situation": "Six noncomplete records missed the 18 October review deadline. Recovery work must preserve the strict freshness gate while reviewing actual available records and keeping concurrent auth work separate.",
+      "verification": "Read the six work items, E-011/E-013/E-061/E-126, the development Marketplace runbook, the older distribution candidate and the knowledge-base governance rules. Inspected PR #200 at head 7eb6c06257faf83934527e6129b2da8b8d0fec44: it is OPEN, has no ledger update, reports a 19 October v1.0.0 OpenAI sign-in/OAuth rejection and includes redacted reachability/negative-login evidence with positive credentials explicitly unvalidated. The inspected main path history since 17 October contains the release-authorisation change, not new Marketplace/skills acceptance. Evidence details, source hashes, scope limits and per-item missing proof are retained in the attached review artifact. No provider portal, email, transaction inventory or ai-prompts inventory was independently inspected.",
+      "accountability": {
+        "owner": "DoneState publisher and maintainers",
+        "status": "active",
+        "nextAction": "Review the named missing evidence by 23 October; keep PR #200 under its separate auth owner and exact-head gates. Do not resubmit, publish or complete unrelated work from this release recovery.",
+        "waitCondition": "External/provider outcomes, archive acceptance and positive reviewer-login proof remain absent from the respective reviewed evidence; existing statuses remain active, planned or deferred.",
+        "staleDate": "2026-10-23"
+      },
+      "outcome": "All six statuses and owners are preserved. Wait conditions now state specific reviewed evidence and unknowns; OPENAI-001 tracks the actual open auth repair instead of the obsolete draft-only action. Historical evidence is unchanged.",
+      "content": "Bounded dependency and evidence review, one redacted PR reference and six explicit follow-ups; no auth code, credentials, provider settings or distribution changes.",
+      "measurement": "Six records reviewed; one active auth PR inspected; zero status completions, new live provider acceptance claims or external mutations.",
+      "artifact": {
+        "path": "docs/evidence/governance-bounded-review-20261020.json",
+        "sha256": "77a32d50b447bd1e884358135b98cc12a1be5b65bb91a074b4847b3049fc1310"
+      }
+    },
+    {
+      "id": "E-137",
+      "date": "2026-10-20",
+      "identity": "Deterministic release recovery locally validated with hash-bound source, durable runtime and independent fixture evidence",
+      "situation": "E-135 records the accepted Cloudflare Durable Object strategy for the already published release; fresh receipt readback and independently signed acceptance remain unresolved. Source validation must not be confused with actual settlement of the preserved 18 October run.",
+      "verification": "AgentProof root checks passed 76 core and 20 script cases; isolated release provider passed 21 cases plus two disabled Worker dry runs. DoneState isolated service passed 29 cases and actual workerd SQLite restart/native alarms/private entrypoint settlement with the original fixture completion preserved, public recovery route 404 and zero publication requests; 18 documentation/governance guard cases passed. OpsTruth passed 146 root and 20 isolated verifier cases, including actual Workers RPC and expiry-during-I/O refusal, with disabled dry-run output. The actual three-service source fixture returned VERIFIED after an injected public-readback outage, object reconstruction, 12 read-only provider GETs and four alarm attempts; the completion and audit prefix remain unchanged and terminal duplicate delivery is a no-op. All stdout and source inventories are retained in the hash-bound report. DoneState full root check also passed and its output is retained.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Resolve the observed GitHub account billing lock and rerun existing required checks on each final recovery PR head without bypassing protected-branch policy. Then record exact deployed source/version/health while preserving original namespaces, target, workflow and five signing roles; resume only readback/signing/independent verification for run 12741172-631f-47b4-88c2-a63eeb1f9574. Retain the actual signed receipt, fresh sidecar, OpsTruth decision, durable settlement and disabled-service closure before recording acceptance. Pi Durable / PiHarness remains deferred; independent adoption remains separate.",
+        "waitCondition": "E-137 retains local source hashes, passing command output, real local Workers SQLite restart/native alarms and synthetic three-service VERIFIED interoperability. GitHub refused to start required OpsTruth PR #44 verification at head 40ebd2c1201c1dfeaada58ba49a535c6ebacd1e8 because the account is locked due to a billing issue. Required checks are not satisfied; merge and deployment are blocked. No new recovery deployment, signed original-release receipt, independent live OpsTruth outcome or original-run terminal settlement is recorded. Original publication remains one; no mutation replay is authorised.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "The deterministic recovery implementation is locally validated. Required hosted CI is blocked before execution by the GitHub account billing lock; the checkpoint preserves the provider annotation, exact PR/head/job and read endpoint. Release acceptance remains PENDING and AGENTPROOF-001 remains blocked. No protection bypass, new publication, live recovery deployment, signed original-release receipt, independent live outcome, terminal DoneState acceptance or fresh disabled-service closure is claimed.",
+      "content": "Source/check artifact with exact file and output hashes, local Workers persistence proof, complete-source cross-service cryptographic fixture, machine-verifiable checkpoint/ledger coupling and accepted decision reference.",
+      "measurement": "AgentProof provider: 21 cases passed; DoneState provider: 29 cases passed plus native Workers restart/alarms; OpsTruth provider: 20 cases passed; documentation guards: 18 cases passed; cross-service fixture GETs: 12; fixture alarm attempts: 4; extra publication requests: 0; new live release acceptance evidence: 0.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-release-recovery-source-checkpoint-20261020.json",
+        "sha256": "c2326beb7717c1da101000e583ce9cf854e5046aaa08dc15b3ab539f2c5e1856"
+      }
     }
   ]
 }

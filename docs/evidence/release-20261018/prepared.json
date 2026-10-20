@@ -1,0 +1,59 @@
+{
+  "state": "reserved",
+  "request": {
+    "stateDirectory": "/tmp/agentproof-release-canary-39124373253",
+    "transactionId": "38cec4aa-b4d9-43fe-9712-e5eaec86cf21",
+    "nonce": "release-canary:39124373253",
+    "idempotencyKey": "release-canary:39124373253",
+    "subject": {
+      "schema": "agentproof.release.subject.v1",
+      "owner": "AyobamiH",
+      "repository": "agentproof-release-canary",
+      "ownerId": 47716486,
+      "repositoryId": 1423718326,
+      "releaseId": 416342082,
+      "tagName": "v0.0.0-rc.2026101801",
+      "tagCommit": "1231076c12485a02fae3c38b0b850a25274985d5",
+      "packageAssetId": 653036082,
+      "packageAssetName": "agentproof-disposable-canary.tgz",
+      "packageDigest": "sha256:064f989c25b86269004401959b1e2aa68cc0b3acbf310ba647b892aa5e28b186",
+      "provenanceAssetId": 653046879,
+      "provenanceDigest": "sha256:fa76d7de87ba327ccd81943563af7daed1c87775e049e52a047df59c5b1475b4",
+      "provider": "github",
+      "prerelease": true,
+      "makeLatest": false
+    },
+    "approval": {
+      "schema": "agentproof.release.approval.v1",
+      "actionType": "agentproof.release.v1",
+      "subjectDigest": "5a14f49405c358d42658bab4a3cc1215b3f5eb079595523214b8e2a7f567a0e4",
+      "transactionId": "38cec4aa-b4d9-43fe-9712-e5eaec86cf21",
+      "nonce": "release-canary:39124373253",
+      "decision": "approved",
+      "environment": "production",
+      "issuer": "agentproof.release-canary.authority.v1",
+      "decidedAt": "2026-10-18T11:43:35.046Z",
+      "expiresAt": "2026-10-18T11:48:35.046Z",
+      "authorityPublicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAE1oky8U/4AGzkVKv1Wtq2v3r/KafucTJ7d84BUzWWXU=\n-----END PUBLIC KEY-----\n",
+      "signatureBase64": "NsLHTan6UPj4uFlkdXjMBsuqcKVDx3B6eFWSZTY6U2Fv5TYI0hlozfW+kfb4Kq04tfff9TIDDah8ldI7JX10Bw=="
+    }
+  },
+  "reservation": {
+    "schema": "agentproof.release-reservation.v1",
+    "state": "reserved",
+    "recoveryPolicy": {
+      "fingerprint": "sha256:ced7fb1c1fde59a6b3fb1379328bc8d00620b53332611565302fcfb5070b2795",
+      "runId": "12741172-631f-47b4-88c2-a63eeb1f9574"
+    },
+    "requestDigest": "d759326ec04f3e33a4212014a6cab46da1d811747e0ce047e6be05c8dd1a907d",
+    "subjectDigest": "5a14f49405c358d42658bab4a3cc1215b3f5eb079595523214b8e2a7f567a0e4",
+    "transactionId": "38cec4aa-b4d9-43fe-9712-e5eaec86cf21",
+    "githubRunId": "39124373253",
+    "githubRunAttempt": 1,
+    "workflowCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+    "issuedAt": "2026-10-18T11:43:35.046Z",
+    "expiresAt": "2026-10-18T11:48:35.046Z",
+    "authorityPublicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAE1oky8U/4AGzkVKv1Wtq2v3r/KafucTJ7d84BUzWWXU=\n-----END PUBLIC KEY-----\n",
+    "signatureBase64": "dCZH529ohh/Yc1o1ry8yiL1JSB64E18qHquPOPULw0eZZNIzR5jbGRV6hg4UI2mynBiDK8UUY3f2YfAPs56dAA=="
+  }
+}
