@@ -130,3 +130,5 @@ tokens returned 401. Whole-account deletion remains code-test coverage only.
 
 Gmail authenticates the publisher dashboard only. Reviewers use the dedicated
 username and password and need no Gmail, GitHub login or OpenAI API key.
+
+The 90-second [recorded acceptance walkthrough](https://github.com/AyobamiH/donestate/blob/7c27cbc6b8f228e34c76b29ee98c83de445659dd/assets/donestate-reviewer-evidence-20261020.mp4) is saved in Review information. Its public download matches the rendered SHA-256, and the saved URL plus all eight cases were read back successfully. The password field was preserved without reading or changing its value.

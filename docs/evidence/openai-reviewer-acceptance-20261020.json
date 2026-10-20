@@ -282,7 +282,16 @@
       "seconds": 90,
       "sha256": "0252e1a81aabc26c9748d1a6c65d4c81fb6cd927140cea1ad70198dffe801a9e",
       "description": "Silent evidence walkthrough of actual recorded live acceptance, not a new UI session or execution.",
-      "transcript": "docs/evidence/openai-reviewer-walkthrough-20261020.md"
+      "transcript": "docs/evidence/openai-reviewer-walkthrough-20261020.md",
+      "url": "https://github.com/AyobamiH/donestate/blob/7c27cbc6b8f228e34c76b29ee98c83de445659dd/assets/donestate-reviewer-evidence-20261020.mp4",
+      "publicDownloadHttp": 200,
+      "publishedBytesMatch": true,
+      "savedUrlReadbackMatched": true
+    },
+    "savedCaseReadback": {
+      "positive": 5,
+      "negativeNonTrigger": 3,
+      "allExactMatches": true
     }
   }
 }
