@@ -1,3 +1,4 @@
+import { isReviewIdentity } from "./review-access";
 import { accountNextSteps, renderAccountDocument } from "./account-layout";
 import { renderAccountRuns } from "./account-presentation";
 import { digest } from "./canonical";
@@ -83,6 +84,8 @@ function html(body: string, status = 200, cookies: string[] = []): Response {
 
 function page(login: string, csrf: string, account: AccountView, message?: string): Response {
   const status = account.credential;
+  const reviewer = isReviewIdentity(login);
+  const reviewNotice = reviewer ? "<p class=\"notice\">This separate review demo is funded by the publisher. Its execution credential is already prepared; you do not need to enter an API key. Only the demo repository is available, with at most 3 starts per UTC day, 5 changed files and 5 minutes per run. Signing in again restores removed demo setup. The daily demo usage counter remains after deletion so deletion cannot reset the funded limit.</p>" : "";
   const state = status.connected
     ? `Connected credential <code>${escapeHtml(status.fingerprint ?? "unknown")}</code>. Submitting replaces it.`
     : "No OpenAI credential is connected.";
@@ -91,9 +94,9 @@ function page(login: string, csrf: string, account: AccountView, message?: strin
     ? `<ul class="list">${account.repositories.map((item) => `<li><code>${escapeHtml(item.repository)}</code> — ${escapeHtml(item.mode)}</li>`).join("")}</ul>`
     : "<p class=\"muted\">No maintenance repositories are selected.</p>";
   const runs = renderAccountRuns(account.runs);
-  return html(renderAccountDocument("DoneState account settings", `<div class="settings-intro"><h1>DoneState account settings</h1><p>Signed in as <strong>${escapeHtml(login)}</strong>.</p></div>${notice}<nav class="account-nav" aria-label="Account sections"><a href="#execution">Execution</a><a href="#repositories">Repositories</a><a href="#objectives">Objectives</a><a href="#deletion">Data controls</a></nav>
+  return html(renderAccountDocument("DoneState account settings", `<div class="settings-intro"><h1>DoneState account settings</h1><p>Signed in as <strong>${escapeHtml(login)}</strong>.</p></div>${reviewNotice}${notice}<nav class="account-nav" aria-label="Account sections"><a href="#execution">Execution</a><a href="#repositories">Repositories</a><a href="#objectives">Objectives</a><a href="#deletion">Data controls</a></nav>
 <section id="execution" class="settings-section"><h2>Execution credential</h2><p>${state}</p>
-<p class="muted">The key goes directly to DoneState over HTTPS. It is encrypted at rest, never returned to ChatGPT or any other MCP client, and used only for your isolated autonomous runs. OpenAI charges usage to your API account.</p>
+<p class="muted">The key goes directly to DoneState over HTTPS. It is encrypted at rest, never returned to ChatGPT or any other MCP client, and used only for your isolated autonomous runs. ${reviewer ? "The publisher funds the prepared review credential." : "OpenAI charges usage to your API account."}</p>
 <p class="muted">Daily autonomous runs: ${status.dailyRunsUsed}/${status.dailyRunLimit}. Active run: ${escapeHtml(status.activeRunId ?? "none")}.</p>
 <form method="post" action="/settings/openai"><input type="hidden" name="csrf" value="${escapeHtml(csrf)}"><input type="hidden" name="action" value="connect_openai"><label class="field-label" for="api_key">OpenAI API key</label><input id="api_key" name="api_key" type="password" required minlength="20" maxlength="512" autocomplete="off" autocapitalize="none" spellcheck="false"><button type="submit">Verify and connect</button></form>
 </section><section id="repositories" class="settings-section"><h2>Repository access</h2>${repositories}<p>To change your selection, ask your connected MCP client to use <code>select_maintenance_repository</code> or <code>remove_maintenance_repository</code>. <a href="https://proofandstate.com/docs/donestate/maintenance">Repository access guide</a>.</p></section>
@@ -101,7 +104,7 @@ function page(login: string, csrf: string, account: AccountView, message?: strin
 <p class="muted">Indexed runs: ${account.summary.indexedRuns}; maintenance findings: ${account.summary.findings}. Run inventory covers objectives indexed by the account-controls release plus historical maintenance runs recoverable from findings. A direct objective created before this release may require deletion by its known run ID or a privacy request if it is not listed.</p>
 </section><section id="deletion" class="settings-section danger-zone"><h2>Delete account data</h2>
 <p class="muted">Deletion removes every indexed deletable objective, the stored OpenAI credential, selected-repository state, maintenance findings and user Marketplace entitlement records. Organization entitlement records keep the organization state but remove this login as authorizer. Active objectives must be cancelled first. Minimal opaque deletion-generation state remains only to fence stale in-flight writes; the global fence does not store your plaintext GitHub login.</p>
-<form method="post" action="/settings/openai"><input type="hidden" name="csrf" value="${escapeHtml(csrf)}"><input type="hidden" name="action" value="delete_account"><label class="field-label" for="confirm_login">Type your GitHub login to confirm</label><input id="confirm_login" name="confirm_login" required autocomplete="off"><button class="danger" type="submit">Delete indexed DoneState account data</button></form>
+<form method="post" action="/settings/openai"><input type="hidden" name="csrf" value="${escapeHtml(csrf)}"><input type="hidden" name="action" value="delete_account"><label class="field-label" for="confirm_login">Type your ${reviewer ? "account identifier shown above" : "GitHub login"} to confirm</label><input id="confirm_login" name="confirm_login" required autocomplete="off"><button class="danger" type="submit">Delete indexed DoneState account data</button></form>
 </section>`));
 }
 

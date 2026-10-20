@@ -1,3 +1,4 @@
+import { assertReviewObjective } from "./review-access";
 import { DurableObject } from "cloudflare:workers";
 import { canonicalJson, digest } from "./canonical";
 import { sealSecret, unsealSecret, verifyAttestation } from "./crypto";
@@ -178,6 +179,7 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
       throw new Error("new hosted objectives require the versioned verification response contract");
     }
     validateHostedObjective(objective);
+    assertReviewObjective(objective, this.env);
     if (!githubToken) throw new Error("GitHub authorization is missing");
     if (this.runRow()) throw new Error("run already exists");
     const now = new Date().toISOString();
@@ -200,6 +202,7 @@ export class RunCoordinator extends DurableObject<DoneStateEnv> {
 
   async start(ownerLogin: string): Promise<PublicRunRecord> {
     const run = this.assertOwner(ownerLogin);
+    assertReviewObjective(JSON.parse(run.objective_json) as HostedObjective, this.env);
     if (run.state === "RECEIVED") {
       await this.transition("QUEUED", "run_queued");
       this.recordOperatorFunnelBestEffort("objective_started");

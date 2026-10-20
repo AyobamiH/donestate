@@ -1,3 +1,4 @@
+import { OPENAI_REVIEW_LOGIN, prepareReviewAccount } from "./review-access";
 import { AuthorizationError, type AuthRequest, type OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 import { digest } from "./canonical";
 import { doneStateGrantScopes } from "./account-authorization";
@@ -206,7 +207,7 @@ ${permissions}
 <p class="hint"><a href="https://proofandstate.com/privacy">Privacy</a> · <a href="https://proofandstate.com/terms">Terms</a> · <a href="https://github.com/AyobamiH/donestate/issues">Support</a></p>
 <form method="post" action="/authorize"><input type="hidden" name="approval_state" value="${escapeHtml(approvalState)}"><input type="hidden" name="csrf" value="${csrf}"><div class="actions"><a class="cancel" href="/">Cancel</a><button class="approve" type="submit">Continue with GitHub</button></div></form>
 <p class="hint">${grant.accountControls ? "Sign in with the GitHub account whose DoneState service data you intend to inspect." : "Cloud Browser users: if GitHub asks you to confirm access, use your password or authenticator app. Passkeys are not supported in Cloud Browser."}</p>
-${grant.accountControls ? "" : `<section class="reviewer" aria-labelledby="reviewer-login-title"><h2 id="reviewer-login-title">OpenAI reviewer test account</h2><p>No GitHub sign-in, MFA, email verification or API key is required. Enter the password provided privately in the submission's Review details.</p><p>For OpenAI review only. This read-only account can inspect the sample repository and existing evidence but cannot create credentials, change repository selection, start work, open pull requests, merge, deploy, release, or submit verification.</p>
+${grant.accountControls ? "" : `<section class="reviewer" aria-labelledby="reviewer-login-title"><h2 id="reviewer-login-title">OpenAI reviewer test account</h2><p>No GitHub sign-in, MFA, email verification or API key is required. Enter the password provided privately in the submission's Review details.</p><p>For OpenAI review only. This separate demo account can open account settings, inspect sample work, run bounded tasks and open pull requests in its dedicated demo repository. Independent verification is required. Runs are limited to 5 changed files, 5 minutes and 3 starts per UTC day. Merge, deployment and release are unavailable. Signing in again restores the prepared demo credential and repository if you removed them.</p>
 <form method="post" action="/authorize/reviewer"><input type="hidden" name="approval_state" value="${escapeHtml(approvalState)}"><input type="hidden" name="csrf" value="${csrf}">
 <label>Username<input name="username" autocomplete="username" value="openai-reviewer" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label>
 <button class="approve" type="submit">Sign in to review</button></form></section>`}</main></body></html>`, 200, OAUTH_FORM_ACTION);
@@ -253,28 +254,32 @@ async function reviewerApprove(request: Request, env: AuthEnv): Promise<Response
     return new Response("CSRF validation failed", { status: 400 });
   }
   const expectedDigest = env.OPENAI_REVIEW_PASSWORD_SHA256;
-  const owner = env.PLATFORM_OWNER_LOGIN;
   const validPassword = typeof expectedDigest === "string"
     && /^[a-f0-9]{64}$/.test(expectedDigest)
     && await constantTimeEqual(expectedDigest, await digest(password));
-  if (username !== OPENAI_REVIEW_USERNAME || !validPassword || !owner) {
+  if (username !== OPENAI_REVIEW_USERNAME || !validPassword) {
     return new Response("Reviewer sign-in failed", { status: 401 });
   }
   const grant = doneStateGrantScopes(pending.oauthRequest, pending.authorizationOrigin ?? new URL(request.url).origin, EXECUTION_SCOPE);
   if (!grant || grant.accountControls) {
     return new Response("Required DoneState scope was not requested", { status: 400 });
   }
+  try {
+    await prepareReviewAccount(env);
+  } catch {
+    return new Response("Reviewer demo is not ready. Contact the publisher; no GitHub sign-up or API key is required.", { status: 503 });
+  }
   const { redirectTo } = await env.OAUTH_PROVIDER.completeAuthorization({
     request: pending.oauthRequest,
-    userId: owner,
+    userId: OPENAI_REVIEW_LOGIN,
     metadata: { label: "OpenAI reviewer" },
     scope: grant.scopes,
     props: {
-      userId: owner,
-      login: owner,
+      userId: OPENAI_REVIEW_LOGIN,
+      login: OPENAI_REVIEW_LOGIN,
       name: "OpenAI Reviewer",
       email: null,
-      accessToken: "github-app-reviewer-read-only",
+      accessToken: "github-app-isolated-reviewer",
       origin: new URL(request.url).origin,
       reviewMode: true,
     } satisfies GitHubAuthProps,

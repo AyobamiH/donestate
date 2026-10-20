@@ -51,6 +51,7 @@
     // Bounded production override after issue #110 failed closed before any Codex launch.
     "USER_DAILY_RUN_LIMIT": "12",
     "PLATFORM_OWNER_LOGIN": "AyobamiH",
+    "OPENAI_REVIEW_REPOSITORY": "AyobamiH/donestate-review-fixture",
     "CANONICAL_ORIGIN": "https://donestate.proofandstate.com",
     // Public proof required by the OpenAI Apps domain-verification flow.
     "OPENAI_APPS_CHALLENGE": "VGfoWKKZx7N8MuzA0jQ0kaKC4A1ofTziFyPLOk0Kn2A",

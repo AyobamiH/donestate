@@ -113,6 +113,7 @@ describe("GitHub App installation tokens", () => {
     vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({
       token: "test-installation-token",
       expires_at: "2030-01-01T00:00:00Z",
+      repositories: [{ full_name: "AyobamiH/donestate-review-fixture" }],
       permissions: { contents: "write", pull_requests: "write" },
     }), { status: 201, headers: { "Content-Type": "application/json" } })));
 
@@ -120,8 +121,14 @@ describe("GitHub App installation tokens", () => {
       { appId: 4761698, privateKeyPem: await generatedPrivateKeyPem() },
       157513439,
       "pr_only",
+      "AyobamiH/donestate-review-fixture",
     );
 
+    const [, init] = vi.mocked(fetch).mock.calls[0]!;
+    expect(JSON.parse(String(init?.body))).toEqual({
+      repositories: ["donestate-review-fixture"],
+      permissions: { actions: "read", contents: "write", issues: "read", metadata: "read", pull_requests: "write" },
+    });
     expect(installation).toMatchObject({
       installationId: 157513439,
       permissions: { contents: "write", pullRequests: "write" },
@@ -132,6 +139,7 @@ describe("GitHub App installation tokens", () => {
     vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({
       token: "test-installation-token",
       expires_at: "2030-01-01T00:00:00Z",
+      repositories: [{ full_name: "AyobamiH/donestate-review-fixture" }],
       permissions: { contents: "read", pull_requests: "write" },
     }), { status: 201, headers: { "Content-Type": "application/json" } })));
 
@@ -139,6 +147,7 @@ describe("GitHub App installation tokens", () => {
       { appId: 4761698, privateKeyPem: await generatedPrivateKeyPem() },
       157513439,
       "pr_only",
+      "AyobamiH/donestate-review-fixture",
     )).rejects.toThrow("GitHub did not grant the requested installation token permissions");
   });
 });

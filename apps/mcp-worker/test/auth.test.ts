@@ -1,3 +1,4 @@
+import { OPENAI_REVIEW_LOGIN } from "../src/review-access";
 import type { AuthRequest } from "@cloudflare/workers-oauth-provider";
 import { AuthorizationError } from "@cloudflare/workers-oauth-provider";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -32,6 +33,14 @@ function authorizationEnv(
     OPENAI_APPS_CHALLENGE: openaiAppsChallenge,
     OPENAI_REVIEW_PASSWORD_SHA256: "f28c3bd6683a77da26a40e343452d03e1eee4839afefcc7f03bde9e42cf1067f",
     PLATFORM_OWNER_LOGIN: "AyobamiH",
+    OPENAI_REVIEW_REPOSITORY: "AyobamiH/donestate-review-fixture",
+    CREDENTIAL_VAULT: { getByName: vi.fn(() => ({
+      requireAccountWritable: async () => ({ writable: true, generation: 0 }),
+      status: async () => ({ connected: true }),
+    })) },
+    MAINTENANCE_REGISTRY: { getByName: () => ({
+      listRepositories: async () => [{ repository: "AyobamiH/donestate-review-fixture", installationId: 123 }],
+    }) },
   } as unknown as AuthEnv;
 }
 
@@ -277,6 +286,7 @@ describe("OAuth authorisation security policy", () => {
 
   it("authorizes the dedicated reviewer account without GitHub or MFA", async () => {
     const env = authorizationEnv();
+    const complete = vi.spyOn(env.OAUTH_PROVIDER, "completeAuthorization");
     const consent = await authHandler.fetch(
       new Request("https://done.example/authorize?response_type=code"),
       env,
@@ -301,6 +311,12 @@ describe("OAuth authorisation security policy", () => {
 
     expect(response.status).toBe(302);
     expect(new URL(response.headers.get("Location")!).origin).toBe("https://chatgpt.com");
+    expect(complete).toHaveBeenCalledWith(expect.objectContaining({
+      userId: OPENAI_REVIEW_LOGIN,
+      props: expect.objectContaining({ login: OPENAI_REVIEW_LOGIN, reviewMode: true }),
+    }));
+    expect(env.CREDENTIAL_VAULT.getByName).toHaveBeenCalledWith(OPENAI_REVIEW_LOGIN);
+    expect(env.CREDENTIAL_VAULT.getByName).not.toHaveBeenCalledWith("AyobamiH");
   });
 
   it("rejects an incorrect reviewer password without revealing which credential failed", async () => {

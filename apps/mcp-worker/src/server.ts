@@ -1,3 +1,4 @@
+import { assertReviewIdentity, assertReviewObjective, assertReviewRepository, isReviewIdentity, repositoryActor } from "./review-access";
 import { env } from "cloudflare:workers";
 import { OAuthProvider } from "@cloudflare/workers-oauth-provider";
 import { McpServer, type ServerContext } from "@modelcontextprotocol/server";
@@ -53,6 +54,7 @@ function authProps(context: ServerContext): GitHubAuthProps {
   const origin = Reflect.get(props, "origin");
   if (typeof origin !== "string" || !origin) throw new Error("Reconnect DoneState to enable secure credential setup");
   const reviewMode = Reflect.get(props, "reviewMode") === true;
+  assertReviewIdentity({ login, reviewMode });
   return {
     userId: login,
     login,
@@ -65,9 +67,7 @@ function authProps(context: ServerContext): GitHubAuthProps {
 }
 
 function requireWritableIdentity(identity: GitHubAuthProps): void {
-  if (identity.reviewMode) {
-    throw new Error("BLOCKED_AUTHORITY: the OpenAI reviewer account is read-only");
-  }
+  assertReviewIdentity(identity);
 }
 
 function coordinator(runId: string) {
@@ -228,7 +228,7 @@ export function createServer(): McpServer {
       const identity = authProps(context);
       return textResult({
         ...await credentialVault(identity.login).status(identity.login),
-        billingOwner: "authenticated_user",
+        billingOwner: isReviewIdentity(identity.login) ? "publisher_review_demo" : "authenticated_user",
       });
     },
   );
@@ -236,15 +236,19 @@ export function createServer(): McpServer {
   server.registerTool(
     "create_openai_credential_setup",
     {
-      description: "Create a short-lived, single-use HTTPS link to the authenticated DoneState account console. The external console lets the user inspect account state and manage their execution credential, selected repositories and eligible account-data deletion. This tool creates the access link only: it does not change a credential or delete account data, accepts no passwords or API keys, and never returns a stored secret. Any credential entry happens on the HTTPS website outside ChatGPT.",
-      inputSchema: {},
+      title: "Open DoneState account settings",
+      description: "Use when the user asks to open DoneState account settings or manage their execution credential. Create a single-use HTTPS link that expires after 10 minutes and replaces the previous unused link for this account. The link opens the authenticated DoneState account console. The external console lets the user inspect account state and manage their execution credential, selected repositories and eligible account-data deletion. This tool creates the access link only: it does not change a credential or delete account data, accepts no passwords or API keys, and never returns a stored secret. Any credential entry happens on the HTTPS website outside ChatGPT.",
+      inputSchema: z.object({}).strict(),
+      outputSchema: z.object({ setupUrl: z.string().url(), expiresAt: z.string().datetime() }).strict(),
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     },
     async (_input, context) => {
       requireExecutionScope(context);
       const identity = authProps(context);
       requireWritableIdentity(identity);
-      return textResult(await createCredentialSetup(doneStateEnv(), identity.login, identity.origin));
+      const { setupUrl, expiresAt } = await createCredentialSetup(doneStateEnv(), identity.login, identity.origin);
+      const result = { setupUrl, expiresAt };
+      return { ...textResult(result), structuredContent: result };
     },
   );
 
@@ -423,7 +427,10 @@ export function createServer(): McpServer {
       }
       assertRepository(input.repository);
       assertRef(input.baseRef);
+      assertReviewRepository(identity.login, input.repository, doneStateEnv());
+      assertReviewObjective({ ...input, requestedBy: identity.login }, doneStateEnv());
       const selected = (await maintenanceRegistry().listRepositories(identity.login)).find((item) => item.repository === input.repository);
+      if (isReviewIdentity(identity.login) && !selected) throw new Error("BLOCKED_CAPABILITY: select the demo repository before starting work");
       let githubToken = identity.accessToken;
       let credentialSource = "github_oauth";
       if (selected) {
@@ -435,7 +442,7 @@ export function createServer(): McpServer {
       const access = await getRepositoryAccess(
         githubToken,
         input.repository,
-        credentialSource === "github_app_installation" ? identity.login : undefined,
+        credentialSource === "github_app_installation" ? repositoryActor(identity.login, input.repository, doneStateEnv()) : undefined,
       );
       if (access.private && credentialSource !== "github_app_installation") {
         throw new Error("BLOCKED_CAPABILITY: private repositories require a selected GitHub App installation");
@@ -462,6 +469,7 @@ export function createServer(): McpServer {
         maxChangedFiles: input.maxChangedFiles,
         maxDurationMs: input.maxDurationMs,
       };
+      assertReviewObjective(objective, doneStateEnv());
       const admission = await maintenanceRegistry().recordRun(
         identity.login,
         runId,
