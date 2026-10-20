@@ -271,7 +271,8 @@ async function reviewerApprove(request: Request, env: AuthEnv): Promise<Response
   }
   const { redirectTo } = await env.OAUTH_PROVIDER.completeAuthorization({
     request: pending.oauthRequest,
-    userId: OPENAI_REVIEW_LOGIN,
+    // The provider uses colons as token delimiters; keep the vault identity separate.
+    userId: encodeURIComponent(OPENAI_REVIEW_LOGIN),
     metadata: { label: "OpenAI reviewer" },
     scope: grant.scopes,
     props: {

@@ -312,7 +312,7 @@ describe("OAuth authorisation security policy", () => {
     expect(response.status).toBe(302);
     expect(new URL(response.headers.get("Location")!).origin).toBe("https://chatgpt.com");
     expect(complete).toHaveBeenCalledWith(expect.objectContaining({
-      userId: OPENAI_REVIEW_LOGIN,
+      userId: encodeURIComponent(OPENAI_REVIEW_LOGIN),
       props: expect.objectContaining({ login: OPENAI_REVIEW_LOGIN, reviewMode: true }),
     }));
     expect(env.CREDENTIAL_VAULT.getByName).toHaveBeenCalledWith(OPENAI_REVIEW_LOGIN);

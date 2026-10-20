@@ -29,8 +29,11 @@ Do not remove or rename a tool to evade its review finding.
 5. Use the existing private reviewer password from Review details. Never place
    passwords, keys, bearer tokens, callback codes or settings tickets in evidence.
 
-The OAuth principal is `review:openai:v1`, which cannot collide with a GitHub
-login. Legacy owner-mapped reviewer tokens must reconnect and cannot read owner
+The account identity is `review:openai:v1`, which cannot collide with a GitHub
+login. Only the OAuth provider subject is URL-encoded as `review%3Aopenai%3Av1`,
+because that library uses colons as code and token delimiters. The real-provider
+regression exercises code exchange, refresh and revocation, as well as invalid
+PKCE and revoked-token rejection. Legacy owner-mapped reviewer tokens must reconnect and cannot read owner
 state. GitHub installation tokens are restricted to the exact selected repository
 and their returned scope is checked. Reviewer objectives require PR publication,
 5 files or fewer, 5 minutes or less, and the existing independent verifier.

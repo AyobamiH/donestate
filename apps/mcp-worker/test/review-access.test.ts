@@ -40,8 +40,8 @@ describe("isolated reviewer access", () => {
     expect(repositoryActor(OPENAI_REVIEW_LOGIN, repository, config)).toBe("AyobamiH");
     expect(repositoryActor("alice", "alice/repo", config)).toBe("alice");
     expect(() => repositoryActor(OPENAI_REVIEW_LOGIN, "AyobamiH/donestate", config)).toThrow("demo repository");
-    expect(() => reviewRepository({ ...config, OPENAI_REVIEW_REPOSITORY: "AyobamiH/donestate" })).toThrow("dedicated");
-    expect(() => reviewRepository({ ...config, OPENAI_REVIEW_REPOSITORY: undefined })).toThrow("not configured");
+    expect(() => reviewRepository({ ...config, OPENAI_REVIEW_REPOSITORY: "AyobamiH/donestate" } as unknown as DoneStateEnv)).toThrow("dedicated");
+    expect(() => reviewRepository({ ...config, OPENAI_REVIEW_REPOSITORY: undefined } as unknown as DoneStateEnv)).toThrow("not configured");
   });
 
   it("allows manual fixture selection and refuses outside repositories and unattended scheduling", () => {
