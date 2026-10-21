@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-21",
+  "scope": [
+    "ENGINE-002",
+    "ENGINE-003"
+  ],
+  "decision": "VERIFY-004 is complete and GTM-001 is active. Keep general Pi/OpenClaw adapters and global controls planned under the accepted ADR 002 deferral while this bounded release recovery remains unfinished; customer recruitment is not a development gate.",
+  "noCompletionClaim": true
+}

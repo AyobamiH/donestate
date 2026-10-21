@@ -129,3 +129,11 @@ DoneState does not merge its automatic maintenance pull requests, deploy or publ
 See [the current directory submission record](DIRECTORY-SUBMISSION.md): DoneState 0.3.0 is submitted / Review, OpsTruth 0.4.1 is Published, and the existing GitHub Marketplace listing is still Pending for publish and not published. Earlier dated 0.2.0 Review observations are historical, not a current provider read. The observed DoneState review app ID differs from the historical mapping; continuity and old-version disposition remain unresolved. No duplicate is established; neither identity should be deleted or silently replaced.
 
 OpsTruth standalone public-repository inspection does not require DoneState. Its authenticated DoneState exact-head bridge is a separate lane currently scoped only to AyobamiH/donestate. Directory visibility, a signed repository map and the historical VERIFIED canary do not substitute for a fresh clean-account end-to-end production outcome.
+
+## Owner-authorised native CI migration — 21 October 2026
+
+See [native CI provider policy](NATIVE-CI-PROVIDER.md) and `governance/native-ci-provider-policy.json` for the current source policy. Historical GitHub Actions enforcement receipts remain dated evidence, not proof of current provider settings. Source, hosted tests, external required-check activation, merge, macOS coverage and production release are recorded separately. This source change does not claim any provider mutation or production deployment.
+
+## Native CI rollout checkpoint — 21 October 2026
+
+OpsTruth CI-provider PR46 is merged after an exact-head Cloudflare pass and a verified App85455 rule transition preserving all other protections. Its exact-main acceptance remains pending: the build-start tool invocation was refused before provider contact. DoneState and AgentProof provider migrations are not applied. DoneState includes the explicit, tested seven-file dependency/input-bound audit prerequisite, not unrelated reviewer-login or release-recovery implementation. AgentProof retains its genuine macOS requirement. See [current rollout evidence](evidence/native-ci-provider-progress-20261021.json), CI-002/E-151 and the [provider contract](NATIVE-CI-PROVIDER.md). Source validation, provider activation, merge, exact-main acceptance, automatic triggers and production recovery are separate facts.

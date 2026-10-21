@@ -137,7 +137,10 @@ describe("separate authenticated account controls", () => {
   it("refuses the capped inventory rather than erasing its index and claiming complete deletion", async () => {
     const login = "account-cap-fixture";
     const registry = env.MAINTENANCE_REGISTRY.getByName("global");
-    for (let i = 0; i < 201; i++) await registry.recordRun(login, crypto.randomUUID(), "owner/repository", "operator");
+    // Seed through the real registry method without 201 cross-object RPC round trips.
+    await runInDurableObject(registry, async (instance: MaintenanceRegistry) => {
+      for (let i = 0; i < 201; i++) await instance.recordRun(login, crypto.randomUUID(), "owner/repository", "operator");
+    });
     const cappedEnv = { ...env, RUN_COORDINATOR: { getByName: () => ({ accountDeletionState: async () => null }) } } as unknown as AccountDataEnv;
     await expect(deleteIndexedAccountData(cappedEnv, login)).rejects.toThrow("200-run limit");
     expect(await registry.listRuns(login)).toHaveLength(200);

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-10-18",
+  "updatedAt": "2026-10-21",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {
@@ -10,7 +10,8 @@
       "workItemIds": [
         "GOV-001",
         "GOV-003",
-        "GOV-004"
+        "GOV-004",
+        "CI-002"
       ],
       "exitCriterion": "The ledger, generated state, PR template, change-impact gate, stale-state check, reviewable main-governance design, and bounded branch-retirement lifecycle are merged and green; provider ruleset and ordinary merged-branch auto-deletion remain separately evidenced owner settings."
     },
@@ -287,10 +288,10 @@
       "stream": "marketplace",
       "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Continue exercising changed, pending_change, and pending_change_cancelled through the owner-only draft listing and capture non-personal receipts without touching production listing state.",
-      "waitCondition": "Marketplace development remains a parallel distribution-validation lane; it is not a prerequisite for owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October bounded review of E-011 and docs/GITHUB-MARKETPLACE-DEVELOPMENT.md found retained cancellation evidence, with changed, pending_change and pending_change_cancelled still unproven in the inspected records. No new authenticated provider readback was performed. This isolated development lane remains separate from owned-domain launch.",
       "reentryCondition": "Continue through authenticated development-listing controls while keeping the draft isolated from production.",
       "dependencies": [
         "GOV-002"
@@ -301,7 +302,8 @@
         "E-009",
         "E-010",
         "E-011",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -448,10 +450,10 @@
       "stream": "verification",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Build and validate the exact installable OpenAI/plugin archive before the next directory release, including manifests, skills, secret scan, digest and CI.",
-      "waitCondition": "This is required for the OpenAI distribution channel but is not a prerequisite for the owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October review found no accepted archive for the next submission. distribution/current-release-candidate.json is older channel evidence; PR #200 is an auth repair and does not verify a new installable archive. Preserve the planned archive gate before resubmission.",
       "reentryCondition": "Begin when the next OpenAI directory submission or resubmission requires a new archive.",
       "dependencies": [
         "MKT-001",
@@ -459,7 +461,8 @@
         "MKT-003"
       ],
       "evidenceIds": [
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -633,10 +636,10 @@
       "stream": "marketplace",
       "status": "deferred",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Choose flat-rate Pro, per-seat organisation, trial, or continued free access from observed usage and cost.",
-      "waitCondition": "Keep the free public-repository plan while the listing remains pending and activation evidence is absent. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October review retained E-013 as historical 1 September unpublished/owner-preview evidence; current provider state was not re-observed. No new usage/cost, paid-plan decision or eligibility evidence was found in the inspected records. Paid-plan work remains deferred.",
       "reentryCondition": "Resume after publication, real usage, organisation ownership, publisher eligibility, and the applicable user threshold.",
       "dependencies": [
         "GTM-001"
@@ -644,7 +647,8 @@
       "evidenceIds": [
         "E-001",
         "E-013",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -653,10 +657,10 @@
       "stream": "marketplace",
       "status": "deferred",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Review Marketplace Insights, transactions, cancellations, support incidents, and entitlement reconciliation after publication without treating preview display counts as activation.",
-      "waitCondition": "The submission is Pending for publish and explicitly unpublished; the owner preview's displayed count of 1 is not public install or transaction evidence. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October review retained the distinction between E-013 owner-preview count and E-011 isolated development cancellation. Neither establishes a production transaction. No new provider transaction readback was performed; production listing/transaction review remains deferred.",
       "reentryCondition": "Resume when GitHub reports publication or the first real production transaction appears.",
       "dependencies": [
         "MKT-004"
@@ -664,7 +668,8 @@
       "evidenceIds": [
         "E-001",
         "E-013",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -731,15 +736,17 @@
       "stream": "execution-engine",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-20",
+      "lastUpdated": "2026-10-21",
+      "staleDate": "2026-10-28",
       "nextAction": "Define adapters that preserve deterministic authority and evidence ownership.",
       "waitCondition": "Core review and verification gaps take priority.",
       "reentryCondition": "Begin after VERIFY-004 and release gates are ready.",
       "dependencies": [
         "VERIFY-004"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-140"
+      ]
     },
     {
       "id": "ENGINE-003",
@@ -747,8 +754,8 @@
       "stream": "execution-engine",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-20",
+      "lastUpdated": "2026-10-21",
+      "staleDate": "2026-10-28",
       "nextAction": "Implement deduplication, repository leases, admission backpressure, priority lanes, then broader drift reconciliation.",
       "waitCondition": "Single-repository customer and verifier loops must be proven first.",
       "reentryCondition": "Begin after GTM-001 and VERIFY-004.",
@@ -756,7 +763,9 @@
         "GTM-001",
         "VERIFY-004"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-140"
+      ]
     },
     {
       "id": "VERIFY-005",
@@ -831,18 +840,19 @@
       "stream": "distribution",
       "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
-      "nextAction": "Deploy the corrected cancellation annotation and accurate account-console link description, complete the owned-website privacy correction, rescan the canonical 0.3.2 draft and distinguish correctable findings from provider-required review before resubmission.",
-      "waitCondition": "The old publisher entry was deleted with explicit owner authority. The replacement 0.3.1 submission was withdrawn with owner approval to correct GitHub-facing links; 0.3.2 is currently a draft with reviewer information retained. Website privacy and MCP findings remain under correction; no approval or publication is claimed. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
-      "reentryCondition": "Advance on exact-head CI and production deployment, then record fresh publisher scan evidence and any explicit owner submission confirmation.",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
+      "nextAction": "Continue the separately owned reviewer sign-in repair in PR #200 through exact-head checks and authorised deployment. Before resubmission, record a fresh positive reviewer login using the privately configured review credentials, code exchange, read-only MCP access and token revocation; record the actual provider decision separately.",
+      "waitCondition": "20 October read-only inspection of PR #200 head 7eb6c06257faf83934527e6129b2da8b8d0fec44 records a reported 19 October v1.0.0 sign-in/OAuth rejection and an open reviewer-login repair. Discovery/consent and negative-login probe evidence is not positive reviewer-login proof. Provider email/portal was not independently inspected here. No merge, deployment, resubmission or approval is established by this review.",
+      "reentryCondition": "Resume from the actual current PR #200 head and its reviewer-access runbook. Preserve its authentication scope, private credentials and independent review; do not treat a reachable consent page or negative-password rejection as successful sign-in or permission to resubmit.",
       "dependencies": [],
       "evidenceIds": [
         "E-005",
         "E-040",
         "E-041",
         "E-061",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -867,16 +877,17 @@
       "stream": "ecosystem",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Select stable product-agnostic instructions, remove transient evidence, and open a tracked ai-prompts PR.",
-      "waitCondition": "No matching branch or PR exists in AyobamiH/ai-prompts. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October dependency review found VERIFY-003 still planned with no accepted new archive. The inspected ledger has no extraction PR receipt; no fresh ai-prompts inventory was inspected. Begin extraction after the archive gate and record the actual PR when one exists.",
       "reentryCondition": "Begin after VERIFY-003.",
       "dependencies": [
         "VERIFY-003"
       ],
       "evidenceIds": [
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -941,6 +952,25 @@
         "E-115",
         "E-116",
         "E-118"
+      ]
+    },
+    {
+      "id": "CI-002",
+      "title": "Migrate routine Linux CI to native Cloudflare without changing release authority",
+      "stream": "governance",
+      "status": "active",
+      "owner": "Repository owner AyobamiH",
+      "lastUpdated": "2026-10-21",
+      "staleDate": "2026-10-28",
+      "nextAction": "Finish exact-main OpsTruth hosted acceptance, and exact migration-head native CI for DoneState and AgentProof. Apply only the pinned required-check transition after genuine results; retain separate macOS validation. Reconcile recovery branches with accepted main without overwriting either evidence ledger.",
+      "waitCondition": "OpsTruth PR46 merged after native pass and verified App85455 migration. Next exact-main build-start invocation was blocked by the execution tool before provider contact. DoneState and AgentProof migration enforcement remains unapplied; AgentProof macOS is still separate and unmet.",
+      "reentryCondition": "Resume on a failed build, stale branch, changed provider rules, quota refusal or unresolved reviewer finding; never manufacture a pass.",
+      "dependencies": [
+        "GOV-003"
+      ],
+      "evidenceIds": [
+        "E-150",
+        "E-151"
       ]
     }
   ],
@@ -2882,6 +2912,86 @@
       "outcome": "Recovery candidate only; previous failure and authorisation remain preserved. No effect retry or terminal VERIFIED claim.",
       "content": "User-Agent compliance, signed durable reservation, strictly configured authorisation recovery, negative tests and retained failed workflow.",
       "measurement": "Published release effects 0; real OpsTruth decisions 0; real DoneState VERIFIED 0; qualified external installations 0."
+    },
+    {
+      "id": "E-136",
+      "date": "2026-10-20",
+      "identity": "Bounded overdue-record review with separate active reviewer-auth evidence",
+      "situation": "Six noncomplete records missed the 18 October review deadline. Recovery work must preserve the strict freshness gate while reviewing actual available records and keeping concurrent auth work separate.",
+      "verification": "Read the six work items, E-011/E-013/E-061/E-126, the development Marketplace runbook, the older distribution candidate and the knowledge-base governance rules. Inspected PR #200 at head 7eb6c06257faf83934527e6129b2da8b8d0fec44: it is OPEN, has no ledger update, reports a 19 October v1.0.0 OpenAI sign-in/OAuth rejection and includes redacted reachability/negative-login evidence with positive credentials explicitly unvalidated. The inspected main path history since 17 October contains the release-authorisation change, not new Marketplace/skills acceptance. Evidence details, source hashes, scope limits and per-item missing proof are retained in the attached review artifact. No provider portal, email, transaction inventory or ai-prompts inventory was independently inspected.",
+      "accountability": {
+        "owner": "DoneState publisher and maintainers",
+        "status": "active",
+        "nextAction": "Review the named missing evidence by 23 October; keep PR #200 under its separate auth owner and exact-head gates. Do not resubmit, publish or complete unrelated work from this release recovery.",
+        "waitCondition": "External/provider outcomes, archive acceptance and positive reviewer-login proof remain absent from the respective reviewed evidence; existing statuses remain active, planned or deferred.",
+        "staleDate": "2026-10-23"
+      },
+      "outcome": "All six statuses and owners are preserved. Wait conditions now state specific reviewed evidence and unknowns; OPENAI-001 tracks the actual open auth repair instead of the obsolete draft-only action. Historical evidence is unchanged.",
+      "content": "Bounded dependency and evidence review, one redacted PR reference and six explicit follow-ups; no auth code, credentials, provider settings or distribution changes.",
+      "measurement": "Six records reviewed; one active auth PR inspected; zero status completions, new live provider acceptance claims or external mutations.",
+      "artifact": {
+        "path": "docs/evidence/governance-bounded-review-20261020.json",
+        "sha256": "77a32d50b447bd1e884358135b98cc12a1be5b65bb91a074b4847b3049fc1310"
+      }
+    },
+    {
+      "id": "E-140",
+      "date": "2026-10-21",
+      "identity": "Review deferred engine work without inventing delivery",
+      "situation": "ENGINE-002 and ENGINE-003 reached their review dates while bounded release recovery remains unfinished.",
+      "verification": "Reviewed VERIFY-004 (complete), GTM-001 (active), and ADR 002. Preserve the separate successful verification milestone. General adapters/global controls remain planned and are not activated by this CI change.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "planned",
+        "nextAction": "Revisit adapters and global controls after their recorded prerequisites; finish the bounded native CI/recovery gate first.",
+        "waitCondition": "ADR 002 defers broader agent orchestration while the bounded release recovery is prioritised. VERIFY-004 is already complete; customer recruitment is not a development gate.",
+        "staleDate": "2026-10-28"
+      },
+      "outcome": "Both items remain planned with their original scope/dependencies; only review chronology and explicit deferral evidence change.",
+      "content": "Bounded status review, not an implementation or completion claim.",
+      "measurement": "Two stale items reviewed; zero capabilities activated.",
+      "artifact": {
+        "path": "docs/evidence/engine-deferral-review-20261021.json",
+        "sha256": "e9820d5f6447f57996424676704120cdc55f6c5d7e0dd78d1cb0db6f7f87c138"
+      }
+    },
+    {
+      "id": "E-150",
+      "date": "2026-10-21",
+      "identity": "Owner-authorised isolated native Cloudflare CI provider migration",
+      "situation": "Native hosted Linux builds have succeeded on the separate recovery branches, while current merge rules still require legacy Actions. The owner authorised completing the provider transition without paying for Actions or weakening protections.",
+      "verification": "The proposed CI-only change starts from current protected main, extracts the previously hosted-verified CI runner and manifest, pins App 85455 and exact pipeline hashes, and keeps every non-check rule plus historical provider observations unchanged. Negative source-policy tests cover spoofed App identity, pipeline drift, lost review/strict freshness, changed bypasses and paid authority. No provider application, protected merge or main hosted acceptance is inferred from source files. The main hosted dependency audit then failed on high-severity advisories. Only the exact seven-file dependency and MCP request/input-bound repair from already-tested source 5fe2b9a6d3684cd9c52217ac39df81be31698904 was reused, with recorded file hashes. Required audit and SDK refusal tests remain; no release recovery or reviewer-login code was imported and no runtime deployment was performed.",
+      "accountability": {
+        "owner": "Repository owner AyobamiH",
+        "status": "active",
+        "nextAction": "Record actual exact-head hosted check, provider policy readback, normal protected merge and exact-main hosted result in the migration journal and follow-up evidence.",
+        "waitCondition": "The CI-only source must pass and the external protection transition must be independently read back; unrelated recovery/reviewer work remains separate.",
+        "staleDate": "2026-10-28"
+      },
+      "outcome": "Source migration candidate; no new customer action, signing, release, publication or platform-coverage claim.",
+      "content": "Pinned native CI source policy, negative tests, unchanged protected baseline and bounded static-receipt rollout.",
+      "measurement": "Zero production deployments, payment actions, release publications or independent adoption credits from this migration."
+    },
+    {
+      "id": "E-151",
+      "date": "2026-10-21",
+      "identity": "OpsTruth native provider migrated and merged; exact-main acceptance remains open",
+      "situation": "The isolated migration stalled after a real Cloudflare build failed on HTTP403 during source read. Existing native pilot successes and newer prepared migration source were recovered rather than duplicated.",
+      "verification": "One bounded retry passed on identical OpsTruth migration head 976160b1bdf28ccd764efdebeaf0f01adb842a19. Cloudflare deployment726bd7b2-336a-4b85-be92-f216c1385d9e, static receipt and native App85455 check119298398539 agreed. Source policy and every non-check rule matched before and after applying the required-check array; PR46 merged normally to92233a44532d1d9c4c730873ee0e1fbd2eaf962f with zero unresolved review threads and no bypass. The next exact-main build-start invocation was refused by the tool safety check, not by Cloudflare. DoneState source publication499 was reconciled before resuming.",
+      "accountability": {
+        "owner": "Repository owner AyobamiH",
+        "status": "active",
+        "nextAction": "Finish exact-main OpsTruth hosted acceptance, and exact migration-head native CI for DoneState and AgentProof. Apply only the pinned required-check transition after genuine results; retain separate macOS validation. Reconcile recovery branches with accepted main without overwriting either evidence ledger.",
+        "waitCondition": "OpsTruth PR46 merged after native pass and verified App85455 migration. Next exact-main build-start invocation was blocked by the execution tool before provider contact. DoneState and AgentProof migration enforcement remains unapplied; AgentProof macOS is still separate and unmet.",
+        "staleDate": "2026-10-28"
+      },
+      "outcome": "One provider migration and protected merge completed. Three-project CI closeout and original-release recovery remain incomplete; exact-main and remaining platform acceptance are explicit gates.",
+      "content": "Preserved native failure/pass evidence, required-check before/after readback, normal merge and precise unexecuted next action. No new production signing authority, payment, or publication.",
+      "measurement": "One real static CI retry, one CI-provider ruleset update, one protected merge, zero production application deployments or release publications.",
+      "artifact": {
+        "path": "docs/evidence/native-ci-provider-progress-20261021.json",
+        "sha256": "50d622c4507933bdff1ecd5ad885b8dccc743684b0f198e5046168c8f1c3f863"
+      }
     }
   ]
 }

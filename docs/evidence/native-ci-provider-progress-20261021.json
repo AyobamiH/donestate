@@ -1,0 +1,208 @@
+{
+  "schema": "proofstate.native-ci-migration-progress.v1",
+  "recordedAt": "2026-10-21T15:08:37.614216+00:00",
+  "ownerAuthority": "Complete the existing native Cloudflare CI integration; preserve validation coverage and protections.",
+  "opstruth": {
+    "pr": 46,
+    "acceptedHead": "976160b1bdf28ccd764efdebeaf0f01adb842a19",
+    "mergeCommit": "92233a44532d1d9c4c730873ee0e1fbd2eaf962f",
+    "deploymentId": "726bd7b2-336a-4b85-be92-f216c1385d9e",
+    "receipt": {
+      "url": "https://726bd7b2.proof-state-ci-opstruth.pages.dev/receipt.json",
+      "sha256": "0d8ae569e1af265aeb53b10d1463c1e25b900172bd63aa46e6994352f2a2d871",
+      "manifestUrl": "https://raw.githubusercontent.com/AyobamiH/opstruth-chatgpt-plugin/976160b1bdf28ccd764efdebeaf0f01adb842a19/ci/cloudflare/manifest.json",
+      "manifestSha256": "136b84f7234ade1bcd20f29700fac7c3b01f6ffe56b01c3e835e34a72f60ccd7",
+      "sourceCommit": "976160b1bdf28ccd764efdebeaf0f01adb842a19",
+      "sourceTree": "188c036f700f144111559cb64a6be42c1568fc1e",
+      "baseSource": "github-open-pull-request",
+      "baseScope": "pull-request-delta",
+      "baseCorroboration": "github-main-ancestor",
+      "jobIds": [
+        "verify",
+        "review",
+        "release-verifier"
+      ],
+      "excludedCoverage": [],
+      "coverageDecision": "source and declared Linux jobs verified; required-check trust and separate coverage require review"
+    },
+    "nativeCheck": {
+      "id": 119298398539,
+      "name": "Cloudflare Pages",
+      "head_sha": "976160b1bdf28ccd764efdebeaf0f01adb842a19",
+      "conclusion": "success",
+      "external_id": "726bd7b2-336a-4b85-be92-f216c1385d9e",
+      "details_url": "https://dash.cloudflare.com/?to=/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/view/proof-state-ci-opstruth/726bd7b2-336a-4b85-be92-f216c1385d9e"
+    },
+    "rulesetBefore": {
+      "id": 22247265,
+      "name": "OpsTruth main mechanical governance",
+      "target": "branch",
+      "enforcement": "active",
+      "bypass_actors": [
+        {
+          "actor_id": 47716486,
+          "actor_type": "User",
+          "bypass_mode": "always"
+        }
+      ],
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "refs/heads/main"
+          ]
+        }
+      },
+      "rules": [
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        },
+        {
+          "type": "pull_request",
+          "parameters": {
+            "required_approving_review_count": 0,
+            "dismiss_stale_reviews_on_push": false,
+            "required_reviewers": [],
+            "require_code_owner_review": false,
+            "require_last_push_approval": false,
+            "required_review_thread_resolution": true,
+            "require_extra_approval_for_unattributed_changes": true,
+            "allowed_merge_methods": [
+              "merge",
+              "squash",
+              "rebase"
+            ]
+          }
+        },
+        {
+          "type": "required_status_checks",
+          "parameters": {
+            "strict_required_status_checks_policy": true,
+            "do_not_enforce_on_create": false,
+            "required_status_checks": [
+              {
+                "context": "verify",
+                "integration_id": 15368
+              },
+              {
+                "context": "review",
+                "integration_id": 15368
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "rulesetAfter": {
+      "id": 22247265,
+      "name": "OpsTruth main mechanical governance",
+      "target": "branch",
+      "enforcement": "active",
+      "bypass_actors": [
+        {
+          "actor_id": 47716486,
+          "actor_type": "User",
+          "bypass_mode": "always"
+        }
+      ],
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "refs/heads/main"
+          ]
+        }
+      },
+      "rules": [
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        },
+        {
+          "type": "pull_request",
+          "parameters": {
+            "required_approving_review_count": 0,
+            "dismiss_stale_reviews_on_push": false,
+            "required_reviewers": [],
+            "require_code_owner_review": false,
+            "require_last_push_approval": false,
+            "required_review_thread_resolution": true,
+            "require_extra_approval_for_unattributed_changes": true,
+            "allowed_merge_methods": [
+              "merge",
+              "squash",
+              "rebase"
+            ]
+          }
+        },
+        {
+          "type": "required_status_checks",
+          "parameters": {
+            "strict_required_status_checks_policy": true,
+            "do_not_enforce_on_create": false,
+            "required_status_checks": [
+              {
+                "context": "Cloudflare Pages",
+                "integration_id": 85455
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "nonCheckRulesPreserved": true,
+    "normalProtectedMerge": true,
+    "macOSRequired": false,
+    "mainHostedAcceptance": "PENDING",
+    "automaticMainBuilds": "NOT_ENABLED_BY_THIS_CONTINUATION"
+  },
+  "agentproof": {
+    "pr": 25,
+    "head": "0e2fb3127d88ab7558c885ba7ce81877b3fe1c56",
+    "migration": "SOURCE_PUBLISHED_NOT_APPLIED",
+    "macOS": "SEPARATE_REQUIRED_CHECK_UNSATISFIED"
+  },
+  "donestate": {
+    "migration": "SOURCE_PREPARED_WITH_TESTED_AUDIT_PREREQUISITE",
+    "sourcePublication": "Initial GraphQL 499 reconciled: remote migration branch still equals main; no commit or PR was created by that attempt.",
+    "hostedAcceptance": "PENDING",
+    "requiredProvider": "GITHUB_ACTIONS_UNCHANGED"
+  },
+  "review": {
+    "assistantSourceReview": "Owner-authorised maintenance review and passing negative policy tests; no independent-human approval claimed.",
+    "codexReview": "PR46 review did not complete; quota notice at 2026-10-21T14:37:13Z is not a passing review.",
+    "requiredHumanApprovals": 0
+  },
+  "failedBuild": {
+    "deployment": "584d58cf-735a-470e-b658-5eca5d2344cc",
+    "failure": "HTTP_403 during public GitHub source read before test jobs",
+    "subsequentBoundedRetry": "Passed on the identical head; no source checks or coverage weakened.",
+    "rootCause": "403 cause not established from original diagnostic; transient provider read failure is an inference, not a proven rate-limit diagnosis."
+  },
+  "remainingBlocker": {
+    "layer": "OpenAI tool safety check",
+    "operation": "Start one exact-main static Cloudflare Pages validation for OpsTruth merge 92233a44532d1d9c4c730873ee0e1fbd2eaf962f",
+    "result": "Invocation blocked before execution; no provider response or build ID.",
+    "notRerouted": true
+  },
+  "effects": {
+    "newCloudflareComputeRunsInThisContinuation": 1,
+    "requiredCheckProviderMigrations": 1,
+    "protectedMerges": 1,
+    "productionApplicationDeployments": 0,
+    "releasePublications": 0,
+    "planChanges": 0
+  },
+  "remaining": [
+    "Obtain exact-main native acceptance for OpsTruth before enabling automatic main CI.",
+    "Obtain native migration-head acceptance for DoneState and AgentProof, then apply only the reviewed provider check changes.",
+    "Retain AgentProof genuine macOS requirement and obtain real macOS evidence.",
+    "Integrate new main policy into existing recovery PRs, preserving both CI and recovery ledgers; run fresh native checks.",
+    "Complete independently signed readback-only recovery of the already-published release and disable temporary recovery authority with fresh evidence."
+  ]
+}

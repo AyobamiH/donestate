@@ -113,7 +113,7 @@ async function main() {
     readFile(new URL("governance/project-ledger.json", root), "utf8")
   ]);
   validateMainGovernance({ manifest: JSON.parse(manifestSource), codeowners, workflow, runbook, currentStatus, ledger: JSON.parse(ledgerSource) });
-  console.log("main governance: active provider protection verified");
+  console.log("main governance: historical protected baseline valid; current native policy requires separate live readback");
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();

@@ -1,0 +1,37 @@
+{
+  "schema": "donestate.native-ci-audit-prerequisite.v1",
+  "source": "5fe2b9a6d3684cd9c52217ac39df81be31698904",
+  "reason": "The unchanged main hosted npm audit gate failed on known high-severity dependencies. Reuse only the already-tested seven-file dependency/input-bound repair, not release recovery or reviewer auth code.",
+  "files": [
+    {
+      "path": "apps/mcp-worker/package.json",
+      "sha256": "53559913775724eb136b1a66594f77d521ea9d97c09de7a12522904800ef9f1e"
+    },
+    {
+      "path": "apps/mcp-worker/package-lock.json",
+      "sha256": "99459767d14c4ede6f3353cd774f2f54dbe0a30b1ab178cb04fc00d7a01df702"
+    },
+    {
+      "path": "apps/mcp-worker/src/account-controls.ts",
+      "sha256": "7828f3f4c39ee9293e69c417e69567ecc082c7b27a967541ee6ed88da8b4f358"
+    },
+    {
+      "path": "apps/mcp-worker/src/mcp-limits.ts",
+      "sha256": "04e0d35ee20efd7adecb50fa584e16ffdfb6afefac4eec3a92db87b5e44ee68d"
+    },
+    {
+      "path": "apps/mcp-worker/src/server.ts",
+      "sha256": "13a070a4a20fee7623ff5c3f3faf14cf33f277c76267b53c678dfc27992eb8aa"
+    },
+    {
+      "path": "apps/mcp-worker/test/account-controls.test.ts",
+      "sha256": "98d888b54b1cc50462dab2adf60049175e17fba2fb4dc83842234636e22fe576"
+    },
+    {
+      "path": "apps/mcp-worker/test/mcp-limits.test.ts",
+      "sha256": "9a1aeae217e330208169996f62c01c7ed7ba08e41cd1aad792f9361bbd7320ae"
+    }
+  ],
+  "productionDeploymentPerformed": false,
+  "requiredAuditRemoved": false
+}
