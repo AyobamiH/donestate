@@ -1,0 +1,105 @@
+{
+  "schema": "proofstate.native-ci-provider-policy.v1",
+  "repository": "AyobamiH/donestate",
+  "repositoryId": 1348643925,
+  "rulesetId": 22247029,
+  "owner": {
+    "login": "AyobamiH",
+    "userId": 47716486,
+    "authorisedOn": "2026-10-21",
+    "rationale": "Owner instructed completion of the proven native Cloudflare Linux CI migration without paid Actions, removed protections or unrelated recovery deployment."
+  },
+  "provider": {
+    "context": "Cloudflare Pages",
+    "appId": 85455,
+    "appSlug": "cloudflare-workers-and-pages",
+    "project": "proof-state-ci-donestate"
+  },
+  "pipeline": {
+    "acceptedSource": "5fe2b9a6d3684cd9c52217ac39df81be31698904",
+    "manifestSha256": "b5594d6f08c07d055034ee42da0eaf4d4cfa1348b395f581b2500aeea191e168",
+    "runnerSha256": "0d343d155136c4827d47bdd6d7c2b8499c31cb3e9cf60f46726fd4cdb79a9e54"
+  },
+  "requiredChecks": [
+    {
+      "context": "Cloudflare Pages",
+      "integration_id": 85455
+    }
+  ],
+  "requiresSeparateMacOS": false,
+  "desiredRuleset": {
+    "id": 22247029,
+    "name": "DoneState main governance",
+    "target": "branch",
+    "enforcement": "active",
+    "bypass_actors": [
+      {
+        "actor_id": 47716486,
+        "actor_type": "User",
+        "bypass_mode": "always"
+      }
+    ],
+    "conditions": {
+      "ref_name": {
+        "exclude": [],
+        "include": [
+          "refs/heads/main"
+        ]
+      }
+    },
+    "rules": [
+      {
+        "type": "deletion"
+      },
+      {
+        "type": "non_fast_forward"
+      },
+      {
+        "type": "pull_request",
+        "parameters": {
+          "required_approving_review_count": 0,
+          "dismiss_stale_reviews_on_push": false,
+          "required_reviewers": [],
+          "require_code_owner_review": false,
+          "require_last_push_approval": false,
+          "required_review_thread_resolution": true,
+          "require_extra_approval_for_unattributed_changes": true,
+          "allowed_merge_methods": [
+            "merge",
+            "squash",
+            "rebase"
+          ]
+        }
+      },
+      {
+        "type": "required_status_checks",
+        "parameters": {
+          "strict_required_status_checks_policy": true,
+          "do_not_enforce_on_create": false,
+          "required_status_checks": [
+            {
+              "context": "Cloudflare Pages",
+              "integration_id": 85455
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "activation": {
+    "requireExactHeadHostedReceipt": true,
+    "requireNativeAppCheck": true,
+    "enableAllPreviewBranches": false,
+    "previewScope": [
+      "ci/native-pages-provider-20261021"
+    ],
+    "enableMainOnlyAfterMainHostedAcceptance": true
+  },
+  "cost": {
+    "allowPlanUpgrade": false,
+    "allowPaidActions": false,
+    "allowFunctions": false,
+    "allowProductionApplicationDeploy": false
+  },
+  "stateMeaning": "Source policy only; provider state and merge outcome require separate API evidence. Historical 4 September provider observations are retained unchanged."
+}

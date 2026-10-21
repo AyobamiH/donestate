@@ -1,0 +1,68 @@
+{
+  "schema": "donestate.governance-bounded-review.v1",
+  "reviewedAt": "2026-10-20T15:44:11.000Z",
+  "evidenceId": "E-136",
+  "scope": "Repository evidence and dependency review of six overdue records; no provider login, workflow, submission, deployment or runtime action.",
+  "inspectedSources": [
+    {
+      "path": "docs/GITHUB-MARKETPLACE-DEVELOPMENT.md",
+      "sha256": "5602721154faf1bffb6b419752b5afb22876a187e415fd05c8e13f8dae38578b"
+    },
+    {
+      "path": "distribution/current-release-candidate.json",
+      "sha256": "0f0c48e0607217fbf3a2eae155ea9310a0ad5696aea247f0ecde91023a354b8e"
+    },
+    {
+      "path": "docs/KNOWLEDGE-BASE.md",
+      "sha256": "b3be6d9559bb55e06ec2d3971995ef5b2cf08c6362140e781f29e46eeeb8d61d"
+    }
+  ],
+  "authChange": {
+    "url": "https://github.com/AyobamiH/donestate/pull/200",
+    "head": "7eb6c06257faf83934527e6129b2da8b8d0fec44",
+    "base": "08ac9539748ddf3fce31a3f1627119c406cc84b6",
+    "state": "OPEN",
+    "source": "PR body, diff, redacted probe and reviewer-access runbook inspected read-only.",
+    "reportedProviderEvent": "PR200 reports OpenAI v1.0.0 rejected 2026-10-19 for sign-in/OAuth; failing stage unknown. This review did not independently inspect the provider email or portal.",
+    "observedEvidenceLimits": "PR probe establishes discovery/registration/consent reachability and negative password refusal. It explicitly does not prove a successful reviewer login. No auth changes are merged or deployed by this review."
+  },
+  "items": [
+    {
+      "id": "MKT-004",
+      "retainedStatus": "active",
+      "review": "E-011 and the development runbook retain a signed live cancellation receipt and list changed/pending_change/pending_change_cancelled as outstanding. No newer receipt for those transitions appears in the inspected records.",
+      "remainingEvidence": "Authenticated development-only transition receipts; no current provider inventory was inspected."
+    },
+    {
+      "id": "VERIFY-003",
+      "retainedStatus": "planned",
+      "review": "The checked-in distribution candidate still records the older 0.3.x channel snapshot. PR200 is an auth candidate, not an acceptance receipt for a new exact installable archive.",
+      "remainingEvidence": "New submission archive identity, digest, manifests/skills validation, secret scan and exact CI before resubmission."
+    },
+    {
+      "id": "MKT-005",
+      "retainedStatus": "deferred",
+      "review": "E-013 is the retained 1 September unpublished/owner-preview evidence. No subsequent payment, demand, paid-plan authorisation or eligibility evidence was found in the inspected work item records.",
+      "remainingEvidence": "Actual usage/cost and publisher decision, plus required channel conditions; current live listing status was not re-observed."
+    },
+    {
+      "id": "MKT-006",
+      "retainedStatus": "deferred",
+      "review": "E-013 displayed one owner-preview install but explicitly did not establish a production install or transaction. The development cancellation receipt belongs to the isolated draft.",
+      "remainingEvidence": "Production publication or real transaction/entitlement evidence; no current provider transaction inventory was inspected."
+    },
+    {
+      "id": "OPENAI-001",
+      "retainedStatus": "active",
+      "review": "PR200 supersedes the old 0.3.2-draft-only next action with a reported 19 October v1.0.0 rejection and an open reviewer-login repair. The provided negative/reachability probe is explicitly not positive login proof.",
+      "remainingEvidence": "Exact reviewed auth head/CI, authorised deployment and fresh positive reviewer login, token exchange, read-only MCP and scoped revocation before any resubmission. PR200 remains separately owned."
+    },
+    {
+      "id": "SKILLS-001",
+      "retainedStatus": "planned",
+      "review": "Its VERIFY-003 dependency still has no accepted new archive record. The inspected ledger contains no extraction PR evidence; this review did not query ai-prompts branch/PR inventory.",
+      "remainingEvidence": "Complete the archive gate, then record an explicitly scoped extraction PR when the planned work begins."
+    }
+  ],
+  "result": "All six statuses and owners preserved. Current wait conditions now name the reviewed source, unknowns and required next evidence. Historical E-126 is unchanged. Follow-up is due 2026-10-23; no completion or publication is inferred."
+}

@@ -5,3 +5,6 @@ test-dist/
 .donestate/
 coverage/
 *.log
+
+# Sanitised hosted CI receipts are build output, not source.
+ci-report/

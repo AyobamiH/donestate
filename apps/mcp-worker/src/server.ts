@@ -1,7 +1,6 @@
 import { env } from "cloudflare:workers";
 import { OAuthProvider } from "@cloudflare/workers-oauth-provider";
 import { McpServer, type ServerContext } from "@modelcontextprotocol/server";
-import { createMcpHandler } from "agents/mcp/server";
 import { z } from "zod";
 import { ACCOUNT_MCP_PATH, ACCOUNT_READ_SCOPE, ACCOUNT_DELETE_SCOPE, accountResourceMetadata, accountChallenge } from "./account-authorization";
 import { createAccountControlsServer } from "./account-controls";
@@ -14,6 +13,7 @@ import type { DoneStateEnv } from "./environment";
 import { getBranchHead, getRepositoryAccess } from "./github";
 import { mcpAuthInfo, type TokenInspector } from "./mcp-auth";
 import { MCP_BROWSER_ORIGIN_POLICY } from "./mcp-origin";
+import { createBoundedMcpHandler, MCP_MAX_TOOL_INPUT_ELEMENTS } from "./mcp-limits";
 import { MaintenanceRegistry, type FunnelEvent } from "./maintenance-registry";
 import { allowsMarketplaceDevelopmentRequest, isMarketplaceDevelopment } from "./marketplace-development";
 import {
@@ -214,7 +214,7 @@ const verificationResponseSchema = z.object({
 }).strict();
 
 export function createServer(): McpServer {
-  const server = new McpServer({ name: "DoneState", version: "0.3.0" });
+  const server = new McpServer({ name: "DoneState", version: "0.3.0" }, { maxToolInputElements: MCP_MAX_TOOL_INPUT_ELEMENTS });
 
   server.registerTool(
     "get_openai_credential_status",
@@ -618,7 +618,7 @@ export function createServer(): McpServer {
   return server;
 }
 
-const apiHandler = createMcpHandler(createServer, MCP_BROWSER_ORIGIN_POLICY);
+const apiHandler = createBoundedMcpHandler(createServer, { ...MCP_BROWSER_ORIGIN_POLICY });
 const protectedHandler = {
   async fetch(request: Request, workerEnv: unknown, _ctx: ExecutionContext): Promise<Response> {
     if (!workerEnv || typeof workerEnv !== "object") return new Response("OAuth provider binding is missing", { status: 500 });
@@ -630,7 +630,7 @@ const protectedHandler = {
     if (!authInfo) return new Response("Invalid access token", { status: 401 });
     const path = new URL(request.url).pathname;
     if (path === ACCOUNT_MCP_PATH) {
-      const accountApiHandler = createMcpHandler(() => createAccountControlsServer(() => workerEnv as DoneStateEnv), { ...MCP_BROWSER_ORIGIN_POLICY, route: ACCOUNT_MCP_PATH });
+      const accountApiHandler = createBoundedMcpHandler(() => createAccountControlsServer(() => workerEnv as DoneStateEnv), { ...MCP_BROWSER_ORIGIN_POLICY, route: ACCOUNT_MCP_PATH });
       return accountApiHandler.fetch(request, { authInfo });
     }
     if (path.startsWith(`${ACCOUNT_MCP_PATH}/`)) return new Response("Not found", { status: 404 });
