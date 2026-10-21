@@ -21,3 +21,11 @@ Automatic builds remain disabled until a real native run and exact check-provide
 ## Verification
 
 `node --test ci/cloudflare/run.test.mjs` tests identity checks, environment filtering, manifest validation, command failure and real process-group timeout. Native acceptance additionally requires the provider deployment ID, exact-source static receipt, completed build/deploy stages, Functions=false, GitHub check identity and source SHA. Dated project records distinguish local fixtures, native execution, check reporting, branch-policy activation and release acceptance.
+
+## Skipped deployments and explicit retry
+
+Disabled branch triggers can leave a deployment record with `is_skipped: true`, all stages idle and no completion timestamp. That record is terminal without having executed a build. The administrator reports `BUILD_SKIPPED` and does not fetch nonexistent logs or count the record as hosted acceptance. A contradictory active stage still holds the concurrency gate.
+
+A normal `trigger` refuses to replay that record. The explicit `retry` action accepts a source-checked skipped deployment or a settled failure, after the same current capacity, branch-head, project configuration and concurrency checks. It records intent before one provider retry request. A timeout remains `AMBIGUOUS_EFFECT`; reconcile provider history before any further request. Successful deployments remain ineligible for retry.
+
+The 21 October readback refreshed an expired Wrangler OAuth session and inspected all three projects successfully. The account subscription GET returned HTTP 403, so fresh plan/entitlement evidence remains unavailable to that session. No capacity evidence was fabricated and no real build was requested. See the current canonical recovery checkpoint for the exact observations.

@@ -1,0 +1,1091 @@
+{
+  "schema": "donestate.native-ci-skipped-readback.v1",
+  "observedAt": "2026-10-21T11:42:23.062473+00:00",
+  "engineeringOnly": true,
+  "baseCommit": "d78c11e52f6148a2450682096b9bf9d67b8c922e",
+  "workItemId": "AGENTPROOF-001",
+  "observations": {
+    "opstruth-project-inspection.json": {
+      "sha256": "fe3da94e256edb391320ac93ace205e205a2d592a6c0113d0a4d53fc8e257196",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "inspect",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/opstruth-chatgpt-plugin",
+        "repositoryId": "1345997124",
+        "project": "proof-state-ci-opstruth",
+        "startedAt": "2026-10-21T11:29:35.579Z",
+        "phase": "STOPPED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth",
+            "startedAt": "2026-10-21T11:29:35.667Z",
+            "status": 401,
+            "failed": true,
+            "completedAt": "2026-10-21T11:29:36.955Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "outcome": "BLOCKED",
+        "error": {
+          "code": "PROVIDER_HTTP_ERROR",
+          "status": 401,
+          "ambiguous": false
+        },
+        "completedAt": "2026-10-21T11:29:37.014Z"
+      }
+    },
+    "oauth-refresh-result.json": {
+      "sha256": "7762e17e85ada139523096dfce833cc29405ee8d08e290f95b7e3e406afec59b",
+      "value": {
+        "schema": "proofstate.oauth-refresh.v1",
+        "observedAt": "2026-10-21T11:34:20.794073+00:00",
+        "method": "installed-wrangler-4.151.2-auth-token-json",
+        "exitCode": 0,
+        "credentialValuesRetained": false,
+        "type": "oauth",
+        "tokenAvailable": true,
+        "expirationTime": "2026-10-21T12:34:20.699Z"
+      }
+    },
+    "opstruth-project-inspection-refreshed.json": {
+      "sha256": "2f62d3f224bf1ef1cafd04dc11c524e1e6613e95be0fd3753391ad3f63ab4d1a",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "inspect",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/opstruth-chatgpt-plugin",
+        "repositoryId": "1345997124",
+        "project": "proof-state-ci-opstruth",
+        "startedAt": "2026-10-21T11:34:20.879Z",
+        "phase": "SETTLED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth",
+            "startedAt": "2026-10-21T11:34:20.926Z",
+            "status": 200,
+            "responseSha256": "be6fcf7f124bd7f513f51f05c2acda9cc4856ada8b015cd388d229bec563d5bd",
+            "completedAt": "2026-10-21T11:34:22.409Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "projectReadback": {
+          "id": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+          "name": "proof-state-ci-opstruth",
+          "source": {
+            "matchesExpectedIdentity": true,
+            "type": "github"
+          },
+          "buildCommandMatches": true,
+          "automaticBuilds": {
+            "production_deployments_enabled": false,
+            "preview_deployment_setting": "none",
+            "preview_branch_includes": [],
+            "preview_branch_excludes": []
+          },
+          "usesFunctions": null,
+          "drift": [],
+          "latestDeployment": {
+            "id": "5614ea88-8656-4393-add2-c04c229f1d89",
+            "projectId": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+            "projectName": "proof-state-ci-opstruth",
+            "createdAt": "2026-10-21T06:04:54.047598Z",
+            "modifiedAt": "2026-10-21T06:04:54.047598Z",
+            "trigger": "github:push",
+            "branch": "fix/durable-release-recovery-20261020",
+            "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+            "dirty": false,
+            "environment": "preview",
+            "url": "https://5614ea88.proof-state-ci-opstruth.pages.dev",
+            "usesFunctions": null,
+            "skipped": true,
+            "latestStage": {
+              "name": "queued",
+              "started_on": null,
+              "ended_on": null,
+              "status": "idle"
+            },
+            "stages": [
+              {
+                "name": "queued",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "initialize",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "clone_repo",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "build",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "deploy",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              }
+            ]
+          }
+        },
+        "plan": {
+          "name": "proof-state-ci-opstruth",
+          "production_branch": "main",
+          "build_config": {
+            "build_command": "node ci/cloudflare/run.mjs --provider cloudflare-pages",
+            "destination_dir": "ci-report",
+            "root_dir": "",
+            "build_caching": false
+          },
+          "deployment_configs": {
+            "preview": {
+              "build_image_major_version": 3,
+              "env_vars": {
+                "NODE_VERSION": {
+                  "type": "plain_text",
+                  "value": "24.22.0"
+                },
+                "SKIP_DEPENDENCY_INSTALL": {
+                  "type": "plain_text",
+                  "value": "1"
+                }
+              }
+            },
+            "production": {
+              "build_image_major_version": 3,
+              "env_vars": {
+                "NODE_VERSION": {
+                  "type": "plain_text",
+                  "value": "24.22.0"
+                },
+                "SKIP_DEPENDENCY_INSTALL": {
+                  "type": "plain_text",
+                  "value": "1"
+                }
+              }
+            }
+          },
+          "source": {
+            "type": "github",
+            "config": {
+              "owner": "AyobamiH",
+              "repo_name": "opstruth-chatgpt-plugin",
+              "repo_id": "1345997124",
+              "production_branch": "main",
+              "production_deployments_enabled": false,
+              "preview_deployment_setting": "none",
+              "preview_branch_includes": [],
+              "preview_branch_excludes": [],
+              "pr_comments_enabled": false,
+              "path_includes": [
+                "*"
+              ],
+              "path_excludes": []
+            }
+          }
+        },
+        "outcome": "INSPECTED",
+        "completedAt": "2026-10-21T11:34:22.429Z"
+      }
+    },
+    "agentproof-project-inspection.json": {
+      "sha256": "03219ffa8fa74404b7a7ad6f023d2d9b6d46abfb009cb0743275b4acb0699a2c",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "inspect",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/agentproof",
+        "repositoryId": "1317413810",
+        "project": "proof-state-ci-agentproof",
+        "startedAt": "2026-10-21T11:37:45.925Z",
+        "phase": "SETTLED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof",
+            "startedAt": "2026-10-21T11:37:45.933Z",
+            "status": 200,
+            "responseSha256": "5e0ecb3475fc7f4018f469b25c7f12ac5159ef6dd1cd9f96e6eb0704a9477ee6",
+            "completedAt": "2026-10-21T11:37:47.031Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "projectReadback": {
+          "id": "232be2e8-b634-4226-aba9-e69b9c739729",
+          "name": "proof-state-ci-agentproof",
+          "source": {
+            "matchesExpectedIdentity": true,
+            "type": "github"
+          },
+          "buildCommandMatches": true,
+          "automaticBuilds": {
+            "production_deployments_enabled": false,
+            "preview_deployment_setting": "none",
+            "preview_branch_includes": [],
+            "preview_branch_excludes": []
+          },
+          "usesFunctions": null,
+          "drift": [],
+          "latestDeployment": {
+            "id": "e9bc81bd-1571-45d1-967b-aa2843b24f5f",
+            "projectId": "232be2e8-b634-4226-aba9-e69b9c739729",
+            "projectName": "proof-state-ci-agentproof",
+            "createdAt": "2026-10-21T06:04:51.703172Z",
+            "modifiedAt": "2026-10-21T06:04:51.703172Z",
+            "trigger": "github:push",
+            "branch": "fix/durable-release-recovery-20261020",
+            "commit": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2",
+            "dirty": false,
+            "environment": "preview",
+            "url": "https://e9bc81bd.proof-state-ci-agentproof.pages.dev",
+            "usesFunctions": null,
+            "skipped": true,
+            "latestStage": {
+              "name": "queued",
+              "started_on": null,
+              "ended_on": null,
+              "status": "idle"
+            },
+            "stages": [
+              {
+                "name": "queued",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "initialize",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "clone_repo",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "build",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "deploy",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              }
+            ]
+          }
+        },
+        "plan": {
+          "name": "proof-state-ci-agentproof",
+          "production_branch": "main",
+          "build_config": {
+            "build_command": "node ci/cloudflare/run.mjs --provider cloudflare-pages",
+            "destination_dir": "ci-report",
+            "root_dir": "",
+            "build_caching": false
+          },
+          "deployment_configs": {
+            "preview": {
+              "build_image_major_version": 3,
+              "env_vars": {
+                "NODE_VERSION": {
+                  "type": "plain_text",
+                  "value": "24.22.0"
+                },
+                "SKIP_DEPENDENCY_INSTALL": {
+                  "type": "plain_text",
+                  "value": "1"
+                }
+              }
+            },
+            "production": {
+              "build_image_major_version": 3,
+              "env_vars": {
+                "NODE_VERSION": {
+                  "type": "plain_text",
+                  "value": "24.22.0"
+                },
+                "SKIP_DEPENDENCY_INSTALL": {
+                  "type": "plain_text",
+                  "value": "1"
+                }
+              }
+            }
+          },
+          "source": {
+            "type": "github",
+            "config": {
+              "owner": "AyobamiH",
+              "repo_name": "agentproof",
+              "repo_id": "1317413810",
+              "production_branch": "main",
+              "production_deployments_enabled": false,
+              "preview_deployment_setting": "none",
+              "preview_branch_includes": [],
+              "preview_branch_excludes": [],
+              "pr_comments_enabled": false,
+              "path_includes": [
+                "*"
+              ],
+              "path_excludes": []
+            }
+          }
+        },
+        "outcome": "INSPECTED",
+        "completedAt": "2026-10-21T11:37:47.042Z"
+      }
+    },
+    "donestate-project-inspection.json": {
+      "sha256": "75a498fc786c0115e3503a05552d2f14903bf11d4746116b1f2d724a15943300",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "inspect",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/donestate",
+        "repositoryId": "1348643925",
+        "project": "proof-state-ci-donestate",
+        "startedAt": "2026-10-21T11:37:47.141Z",
+        "phase": "SETTLED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate",
+            "startedAt": "2026-10-21T11:37:47.163Z",
+            "status": 200,
+            "responseSha256": "53feb0652057ad70044e00b787caeced5b79c513410ba8470df89fb641849a41",
+            "completedAt": "2026-10-21T11:37:48.459Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "projectReadback": {
+          "id": "edb3c8b2-241c-4b53-a4a9-65901e74896c",
+          "name": "proof-state-ci-donestate",
+          "source": {
+            "matchesExpectedIdentity": true,
+            "type": "github"
+          },
+          "buildCommandMatches": true,
+          "automaticBuilds": {
+            "production_deployments_enabled": false,
+            "preview_deployment_setting": "none",
+            "preview_branch_includes": [],
+            "preview_branch_excludes": []
+          },
+          "usesFunctions": null,
+          "drift": [],
+          "latestDeployment": {
+            "id": "f068fa37-4acb-4f99-820f-c9b7f9ab49e3",
+            "projectId": "edb3c8b2-241c-4b53-a4a9-65901e74896c",
+            "projectName": "proof-state-ci-donestate",
+            "createdAt": "2026-10-21T06:13:08.306976Z",
+            "modifiedAt": "2026-10-21T06:13:08.306976Z",
+            "trigger": "github:push",
+            "branch": "fix/durable-release-recovery-20261020",
+            "commit": "d78c11e52f6148a2450682096b9bf9d67b8c922e",
+            "dirty": false,
+            "environment": "preview",
+            "url": "https://f068fa37.proof-state-ci-donestate.pages.dev",
+            "usesFunctions": null,
+            "skipped": true,
+            "latestStage": {
+              "name": "queued",
+              "started_on": null,
+              "ended_on": null,
+              "status": "idle"
+            },
+            "stages": [
+              {
+                "name": "queued",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "initialize",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "clone_repo",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "build",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "deploy",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              }
+            ]
+          }
+        },
+        "plan": {
+          "name": "proof-state-ci-donestate",
+          "production_branch": "main",
+          "build_config": {
+            "build_command": "node ci/cloudflare/run.mjs --provider cloudflare-pages",
+            "destination_dir": "ci-report",
+            "root_dir": "",
+            "build_caching": false
+          },
+          "deployment_configs": {
+            "preview": {
+              "build_image_major_version": 3,
+              "env_vars": {
+                "NODE_VERSION": {
+                  "type": "plain_text",
+                  "value": "24.22.0"
+                },
+                "SKIP_DEPENDENCY_INSTALL": {
+                  "type": "plain_text",
+                  "value": "1"
+                }
+              }
+            },
+            "production": {
+              "build_image_major_version": 3,
+              "env_vars": {
+                "NODE_VERSION": {
+                  "type": "plain_text",
+                  "value": "24.22.0"
+                },
+                "SKIP_DEPENDENCY_INSTALL": {
+                  "type": "plain_text",
+                  "value": "1"
+                }
+              }
+            }
+          },
+          "source": {
+            "type": "github",
+            "config": {
+              "owner": "AyobamiH",
+              "repo_name": "donestate",
+              "repo_id": "1348643925",
+              "production_branch": "main",
+              "production_deployments_enabled": false,
+              "preview_deployment_setting": "none",
+              "preview_branch_includes": [],
+              "preview_branch_excludes": [],
+              "pr_comments_enabled": false,
+              "path_includes": [
+                "*"
+              ],
+              "path_excludes": []
+            }
+          }
+        },
+        "outcome": "INSPECTED",
+        "completedAt": "2026-10-21T11:37:48.470Z"
+      }
+    },
+    "cloudflare-subscriptions-readback.json": {
+      "sha256": "9da394eab11b052d5269718e5c0a0f21bb2b08d701718cf9af6a88c57f5f6d79",
+      "value": {
+        "schema": "proofstate.cloudflare-subscription-readback.v1",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "method": "GET",
+        "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/subscriptions",
+        "observedAt": "2026-10-21T11:35:19.171919+00:00",
+        "status": 403
+      }
+    },
+    "opstruth-skipped-baseline.json": {
+      "sha256": "17a46872f16a4b9ff58c761bcd1303464f31f4efd3074e09591acea7835ff073",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "status",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/opstruth-chatgpt-plugin",
+        "repositoryId": "1345997124",
+        "project": "proof-state-ci-opstruth",
+        "expectedSource": {
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f"
+        },
+        "startedAt": "2026-10-21T11:37:43.505Z",
+        "phase": "SETTLED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth",
+            "startedAt": "2026-10-21T11:37:43.517Z",
+            "status": 200,
+            "responseSha256": "be6fcf7f124bd7f513f51f05c2acda9cc4856ada8b015cd388d229bec563d5bd",
+            "completedAt": "2026-10-21T11:37:44.783Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth/deployments/5614ea88-8656-4393-add2-c04c229f1d89",
+            "startedAt": "2026-10-21T11:37:44.799Z",
+            "status": 200,
+            "responseSha256": "9490f1fd5c0442ee9bcc429dd092c335384367075ca6999d400484ab9496cd20",
+            "completedAt": "2026-10-21T11:37:45.869Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "projectReadback": {
+          "id": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+          "name": "proof-state-ci-opstruth",
+          "source": {
+            "matchesExpectedIdentity": true,
+            "type": "github"
+          },
+          "buildCommandMatches": true,
+          "automaticBuilds": {
+            "production_deployments_enabled": false,
+            "preview_deployment_setting": "none",
+            "preview_branch_includes": [],
+            "preview_branch_excludes": []
+          },
+          "usesFunctions": null,
+          "drift": [],
+          "latestDeployment": {
+            "id": "5614ea88-8656-4393-add2-c04c229f1d89",
+            "projectId": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+            "projectName": "proof-state-ci-opstruth",
+            "createdAt": "2026-10-21T06:04:54.047598Z",
+            "modifiedAt": "2026-10-21T06:04:54.047598Z",
+            "trigger": "github:push",
+            "branch": "fix/durable-release-recovery-20261020",
+            "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+            "dirty": false,
+            "environment": "preview",
+            "url": "https://5614ea88.proof-state-ci-opstruth.pages.dev",
+            "usesFunctions": null,
+            "skipped": true,
+            "latestStage": {
+              "name": "queued",
+              "started_on": null,
+              "ended_on": null,
+              "status": "idle"
+            },
+            "stages": [
+              {
+                "name": "queued",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "initialize",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "clone_repo",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "build",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "deploy",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              }
+            ]
+          }
+        },
+        "deployment": {
+          "id": "5614ea88-8656-4393-add2-c04c229f1d89",
+          "projectId": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+          "projectName": "proof-state-ci-opstruth",
+          "createdAt": "2026-10-21T06:04:54.047598Z",
+          "modifiedAt": "2026-10-21T06:04:54.047598Z",
+          "trigger": "github:push",
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+          "dirty": false,
+          "environment": "preview",
+          "url": "https://5614ea88.proof-state-ci-opstruth.pages.dev",
+          "usesFunctions": null,
+          "skipped": true,
+          "latestStage": {
+            "name": "queued",
+            "started_on": null,
+            "ended_on": null,
+            "status": "idle"
+          },
+          "stages": [
+            {
+              "name": "queued",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "initialize",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "clone_repo",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "build",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "deploy",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            }
+          ]
+        },
+        "outcome": "BUILD_IN_PROGRESS",
+        "completedAt": "2026-10-21T11:37:45.875Z"
+      }
+    },
+    "opstruth-skipped-corrected.json": {
+      "sha256": "f1e7062739214a48114f8683b5cb632dfcd6faf23b300d1928ed9aa68b16033f",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "status",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/opstruth-chatgpt-plugin",
+        "repositoryId": "1345997124",
+        "project": "proof-state-ci-opstruth",
+        "expectedSource": {
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f"
+        },
+        "startedAt": "2026-10-21T11:39:45.983Z",
+        "phase": "SETTLED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth",
+            "startedAt": "2026-10-21T11:39:45.993Z",
+            "status": 200,
+            "responseSha256": "be6fcf7f124bd7f513f51f05c2acda9cc4856ada8b015cd388d229bec563d5bd",
+            "completedAt": "2026-10-21T11:39:47.403Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth/deployments/5614ea88-8656-4393-add2-c04c229f1d89",
+            "startedAt": "2026-10-21T11:39:47.416Z",
+            "status": 200,
+            "responseSha256": "9490f1fd5c0442ee9bcc429dd092c335384367075ca6999d400484ab9496cd20",
+            "completedAt": "2026-10-21T11:39:48.498Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "projectReadback": {
+          "id": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+          "name": "proof-state-ci-opstruth",
+          "source": {
+            "matchesExpectedIdentity": true,
+            "type": "github"
+          },
+          "buildCommandMatches": true,
+          "automaticBuilds": {
+            "production_deployments_enabled": false,
+            "preview_deployment_setting": "none",
+            "preview_branch_includes": [],
+            "preview_branch_excludes": []
+          },
+          "usesFunctions": null,
+          "drift": [],
+          "latestDeployment": {
+            "id": "5614ea88-8656-4393-add2-c04c229f1d89",
+            "projectId": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+            "projectName": "proof-state-ci-opstruth",
+            "createdAt": "2026-10-21T06:04:54.047598Z",
+            "modifiedAt": "2026-10-21T06:04:54.047598Z",
+            "trigger": "github:push",
+            "branch": "fix/durable-release-recovery-20261020",
+            "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+            "dirty": false,
+            "environment": "preview",
+            "url": "https://5614ea88.proof-state-ci-opstruth.pages.dev",
+            "usesFunctions": null,
+            "skipped": true,
+            "latestStage": {
+              "name": "queued",
+              "started_on": null,
+              "ended_on": null,
+              "status": "idle"
+            },
+            "stages": [
+              {
+                "name": "queued",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "initialize",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "clone_repo",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "build",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "deploy",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              }
+            ]
+          }
+        },
+        "deployment": {
+          "id": "5614ea88-8656-4393-add2-c04c229f1d89",
+          "projectId": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+          "projectName": "proof-state-ci-opstruth",
+          "createdAt": "2026-10-21T06:04:54.047598Z",
+          "modifiedAt": "2026-10-21T06:04:54.047598Z",
+          "trigger": "github:push",
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+          "dirty": false,
+          "environment": "preview",
+          "url": "https://5614ea88.proof-state-ci-opstruth.pages.dev",
+          "usesFunctions": null,
+          "skipped": true,
+          "latestStage": {
+            "name": "queued",
+            "started_on": null,
+            "ended_on": null,
+            "status": "idle"
+          },
+          "stages": [
+            {
+              "name": "queued",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "initialize",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "clone_repo",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "build",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "deploy",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            }
+          ]
+        },
+        "outcome": "BUILD_SKIPPED",
+        "completedAt": "2026-10-21T11:39:48.507Z"
+      }
+    },
+    "github-check-provider-readback.json": {
+      "sha256": "0b2be20b47ad3bb2f170388de09d3b6e501ac3e96ee2f983db717da291302598",
+      "value": {
+        "observedAt": "2026-10-21T11:39:43.906627+00:00",
+        "heads": [
+          {
+            "repository": "AyobamiH/agentproof",
+            "head": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2",
+            "totalCount": 5,
+            "checks": [
+              {
+                "id": 119066970358,
+                "name": "validate (macos-latest, 24)",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/agentproof/actions/runs/39553243612/job/119066970358"
+              },
+              {
+                "id": 119066970270,
+                "name": "release-provider",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/agentproof/actions/runs/39553243467/job/119066970270"
+              },
+              {
+                "id": 119066970163,
+                "name": "validate (ubuntu-latest, 24)",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/agentproof/actions/runs/39553243612/job/119066970163"
+              },
+              {
+                "id": 119066970045,
+                "name": "validate (ubuntu-latest, 22)",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/agentproof/actions/runs/39553243612/job/119066970045"
+              },
+              {
+                "id": 119066969829,
+                "name": "provider",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/agentproof/actions/runs/39553243539/job/119066969829"
+              }
+            ]
+          },
+          {
+            "repository": "AyobamiH/opstruth-chatgpt-plugin",
+            "head": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+            "totalCount": 4,
+            "checks": [
+              {
+                "id": 119066980972,
+                "name": "review",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/opstruth-chatgpt-plugin/actions/runs/39553246890/job/119066980972"
+              },
+              {
+                "id": 119066980612,
+                "name": "verify",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/opstruth-chatgpt-plugin/actions/runs/39553246858/job/119066980612"
+              },
+              {
+                "id": 119066980380,
+                "name": "release-verifier",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/opstruth-chatgpt-plugin/actions/runs/39553246866/job/119066980380"
+              },
+              {
+                "id": 119066964573,
+                "name": "verify",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/opstruth-chatgpt-plugin/actions/runs/39553241910/job/119066964573"
+              }
+            ]
+          },
+          {
+            "repository": "AyobamiH/donestate",
+            "head": "d78c11e52f6148a2450682096b9bf9d67b8c922e",
+            "totalCount": 4,
+            "checks": [
+              {
+                "id": 119069634841,
+                "name": "core (24)",
+                "status": "completed",
+                "conclusion": "cancelled",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/donestate/actions/runs/39554078623/job/119069634841"
+              },
+              {
+                "id": 119069634688,
+                "name": "hosted-plugin",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/donestate/actions/runs/39554078623/job/119069634688"
+              },
+              {
+                "id": 119069634630,
+                "name": "core (22)",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/donestate/actions/runs/39554078623/job/119069634630"
+              },
+              {
+                "id": 119069634260,
+                "name": "release-controller",
+                "status": "completed",
+                "conclusion": "failure",
+                "appId": 15368,
+                "appSlug": "github-actions",
+                "detailsUrl": "https://github.com/AyobamiH/donestate/actions/runs/39554078570/job/119069634260"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "current-release-and-macos-readback.json": {
+      "sha256": "3dcd78ed20e899c4772a08b8b75c2518df38e51f4c04fc1cfe08d8c8fe3f58d9",
+      "value": {
+        "observedAt": "2026-10-21T11:40:50.525792+00:00",
+        "macOSCheck": {
+          "id": 119066970358,
+          "annotations": [
+            {
+              "path": ".github",
+              "annotation_level": "failure",
+              "message": "The job was not started because your account is locked due to a billing issue."
+            },
+            {
+              "path": ".github",
+              "annotation_level": "notice",
+              "message": "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times."
+            }
+          ]
+        },
+        "release": {
+          "id": 416342082,
+          "tag_name": "v0.0.0-rc.2026101801",
+          "target_commitish": "1231076c12485a02fae3c38b0b850a25274985d5",
+          "draft": false,
+          "prerelease": true,
+          "published_at": "2026-10-18T11:43:37Z",
+          "html_url": "https://github.com/AyobamiH/agentproof-release-canary/releases/tag/v0.0.0-rc.2026101801"
+        },
+        "assets": [
+          {
+            "id": 653036082,
+            "name": "agentproof-disposable-canary.tgz",
+            "size": 240,
+            "digest": "sha256:064f989c25b86269004401959b1e2aa68cc0b3acbf310ba647b892aa5e28b186",
+            "state": "uploaded",
+            "updated_at": "2026-10-18T09:13:43Z"
+          },
+          {
+            "id": 653046879,
+            "name": "provenance.json",
+            "size": 729,
+            "digest": "sha256:fa76d7de87ba327ccd81943563af7daed1c87775e049e52a047df59c5b1475b4",
+            "state": "uploaded",
+            "updated_at": "2026-10-18T09:18:28Z"
+          }
+        ],
+        "run": {
+          "id": 39124373253,
+          "head_sha": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+          "run_attempt": 3,
+          "status": "completed",
+          "conclusion": "failure",
+          "updated_at": "2026-10-18T11:51:50Z",
+          "html_url": "https://github.com/AyobamiH/agentproof-release-canary/actions/runs/39124373253"
+        },
+        "scope": "Read-only; metadata readback does not establish a signed recovery receipt or terminal verification."
+      }
+    }
+  },
+  "sourceFiles": {
+    "ci/cloudflare-admin/contracts.mjs": "eea83ef078969bdd8fff9bac69a48c97c84fdf534a5b93db05100b8aad40c92f",
+    "ci/cloudflare-admin/pages.mjs": "dee288069288c8bebdb661da7e34ffc3e1bd0c8652017100888943bf0dc001a4",
+    "ci/cloudflare-admin/pages.test.mjs": "9043a6c9efbf171dc8b03ce07dbbf43d311a28589d5bcc8a2b8fc950dad114d3",
+    "ci/cloudflare/README.md": "c2fa5d8a5879c359bd4b1d7e6fc9e21c9a95ee65710b3217930966d8632c1f3c"
+  },
+  "checks": [
+    {
+      "command": "node --test ci/cloudflare-admin/pages.test.mjs",
+      "phase": "skipped-regression-before.txt",
+      "result": "FAIL",
+      "exitCode": 1,
+      "stdout": "\u2714 fixed repositories only (6.812101ms)\n\u2714 wrong numeric repository identity refused (0.269182ms)\n\u2714 full commit required (0.247275ms)\n\u2714 ambiguous branch refused (0.213105ms)\n\u2714 capacity must be current (0.332353ms)\n\u2714 source defaults disable every trigger (6.052711ms)\n\u2716 provider skipped flag with idle stages is terminal, never an active build (4.703407ms)\n\u2714 contradictory skipped flag does not hide an active stage (0.469427ms)\n\u2716 skipped status is reported without pretending logs or receipt exist (146.529147ms)\n\u2716 ordinary trigger cannot silently replay a skipped deployment (35.762693ms)\n\u2716 explicit retry of source-checked skipped deployment requests exactly one build (37.884831ms)\n\u2716 retry still refuses unavailable capacity (81.237403ms)\n\u2716 retry still refuses a moved source branch (58.188501ms)\n\u2716 retry still refuses another managed project active build (68.963852ms)\n\u2714 retry cannot duplicate an active deployment (36.102302ms)\n\u2716 ambiguous retry preserves intent and never retries automatically (71.843067ms)\n\u2716 successful deployments remain ineligible for explicit retry (75.891137ms)\n\u2139 tests 17\n\u2139 suites 0\n\u2139 pass 8\n\u2139 fail 9\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 774.68564\n\n\u2716 failing tests:\n\ntest at ci/cloudflare-admin/pages.test.mjs:91:1\n\u2716 provider skipped flag with idle stages is terminal, never an active build (4.703407ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  false !== true\n  \n      at TestContext.<anonymous> (file:///home/johnh/donestate-native-ci-20261021/ci/cloudflare-admin/pages.test.mjs:92:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1325:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:911:18)\n      at Test.postRun (node:internal/test_runner/test:1465:19)\n      at Test.run (node:internal/test_runner/test:1390:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at ci/cloudflare-admin/pages.test.mjs:99:1\n\u2716 skipped status is reported without pretending logs or receipt exist (146.529147ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'BUILD_IN_PROGRESS'\n  - 'BUILD_SKIPPED'\n           ^\n  \n      at TestContext.<anonymous> (file:///home/johnh/donestate-native-ci-20261021/ci/cloudflare-admin/pages.test.mjs:101:10)\n      at async Test.run (node:internal/test_runner/test:1332:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'BUILD_IN_PROGRESS',\n    expected: 'BUILD_SKIPPED',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at ci/cloudflare-admin/pages.test.mjs:107:1\n\u2716 ordinary trigger cannot silently replay a skipped deployment (35.762693ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'EXISTING_DEPLOYMENT'\n  - 'BLOCKED'\n  \n      at TestContext.<anonymous> (file:///home/johnh/donestate-native-ci-20261021/ci/cloudflare-admin/pages.test.mjs:109:10)\n      at async Test.run (node:internal/test_runner/test:1332:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'EXISTING_DEPLOYMENT',\n    expected: 'BLOCKED',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at ci/cloudflare-admin/pages.test.mjs:113:1\n\u2716 explicit retry of source-checked skipped deployment requests exactly one build (37.884831ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'BLOCKED'\n  - 'BUILD_REQUESTED_SOURCE_READ_BACK'\n  \n      at TestContext.<anonymous> (file:///home/johnh/donestate-native-ci-20261021/ci/cloudflare-admin/pages.test.mjs:115:10)\n      at async Test.run (node:internal/test_runner/test:1332:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'BLOCKED',\n    expected: 'BUILD_REQUESTED_SOURCE_READ_BACK',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at ci/cloudflare-admin/pages.test.mjs:119:1\n\u2716 retry still refuses unavailable capacity (81.237403ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'EXISTING_BUILD_STILL_IN_PROGRESS'\n  - 'ABSOLUTE_EXTERNAL_FILE_REQUIRED'\n  \n      at TestContext.<anonymous> (file:///home/johnh/donestate-native-ci-20261021/ci/cloudflare-admin/pages.test.mjs:122:10)\n      at async Test.run (node:internal/test_runner/test:1332:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'EXISTING_BUILD_STILL_IN_PROGRESS',\n    expected: 'ABSOLUTE_EXTERNAL_FILE_REQUIRED',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at ci/cloudflare-admin/pages.test.mjs:125:1\n\u2716 retry still refuses a moved source branch (58.188501ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'EXISTING_BUILD_STILL_IN_PROGRESS'\n  - 'CURRENT_GITHUB_BRANCH_HEAD_MISMATCH'\n  \n      at TestContext.<anonymous> (file:///home/johnh/donestate-native-ci-20261021/ci/cloudflare-admin/pages.test.mjs:127:10)\n      at async Test.run (node:internal/test_runner/test:1332:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'EXISTING_BUILD_STILL_IN_PROGRESS',\n    expected: 'CURRENT_GITHUB_BRANCH_HEAD_MISMATCH',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at ci/cloudflare-admin/pages.test.mjs:130:1\n\u2716 retry still refuses another managed project active build (68.963852ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'EXISTING_BUILD_STILL_IN_PROGRESS'\n  - 'OTHER_MANAGED_PROJECT_BUILD_IN_PROGRESS'\n  \n      at TestContext.<anonymous> (file:///home/johnh/donestate-native-ci-20261021/ci/cloudflare-admin/pages.test.mjs:132:10)\n      at async Test.run (node:internal/test_runner/test:1332:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'EXISTING_BUILD_STILL_IN_PROGRESS',\n    expected: 'OTHER_MANAGED_PROJECT_BUILD_IN_PROGRESS',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at ci/cloudflare-admin/pages.test.mjs:140:1\n\u2716 ambiguous retry preserves intent and never retries automatically (71.843067ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'BLOCKED'\n  - 'AMBIGUOUS_EFFECT'\n  \n      at TestContext.<anonymous> (file:///home/johnh/donestate-native-ci-20261021/ci/cloudflare-admin/pages.test.mjs:142:10)\n      at async Test.run (node:internal/test_runner/test:1332:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'BLOCKED',\n    expected: 'AMBIGUOUS_EFFECT',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at ci/cloudflare-admin/pages.test.mjs:146:1\n\u2716 successful deployments remain ineligible for explicit retry (75.891137ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'OTHER_MANAGED_PROJECT_BUILD_IN_PROGRESS'\n  - 'RETRY_REQUIRES_VERIFIED_FAILURE_OR_SKIP'\n  \n      at TestContext.<anonymous> (file:///home/johnh/donestate-native-ci-20261021/ci/cloudflare-admin/pages.test.mjs:151:10)\n      at async Test.run (node:internal/test_runner/test:1332:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'OTHER_MANAGED_PROJECT_BUILD_IN_PROGRESS',\n    expected: 'RETRY_REQUIRES_VERIFIED_FAILURE_OR_SKIP',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n",
+      "stdoutSha256": "71d0be57e24d2f0a352a33ca0774e81a6a2b2f6b09b154bb748efa53bc98daef"
+    },
+    {
+      "command": "node --test ci/cloudflare-admin/pages.test.mjs",
+      "phase": "skipped-regression-after.txt",
+      "result": "PASS",
+      "exitCode": 0,
+      "stdout": "\u2714 fixed repositories only (2.805491ms)\n\u2714 wrong numeric repository identity refused (0.232711ms)\n\u2714 full commit required (0.356254ms)\n\u2714 ambiguous branch refused (0.219648ms)\n\u2714 capacity must be current (0.542447ms)\n\u2714 source defaults disable every trigger (1.249187ms)\n\u2714 provider skipped flag with idle stages is terminal, never an active build (0.575362ms)\n\u2714 contradictory skipped flag does not hide an active stage (0.163958ms)\n\u2714 skipped status is reported without pretending logs or receipt exist (78.721271ms)\n\u2714 ordinary trigger cannot silently replay a skipped deployment (36.363659ms)\n\u2714 explicit retry of source-checked skipped deployment requests exactly one build (93.54087ms)\n\u2714 retry still refuses unavailable capacity (47.417613ms)\n\u2714 retry still refuses a moved source branch (55.743497ms)\n\u2714 retry still refuses another managed project active build (44.792686ms)\n\u2714 retry cannot duplicate an active deployment (36.446814ms)\n\u2714 ambiguous retry preserves intent and never retries automatically (78.090738ms)\n\u2714 successful deployments remain ineligible for explicit retry (63.59232ms)\n\u2714 verified terminal failure remains eligible for one explicit retry (89.873802ms)\n\u2714 failure without settlement timestamp cannot be retried (63.498325ms)\n\u2714 skipped deployment from another source cannot be retried (66.64362ms)\n\u2139 tests 20\n\u2139 suites 0\n\u2139 pass 20\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 868.990731\n",
+      "stdoutSha256": "6a84425a28772619e3e68407e4de443ba39cc6407b12801eb594ba3b632d4996"
+    }
+  ],
+  "providerDocumentation": [
+    "https://developers.cloudflare.com/api/resources/pages/subresources/projects/subresources/deployments/methods/retry/",
+    "https://developers.cloudflare.com/pages/platform/limits/"
+  ],
+  "actions": {
+    "cloudflareBuildRequests": 0,
+    "automaticBuildsEnabled": false,
+    "requiredChecksChanged": false,
+    "recoveryDeployments": 0,
+    "publicationRequests": 0,
+    "newSigningKeys": 0
+  },
+  "remainingGates": [
+    "Fresh permitted Pages plan/entitlement readback and one-build capacity evidence",
+    "Genuine exact-final-head native deployment, receipt and GitHub App check",
+    "Reviewed equivalent check-provider transition",
+    "Real required AgentProof macOS validation",
+    "Reviewed coordinated merges and original-run readback-only recovery",
+    "Signed receipt, independent OpsTruth verdict, durable settlement and fresh disabled-service closure"
+  ],
+  "scope": "Skipped provider records are not builds. Refreshed project access does not establish subscription access or remaining build quota. Local fixture success is not hosted CI or release verification."
+}

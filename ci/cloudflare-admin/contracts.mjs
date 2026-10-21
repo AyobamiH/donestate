@@ -170,9 +170,15 @@ export function deploymentSummary(deployment) {
     stages: deployment.stages?.map(({ name, status, started_on, ended_on }) => ({ name, status, started_on, ended_on })),
   };
 }
+export function isSkipped(deployment) {
+  const active = deployment.latest_stage?.status === 'active' ||
+    deployment.stages?.some((stage) => stage.status === 'active');
+  return !active && (deployment.is_skipped === true || deployment.latest_stage?.status === 'skipped');
+}
 export function terminal(deployment) {
   const stage = deployment.latest_stage;
-  return ['failure', 'canceled', 'skipped'].includes(stage?.status) ||
+  if (stage?.status === 'active' || deployment.stages?.some((item) => item.status === 'active')) return false;
+  return isSkipped(deployment) || ['failure', 'canceled'].includes(stage?.status) ||
     (stage?.name === 'deploy' && stage?.status === 'success');
 }
 export function assertDeployment(deployment, project, spec, branch, sha) {

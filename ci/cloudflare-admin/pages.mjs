@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { pathToFileURL } from 'node:url';
 import { ACCOUNT_ID, AdminError, PROJECTS, activationBody, assertDeployment, assertDisabled,
-  assertProject, assertReceipt, currentScope, deploymentSummary, immutableReceiptUrl, projectBody,
+  assertProject, assertReceipt, currentScope, deploymentSummary, immutableReceiptUrl, isSkipped, projectBody,
   projectDrift, requireThat, scope, sha256, sourceMatches, subject, terminal, validateBranch, validateCapacity,
   validateDeploymentId, validateSha } from './contracts.mjs';
 import { client, createReport, readEvidence } from './io.mjs';
@@ -103,6 +103,7 @@ async function sourceReadback(http, report, project, spec, options) {
   const deployment = response.value;
   report.deployment = deploymentSummary(deployment);
   assertDeployment(deployment, project, spec, options.branch, options.sha);
+  if (isSkipped(deployment)) return { outcome: 'BUILD_SKIPPED', deployment };
   if (!terminal(deployment)) return { outcome: 'BUILD_IN_PROGRESS', deployment };
   const logs = await http.api(`/${spec.name}/deployments/${options.deployment}/history/logs`);
   report.logs = { sha256: sha256(logs.bytes), total: logs.value.total,
@@ -217,6 +218,7 @@ export async function execute(options, { token, fetchImpl = fetch, now = Date.no
         if (options.action === 'trigger' && existing) {
           assertDeployment(existing, project, spec, options.branch, options.sha);
           report.deployment = deploymentSummary(existing);
+          requireThat(!isSkipped(existing), 'EXPLICIT_RETRY_REQUIRED_AFTER_SKIPPED_DEPLOYMENT');
           requireThat(existing.latest_stage?.status !== 'failure', 'EXPLICIT_RETRY_REQUIRED_AFTER_TERMINAL_FAILURE');
           report.outcome = 'EXISTING_DEPLOYMENT';
         } else {
@@ -231,8 +233,9 @@ export async function execute(options, { token, fetchImpl = fetch, now = Date.no
           if (options.action === 'retry') {
             const failed = (await http.api(`/${spec.name}/deployments/${options.deployment}`)).value;
             assertDeployment(failed, project, spec, options.branch, options.sha);
-            requireThat(failed.latest_stage?.status === 'failure' && terminal(failed) && failed.latest_stage.ended_on,
-              'RETRY_REQUIRES_VERIFIED_TERMINAL_FAILURE');
+            requireThat(isSkipped(failed) || (failed.latest_stage?.status === 'failure' &&
+              terminal(failed) && failed.latest_stage.ended_on), 'RETRY_REQUIRES_VERIFIED_FAILURE_OR_SKIP');
+            report.retryReason = isSkipped(failed) ? 'provider-skipped' : 'terminal-failure';
             started = await http.api(`/${spec.name}/deployments/${options.deployment}/retry`, { method: 'POST' });
           } else {
             const body = new FormData();
@@ -273,7 +276,7 @@ async function main() {
   const report = await execute(parseArguments(process.argv.slice(2)), { token: process.env.CLOUDFLARE_API_TOKEN });
   console.log(JSON.stringify({ action: report.action, outcome: report.outcome, project: report.project,
     deploymentId: report.deployment?.id, error: report.error, report: process.argv[process.argv.indexOf('--report') + 1] }));
-  if (['BLOCKED', 'AMBIGUOUS_EFFECT', 'BUILD_FAILED'].includes(report.outcome)) process.exitCode = 1;
+  if (['BLOCKED', 'AMBIGUOUS_EFFECT', 'BUILD_FAILED', 'BUILD_SKIPPED'].includes(report.outcome)) process.exitCode = 1;
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => {
