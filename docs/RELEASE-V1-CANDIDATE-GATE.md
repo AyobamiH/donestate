@@ -1,10 +1,12 @@
 # DoneState release.v1 consequence verification gate
 
-<!-- Current release recovery evidence: E-142 -->
+<!-- Current release recovery evidence: E-143 -->
 
 Release acceptance: **PENDING**.
 
-**21 October reconciliation:** [E-142's current checkpoint](evidence/agentproof-ci-reconciliation-checkpoint-20261021.json) records a successful standard OAuth refresh and matching readbacks for all three disabled Pages projects. Their latest records are skipped entries, not executed builds. The administrator now reports that state correctly and permits only an explicit, capacity-checked retry; all 20 administration tests pass. The subscription GET returned HTTP 403, so fresh plan/entitlement evidence remains missing. No real build was requested. The required macOS job still has an account-billing refusal, and no native GitHub App check has been accepted. Release acceptance remains pending.
+**21 October native CI:** [E-143's current checkpoint](evidence/agentproof-native-ci-partial-checkpoint-20261021.json) records successful exact-head Cloudflare Linux builds and Codex source reviews for AgentProof and OpsTruth. Fresh Account Read entitlements supported three explicit builds under a fixed-plan, one-build bound; remaining monthly quota is not measured. DoneState passed its core Node 22/24 jobs, then failed the hosted-plugin audit. Compatible dependency updates and enforced MCP body/input limits now pass local full checks, audit and deployment dry run; the final DoneState native build and review remain pending. Required-check policy is unchanged, real macOS remains separate, and release acceptance remains pending.
+
+**Earlier 21 October reconciliation:** [E-142's current checkpoint](evidence/agentproof-ci-reconciliation-checkpoint-20261021.json) records a successful standard OAuth refresh and matching readbacks for all three disabled Pages projects. Their latest records are skipped entries, not executed builds. The administrator now reports that state correctly and permits only an explicit, capacity-checked retry; all 20 administration tests pass. The subscription GET returned HTTP 403, so fresh plan/entitlement evidence remains missing. No real build was requested. The required macOS job still has an account-billing refusal, and no native GitHub App check has been accepted. Release acceptance remains pending.
 
 Previous source checkpoint, 20 October 2026: **isolated publication observed; durable readback recovery locally validated; existing Cloudflare compute identified; trusted CI integration and live independent acceptance pending**. The hosted DoneState product and public SDK do not gain a general release action. The separate canary controller retains original run `12741172-631f-47b4-88c2-a63eeb1f9574`.
 
