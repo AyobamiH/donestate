@@ -1,0 +1,157 @@
+{
+  "schema": "donestate.release-canary-run.v1",
+  "runId": "12741172-631f-47b4-88c2-a63eeb1f9574",
+  "transactionId": "38cec4aa-b4d9-43fe-9712-e5eaec86cf21",
+  "githubRunId": "39124373253",
+  "subject": {
+    "schema": "agentproof.release.subject.v1",
+    "owner": "AyobamiH",
+    "repository": "agentproof-release-canary",
+    "ownerId": 47716486,
+    "repositoryId": 1423718326,
+    "releaseId": 416342082,
+    "tagName": "v0.0.0-rc.2026101801",
+    "tagCommit": "1231076c12485a02fae3c38b0b850a25274985d5",
+    "packageAssetId": 653036082,
+    "packageAssetName": "agentproof-disposable-canary.tgz",
+    "packageDigest": "sha256:064f989c25b86269004401959b1e2aa68cc0b3acbf310ba647b892aa5e28b186",
+    "provenanceAssetId": 653046879,
+    "provenanceDigest": "sha256:fa76d7de87ba327ccd81943563af7daed1c87775e049e52a047df59c5b1475b4",
+    "provider": "github",
+    "prerelease": true,
+    "makeLatest": false
+  },
+  "subjectDigest": "5a14f49405c358d42658bab4a3cc1215b3f5eb079595523214b8e2a7f567a0e4",
+  "trustPins": [
+    "sha256:7bcdd49fd3025d805fe73c063b56ee9576b2b15b82d72cf29ee392d31698631d",
+    "sha256:59e12c7560667e99a3140cea9181cadbcb7aa023c7328ea76f39780698a1d36a",
+    "sha256:b365bc88efe4e02f7af22210b961fb6f801dece1ee5df736f9018ad0a6c8af5c",
+    "sha256:08f70564dbfe6e78ecbf2e8f8a5da552cfa58f3888a2e6326defca5f237dc4f1",
+    "sha256:ced7fb1c1fde59a6b3fb1379328bc8d00620b53332611565302fcfb5070b2795"
+  ],
+  "trustDigest": "15f2d598f708e071754bf5a4d3a1f95e79404a1d14cd8d3070e4d924e96c023b",
+  "status": "AUTHORISED",
+  "authorisedAt": "2026-10-18T10:15:35.216Z",
+  "receipt": null,
+  "handoff": null,
+  "decision": null,
+  "outcome": null,
+  "handoffHistory": [],
+  "audit": [
+    {
+      "sequence": 1,
+      "action": "authorise_exact_release",
+      "at": "2026-10-18T10:15:35.216Z",
+      "previousDigest": null,
+      "detail": {
+        "subjectDigest": "5a14f49405c358d42658bab4a3cc1215b3f5eb079595523214b8e2a7f567a0e4",
+        "trustDigest": "b8c9b24d55153c700979453e25377cd018bb0214b08fdd1b49f3937a9c8b5511"
+      },
+      "digest": "e8f9c65b3de9f9bfa7db2fe04305bcc90ee14f113e952567a179219f835e376d"
+    },
+    {
+      "sequence": 2,
+      "action": "resume_unexecuted_authorisation",
+      "at": "2026-10-18T11:43:35.411Z",
+      "previousDigest": "e8f9c65b3de9f9bfa7db2fe04305bcc90ee14f113e952567a179219f835e376d",
+      "detail": {
+        "previousGithubRunId": "39118530819",
+        "githubRunId": "39124373253",
+        "previousTrustDigest": "b8c9b24d55153c700979453e25377cd018bb0214b08fdd1b49f3937a9c8b5511",
+        "trustDigest": "15f2d598f708e071754bf5a4d3a1f95e79404a1d14cd8d3070e4d924e96c023b",
+        "reservationDigest": "0aac05689aa2260a66f13dafe3645ff28da5dd220d082075006f3d0d4f08edf7"
+      },
+      "digest": "18ad7877a9d0b4da762a93292043331ff9da31efc5d201f54c014a14d723d9b4"
+    }
+  ],
+  "executionNotBefore": "2026-10-18T11:43:35.411Z",
+  "recoveryEvidenceDigest": "19327e7a08c35feaa551248f9774a65d59cf8cf1c9b9af431727c3584895ce7e",
+  "recoveryReservation": {
+    "schema": "agentproof.release-reservation.v1",
+    "state": "reserved",
+    "recoveryPolicy": {
+      "fingerprint": "sha256:ced7fb1c1fde59a6b3fb1379328bc8d00620b53332611565302fcfb5070b2795",
+      "runId": "12741172-631f-47b4-88c2-a63eeb1f9574"
+    },
+    "requestDigest": "d759326ec04f3e33a4212014a6cab46da1d811747e0ce047e6be05c8dd1a907d",
+    "subjectDigest": "5a14f49405c358d42658bab4a3cc1215b3f5eb079595523214b8e2a7f567a0e4",
+    "transactionId": "38cec4aa-b4d9-43fe-9712-e5eaec86cf21",
+    "githubRunId": "39124373253",
+    "githubRunAttempt": 1,
+    "workflowCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+    "issuedAt": "2026-10-18T11:43:35.046Z",
+    "expiresAt": "2026-10-18T11:48:35.046Z",
+    "authorityPublicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAE1oky8U/4AGzkVKv1Wtq2v3r/KafucTJ7d84BUzWWXU=\n-----END PUBLIC KEY-----\n",
+    "signatureBase64": "dCZH529ohh/Yc1o1ry8yiL1JSB64E18qHquPOPULw0eZZNIzR5jbGRV6hg4UI2mynBiDK8UUY3f2YfAPs56dAA=="
+  },
+  "recoveryAuthorisation": {
+    "schema": "donestate.release-recovery-authorisation.v1",
+    "runId": "12741172-631f-47b4-88c2-a63eeb1f9574",
+    "transactionId": "38cec4aa-b4d9-43fe-9712-e5eaec86cf21",
+    "subjectDigest": "5a14f49405c358d42658bab4a3cc1215b3f5eb079595523214b8e2a7f567a0e4",
+    "githubRunId": "39124373253",
+    "githubRunAttempt": 1,
+    "workflowCommit": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+    "reservationDigest": "0aac05689aa2260a66f13dafe3645ff28da5dd220d082075006f3d0d4f08edf7",
+    "authorisationAuditDigest": "18ad7877a9d0b4da762a93292043331ff9da31efc5d201f54c014a14d723d9b4",
+    "issuedAt": "2026-10-18T11:43:35.411Z",
+    "expiresAt": "2026-10-18T11:48:35.046Z",
+    "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA6jYGn21/ClEFMho4fNZ6QT7NOAy/dCTw2CniBXfEcNw=\n-----END PUBLIC KEY-----\n",
+    "signatureBase64": "1JUx/JvZMq+zVGaXu4oYQ/+LvUTYhRpJJgDbJ/hwlnQ3cfiaW2fvQf3oK/8nOeT0AQbWkIPVIOLTG9HcJ0oxAA=="
+  },
+  "authorisationHistory": [
+    {
+      "schema": "donestate.release-canary-run.v1",
+      "runId": "12741172-631f-47b4-88c2-a63eeb1f9574",
+      "transactionId": "38cec4aa-b4d9-43fe-9712-e5eaec86cf21",
+      "githubRunId": "39118530819",
+      "subject": {
+        "schema": "agentproof.release.subject.v1",
+        "owner": "AyobamiH",
+        "repository": "agentproof-release-canary",
+        "ownerId": 47716486,
+        "repositoryId": 1423718326,
+        "releaseId": 416342082,
+        "tagName": "v0.0.0-rc.2026101801",
+        "tagCommit": "1231076c12485a02fae3c38b0b850a25274985d5",
+        "packageAssetId": 653036082,
+        "packageAssetName": "agentproof-disposable-canary.tgz",
+        "packageDigest": "sha256:064f989c25b86269004401959b1e2aa68cc0b3acbf310ba647b892aa5e28b186",
+        "provenanceAssetId": 653046879,
+        "provenanceDigest": "sha256:fa76d7de87ba327ccd81943563af7daed1c87775e049e52a047df59c5b1475b4",
+        "provider": "github",
+        "prerelease": true,
+        "makeLatest": false
+      },
+      "subjectDigest": "5a14f49405c358d42658bab4a3cc1215b3f5eb079595523214b8e2a7f567a0e4",
+      "trustPins": [
+        "sha256:7bcdd49fd3025d805fe73c063b56ee9576b2b15b82d72cf29ee392d31698631d",
+        "sha256:59e12c7560667e99a3140cea9181cadbcb7aa023c7328ea76f39780698a1d36a",
+        "sha256:b365bc88efe4e02f7af22210b961fb6f801dece1ee5df736f9018ad0a6c8af5c",
+        "sha256:08f70564dbfe6e78ecbf2e8f8a5da552cfa58f3888a2e6326defca5f237dc4f1",
+        "sha256:ced7fb1c1fde59a6b3fb1379328bc8d00620b53332611565302fcfb5070b2795"
+      ],
+      "trustDigest": "b8c9b24d55153c700979453e25377cd018bb0214b08fdd1b49f3937a9c8b5511",
+      "status": "AUTHORISED",
+      "authorisedAt": "2026-10-18T10:15:35.216Z",
+      "receipt": null,
+      "handoff": null,
+      "decision": null,
+      "outcome": null,
+      "handoffHistory": [],
+      "audit": [
+        {
+          "sequence": 1,
+          "action": "authorise_exact_release",
+          "at": "2026-10-18T10:15:35.216Z",
+          "previousDigest": null,
+          "detail": {
+            "subjectDigest": "5a14f49405c358d42658bab4a3cc1215b3f5eb079595523214b8e2a7f567a0e4",
+            "trustDigest": "b8c9b24d55153c700979453e25377cd018bb0214b08fdd1b49f3937a9c8b5511"
+          },
+          "digest": "e8f9c65b3de9f9bfa7db2fe04305bcc90ee14f113e952567a179219f835e376d"
+        }
+      ]
+    }
+  ]
+}

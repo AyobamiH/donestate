@@ -12,8 +12,9 @@ export function exact(value, fields) {
     JSON.stringify(Object.keys(value).sort()) === JSON.stringify([...fields].sort()),
     "unexpected_fields", 400);
 }
-export function configuration(env) {
-  demand(env.ENABLED === "true", "controller_disabled", 503);
+export function configuration(env, { readbackRecovery = false } = {}) {
+  demand((readbackRecovery ? env.READBACK_RECOVERY_ENABLED : env.ENABLED) === "true",
+    readbackRecovery ? "readback_recovery_disabled" : "controller_disabled", 503);
   const pins = [env.APPROVAL_FINGERPRINT, env.RECEIPT_FINGERPRINT,
     env.OPSTRUTH_FINGERPRINT, env.PROVENANCE_FINGERPRINT, env.HANDOFF_FINGERPRINT];
   demand(pins.every(p => /^sha256:[a-f0-9]{64}$/.test(p)) &&
@@ -38,7 +39,7 @@ export function configuration(env) {
     "target_not_allowed", 503);
   return { subject, pins, trustDigest: digest({ pins, workflowCommit: env.TRUSTED_SOURCE_SHA }) };
 }
-function handoffSigner(env) {
+export function handoffSigner(env) {
   const key = createPrivateKey(env.HANDOFF_PRIVATE_KEY_PEM);
   const pem = createPublicKey(key).export({ type: "spki", format: "pem" }).toString();
   demand(key.asymmetricKeyType === "ed25519" && pem === env.HANDOFF_PUBLIC_KEY_PEM &&
@@ -46,7 +47,7 @@ function handoffSigner(env) {
   return { publicKeyPem: async () => pem,
     signCanonical: async value => sign(null, Buffer.from(value), key) };
 }
-function policy(record, env) {
+export function policy(record, env) {
   return { runId: record.runId, transactionId: record.transactionId,
     subjectDigest: record.subjectDigest,
     trustedApprovalFingerprint: env.APPROVAL_FINGERPRINT,
@@ -54,14 +55,14 @@ function policy(record, env) {
     trustedOpsTruthVerifierFingerprint: env.OPSTRUTH_FINGERPRINT,
     trustedProvenanceSignerFingerprint: env.PROVENANCE_FINGERPRINT };
 }
-function handoffPolicy(record, env) {
+export function handoffPolicy(record, env) {
   return { runId: record.runId, transactionId: record.transactionId,
     subjectDigest: record.subjectDigest, receiptPayloadDigest: record.receipt.proof.payloadDigest,
     githubRunId: record.githubRunId, trustedHandoffFingerprint: env.HANDOFF_FINGERPRINT,
     otherRoleFingerprints: [env.APPROVAL_FINGERPRINT,env.RECEIPT_FINGERPRINT,
       env.OPSTRUTH_FINGERPRINT,env.PROVENANCE_FINGERPRINT] };
 }
-function event(record, action, detail, now) {
+export function event(record, action, detail, now) {
   const previousDigest = record.audit.at(-1)?.digest ?? null;
   const entry = { sequence: record.audit.length + 1, action,
     at: new Date(now).toISOString(), previousDigest, detail };

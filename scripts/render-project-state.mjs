@@ -124,6 +124,7 @@ function renderLedger(value) {
       `- **Outcome:** ${story.outcome}`,
       `- **Content:** ${story.content}`,
       `- **Measurement:** ${story.measurement}`,
+      ...(story.artifact ? [`- **Evidence artifact:** [${story.artifact.path}](../${story.artifact.path}) (SHA-256: \`${story.artifact.sha256}\`)`] : []),
       "",
     );
   }

@@ -1,0 +1,1939 @@
+{
+  "schema": "donestate.native-ci-hosted-dependency-readback.v1",
+  "recordedAt": "2026-10-21T12:20:39.892154+00:00",
+  "workItemId": "AGENTPROOF-001",
+  "baseCommit": "24d2df462f8b1f7180b6d6e9ff612dd0b0cb43a2",
+  "observations": {
+    "cloudflare-pages-entitlement-readback.json": {
+      "sha256": "a4b947d2d9debb848e056a8bfc19b6240fcc3cf66c4c66d2d2b2f98618ae2aad",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-entitlement-readback.v1",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "method": "GET",
+        "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/entitlements",
+        "observedAt": "2026-10-21T11:50:20.773201+00:00",
+        "documentedPermission": "Account Read",
+        "documentation": "https://developers.cloudflare.com/api/resources/accounts/subresources/entitlements/methods/list/",
+        "status": 200,
+        "responseSha256": "a7b777fb66fbccb2d5939fc1b4abcade9a023537b9592fac9ef4a4ac012ca5b0",
+        "success": true,
+        "totalEntitlements": 66,
+        "pagesEntitlements": [
+          {
+            "id": "pages.build_cache_retention_limit_days",
+            "feature": {
+              "feature_set": "pages",
+              "id": 1228,
+              "key": "pages.build_cache_retention_limit_days",
+              "name": "Cloudflare Pages - Build Cache Retention Limit Days"
+            },
+            "allocation": {
+              "value": 7,
+              "type": "max_count"
+            },
+            "created_date": "2024-11-19T13:02:42.000000",
+            "edited_date": "2024-11-19T13:02:42.000000",
+            "deleted_date": ""
+          },
+          {
+            "id": "pages.custom_domains_per_project",
+            "feature": {
+              "feature_set": "pages",
+              "id": 1164,
+              "key": "pages.custom_domains_per_project",
+              "name": "Cloudflare Pages - Custom Domains per Project"
+            },
+            "allocation": {
+              "value": 100,
+              "type": "max_count"
+            },
+            "created_date": "2024-11-19T13:02:42.000000",
+            "edited_date": "2024-11-19T13:02:42.000000",
+            "deleted_date": ""
+          },
+          {
+            "id": "custom_pages.enabled",
+            "feature": {
+              "feature_set": "custom_pages",
+              "id": 1104,
+              "key": "custom_pages.enabled",
+              "name": "Custom Pages enabled"
+            },
+            "allocation": {
+              "value": false,
+              "type": "bool"
+            },
+            "created_date": "2026-04-27T12:01:22.980130",
+            "edited_date": "2026-04-27T12:01:22.980130",
+            "deleted_date": ""
+          },
+          {
+            "id": "pages.build_cache_storage_limit_mb",
+            "feature": {
+              "feature_set": "pages",
+              "id": 1227,
+              "key": "pages.build_cache_storage_limit_mb",
+              "name": "Cloudflare Pages - Build Cache Storage Limit MB"
+            },
+            "allocation": {
+              "value": 10000,
+              "type": "max_count"
+            },
+            "created_date": "2024-11-19T13:02:42.000000",
+            "edited_date": "2024-11-19T13:02:42.000000",
+            "deleted_date": ""
+          },
+          {
+            "id": "pages.concurrent_builds",
+            "feature": {
+              "feature_set": "pages",
+              "id": 1163,
+              "key": "pages.concurrent_builds",
+              "name": "Cloudflare Pages - Concurrent Builds"
+            },
+            "allocation": {
+              "value": 1,
+              "type": "max_count"
+            },
+            "created_date": "2024-11-19T13:02:42.000000",
+            "edited_date": "2024-11-19T13:02:42.000000",
+            "deleted_date": ""
+          }
+        ]
+      }
+    },
+    "opstruth-one-build-capacity.json": {
+      "sha256": "23268d3e5833dcdc3d2e125bd457cb2dc58214ab7919b7daec65d248a879cb07",
+      "value": {
+        "schema": "cloudflare-pages-capacity/v2",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "mode": "included-pages-plan",
+        "availableBuilds": null,
+        "maxNewBuilds": 1,
+        "allowOverage": false,
+        "allowPlanChange": false,
+        "allowFunctions": false,
+        "plan": "free",
+        "includedMonthlyBuildLimit": 500,
+        "headroomVerification": "not-exposed-by-published-api",
+        "billingAssessment": "fixed-plan-quota-inference",
+        "source": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/entitlements; public Free plan limits https://developers.cloudflare.com/pages/platform/limits/",
+        "observedAt": "2026-10-21T11:50:20.773201+00:00",
+        "providerReadback": {
+          "path": "/home/johnh/agentproof-native-ci-evidence-20261021/cloudflare-pages-entitlement-readback.json",
+          "sha256": "a4b947d2d9debb848e056a8bfc19b6240fcc3cf66c4c66d2d2b2f98618ae2aad"
+        },
+        "inference": "Fresh Pages entitlements of one concurrent build and 100 custom domains match the published Free tier. This infers the fixed included plan; it does not measure remaining monthly headroom. The subscription endpoint is unavailable (403). Provider quota refusal must hold the job; no subscription change, overage, Functions or automatic retry is authorised.",
+        "subject": {
+          "repository": "AyobamiH/opstruth-chatgpt-plugin",
+          "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+          "priorSkippedDeployment": "5614ea88-8656-4393-add2-c04c229f1d89"
+        }
+      }
+    },
+    "agentproof-one-build-capacity.json": {
+      "sha256": "b2ab8f0d2f754ca59046ce192fe5ef5673731b9af6bb1d5d3aeb42cc05dd8d9f",
+      "value": {
+        "schema": "cloudflare-pages-capacity/v2",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "mode": "included-pages-plan",
+        "availableBuilds": null,
+        "maxNewBuilds": 1,
+        "allowOverage": false,
+        "allowPlanChange": false,
+        "allowFunctions": false,
+        "plan": "free",
+        "includedMonthlyBuildLimit": 500,
+        "headroomVerification": "not-exposed-by-published-api",
+        "billingAssessment": "fixed-plan-quota-inference",
+        "source": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/entitlements; public Free plan limits https://developers.cloudflare.com/pages/platform/limits/",
+        "observedAt": "2026-10-21T11:50:20.773201+00:00",
+        "providerReadback": {
+          "path": "/home/johnh/agentproof-native-ci-evidence-20261021/cloudflare-pages-entitlement-readback.json",
+          "sha256": "a4b947d2d9debb848e056a8bfc19b6240fcc3cf66c4c66d2d2b2f98618ae2aad"
+        },
+        "inference": "Fresh Pages entitlements of one concurrent build and 100 custom domains match the published Free tier. This infers the fixed included plan; it does not measure remaining monthly headroom. The subscription endpoint is unavailable (403). Provider quota refusal must hold the job; no subscription change, overage, Functions or automatic retry is authorised.",
+        "subject": {
+          "repository": "AyobamiH/agentproof",
+          "commit": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2",
+          "priorSkippedDeployment": "e9bc81bd-1571-45d1-967b-aa2843b24f5f"
+        }
+      }
+    },
+    "donestate-one-build-capacity.json": {
+      "sha256": "4c7b619c399d9dd91066361a1d87485d4bd14be577c97d0f55a88fb15cefa7e4",
+      "value": {
+        "schema": "cloudflare-pages-capacity/v2",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "mode": "included-pages-plan",
+        "availableBuilds": null,
+        "maxNewBuilds": 1,
+        "allowOverage": false,
+        "allowPlanChange": false,
+        "allowFunctions": false,
+        "plan": "free",
+        "includedMonthlyBuildLimit": 500,
+        "headroomVerification": "not-exposed-by-published-api",
+        "billingAssessment": "fixed-plan-quota-inference",
+        "source": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/entitlements; public Free plan limits https://developers.cloudflare.com/pages/platform/limits/",
+        "observedAt": "2026-10-21T11:50:20.773201+00:00",
+        "providerReadback": {
+          "path": "/home/johnh/agentproof-native-ci-evidence-20261021/cloudflare-pages-entitlement-readback.json",
+          "sha256": "a4b947d2d9debb848e056a8bfc19b6240fcc3cf66c4c66d2d2b2f98618ae2aad"
+        },
+        "inference": "Fresh Pages entitlements of one concurrent build and 100 custom domains match the published Free tier. This infers the fixed included plan; it does not measure remaining monthly headroom. The subscription endpoint is unavailable (403). Provider quota refusal must hold the job; no subscription change, overage, Functions or automatic retry is authorised.",
+        "subject": {
+          "repository": "AyobamiH/donestate",
+          "commit": "24d2df462f8b1f7180b6d6e9ff612dd0b0cb43a2",
+          "priorSkippedDeployment": "8c227138-4765-4138-89b8-c3c81d3013e0"
+        }
+      }
+    },
+    "opstruth-native-build-retry.json": {
+      "sha256": "be46912360adccb8ee4afb4c2a1f31159f97c46f1b9050f4775b6b7928fb487d",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "retry",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/opstruth-chatgpt-plugin",
+        "repositoryId": "1345997124",
+        "project": "proof-state-ci-opstruth",
+        "expectedSource": {
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f"
+        },
+        "startedAt": "2026-10-21T11:51:13.323Z",
+        "phase": "SETTLED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth",
+            "startedAt": "2026-10-21T11:51:13.339Z",
+            "status": 200,
+            "responseSha256": "be6fcf7f124bd7f513f51f05c2acda9cc4856ada8b015cd388d229bec563d5bd",
+            "completedAt": "2026-10-21T11:51:21.032Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth/deployments?page=1&per_page=10",
+            "startedAt": "2026-10-21T11:51:21.056Z",
+            "status": 200,
+            "responseSha256": "147bed97b88c37e40dd09bbaaa5ec0fea91bd1482186a1a7c0d3abb0f48411b3",
+            "completedAt": "2026-10-21T11:51:22.052Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof",
+            "startedAt": "2026-10-21T11:51:22.060Z",
+            "status": 200,
+            "responseSha256": "5e0ecb3475fc7f4018f469b25c7f12ac5159ef6dd1cd9f96e6eb0704a9477ee6",
+            "completedAt": "2026-10-21T11:51:23.126Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate",
+            "startedAt": "2026-10-21T11:51:23.136Z",
+            "status": 200,
+            "responseSha256": "da458066895c8db202f7fc73b073c3cb97919c55f83abeda166a51c2711b14c5",
+            "completedAt": "2026-10-21T11:51:24.107Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.github.com/repos/AyobamiH/opstruth-chatgpt-plugin/git/ref/heads/fix%2Fdurable-release-recovery-20261020",
+            "startedAt": "2026-10-21T11:51:24.154Z",
+            "status": 200,
+            "responseSha256": "2ef079220be2cd654d239605127eeafb3e2b90e31d0576739eeb100ca8f3d072",
+            "completedAt": "2026-10-21T11:51:24.546Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth/deployments/5614ea88-8656-4393-add2-c04c229f1d89",
+            "startedAt": "2026-10-21T11:51:24.556Z",
+            "status": 200,
+            "responseSha256": "9490f1fd5c0442ee9bcc429dd092c335384367075ca6999d400484ab9496cd20",
+            "completedAt": "2026-10-21T11:51:25.521Z"
+          },
+          {
+            "method": "POST",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth/deployments/5614ea88-8656-4393-add2-c04c229f1d89/retry",
+            "startedAt": "2026-10-21T11:51:25.532Z",
+            "status": 200,
+            "responseSha256": "2a76ae7998eecb7085c521be1c7d23fd9c1a8720533442ce2e64eecf15d4f782",
+            "completedAt": "2026-10-21T11:51:26.604Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth/deployments/f6b80d22-ecd8-41d1-a654-1a83fd3513e7",
+            "startedAt": "2026-10-21T11:51:26.610Z",
+            "status": 200,
+            "responseSha256": "456da41d2920905ff5dfe62cb6149b5a237505762742c9a733f0e5e79608505c",
+            "completedAt": "2026-10-21T11:51:28.209Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "projectReadback": {
+          "id": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+          "name": "proof-state-ci-opstruth",
+          "source": {
+            "matchesExpectedIdentity": true,
+            "type": "github"
+          },
+          "buildCommandMatches": true,
+          "automaticBuilds": {
+            "production_deployments_enabled": false,
+            "preview_deployment_setting": "none",
+            "preview_branch_includes": [],
+            "preview_branch_excludes": []
+          },
+          "usesFunctions": null,
+          "drift": [],
+          "latestDeployment": {
+            "id": "5614ea88-8656-4393-add2-c04c229f1d89",
+            "projectId": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+            "projectName": "proof-state-ci-opstruth",
+            "createdAt": "2026-10-21T06:04:54.047598Z",
+            "modifiedAt": "2026-10-21T06:04:54.047598Z",
+            "trigger": "github:push",
+            "branch": "fix/durable-release-recovery-20261020",
+            "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+            "dirty": false,
+            "environment": "preview",
+            "url": "https://5614ea88.proof-state-ci-opstruth.pages.dev",
+            "usesFunctions": null,
+            "skipped": true,
+            "latestStage": {
+              "name": "queued",
+              "started_on": null,
+              "ended_on": null,
+              "status": "idle"
+            },
+            "stages": [
+              {
+                "name": "queued",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "initialize",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "clone_repo",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "build",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "deploy",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              }
+            ]
+          }
+        },
+        "capacity": {
+          "evidence": {
+            "path": "/home/johnh/agentproof-native-ci-evidence-20261021/opstruth-one-build-capacity.json",
+            "sha256": "23268d3e5833dcdc3d2e125bd457cb2dc58214ab7919b7daec65d248a879cb07"
+          },
+          "schema": "cloudflare-pages-capacity/v2",
+          "mode": "included-pages-plan",
+          "observedAt": "2026-10-21T11:50:20.773201+00:00",
+          "availableBuilds": null,
+          "maxNewBuilds": 1,
+          "allowOverage": false,
+          "allowPlanChange": false,
+          "allowFunctions": false,
+          "plan": "free",
+          "includedMonthlyBuildLimit": 500,
+          "headroomVerification": "not-exposed-by-published-api",
+          "billingAssessment": "fixed-plan-quota-inference",
+          "verification": "operator-reviewed-provider-evidence; not independently measured by this helper"
+        },
+        "retryReason": "provider-skipped",
+        "mutationIntent": {
+          "method": "POST",
+          "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth/deployments/5614ea88-8656-4393-add2-c04c229f1d89/retry"
+        },
+        "createdDeploymentId": "f6b80d22-ecd8-41d1-a654-1a83fd3513e7",
+        "deployment": {
+          "id": "f6b80d22-ecd8-41d1-a654-1a83fd3513e7",
+          "projectId": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+          "projectName": "proof-state-ci-opstruth",
+          "createdAt": "2026-10-21T11:51:26.329532Z",
+          "modifiedAt": "2026-10-21T11:51:26.329532Z",
+          "trigger": "github:push",
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+          "dirty": false,
+          "environment": "preview",
+          "url": "https://f6b80d22.proof-state-ci-opstruth.pages.dev",
+          "usesFunctions": null,
+          "skipped": false,
+          "latestStage": {
+            "name": "queued",
+            "started_on": "2026-10-21T11:51:26.53734Z",
+            "ended_on": null,
+            "status": "active"
+          },
+          "stages": [
+            {
+              "name": "queued",
+              "status": "active",
+              "started_on": "2026-10-21T11:51:26.53734Z",
+              "ended_on": null
+            },
+            {
+              "name": "initialize",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "clone_repo",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "build",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "deploy",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            }
+          ]
+        },
+        "outcome": "BUILD_REQUESTED_SOURCE_READ_BACK",
+        "completedAt": "2026-10-21T11:51:28.217Z"
+      }
+    },
+    "agentproof-native-build-retry.json": {
+      "sha256": "e545eb1b0da46a769a07cdc75aeb029a2e4698be41b2be53426ae9199bdb832d",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "retry",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/agentproof",
+        "repositoryId": "1317413810",
+        "project": "proof-state-ci-agentproof",
+        "expectedSource": {
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2"
+        },
+        "startedAt": "2026-10-21T11:53:50.082Z",
+        "phase": "SETTLED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof",
+            "startedAt": "2026-10-21T11:53:50.097Z",
+            "status": 200,
+            "responseSha256": "5e0ecb3475fc7f4018f469b25c7f12ac5159ef6dd1cd9f96e6eb0704a9477ee6",
+            "completedAt": "2026-10-21T11:53:51.341Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof/deployments?page=1&per_page=10",
+            "startedAt": "2026-10-21T11:53:51.353Z",
+            "status": 200,
+            "responseSha256": "ff2042bc26d8b23ff123f92ed7a4a35e5462510a66c71b320bf46ae705b38507",
+            "completedAt": "2026-10-21T11:53:52.396Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate",
+            "startedAt": "2026-10-21T11:53:52.434Z",
+            "status": 200,
+            "responseSha256": "da458066895c8db202f7fc73b073c3cb97919c55f83abeda166a51c2711b14c5",
+            "completedAt": "2026-10-21T11:53:53.454Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth",
+            "startedAt": "2026-10-21T11:53:53.465Z",
+            "status": 200,
+            "responseSha256": "a6c8f3401b20ff6454286e183400d62a745eca77b37c837971e4e3e39a59f1b5",
+            "completedAt": "2026-10-21T11:53:54.438Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.github.com/repos/AyobamiH/agentproof/git/ref/heads/fix%2Fdurable-release-recovery-20261020",
+            "startedAt": "2026-10-21T11:53:54.471Z",
+            "status": 200,
+            "responseSha256": "dc87e15445ba42b04b8af91edbff627522b9d7b27678bffe6581a06c221786b7",
+            "completedAt": "2026-10-21T11:53:54.882Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof/deployments/e9bc81bd-1571-45d1-967b-aa2843b24f5f",
+            "startedAt": "2026-10-21T11:53:54.894Z",
+            "status": 200,
+            "responseSha256": "dca677ff212aa4be3bc604d23c8ece440bf31a205a7742304bc55f50ba5027ab",
+            "completedAt": "2026-10-21T11:53:55.912Z"
+          },
+          {
+            "method": "POST",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof/deployments/e9bc81bd-1571-45d1-967b-aa2843b24f5f/retry",
+            "startedAt": "2026-10-21T11:53:55.976Z",
+            "status": 200,
+            "responseSha256": "e47ebba6142cf98bc6fdf82c2dbdcabeb1cb038b31f42fa6362e7dfdb39593c8",
+            "completedAt": "2026-10-21T11:53:57.046Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof/deployments/9dd74aca-6f9c-4307-9fdb-794f85b894dd",
+            "startedAt": "2026-10-21T11:53:57.053Z",
+            "status": 200,
+            "responseSha256": "007499f0ce49c29d7e0d7366e1b974b0f4ee07af7b85b1167a6c8978cbae1441",
+            "completedAt": "2026-10-21T11:53:58.527Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "projectReadback": {
+          "id": "232be2e8-b634-4226-aba9-e69b9c739729",
+          "name": "proof-state-ci-agentproof",
+          "source": {
+            "matchesExpectedIdentity": true,
+            "type": "github"
+          },
+          "buildCommandMatches": true,
+          "automaticBuilds": {
+            "production_deployments_enabled": false,
+            "preview_deployment_setting": "none",
+            "preview_branch_includes": [],
+            "preview_branch_excludes": []
+          },
+          "usesFunctions": null,
+          "drift": [],
+          "latestDeployment": {
+            "id": "e9bc81bd-1571-45d1-967b-aa2843b24f5f",
+            "projectId": "232be2e8-b634-4226-aba9-e69b9c739729",
+            "projectName": "proof-state-ci-agentproof",
+            "createdAt": "2026-10-21T06:04:51.703172Z",
+            "modifiedAt": "2026-10-21T06:04:51.703172Z",
+            "trigger": "github:push",
+            "branch": "fix/durable-release-recovery-20261020",
+            "commit": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2",
+            "dirty": false,
+            "environment": "preview",
+            "url": "https://e9bc81bd.proof-state-ci-agentproof.pages.dev",
+            "usesFunctions": null,
+            "skipped": true,
+            "latestStage": {
+              "name": "queued",
+              "started_on": null,
+              "ended_on": null,
+              "status": "idle"
+            },
+            "stages": [
+              {
+                "name": "queued",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "initialize",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "clone_repo",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "build",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "deploy",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              }
+            ]
+          }
+        },
+        "capacity": {
+          "evidence": {
+            "path": "/home/johnh/agentproof-native-ci-evidence-20261021/agentproof-one-build-capacity.json",
+            "sha256": "b2ab8f0d2f754ca59046ce192fe5ef5673731b9af6bb1d5d3aeb42cc05dd8d9f"
+          },
+          "schema": "cloudflare-pages-capacity/v2",
+          "mode": "included-pages-plan",
+          "observedAt": "2026-10-21T11:50:20.773201+00:00",
+          "availableBuilds": null,
+          "maxNewBuilds": 1,
+          "allowOverage": false,
+          "allowPlanChange": false,
+          "allowFunctions": false,
+          "plan": "free",
+          "includedMonthlyBuildLimit": 500,
+          "headroomVerification": "not-exposed-by-published-api",
+          "billingAssessment": "fixed-plan-quota-inference",
+          "verification": "operator-reviewed-provider-evidence; not independently measured by this helper"
+        },
+        "retryReason": "provider-skipped",
+        "mutationIntent": {
+          "method": "POST",
+          "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof/deployments/e9bc81bd-1571-45d1-967b-aa2843b24f5f/retry"
+        },
+        "createdDeploymentId": "9dd74aca-6f9c-4307-9fdb-794f85b894dd",
+        "deployment": {
+          "id": "9dd74aca-6f9c-4307-9fdb-794f85b894dd",
+          "projectId": "232be2e8-b634-4226-aba9-e69b9c739729",
+          "projectName": "proof-state-ci-agentproof",
+          "createdAt": "2026-10-21T11:53:56.755948Z",
+          "modifiedAt": "2026-10-21T11:53:56.947357Z",
+          "trigger": "github:push",
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2",
+          "dirty": false,
+          "environment": "preview",
+          "url": "https://9dd74aca.proof-state-ci-agentproof.pages.dev",
+          "usesFunctions": null,
+          "skipped": false,
+          "latestStage": {
+            "name": "initialize",
+            "started_on": "2026-10-21T11:53:56.947357Z",
+            "ended_on": null,
+            "status": "active"
+          },
+          "stages": [
+            {
+              "name": "queued",
+              "status": "success",
+              "started_on": "2026-10-21T11:53:56.934849Z",
+              "ended_on": "2026-10-21T11:53:56.947357Z"
+            },
+            {
+              "name": "initialize",
+              "status": "active",
+              "started_on": "2026-10-21T11:53:56.947357Z",
+              "ended_on": null
+            },
+            {
+              "name": "clone_repo",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "build",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "deploy",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            }
+          ]
+        },
+        "outcome": "BUILD_REQUESTED_SOURCE_READ_BACK",
+        "completedAt": "2026-10-21T11:53:58.534Z"
+      }
+    },
+    "donestate-native-build-retry.json": {
+      "sha256": "4d931610295581b8a76460d4335563c09ddd11297c2f595b54c06fcce4a5a449",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "retry",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/donestate",
+        "repositoryId": "1348643925",
+        "project": "proof-state-ci-donestate",
+        "expectedSource": {
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "24d2df462f8b1f7180b6d6e9ff612dd0b0cb43a2"
+        },
+        "startedAt": "2026-10-21T11:57:39.235Z",
+        "phase": "SETTLED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate",
+            "startedAt": "2026-10-21T11:57:39.242Z",
+            "status": 200,
+            "responseSha256": "da458066895c8db202f7fc73b073c3cb97919c55f83abeda166a51c2711b14c5",
+            "completedAt": "2026-10-21T11:57:40.410Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate/deployments?page=1&per_page=10",
+            "startedAt": "2026-10-21T11:57:40.421Z",
+            "status": 200,
+            "responseSha256": "70bf0adc1d337615a1a6da8ad758eb901dce7cce3c1f0bd6a28de1ff04529d58",
+            "completedAt": "2026-10-21T11:57:41.545Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof",
+            "startedAt": "2026-10-21T11:57:41.555Z",
+            "status": 200,
+            "responseSha256": "b99ea4edca3376c957b68748e410dcf109d41ca22aef96b8d6e3b526714d396b",
+            "completedAt": "2026-10-21T11:57:42.546Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth",
+            "startedAt": "2026-10-21T11:57:42.552Z",
+            "status": 200,
+            "responseSha256": "a6c8f3401b20ff6454286e183400d62a745eca77b37c837971e4e3e39a59f1b5",
+            "completedAt": "2026-10-21T11:57:43.546Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.github.com/repos/AyobamiH/donestate/git/ref/heads/fix%2Fdurable-release-recovery-20261020",
+            "startedAt": "2026-10-21T11:57:43.558Z",
+            "status": 200,
+            "responseSha256": "53a2769885e52a5934ae47dd5edce79ba702cb0b42df4bfc8275bec783120c62",
+            "completedAt": "2026-10-21T11:57:43.916Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate/deployments/8c227138-4765-4138-89b8-c3c81d3013e0",
+            "startedAt": "2026-10-21T11:57:43.923Z",
+            "status": 200,
+            "responseSha256": "a09e84b8608dcec1ed198272a6852366e66ebcc1142692cfe493c37a7748d4f3",
+            "completedAt": "2026-10-21T11:57:45.104Z"
+          },
+          {
+            "method": "POST",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate/deployments/8c227138-4765-4138-89b8-c3c81d3013e0/retry",
+            "startedAt": "2026-10-21T11:57:45.114Z",
+            "status": 200,
+            "responseSha256": "b530236861d9a4af56cd584b4b46da9de370772787ed1ab11199db3949754b79",
+            "completedAt": "2026-10-21T11:57:46.195Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate/deployments/98996fb2-2759-4a15-826f-b95bf783bbd1",
+            "startedAt": "2026-10-21T11:57:46.206Z",
+            "status": 200,
+            "responseSha256": "e07ce676078d32ed972bf0e4b905b0b0b022bd067bcc11ecd18418172656b359",
+            "completedAt": "2026-10-21T11:57:47.367Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "projectReadback": {
+          "id": "edb3c8b2-241c-4b53-a4a9-65901e74896c",
+          "name": "proof-state-ci-donestate",
+          "source": {
+            "matchesExpectedIdentity": true,
+            "type": "github"
+          },
+          "buildCommandMatches": true,
+          "automaticBuilds": {
+            "production_deployments_enabled": false,
+            "preview_deployment_setting": "none",
+            "preview_branch_includes": [],
+            "preview_branch_excludes": []
+          },
+          "usesFunctions": null,
+          "drift": [],
+          "latestDeployment": {
+            "id": "8c227138-4765-4138-89b8-c3c81d3013e0",
+            "projectId": "edb3c8b2-241c-4b53-a4a9-65901e74896c",
+            "projectName": "proof-state-ci-donestate",
+            "createdAt": "2026-10-21T11:49:38.528564Z",
+            "modifiedAt": "2026-10-21T11:49:38.528564Z",
+            "trigger": "github:push",
+            "branch": "fix/durable-release-recovery-20261020",
+            "commit": "24d2df462f8b1f7180b6d6e9ff612dd0b0cb43a2",
+            "dirty": false,
+            "environment": "preview",
+            "url": "https://8c227138.proof-state-ci-donestate.pages.dev",
+            "usesFunctions": null,
+            "skipped": true,
+            "latestStage": {
+              "name": "queued",
+              "started_on": null,
+              "ended_on": null,
+              "status": "idle"
+            },
+            "stages": [
+              {
+                "name": "queued",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "initialize",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "clone_repo",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "build",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              },
+              {
+                "name": "deploy",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              }
+            ]
+          }
+        },
+        "capacity": {
+          "evidence": {
+            "path": "/home/johnh/agentproof-native-ci-evidence-20261021/donestate-one-build-capacity.json",
+            "sha256": "4c7b619c399d9dd91066361a1d87485d4bd14be577c97d0f55a88fb15cefa7e4"
+          },
+          "schema": "cloudflare-pages-capacity/v2",
+          "mode": "included-pages-plan",
+          "observedAt": "2026-10-21T11:50:20.773201+00:00",
+          "availableBuilds": null,
+          "maxNewBuilds": 1,
+          "allowOverage": false,
+          "allowPlanChange": false,
+          "allowFunctions": false,
+          "plan": "free",
+          "includedMonthlyBuildLimit": 500,
+          "headroomVerification": "not-exposed-by-published-api",
+          "billingAssessment": "fixed-plan-quota-inference",
+          "verification": "operator-reviewed-provider-evidence; not independently measured by this helper"
+        },
+        "retryReason": "provider-skipped",
+        "mutationIntent": {
+          "method": "POST",
+          "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate/deployments/8c227138-4765-4138-89b8-c3c81d3013e0/retry"
+        },
+        "createdDeploymentId": "98996fb2-2759-4a15-826f-b95bf783bbd1",
+        "deployment": {
+          "id": "98996fb2-2759-4a15-826f-b95bf783bbd1",
+          "projectId": "edb3c8b2-241c-4b53-a4a9-65901e74896c",
+          "projectName": "proof-state-ci-donestate",
+          "createdAt": "2026-10-21T11:57:45.949683Z",
+          "modifiedAt": "2026-10-21T11:57:46.085493Z",
+          "trigger": "github:push",
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "24d2df462f8b1f7180b6d6e9ff612dd0b0cb43a2",
+          "dirty": false,
+          "environment": "preview",
+          "url": "https://98996fb2.proof-state-ci-donestate.pages.dev",
+          "usesFunctions": null,
+          "skipped": false,
+          "latestStage": {
+            "name": "initialize",
+            "started_on": "2026-10-21T11:57:46.085493Z",
+            "ended_on": null,
+            "status": "active"
+          },
+          "stages": [
+            {
+              "name": "queued",
+              "status": "success",
+              "started_on": "2026-10-21T11:57:46.078232Z",
+              "ended_on": "2026-10-21T11:57:46.085493Z"
+            },
+            {
+              "name": "initialize",
+              "status": "active",
+              "started_on": "2026-10-21T11:57:46.085493Z",
+              "ended_on": null
+            },
+            {
+              "name": "clone_repo",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "build",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            },
+            {
+              "name": "deploy",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            }
+          ]
+        },
+        "outcome": "BUILD_REQUESTED_SOURCE_READ_BACK",
+        "completedAt": "2026-10-21T11:57:47.377Z"
+      }
+    },
+    "opstruth-native-status-2.json": {
+      "sha256": "c7a8605b0c5b19b2b8afa37cdf7477bb2dbfff9896c0e96d80a0ad09328d300f",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "status",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/opstruth-chatgpt-plugin",
+        "repositoryId": "1345997124",
+        "project": "proof-state-ci-opstruth",
+        "expectedSource": {
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f"
+        },
+        "startedAt": "2026-10-21T11:52:30.259Z",
+        "phase": "SETTLED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth",
+            "startedAt": "2026-10-21T11:52:30.268Z",
+            "status": 200,
+            "responseSha256": "a6c8f3401b20ff6454286e183400d62a745eca77b37c837971e4e3e39a59f1b5",
+            "completedAt": "2026-10-21T11:52:31.673Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth/deployments/f6b80d22-ecd8-41d1-a654-1a83fd3513e7",
+            "startedAt": "2026-10-21T11:52:32.101Z",
+            "status": 200,
+            "responseSha256": "4076fc23c7b6f2a2a0d7d35b5f71916b66cd03948eac027e16dfd97c90f936f5",
+            "completedAt": "2026-10-21T11:52:33.286Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-opstruth/deployments/f6b80d22-ecd8-41d1-a654-1a83fd3513e7/history/logs",
+            "startedAt": "2026-10-21T11:52:34.477Z",
+            "status": 200,
+            "responseSha256": "d8d817adb44be8303d79a1f5a117b1aa0ed85eec5cf7eb4690fb3547328f2adf",
+            "completedAt": "2026-10-21T11:52:35.664Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://f6b80d22.proof-state-ci-opstruth.pages.dev/receipt.json",
+            "startedAt": "2026-10-21T11:52:36.554Z",
+            "status": 200,
+            "responseSha256": "d88481d374d441367f0518841a60a678d72f730f124995ef2ab636089f96bf49",
+            "completedAt": "2026-10-21T11:52:38.097Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://raw.githubusercontent.com/AyobamiH/opstruth-chatgpt-plugin/5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f/ci/cloudflare/manifest.json",
+            "startedAt": "2026-10-21T11:52:38.822Z",
+            "status": 200,
+            "responseSha256": "136b84f7234ade1bcd20f29700fac7c3b01f6ffe56b01c3e835e34a72f60ccd7",
+            "completedAt": "2026-10-21T11:52:39.227Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "projectReadback": {
+          "id": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+          "name": "proof-state-ci-opstruth",
+          "source": {
+            "matchesExpectedIdentity": true,
+            "type": "github"
+          },
+          "buildCommandMatches": true,
+          "automaticBuilds": {
+            "production_deployments_enabled": false,
+            "preview_deployment_setting": "none",
+            "preview_branch_includes": [],
+            "preview_branch_excludes": []
+          },
+          "usesFunctions": false,
+          "drift": [],
+          "latestDeployment": {
+            "id": "f6b80d22-ecd8-41d1-a654-1a83fd3513e7",
+            "projectId": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+            "projectName": "proof-state-ci-opstruth",
+            "createdAt": "2026-10-21T11:51:26.329532Z",
+            "modifiedAt": "2026-10-21T11:52:00.316031Z",
+            "trigger": "github:push",
+            "branch": "fix/durable-release-recovery-20261020",
+            "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+            "dirty": false,
+            "environment": "preview",
+            "url": "https://f6b80d22.proof-state-ci-opstruth.pages.dev",
+            "usesFunctions": false,
+            "skipped": false,
+            "latestStage": {
+              "name": "deploy",
+              "started_on": "2026-10-21T11:51:54.603317Z",
+              "ended_on": "2026-10-21T11:52:00.316031Z",
+              "status": "success"
+            },
+            "stages": [
+              {
+                "name": "queued",
+                "status": "success",
+                "started_on": "2026-10-21T11:51:26.53734Z",
+                "ended_on": "2026-10-21T11:51:26.542451Z"
+              },
+              {
+                "name": "initialize",
+                "status": "success",
+                "started_on": "2026-10-21T11:51:26.542451Z",
+                "ended_on": "2026-10-21T11:51:28.10371Z"
+              },
+              {
+                "name": "clone_repo",
+                "status": "success",
+                "started_on": "2026-10-21T11:51:28.10371Z",
+                "ended_on": "2026-10-21T11:51:29.313256Z"
+              },
+              {
+                "name": "build",
+                "status": "success",
+                "started_on": "2026-10-21T11:51:29.313256Z",
+                "ended_on": "2026-10-21T11:51:54.603317Z"
+              },
+              {
+                "name": "deploy",
+                "status": "success",
+                "started_on": "2026-10-21T11:51:54.603317Z",
+                "ended_on": "2026-10-21T11:52:00.316031Z"
+              }
+            ]
+          }
+        },
+        "deployment": {
+          "id": "f6b80d22-ecd8-41d1-a654-1a83fd3513e7",
+          "projectId": "87f1320d-0e85-4e15-8555-7749a95bfc17",
+          "projectName": "proof-state-ci-opstruth",
+          "createdAt": "2026-10-21T11:51:26.329532Z",
+          "modifiedAt": "2026-10-21T11:52:00.316031Z",
+          "trigger": "github:push",
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+          "dirty": false,
+          "environment": "preview",
+          "url": "https://f6b80d22.proof-state-ci-opstruth.pages.dev",
+          "usesFunctions": false,
+          "skipped": false,
+          "latestStage": {
+            "name": "deploy",
+            "started_on": "2026-10-21T11:51:54.603317Z",
+            "ended_on": "2026-10-21T11:52:00.316031Z",
+            "status": "success"
+          },
+          "stages": [
+            {
+              "name": "queued",
+              "status": "success",
+              "started_on": "2026-10-21T11:51:26.53734Z",
+              "ended_on": "2026-10-21T11:51:26.542451Z"
+            },
+            {
+              "name": "initialize",
+              "status": "success",
+              "started_on": "2026-10-21T11:51:26.542451Z",
+              "ended_on": "2026-10-21T11:51:28.10371Z"
+            },
+            {
+              "name": "clone_repo",
+              "status": "success",
+              "started_on": "2026-10-21T11:51:28.10371Z",
+              "ended_on": "2026-10-21T11:51:29.313256Z"
+            },
+            {
+              "name": "build",
+              "status": "success",
+              "started_on": "2026-10-21T11:51:29.313256Z",
+              "ended_on": "2026-10-21T11:51:54.603317Z"
+            },
+            {
+              "name": "deploy",
+              "status": "success",
+              "started_on": "2026-10-21T11:51:54.603317Z",
+              "ended_on": "2026-10-21T11:52:00.316031Z"
+            }
+          ]
+        },
+        "logs": {
+          "sha256": "d8d817adb44be8303d79a1f5a117b1aa0ed85eec5cf7eb4690fb3547328f2adf",
+          "total": 60,
+          "returnedLines": 60,
+          "includesContainerLogs": true,
+          "storage": "digest only; untrusted log text and provider error bodies are not emitted"
+        },
+        "receipt": {
+          "url": "https://f6b80d22.proof-state-ci-opstruth.pages.dev/receipt.json",
+          "sha256": "d88481d374d441367f0518841a60a678d72f730f124995ef2ab636089f96bf49",
+          "manifestUrl": "https://raw.githubusercontent.com/AyobamiH/opstruth-chatgpt-plugin/5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f/ci/cloudflare/manifest.json",
+          "manifestSha256": "136b84f7234ade1bcd20f29700fac7c3b01f6ffe56b01c3e835e34a72f60ccd7",
+          "sourceCommit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+          "sourceTree": "5816b7b30aa613881a2433826d0e645fc784a8e9",
+          "baseSource": "github-open-pull-request",
+          "baseScope": "pull-request-delta",
+          "baseCorroboration": "github-main-ancestor",
+          "jobIds": [
+            "verify",
+            "review",
+            "release-verifier"
+          ],
+          "excludedCoverage": [],
+          "coverageDecision": "source and declared Linux jobs verified; required-check trust and separate coverage require review"
+        },
+        "outcome": "SOURCE_VERIFIED",
+        "completedAt": "2026-10-21T11:52:39.236Z"
+      }
+    },
+    "agentproof-native-status-4.json": {
+      "sha256": "667ff7feb79302bcb378746f37e0ca3a945097c1ebcaedee7ebb05ab3409443d",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "status",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/agentproof",
+        "repositoryId": "1317413810",
+        "project": "proof-state-ci-agentproof",
+        "expectedSource": {
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2"
+        },
+        "startedAt": "2026-10-21T11:56:28.749Z",
+        "phase": "SETTLED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof",
+            "startedAt": "2026-10-21T11:56:28.759Z",
+            "status": 200,
+            "responseSha256": "b99ea4edca3376c957b68748e410dcf109d41ca22aef96b8d6e3b526714d396b",
+            "completedAt": "2026-10-21T11:56:29.982Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof/deployments/9dd74aca-6f9c-4307-9fdb-794f85b894dd",
+            "startedAt": "2026-10-21T11:56:30.002Z",
+            "status": 200,
+            "responseSha256": "37d802512c1d131fc273a3c09c64b69439a8c26efa900c1299eef0a6ade5fc15",
+            "completedAt": "2026-10-21T11:56:31.149Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-agentproof/deployments/9dd74aca-6f9c-4307-9fdb-794f85b894dd/history/logs",
+            "startedAt": "2026-10-21T11:56:31.194Z",
+            "status": 200,
+            "responseSha256": "365ae56b46d6875e12e90bb99689ef9ae75006bfd571b1aea85b91a799f15b2a",
+            "completedAt": "2026-10-21T11:56:32.629Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://9dd74aca.proof-state-ci-agentproof.pages.dev/receipt.json",
+            "startedAt": "2026-10-21T11:56:32.637Z",
+            "status": 200,
+            "responseSha256": "51c72c794f09168396f151dabf53294d43726db683c52688acf37e0164f66eae",
+            "completedAt": "2026-10-21T11:56:33.290Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://raw.githubusercontent.com/AyobamiH/agentproof/1f9053b7748a9edb6b5ff4e436f39c355dfe60f2/ci/cloudflare/manifest.json",
+            "startedAt": "2026-10-21T11:56:33.298Z",
+            "status": 200,
+            "responseSha256": "76e7a88b63da4dc14e0e53891f053cdce0a781411ea4dd53eaa6ab2f5494ba98",
+            "completedAt": "2026-10-21T11:56:33.741Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "projectReadback": {
+          "id": "232be2e8-b634-4226-aba9-e69b9c739729",
+          "name": "proof-state-ci-agentproof",
+          "source": {
+            "matchesExpectedIdentity": true,
+            "type": "github"
+          },
+          "buildCommandMatches": true,
+          "automaticBuilds": {
+            "production_deployments_enabled": false,
+            "preview_deployment_setting": "none",
+            "preview_branch_includes": [],
+            "preview_branch_excludes": []
+          },
+          "usesFunctions": false,
+          "drift": [],
+          "latestDeployment": {
+            "id": "9dd74aca-6f9c-4307-9fdb-794f85b894dd",
+            "projectId": "232be2e8-b634-4226-aba9-e69b9c739729",
+            "projectName": "proof-state-ci-agentproof",
+            "createdAt": "2026-10-21T11:53:56.755948Z",
+            "modifiedAt": "2026-10-21T11:56:12.422586Z",
+            "trigger": "github:push",
+            "branch": "fix/durable-release-recovery-20261020",
+            "commit": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2",
+            "dirty": false,
+            "environment": "preview",
+            "url": "https://9dd74aca.proof-state-ci-agentproof.pages.dev",
+            "usesFunctions": false,
+            "skipped": false,
+            "latestStage": {
+              "name": "deploy",
+              "started_on": "2026-10-21T11:56:05.652935Z",
+              "ended_on": "2026-10-21T11:56:12.422586Z",
+              "status": "success"
+            },
+            "stages": [
+              {
+                "name": "queued",
+                "status": "success",
+                "started_on": "2026-10-21T11:53:56.934849Z",
+                "ended_on": "2026-10-21T11:53:56.947357Z"
+              },
+              {
+                "name": "initialize",
+                "status": "success",
+                "started_on": "2026-10-21T11:53:56.947357Z",
+                "ended_on": "2026-10-21T11:53:59.752747Z"
+              },
+              {
+                "name": "clone_repo",
+                "status": "success",
+                "started_on": "2026-10-21T11:53:59.752747Z",
+                "ended_on": "2026-10-21T11:54:01.251064Z"
+              },
+              {
+                "name": "build",
+                "status": "success",
+                "started_on": "2026-10-21T11:54:01.251064Z",
+                "ended_on": "2026-10-21T11:56:05.652935Z"
+              },
+              {
+                "name": "deploy",
+                "status": "success",
+                "started_on": "2026-10-21T11:56:05.652935Z",
+                "ended_on": "2026-10-21T11:56:12.422586Z"
+              }
+            ]
+          }
+        },
+        "deployment": {
+          "id": "9dd74aca-6f9c-4307-9fdb-794f85b894dd",
+          "projectId": "232be2e8-b634-4226-aba9-e69b9c739729",
+          "projectName": "proof-state-ci-agentproof",
+          "createdAt": "2026-10-21T11:53:56.755948Z",
+          "modifiedAt": "2026-10-21T11:56:12.422586Z",
+          "trigger": "github:push",
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2",
+          "dirty": false,
+          "environment": "preview",
+          "url": "https://9dd74aca.proof-state-ci-agentproof.pages.dev",
+          "usesFunctions": false,
+          "skipped": false,
+          "latestStage": {
+            "name": "deploy",
+            "started_on": "2026-10-21T11:56:05.652935Z",
+            "ended_on": "2026-10-21T11:56:12.422586Z",
+            "status": "success"
+          },
+          "stages": [
+            {
+              "name": "queued",
+              "status": "success",
+              "started_on": "2026-10-21T11:53:56.934849Z",
+              "ended_on": "2026-10-21T11:53:56.947357Z"
+            },
+            {
+              "name": "initialize",
+              "status": "success",
+              "started_on": "2026-10-21T11:53:56.947357Z",
+              "ended_on": "2026-10-21T11:53:59.752747Z"
+            },
+            {
+              "name": "clone_repo",
+              "status": "success",
+              "started_on": "2026-10-21T11:53:59.752747Z",
+              "ended_on": "2026-10-21T11:54:01.251064Z"
+            },
+            {
+              "name": "build",
+              "status": "success",
+              "started_on": "2026-10-21T11:54:01.251064Z",
+              "ended_on": "2026-10-21T11:56:05.652935Z"
+            },
+            {
+              "name": "deploy",
+              "status": "success",
+              "started_on": "2026-10-21T11:56:05.652935Z",
+              "ended_on": "2026-10-21T11:56:12.422586Z"
+            }
+          ]
+        },
+        "logs": {
+          "sha256": "365ae56b46d6875e12e90bb99689ef9ae75006bfd571b1aea85b91a799f15b2a",
+          "total": 78,
+          "returnedLines": 78,
+          "includesContainerLogs": true,
+          "storage": "digest only; untrusted log text and provider error bodies are not emitted"
+        },
+        "receipt": {
+          "url": "https://9dd74aca.proof-state-ci-agentproof.pages.dev/receipt.json",
+          "sha256": "51c72c794f09168396f151dabf53294d43726db683c52688acf37e0164f66eae",
+          "manifestUrl": "https://raw.githubusercontent.com/AyobamiH/agentproof/1f9053b7748a9edb6b5ff4e436f39c355dfe60f2/ci/cloudflare/manifest.json",
+          "manifestSha256": "76e7a88b63da4dc14e0e53891f053cdce0a781411ea4dd53eaa6ab2f5494ba98",
+          "sourceCommit": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2",
+          "sourceTree": "07f82e3981a8fc4711bd85448e4298074c835c39",
+          "baseSource": "github-open-pull-request",
+          "baseScope": "pull-request-delta",
+          "baseCorroboration": "github-main-ancestor",
+          "jobIds": [
+            "validate-linux-node22",
+            "validate-linux-node24",
+            "provider",
+            "release-provider"
+          ],
+          "excludedCoverage": [
+            {
+              "id": "validate-macos-node24",
+              "platform": "macos",
+              "requiredSeparately": true,
+              "reason": "Cloudflare Pages provides Linux, not macOS."
+            }
+          ],
+          "coverageDecision": "source and declared Linux jobs verified; required-check trust and separate coverage require review"
+        },
+        "outcome": "SOURCE_VERIFIED",
+        "completedAt": "2026-10-21T11:56:33.750Z"
+      }
+    },
+    "donestate-native-status-1.json": {
+      "sha256": "f039d939dea7e80ca67c3a0f09c98cee81767634b70d28102f9cc0da4922e765",
+      "value": {
+        "schema": "proofstate.cloudflare-pages-admin.v1",
+        "action": "status",
+        "accountId": "6ddcbcb8474f1a7e460b2f0aabec0e2f",
+        "repository": "AyobamiH/donestate",
+        "repositoryId": "1348643925",
+        "project": "proof-state-ci-donestate",
+        "expectedSource": {
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "24d2df462f8b1f7180b6d6e9ff612dd0b0cb43a2"
+        },
+        "startedAt": "2026-10-21T11:58:46.370Z",
+        "phase": "SETTLED",
+        "requests": [
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate",
+            "startedAt": "2026-10-21T11:58:46.379Z",
+            "status": 200,
+            "responseSha256": "de5ce59b067d971abb0d980aabecd30248ed423b809c9c1c3a8c2fd581829757",
+            "completedAt": "2026-10-21T11:58:47.649Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate/deployments/98996fb2-2759-4a15-826f-b95bf783bbd1",
+            "startedAt": "2026-10-21T11:58:47.659Z",
+            "status": 200,
+            "responseSha256": "01f8544a30ce64da4d9205ad37b7536d60d8c36eb6d2b54c17163933667e72f2",
+            "completedAt": "2026-10-21T11:58:48.823Z"
+          },
+          {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/projects/proof-state-ci-donestate/deployments/98996fb2-2759-4a15-826f-b95bf783bbd1/history/logs",
+            "startedAt": "2026-10-21T11:58:48.831Z",
+            "status": 200,
+            "responseSha256": "d5e0009463b4d613495cf113d358c716ff27692b5c9518a91f3019cf9514e886",
+            "completedAt": "2026-10-21T11:58:50.055Z"
+          }
+        ],
+        "cancellation": "No documented Pages cancellation API; no DELETE or implicit retry is implemented.",
+        "projectReadback": {
+          "id": "edb3c8b2-241c-4b53-a4a9-65901e74896c",
+          "name": "proof-state-ci-donestate",
+          "source": {
+            "matchesExpectedIdentity": true,
+            "type": "github"
+          },
+          "buildCommandMatches": true,
+          "automaticBuilds": {
+            "production_deployments_enabled": false,
+            "preview_deployment_setting": "none",
+            "preview_branch_includes": [],
+            "preview_branch_excludes": []
+          },
+          "usesFunctions": null,
+          "drift": [],
+          "latestDeployment": {
+            "id": "98996fb2-2759-4a15-826f-b95bf783bbd1",
+            "projectId": "edb3c8b2-241c-4b53-a4a9-65901e74896c",
+            "projectName": "proof-state-ci-donestate",
+            "createdAt": "2026-10-21T11:57:45.949683Z",
+            "modifiedAt": "2026-10-21T11:58:39.588221Z",
+            "trigger": "github:push",
+            "branch": "fix/durable-release-recovery-20261020",
+            "commit": "24d2df462f8b1f7180b6d6e9ff612dd0b0cb43a2",
+            "dirty": false,
+            "environment": "preview",
+            "url": "https://98996fb2.proof-state-ci-donestate.pages.dev",
+            "usesFunctions": null,
+            "skipped": false,
+            "latestStage": {
+              "name": "build",
+              "started_on": "2026-10-21T11:57:49.783797Z",
+              "ended_on": "2026-10-21T11:58:39.588221Z",
+              "status": "failure"
+            },
+            "stages": [
+              {
+                "name": "queued",
+                "status": "success",
+                "started_on": "2026-10-21T11:57:46.078232Z",
+                "ended_on": "2026-10-21T11:57:46.085493Z"
+              },
+              {
+                "name": "initialize",
+                "status": "success",
+                "started_on": "2026-10-21T11:57:46.085493Z",
+                "ended_on": "2026-10-21T11:57:48.285605Z"
+              },
+              {
+                "name": "clone_repo",
+                "status": "success",
+                "started_on": "2026-10-21T11:57:48.285605Z",
+                "ended_on": "2026-10-21T11:57:49.783797Z"
+              },
+              {
+                "name": "build",
+                "status": "failure",
+                "started_on": "2026-10-21T11:57:49.783797Z",
+                "ended_on": "2026-10-21T11:58:39.588221Z"
+              },
+              {
+                "name": "deploy",
+                "status": "idle",
+                "started_on": null,
+                "ended_on": null
+              }
+            ]
+          }
+        },
+        "deployment": {
+          "id": "98996fb2-2759-4a15-826f-b95bf783bbd1",
+          "projectId": "edb3c8b2-241c-4b53-a4a9-65901e74896c",
+          "projectName": "proof-state-ci-donestate",
+          "createdAt": "2026-10-21T11:57:45.949683Z",
+          "modifiedAt": "2026-10-21T11:58:39.588221Z",
+          "trigger": "github:push",
+          "branch": "fix/durable-release-recovery-20261020",
+          "commit": "24d2df462f8b1f7180b6d6e9ff612dd0b0cb43a2",
+          "dirty": false,
+          "environment": "preview",
+          "url": "https://98996fb2.proof-state-ci-donestate.pages.dev",
+          "usesFunctions": null,
+          "skipped": false,
+          "latestStage": {
+            "name": "build",
+            "started_on": "2026-10-21T11:57:49.783797Z",
+            "ended_on": "2026-10-21T11:58:39.588221Z",
+            "status": "failure"
+          },
+          "stages": [
+            {
+              "name": "queued",
+              "status": "success",
+              "started_on": "2026-10-21T11:57:46.078232Z",
+              "ended_on": "2026-10-21T11:57:46.085493Z"
+            },
+            {
+              "name": "initialize",
+              "status": "success",
+              "started_on": "2026-10-21T11:57:46.085493Z",
+              "ended_on": "2026-10-21T11:57:48.285605Z"
+            },
+            {
+              "name": "clone_repo",
+              "status": "success",
+              "started_on": "2026-10-21T11:57:48.285605Z",
+              "ended_on": "2026-10-21T11:57:49.783797Z"
+            },
+            {
+              "name": "build",
+              "status": "failure",
+              "started_on": "2026-10-21T11:57:49.783797Z",
+              "ended_on": "2026-10-21T11:58:39.588221Z"
+            },
+            {
+              "name": "deploy",
+              "status": "idle",
+              "started_on": null,
+              "ended_on": null
+            }
+          ]
+        },
+        "logs": {
+          "sha256": "d5e0009463b4d613495cf113d358c716ff27692b5c9518a91f3019cf9514e886",
+          "total": 111,
+          "returnedLines": 111,
+          "includesContainerLogs": true,
+          "storage": "digest only; untrusted log text and provider error bodies are not emitted"
+        },
+        "outcome": "BUILD_FAILED",
+        "completedAt": "2026-10-21T11:58:50.064Z"
+      }
+    },
+    "opstruth-native-github-check.json": {
+      "sha256": "beda274719f8c2cdd9f86a42a2b53f11c5a33b870187c9b68b2525c6e4ed1e47",
+      "value": {
+        "id": 119205459250,
+        "name": "Cloudflare Pages",
+        "head_sha": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+        "status": "completed",
+        "conclusion": "success",
+        "details_url": "https://dash.cloudflare.com/?to=/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/view/proof-state-ci-opstruth/f6b80d22-ecd8-41d1-a654-1a83fd3513e7",
+        "started_at": "2026-10-21T11:52:00Z",
+        "completed_at": "2026-10-21T11:52:00Z",
+        "app": {
+          "id": 85455,
+          "slug": "cloudflare-workers-and-pages",
+          "name": "Cloudflare Workers and Pages"
+        },
+        "observedAt": "2026-10-21T11:54:56.692041+00:00"
+      }
+    },
+    "agentproof-native-github-check.json": {
+      "sha256": "894e83a2904ede6f818e61698667e261e1738b943ffd8366cab2cd0bd66eea5e",
+      "value": {
+        "id": 119207208661,
+        "name": "Cloudflare Pages",
+        "head_sha": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2",
+        "status": "completed",
+        "conclusion": "success",
+        "details_url": "https://dash.cloudflare.com/?to=/6ddcbcb8474f1a7e460b2f0aabec0e2f/pages/view/proof-state-ci-agentproof/9dd74aca-6f9c-4307-9fdb-794f85b894dd",
+        "started_at": "2026-10-21T11:56:12Z",
+        "completed_at": "2026-10-21T11:56:12Z",
+        "app": {
+          "id": 85455,
+          "slug": "cloudflare-workers-and-pages",
+          "name": "Cloudflare Workers and Pages"
+        },
+        "observedAt": "2026-10-21T11:57:46.340415+00:00"
+      }
+    },
+    "opstruth-chatgpt-plugin-source-review-observation.json": {
+      "sha256": "462ab6edbb7c96366ffd3b9b12749d6b882a9cb5a60ac5f56b8c595dadc0fe59",
+      "value": {
+        "observedAt": "2026-10-21T12:07:36.586298+00:00",
+        "repository": "opstruth-chatgpt-plugin",
+        "pullRequest": 44,
+        "comments": [
+          {
+            "id": 6315352697,
+            "user": "chatgpt-codex-connector[bot]",
+            "body": "<!-- codex-pull-request-review-summary -->\n<!-- codex-review-state:v1 {\"code_review\":{\"commit_sha\":\"5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f\",\"has_any_findings\":false,\"has_unresolved_findings\":false,\"status\":\"completed\"},\"security_review\":{\"commit_sha\":null,\"has_any_findings\":null,\"has_unresolved_findings\":null,\"status\":null}} -->\n\n## Codex Review Summary\n\nThis comment shows the latest Codex review activity on this pull request.\n\n| Review | Status | Commit | Review trigger |\n| --- | --- | --- | --- |\n| \ud83d\udcdd **Code Review** | \u2705 **Completed** <relative-time datetime=\"2026-10-21T12:02:55.398549Z\">2026-10-21T12:02:55.398549Z</relative-time> | `5313fce` | Manual request |\n\n\n\n<details> <summary>\u2139\ufe0f About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\" or \"@codex security review\".\n\nCodex reacts with \ud83d\udc40 while any review is running, comments if it has suggestions, and reacts with \ud83d\udc4d once all reviews finish with no findings.\n\n</details>",
+            "state": null,
+            "commitId": null,
+            "url": "https://github.com/AyobamiH/opstruth-chatgpt-plugin/pull/44#issuecomment-6315352697"
+          },
+          {
+            "id": 6315419776,
+            "user": "chatgpt-codex-connector[bot]",
+            "body": "<!-- codex-review-receipt:v1 -->\n\nCodex Review: Didn't find any major issues. Hooray!\n\n**Reviewed commit:** `5313fce23b`\n\n<details> <summary>\u2139\ufe0f About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with \ud83d\udc4d.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>",
+            "state": null,
+            "commitId": null,
+            "url": "https://github.com/AyobamiH/opstruth-chatgpt-plugin/pull/44#issuecomment-6315419776"
+          }
+        ],
+        "reviews": []
+      }
+    },
+    "agentproof-source-review-observation.json": {
+      "sha256": "1667d6cea98574f75116d7da17e2599c149c5e0414b72e656f2e5a9c2b821a64",
+      "value": {
+        "observedAt": "2026-10-21T12:05:34.550227+00:00",
+        "repository": "agentproof",
+        "pullRequest": 24,
+        "comments": [
+          {
+            "id": 6315354302,
+            "user": "chatgpt-codex-connector[bot]",
+            "body": "<!-- codex-pull-request-review-summary -->\n<!-- codex-review-state:v1 {\"code_review\":{\"commit_sha\":\"1f9053b7748a9edb6b5ff4e436f39c355dfe60f2\",\"has_any_findings\":false,\"has_unresolved_findings\":false,\"status\":\"completed\"},\"security_review\":{\"commit_sha\":null,\"has_any_findings\":null,\"has_unresolved_findings\":null,\"status\":null}} -->\n\n## Codex Review Summary\n\nThis comment shows the latest Codex review activity on this pull request.\n\n| Review | Status | Commit | Review trigger |\n| --- | --- | --- | --- |\n| \ud83d\udcdd **Code Review** | \u2705 **Completed** <relative-time datetime=\"2026-10-21T12:03:02.700825Z\">2026-10-21T12:03:02.700825Z</relative-time> | `1f9053b` | Manual request |\n\n\n\n<details> <summary>\u2139\ufe0f About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\" or \"@codex security review\".\n\nCodex reacts with \ud83d\udc40 while any review is running, comments if it has suggestions, and reacts with \ud83d\udc4d once all reviews finish with no findings.\n\n</details>",
+            "state": null,
+            "commitId": null,
+            "url": "https://github.com/AyobamiH/agentproof/pull/24#issuecomment-6315354302"
+          },
+          {
+            "id": 6315422000,
+            "user": "chatgpt-codex-connector[bot]",
+            "body": "<!-- codex-review-receipt:v1 -->\n\nCodex Review: Didn't find any major issues. Delightful!\n\n**Reviewed commit:** `1f9053b774`\n\n<details> <summary>\u2139\ufe0f About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with \ud83d\udc4d.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>",
+            "state": null,
+            "commitId": null,
+            "url": "https://github.com/AyobamiH/agentproof/pull/24#issuecomment-6315422000"
+          }
+        ],
+        "reviews": []
+      }
+    },
+    "donestate-native-failure-log.json": {
+      "sha256": "b1bb5aa48343435f9eb3b63c8bd2b139977ca9a9fb3da515a4febfecf466594a",
+      "value": {
+        "observedAt": "2026-10-21T11:59:50.922923+00:00",
+        "deploymentId": "98996fb2-2759-4a15-826f-b95bf783bbd1",
+        "responseSha256": "d5e0009463b4d613495cf113d358c716ff27692b5c9518a91f3019cf9514e886",
+        "total": 111,
+        "returnedLines": 111,
+        "lines": [
+          "Cloning repository...",
+          "From https://github.com/AyobamiH/donestate",
+          " * branch            24d2df462f8b1f7180b6d6e9ff612dd0b0cb43a2 -> FETCH_HEAD",
+          "",
+          "HEAD is now at 24d2df4 Regenerate project state for E-142",
+          "",
+          "",
+          "Using v2 root directory strategy",
+          "Success: Finished cloning repository files",
+          "Checking for configuration in a Wrangler configuration file (BETA)",
+          "",
+          "No Wrangler configuration file found. Continuing.",
+          "Updating nodejs to master",
+          "Already on 'master'",
+          "Your branch is up to date with 'origin/master'.",
+          "Detected the following tools from environment: nodejs@24.22.0, npm@10.9.2",
+          "Installing nodejs 24.22.0",
+          "Trying to update node-build... ok",
+          "To follow progress, use 'tail -f /tmp/node-build.20261021115752.973.log' or pass --verbose",
+          "Downloading node-v24.22.0-linux-x64.tar.gz...",
+          "-> https://nodejs.org/dist/v24.22.0/node-v24.22.0-linux-x64.tar.gz",
+          "Installing node-v24.22.0-linux-x64...",
+          "Installed node-v24.22.0-linux-x64 to /opt/buildhome/.asdf/installs/nodejs/24.22.0",
+          "",
+          "SKIP_DEPENDENCY_INSTALL is present in environment. Skipping automatic dependency installation.",
+          "Executing user command: node ci/cloudflare/run.mjs --provider cloudflare-pages",
+          "{\"stage\":\"source-validation\",\"provider\":\"cloudflare-pages\"}",
+          "{\"stage\":\"toolchain-download\",\"node\":\"22.23.3\"}",
+          "{\"stage\":\"toolchain-extract\",\"node\":\"22.23.3\",\"timeoutMs\":120000}",
+          "{\"stage\":\"preflight\",\"tests\":[\"ci/cloudflare/run.test.mjs\",\"ci/cloudflare-admin/pages.test.mjs\"]}",
+          "{\"stage\":\"command-start\",\"job\":\"core-node22\",\"index\":1,\"tool\":\"npm\"}",
+          "core-node22: npm ci => 0",
+          "{\"stage\":\"command-start\",\"job\":\"core-node22\",\"index\":2,\"tool\":\"npm\"}",
+          "core-node22: npm run check => 0",
+          "{\"stage\":\"command-start\",\"job\":\"core-node22\",\"index\":3,\"tool\":\"npm\"}",
+          "core-node22: npm run governance:impact => 0",
+          "{\"stage\":\"command-start\",\"job\":\"core-node24\",\"index\":1,\"tool\":\"npm\"}",
+          "core-node24: npm ci => 0",
+          "{\"stage\":\"command-start\",\"job\":\"core-node24\",\"index\":2,\"tool\":\"npm\"}",
+          "core-node24: npm run check => 0",
+          "{\"stage\":\"command-start\",\"job\":\"hosted-plugin\",\"index\":1,\"tool\":\"npm\"}",
+          "hosted-plugin: npm ci => 0",
+          "{\"stage\":\"command-start\",\"job\":\"hosted-plugin\",\"index\":2,\"tool\":\"npm\"}",
+          "hosted-plugin: npm audit --audit-level=high => 1",
+          "# npm audit report",
+          "",
+          "@modelcontextprotocol/client  2.0.0 - 2.2.0",
+          "Severity: moderate",
+          "MCP TypeScript client SDK: HTTP client transports and OAuth requests followed cross-origin redirects and re-sent custom headers and request bodies - https://github.com/advisories/GHSA-6prh-2h8m-c8cw",
+          "fix available via `npm audit fix --force`",
+          "Will install agents@0.29.0, which is a breaking change",
+          "node_modules/@modelcontextprotocol/client",
+          "  agents  <=0.0.0-80a8fbd0 || 0.3.5 - 0.28.0",
+          "  Depends on vulnerable versions of @modelcontextprotocol/client",
+          "  Depends on vulnerable versions of @modelcontextprotocol/sdk",
+          "  Depends on vulnerable versions of @modelcontextprotocol/server",
+          "  node_modules/agents",
+          "",
+          "@modelcontextprotocol/sdk  <=1.31.0",
+          "Severity: high",
+          "MCP TypeScript SDK: Experimental tasks were not tied to the session that created them - https://github.com/advisories/GHSA-22jm-h49p-29qw",
+          "MCP TypeScript client SDK: HTTP client transports and OAuth requests followed cross-origin redirects and re-sent custom headers and request bodies - https://github.com/advisories/GHSA-6prh-2h8m-c8cw",
+          "MCP TypeScript SDK: One HTTP request within the default size limit could exhaust server memory during validation - https://github.com/advisories/GHSA-46jr-4wx8-v453",
+          "MCP TypeScript SDK: Server bearer [redacted] accepted tokens issued for another service - https://github.com/advisories/GHSA-rvq5-wwqv-78pq",
+          "Depends on vulnerable versions of hono",
+          "fix available via `npm audit fix --force`",
+          "Will install agents@0.29.0, which is a breaking change",
+          "node_modules/@modelcontextprotocol/sdk",
+          "",
+          "@modelcontextprotocol/server  2.0.0 - 2.2.0",
+          "Severity: high",
+          "MCP  TypeScript server SDK: Shared transport or server instances delivered one HTTP client's messages to another - https://github.com/advisories/GHSA-jm63-cq47-j5jp",
+          "MCP TypeScript SDK: One HTTP request within the default size limit could exhaust server memory during validation - https://github.com/advisories/GHSA-46jr-4wx8-v453",
+          "MCP TypeScript SDK: Server bearer [redacted] accepted tokens issued for another service - https://github.com/advisories/GHSA-rvq5-wwqv-78pq",
+          "fix available via `npm audit fix --force`",
+          "Will install agents@0.29.0, which is a breaking change",
+          "node_modules/@modelcontextprotocol/server",
+          "",
+          "hono  4.12.4 - 4.13.10",
+          "Severity: moderate",
+          "Hono: `serveStatic` decodes the request path a second time, leading to bypass of middleware on static paths - https://github.com/advisories/GHSA-5r4p-p66f-jhc7",
+          "fix available via `npm audit fix --force`",
+          "Will install agents@0.29.0, which is a breaking change",
+          "node_modules/hono",
+          "  @cloudflare/sandbox  ",
+          "  Depends on vulnerable versions of hono",
+          "  node_modules/@cloudflare/sandbox",
+          "  @hono/node-server  ",
+          "  Depends on vulnerable versions of hono",
+          "  node_modules/@hono/node-server",
+          "",
+          "vite  8.2.0 - 8.2.2",
+          "Severity: high",
+          "launch-editor: escapeCmdArgs() omits % escaping on Windows - https://github.com/advisories/GHSA-698v-4r3x-3vcv",
+          "launch-editor: Editor CLI flag misinterpretation causing arbitrary command execution for some editors - https://github.com/advisories/GHSA-r825-w8mm-5pxw",
+          "launch-editor: `fs.existsSync()` existence check can be bypassed on Windows - https://github.com/advisories/GHSA-587h-7wmj-h5pm",
+          "fix available via `npm audit fix`",
+          "node_modules/vite",
+          "",
+          "8 vulnerabilities (4 moderate, 4 high)",
+          "",
+          "To address issues that do not require attention, run:",
+          "  npm audit fix",
+          "",
+          "To address all issues (including breaking changes), run:",
+          "  npm audit fix --force",
+          "",
+          "JOB_FAILED:hosted-plugin",
+          "Failed: Error while executing user command. Exited with error code: 1",
+          "Failed: build command exited with code: 1",
+          "Failed: error occurred while running build command"
+        ]
+      }
+    },
+    "current-release-and-macos-readback.json": {
+      "sha256": "3dcd78ed20e899c4772a08b8b75c2518df38e51f4c04fc1cfe08d8c8fe3f58d9",
+      "value": {
+        "observedAt": "2026-10-21T11:40:50.525792+00:00",
+        "macOSCheck": {
+          "id": 119066970358,
+          "annotations": [
+            {
+              "path": ".github",
+              "annotation_level": "failure",
+              "message": "The job was not started because your account is locked due to a billing issue."
+            },
+            {
+              "path": ".github",
+              "annotation_level": "notice",
+              "message": "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times."
+            }
+          ]
+        },
+        "release": {
+          "id": 416342082,
+          "tag_name": "v0.0.0-rc.2026101801",
+          "target_commitish": "1231076c12485a02fae3c38b0b850a25274985d5",
+          "draft": false,
+          "prerelease": true,
+          "published_at": "2026-10-18T11:43:37Z",
+          "html_url": "https://github.com/AyobamiH/agentproof-release-canary/releases/tag/v0.0.0-rc.2026101801"
+        },
+        "assets": [
+          {
+            "id": 653036082,
+            "name": "agentproof-disposable-canary.tgz",
+            "size": 240,
+            "digest": "sha256:064f989c25b86269004401959b1e2aa68cc0b3acbf310ba647b892aa5e28b186",
+            "state": "uploaded",
+            "updated_at": "2026-10-18T09:13:43Z"
+          },
+          {
+            "id": 653046879,
+            "name": "provenance.json",
+            "size": 729,
+            "digest": "sha256:fa76d7de87ba327ccd81943563af7daed1c87775e049e52a047df59c5b1475b4",
+            "state": "uploaded",
+            "updated_at": "2026-10-18T09:18:28Z"
+          }
+        ],
+        "run": {
+          "id": 39124373253,
+          "head_sha": "d74a0d6c6b712d3ecfb428997f24d264175c20c1",
+          "run_attempt": 3,
+          "status": "completed",
+          "conclusion": "failure",
+          "updated_at": "2026-10-18T11:51:50Z",
+          "html_url": "https://github.com/AyobamiH/agentproof-release-canary/actions/runs/39124373253"
+        },
+        "scope": "Read-only; metadata readback does not establish a signed recovery receipt or terminal verification."
+      }
+    },
+    "mcp-limits-targeted-validation.json": {
+      "sha256": "f51eb40c370fa40e3d2b3f15b889b49bb8a5fbce3eb9f79630da853c52eac334",
+      "value": {
+        "observedAt": "2026-10-21T12:14:36.301176+00:00",
+        "results": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "log": "/home/johnh/agentproof-native-ci-evidence-20261021/mcp-limits-targeted-0.txt"
+          },
+          {
+            "command": [
+              "npm",
+              "test",
+              "--",
+              "test/mcp-limits.test.ts",
+              "test/account-controls.test.ts"
+            ],
+            "exitCode": 0,
+            "log": "/home/johnh/agentproof-native-ci-evidence-20261021/mcp-limits-targeted-1.txt"
+          }
+        ]
+      }
+    },
+    "hosted-security-v2-validation.json": {
+      "sha256": "c2ec27e25420f79e4c0b9191b3f5bc2f2e1bda708614cc983363240ace7b1281",
+      "value": {
+        "observedAt": "2026-10-21T12:16:45.969701+00:00",
+        "results": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "check"
+            ],
+            "exitCode": 1,
+            "log": "/home/johnh/agentproof-native-ci-evidence-20261021/hosted-security-v2-check-0.txt",
+            "stdoutSha256": "9dce414623d65d6cf6bf0390df8d9af83e1888299d498e723f95629e131caf0e"
+          }
+        ]
+      }
+    },
+    "hosted-security-v3-validation.json": {
+      "sha256": "18d097bf4830f5e7688854d802d32ce2962188ad9ead3a7372b7ea405ee152b6",
+      "value": {
+        "observedAt": "2026-10-21T12:19:46.504414+00:00",
+        "results": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "check"
+            ],
+            "exitCode": 0,
+            "log": "/home/johnh/agentproof-native-ci-evidence-20261021/hosted-security-v3-check-0.txt",
+            "stdoutSha256": "e920beb58ca9f04636bd28796741d1c86b9d38b6eec854fe993fe7b2807026e8"
+          },
+          {
+            "command": [
+              "npm",
+              "audit",
+              "--audit-level=high",
+              "--json"
+            ],
+            "exitCode": 0,
+            "log": "/home/johnh/agentproof-native-ci-evidence-20261021/hosted-security-v3-check-1.txt",
+            "stdoutSha256": "d49c52040e1ea556214e240d533163a8ff38278ff53e7ccc69921faaf724325c"
+          },
+          {
+            "command": [
+              "npm",
+              "run",
+              "deploy:check"
+            ],
+            "exitCode": 0,
+            "log": "/home/johnh/agentproof-native-ci-evidence-20261021/hosted-security-v3-check-2.txt",
+            "stdoutSha256": "e1cf557a2f53f2379bf956459900d1138979a13080e7c1052fba5081f881acd1"
+          }
+        ]
+      }
+    }
+  },
+  "sourceFiles": {
+    "apps/mcp-worker/package.json": "53559913775724eb136b1a66594f77d521ea9d97c09de7a12522904800ef9f1e",
+    "apps/mcp-worker/package-lock.json": "99459767d14c4ede6f3353cd774f2f54dbe0a30b1ab178cb04fc00d7a01df702",
+    "apps/mcp-worker/src/server.ts": "13a070a4a20fee7623ff5c3f3faf14cf33f277c76267b53c678dfc27992eb8aa",
+    "apps/mcp-worker/src/account-controls.ts": "7828f3f4c39ee9293e69c417e69567ecc082c7b27a967541ee6ed88da8b4f358",
+    "apps/mcp-worker/src/mcp-limits.ts": "04e0d35ee20efd7adecb50fa584e16ffdfb6afefac4eec3a92db87b5e44ee68d",
+    "apps/mcp-worker/test/mcp-limits.test.ts": "9a1aeae217e330208169996f62c01c7ed7ba08e41cd1aad792f9361bbd7320ae",
+    "apps/mcp-worker/test/account-controls.test.ts": "98d888b54b1cc50462dab2adf60049175e17fba2fb4dc83842234636e22fe576"
+  },
+  "localChecks": [
+    {
+      "name": "hosted-security-check-0.txt",
+      "sha256": "98916d3f72662d93efa3a1143965747c36ad58becb2710bd203c56ff9a086023",
+      "stdout": "Cloudflare Sandbox versions aligned at 0.12.9; transport=rpc; instance=basic; memory=1024 MiB\n\n \u26c5\ufe0f wrangler 4.127.1\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nGenerating project types...\n\ninterface __BaseEnv_Env {\n\tOAUTH_KV: KVNamespace;\n\tSANDBOX_TRANSPORT: \"rpc\";\n\tUSER_DAILY_RUN_LIMIT: \"12\";\n\tPLATFORM_OWNER_LOGIN: \"AyobamiH\";\n\tCANONICAL_ORIGIN: \"https://donestate.proofandstate.com\";\n\tOPENAI_APPS_CHALLENGE: \"VGfoWKKZx7N8MuzA0jQ0kaKC4A1ofTziFyPLOk0Kn2A\";\n\tOPENAI_REVIEW_PASSWORD_SHA256: \"f29bfd7af82b519a8c6aac3b11acd4be201a43872d4fedf9092481a1dc3f3b01\";\n\tOPSTRUTH_MCP_URL: \"https://mcp.opstruth.io/mcp\";\n\tOPSTRUTH_VERIFIER_FINGERPRINT: \"09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86\";\n\tRUN_COORDINATOR: DurableObjectNamespace<import(\"./src/server\").RunCoordinator>;\n\tCREDENTIAL_VAULT: DurableObjectNamespace<import(\"./src/server\").CredentialVault>;\n\tMAINTENANCE_REGISTRY: DurableObjectNamespace<import(\"./src/server\").MaintenanceRegistry>;\n\tOAUTH_STATE: DurableObjectNamespace<import(\"./src/server\").OAuthStateStore>;\n\tSandbox: DurableObjectNamespace<import(\"./src/server\").Sandbox>;\n}\ndeclare namespace Cloudflare {\n\tinterface GlobalProps {\n\t\tmainModule: typeof import(\"./src/server\");\n\t\tdurableNamespaces: \"RunCoordinator\" | \"Sandbox\" | \"CredentialVault\" | \"MaintenanceRegistry\" | \"OAuthStateStore\";\n\t}\n\tinterface Env extends __BaseEnv_Env {}\n}\ninterface Env extends __BaseEnv_Env {}\ntype StringifyValues<EnvType extends Record<string, unknown>> = {\n\t[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;\n};\ndeclare namespace NodeJS {\n\tinterface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, \"SANDBOX_TRANSPORT\" | \"USER_DAILY_RUN_LIMIT\" | \"PLATFORM_OWNER_LOGIN\" | \"CANONICAL_ORIGIN\" | \"OPENAI_APPS_CHALLENGE\" | \"OPENAI_REVIEW_PASSWORD_SHA256\" | \"OPSTRUTH_MCP_URL\" | \"OPSTRUTH_VERIFIER_FINGERPRINT\">> {}\n}\n\nGenerating runtime types...\n\nRuntime types generated.\n\n\n\u2728 Types written to worker-configuration.d.ts\n\nAction required Install @types/node\nSince your Worker has Node.js compatibility enabled, you should install Node.js types by running \"npm i --save-dev @types/node\".\n\n\ud83d\udcd6 Read about runtime types\nhttps://developers.cloudflare.com/workers/languages/typescript/#generate-types\n\ud83d\udce3 Remember to rerun 'wrangler types' after you change your wrangler.jsonc file.\n\n\n RUN  v4.1.11 /home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker\n\n \u2713 test/opstruth.test.ts (8 tests) 623ms\n     \u2713 derives identity from authenticated owner and isolates the exact repository  364ms\n \u2713 test/auth.test.ts (23 tests) 188ms\n \u2713 test/executor.test.ts (13 tests) 41ms\n \u2713 test/implementation-failure.test.ts (7 tests) 162ms\n \u2713 test/private-clone.test.ts (8 tests) 3442ms\n     \u2713 authenticates only the private clone command and leaves the next process credential-free  498ms\n     \u2713 blocks private credential transport without secret_access before creating a sandbox  924ms\n     \u2713 requires local_read as well as secret_access  778ms\n     \u2713 fails closed on revoked repository access without an anonymous fallback  352ms\n     \u2713 redacts raw and encoded credentials from a rejected clone and never retries it  542ms\nstdout | test/maintenance-registry.test.ts > MaintenanceRegistry > awaits durable queue setup before accepting an eligible issue webhook\n{\"message\":\"maintenance repair queued from issue webhook\",\"repository\":\"owner/webhook-repository\",\"findingId\":\"620e5cbc4f285cffaf3ab1872ad0d2899ae67308a1f0cf168e78ac25f7cf566d\",\"runId\":\"test-run-id\"}\n\n \u2713 test/maintenance-registry.test.ts (13 tests) 21501ms\n     \u2713 stores only aggregate daily funnel counts without customer identifiers  1026ms\n     \u2713 stores an observe-only repository without silently granting scheduled authority  470ms\n     \u2713 tracks and resolves bounded Marketplace operational failures  7323ms\n     \u2713 includes Marketplace webhook health in the hourly sweep result  9740ms\n     \u2713 indexes account-owned runs and purges owner-scoped registry data without touching platform configuration  1828ms\nuncaught exception; source = Uncaught (in promise); stack = Error: GitHub Marketplace duplicate has no current entitlement\n    at MaintenanceRegistry.ingestMarketplaceWebhook (/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/src/maintenance-registry.ts:786:27)\n \u2713 test/github-marketplace.test.ts (13 tests) 21094ms\n     \u2713 starts a one-time least-privilege OAuth flow for the purchased plan  475ms\n     \u2713 verifies the active purchase, provisions only an entitlement, and rejects callback replay  3521ms\n     \u2713 keeps development onboarding on the isolated test surface  3838ms\n     \u2713 accepts a signed GitHub ping without creating an entitlement  698ms\n     \u2713 verifies signatures, records purchases idempotently, and grants no repository authority  991ms\n     \u2713 applies every plan transition and keeps entitlement state separate from repository authority  9423ms\n     \u2713 acknowledges but does not apply an out-of-order lifecycle event  614ms\n     \u2713 records missing webhook configuration as an operational failure  629ms\n     \u2713 returns 503 and records a durable failure when Marketplace ingestion is internally inconsistent  399ms\nuncaught exception; source = Uncaught (in promise); stack = Error: verification report targets another sealed handoff\n    at validateVerificationResponse (/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/src/verification-contract.ts:123:11)\n    at RunCoordinator.submitVerificationResponse (/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/src/coordinator.ts:378:11)\n \u2713 test/coordinator.test.ts (10 tests) 22557ms\n     \u2713 rejects a new objective that omits the versioned verification contract  6582ms\n     \u2713 persists a received run without exposing its GitHub token  1316ms\n     \u2713 records operator cancellation  8889ms\n     \u2713 deletes a cancelled run and its sealed credential  340ms\n     \u2713 keeps an uncertain attestation retryable and records it in the event chain  1449ms\n     \u2713 summarizes v2 attestations without exposing verification secrets  679ms\n     \u2713 returns no verifier summary when the persisted attestation is malformed  531ms\n     \u2713 consumes one versioned verification nonce exactly once under concurrent submission  815ms\n     \u2713 persists the implementation action intent and execution checkpoint in one durable transaction  1710ms\n \u2713 test/credential-settings.test.ts (5 tests) 18206ms\n     \u2713 creates a short-lived one-time HTTPS setup flow without exposing a key  9347ms\n     \u2713 verifies, encrypts and connects a user key without returning it  2475ms\n     \u2713 shows consolidated account state and deletes owner-scoped standalone data with exact-login confirmation  3435ms\n     \u2713 resumes safely from a durable interruption between vault and registry purge  2787ms\n \u2713 test/github-app.test.ts (4 tests) 1281ms\n     \u2713 signs with the RSA PRIVATE KEY PEM returned by GitHub manifest conversion  330ms\n     \u2713 rejects an installation token without the requested write permissions  639ms\n \u2713 test/publication.test.ts (8 tests) 78ms\n \u2713 test/github.test.ts (12 tests) 45ms\n \u2713 test/crypto.test.ts (4 tests) 86ms\n \u276f test/account-controls.test.ts (10 tests | 2 failed) 35263ms\n     \u2713 preserves the canonical 20-tool inventory and keeps account tools separate  1702ms\n     \u2713 exposes exactly two account tools with truthful consequence annotations 4ms\n     \u2713 requires resource-bound effective scopes and never accepts execution tokens 2ms\n     \u2713 grants account scopes only to the separate exact resource 0ms\n     \u00d7 inspects only its owner and returns no credential or OAuth token 10347ms\n     \u2713 rejects wrong account confirmation, missing confirmation and read-only scopes before changing data  4878ms\n     \u2713 refuses an active objective, then emits a digest-checked receipt after cancellation and empty readback  2875ms\n     \u2713 does not turn a failed coordinator read into missing data or permit purge  4456ms\n     \u00d7 refuses the capped inventory rather than erasing its index and claiming complete deletion 10021ms\n     \u2713 reports ambiguous completion when deletion settles but final readback fails  939ms\n \u2713 test/openai.test.ts (8 tests) 106ms\n \u2713 test/verification-contract.test.ts (3 tests) 120ms\n \u2713 test/validation.test.ts (7 tests) 36ms\n \u2713 test/credential-vault.test.ts (7 tests) 3941ms\n     \u2713 stores a user credential encrypted and never returns it in status  1092ms\n     \u2713 leases one credential to one run and accounts idempotently  817ms\n     \u2713 will not delete a credential while a run owns its lease  362ms\n     \u2713 rejects cross-identity access to a named vault  717ms\n     \u2713 fails closed when the configured daily run budget is exhausted  532ms\n \u2713 test/account-oauth.test.ts (2 tests) 2992ms\n     \u2713 uses real registration, PKCE, OAuth token admission and owner-bound MCP deletion without repository authority  2948ms\n \u2713 test/deletion-acceptance.test.ts (3 tests) 48ms\n \u2713 test/mcp-auth.test.ts (4 tests) 21ms\n \u2713 test/marketplace-development.test.ts (15 tests) 46ms\n \u2713 test/ga-oauth-page.test.ts (2 tests) 49ms\n \u2713 test/account-deletion.test.ts (3 tests) 8832ms\n     \u2713 refuses active runs, then deletes cancelled runs and fences old admissions  4163ms\n     \u2713 keeps the index and deletion lock on unreadable state, then retries safely  2171ms\n     \u2713 resumes after an objective purge without confusing absence with an ownership failure  2481ms\n \u2713 test/account-presentation.test.ts (2 tests) 15ms\n \u2713 test/github-app-settings.test.ts (2 tests) 455ms\n \u2713 test/mcp-origin.test.ts (7 tests) 75ms\n \u276f test/mcp-limits.test.ts (4 tests | 4 failed) 192ms\n     \u00d7 rejects a body above one MiB on /mcp 103ms\n     \u00d7 rejects excessive tool-input elements before invoking a tool on /mcp 52ms\n     \u00d7 rejects a body above one MiB on /mcp/account/v1 30ms\n     \u00d7 rejects excessive tool-input elements before invoking a tool on /mcp/account/v1 5ms\n \u2713 test/oauth-state.test.ts (3 tests) 396ms\n\n Test Files  2 failed | 27 passed (29)\n      Tests  6 failed | 204 passed (210)\n   Start at  13:05:36\n   Duration  140.70s (transform 125.27s, setup 0ms, import 538.73s, tests 141.89s, environment 26ms)\n\nnpm notice run @donestate/mcp-worker@0.3.0 check\nnpm notice run npm run sandbox:version-check && npm run build && npm test\nnpm notice run @donestate/mcp-worker@0.3.0 sandbox:version-check\nnpm notice run node scripts/check-sandbox-version-sync.mjs\nnpm notice run @donestate/mcp-worker@0.3.0 build\nnpm notice run npm run types && tsc --noEmit\nnpm notice run @donestate/mcp-worker@0.3.0 types\nnpm notice run wrangler types worker-configuration.d.ts\nnpm notice run @donestate/mcp-worker@0.3.0 test\nnpm notice run vitest run\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/index.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/container.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/helpers.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/utils.js\" points to missing source files\nstderr | test/auth.test.ts > OAuth authorisation security policy > describes account controls accurately and requests identity-only GitHub access\n{\"message\":\"DoneState funnel counter did not update\",\"event\":\"oauth_connection_completed\",\"error\":\"Cannot read properties of undefined (reading 'getByName')\"}\n\nstderr | test/auth.test.ts > OAuth authorisation security policy > preserves the sealed legacy resource when the GitHub callback moves to the canonical origin\n{\"message\":\"DoneState funnel counter did not update\",\"event\":\"oauth_connection_completed\",\"error\":\"Cannot read properties of undefined (reading 'getByName')\"}\n\nstderr | test/auth.test.ts > OAuth authorisation security policy > fails closed when the GitHub OAuth client ID is absent\n{\"message\":\"authorization request failed\",\"error\":\"missing Worker secret: GITHUB_CLIENT_ID\"}\n\nstderr | test/github-marketplace.test.ts > GitHub Marketplace purchase webhook > returns 503 and records a durable failure when Marketplace ingestion is internally inconsistent\n{\"message\":\"GitHub Marketplace webhook processing failed\",\"deliveryId\":\"marketplace-orphan-delivery-1\",\"error\":\"GitHub Marketplace duplicate has no current entitlement\"}\n\nstderr | test/github-marketplace.test.ts > GitHub Marketplace purchase webhook > rejects an invalid signature without recording a purchase\n{\"message\":\"GitHub Marketplace webhook signature rejected\",\"event\":\"marketplace_purchase\"}\n\nstderr | test/account-oauth.test.ts > account-controls OAuth HTTP boundary > uses real registration, PKCE, OAuth token admission and owner-bound MCP deletion without repository authority\nOAuth error response: 401 invalid_token - Token audience does not match resource server\n\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 6 \u23af\u23af\u23af\u23af\u23af\u23af\u23af\n\n FAIL  test/account-controls.test.ts > separate authenticated account controls > inspects only its owner and returns no credential or OAuth token\nError: Test timed out in 10000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".\n \u276f test/account-controls.test.ts:79:3\n     77|   });\n     78|\n     79|   it(\"inspects only its owner and returns no credential or OAuth token\u2026\n       |   ^\n     80|     const f = await fixture(\"account-inspection-fixture\");\n     81|     const inspected = await call(\"account-inspection-fixture\", \"inspec\u2026\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af[1/6]\u23af\n\n FAIL  test/account-controls.test.ts > separate authenticated account controls > refuses the capped inventory rather than erasing its index and claiming complete deletion\nError: Test timed out in 10000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".\n \u276f test/account-controls.test.ts:137:3\n    135|   });\n    136|\n    137|   it(\"refuses the capped inventory rather than erasing its index and c\u2026\n       |   ^\n    138|     const login = \"account-cap-fixture\";\n    139|     const registry = env.MAINTENANCE_REGISTRY.getByName(\"global\");\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af[2/6]\u23af\n\n FAIL  test/mcp-limits.test.ts > real MCP SDK input limits > rejects a body above one MiB on /mcp\n FAIL  test/mcp-limits.test.ts > real MCP SDK input limits > rejects a body above one MiB on /mcp/account/v1\nAssertionError: expected 200 to be 413 // Object.is equality\n\n- Expected\n+ Received\n\n- 413\n+ 200\n\n \u276f test/mcp-limits.test.ts:36:31\n     34|         clientInfo: { name: \"x\".repeat(MCP_HTTP_LIMITS.maxRequestBodyS\u2026\n     35|       } });\n     36|       expect(response.status).toBe(413);\n       |                               ^\n     37|     });\n     38|     it(`rejects excessive tool-input elements before invoking a tool o\u2026\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af[3/6]\u23af\n\n FAIL  test/mcp-limits.test.ts > real MCP SDK input limits > rejects excessive tool-input elements before invoking a tool on /mcp\nAssertionError: expected 'event: message\\ndata: {\"result\":{\"con\u2026' to match /exceed|too many|element.*limit/i\n\n- Expected:\n/exceed|too many|element.*limit/i\n\n+ Received:\n\"event: message\ndata: {\\\"result\\\":{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"Invalid arguments for tool get_openai_credential_status: arguments contain more than the maximum of 10000 elements\\\"}],\\\"isError\\\":true},\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":2}\n\n\"\n\n \u276f test/mcp-limits.test.ts:45:20\n     43|       const body = await response.text();\n     44|       expect(body).toContain('\"isError\":true');\n     45|       expect(body).toMatch(/exceed|too many|element.*limit/i);\n       |                    ^\n     46|       expect(body).not.toContain(\"GitHub authentication context is inc\u2026\n     47|     });\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af[4/6]\u23af\n\n FAIL  test/mcp-limits.test.ts > real MCP SDK input limits > rejects excessive tool-input elements before invoking a tool on /mcp/account/v1\nAssertionError: expected 'event: message\\ndata: {\"result\":{\"con\u2026' to match /exceed|too many|element.*limit/i\n\n- Expected:\n/exceed|too many|element.*limit/i\n\n+ Received:\n\"event: message\ndata: {\\\"result\\\":{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"Invalid arguments for tool inspect_account: arguments contain more than the maximum of 10000 elements\\\"}],\\\"isError\\\":true},\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":2}\n\n\"\n\n \u276f test/mcp-limits.test.ts:45:20\n     43|       const body = await response.text();\n     44|       expect(body).toContain('\"isError\":true');\n     45|       expect(body).toMatch(/exceed|too many|element.*limit/i);\n       |                    ^\n     46|       expect(body).not.toContain(\"GitHub authentication context is inc\u2026\n     47|     });\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af[5/6]\u23af\n\n"
+    },
+    {
+      "name": "mcp-limits-targeted-0.txt",
+      "sha256": "daddc61ce6e30340c5b55bb6fb5384441c77c0c67f6b85be0cb044e20eff6c56",
+      "stdout": "npm notice run @donestate/mcp-worker@0.3.0 build\nnpm notice run npm run types && tsc --noEmit\nnpm notice run @donestate/mcp-worker@0.3.0 types\nnpm notice run wrangler types worker-configuration.d.ts\n\n \u26c5\ufe0f wrangler 4.127.1 (update available 4.151.3)\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nGenerating project types...\n\ninterface __BaseEnv_Env {\n\tOAUTH_KV: KVNamespace;\n\tSANDBOX_TRANSPORT: \"rpc\";\n\tUSER_DAILY_RUN_LIMIT: \"12\";\n\tPLATFORM_OWNER_LOGIN: \"AyobamiH\";\n\tCANONICAL_ORIGIN: \"https://donestate.proofandstate.com\";\n\tOPENAI_APPS_CHALLENGE: \"VGfoWKKZx7N8MuzA0jQ0kaKC4A1ofTziFyPLOk0Kn2A\";\n\tOPENAI_REVIEW_PASSWORD_SHA256: \"f29bfd7af82b519a8c6aac3b11acd4be201a43872d4fedf9092481a1dc3f3b01\";\n\tOPSTRUTH_MCP_URL: \"https://mcp.opstruth.io/mcp\";\n\tOPSTRUTH_VERIFIER_FINGERPRINT: \"09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86\";\n\tRUN_COORDINATOR: DurableObjectNamespace<import(\"./src/server\").RunCoordinator>;\n\tCREDENTIAL_VAULT: DurableObjectNamespace<import(\"./src/server\").CredentialVault>;\n\tMAINTENANCE_REGISTRY: DurableObjectNamespace<import(\"./src/server\").MaintenanceRegistry>;\n\tOAUTH_STATE: DurableObjectNamespace<import(\"./src/server\").OAuthStateStore>;\n\tSandbox: DurableObjectNamespace<import(\"./src/server\").Sandbox>;\n}\ndeclare namespace Cloudflare {\n\tinterface GlobalProps {\n\t\tmainModule: typeof import(\"./src/server\");\n\t\tdurableNamespaces: \"RunCoordinator\" | \"Sandbox\" | \"CredentialVault\" | \"MaintenanceRegistry\" | \"OAuthStateStore\";\n\t}\n\tinterface Env extends __BaseEnv_Env {}\n}\ninterface Env extends __BaseEnv_Env {}\ntype StringifyValues<EnvType extends Record<string, unknown>> = {\n\t[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;\n};\ndeclare namespace NodeJS {\n\tinterface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, \"SANDBOX_TRANSPORT\" | \"USER_DAILY_RUN_LIMIT\" | \"PLATFORM_OWNER_LOGIN\" | \"CANONICAL_ORIGIN\" | \"OPENAI_APPS_CHALLENGE\" | \"OPENAI_REVIEW_PASSWORD_SHA256\" | \"OPSTRUTH_MCP_URL\" | \"OPSTRUTH_VERIFIER_FINGERPRINT\">> {}\n}\n\nGenerating runtime types...\n\nRuntime types generated.\n\n\n\u2728 Types written to worker-configuration.d.ts\n\nAction required Install @types/node\nSince your Worker has Node.js compatibility enabled, you should install Node.js types by running \"npm i --save-dev @types/node\".\n\n\ud83d\udcd6 Read about runtime types\nhttps://developers.cloudflare.com/workers/languages/typescript/#generate-types\n\ud83d\udce3 Remember to rerun 'wrangler types' after you change your wrangler.jsonc file.\n\n"
+    },
+    {
+      "name": "mcp-limits-targeted-1.txt",
+      "sha256": "34e733de184b0df99c1ed73397600b088167757d0f2bdd81651642f0da20f2f9",
+      "stdout": "npm notice run @donestate/mcp-worker@0.3.0 test\nnpm notice run vitest run test/mcp-limits.test.ts test/account-controls.test.ts\n\n RUN  v4.1.11 /home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker\n\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/index.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/container.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/helpers.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/utils.js\" points to missing source files\n \u2713 test/mcp-limits.test.ts (6 tests) 169ms\n \u2713 test/account-controls.test.ts (10 tests) 5672ms\n     \u2713 does not turn a failed coordinator read into missing data or permit purge  440ms\n     \u2713 refuses the capped inventory rather than erasing its index and claiming complete deletion  4298ms\n\n Test Files  2 passed (2)\n      Tests  16 passed (16)\n   Start at  13:14:19\n   Duration  17.00s (transform 6.17s, setup 0ms, import 16.66s, tests 5.84s, environment 1ms)\n\n"
+    },
+    {
+      "name": "hosted-security-v2-check-0.txt",
+      "sha256": "9dce414623d65d6cf6bf0390df8d9af83e1888299d498e723f95629e131caf0e",
+      "stdout": "npm notice run @donestate/mcp-worker@0.3.0 check\nnpm notice run npm run sandbox:version-check && npm run build && npm test\nnpm notice run @donestate/mcp-worker@0.3.0 sandbox:version-check\nnpm notice run node scripts/check-sandbox-version-sync.mjs\nCloudflare Sandbox versions aligned at 0.12.9; transport=rpc; instance=basic; memory=1024 MiB\nnpm notice run @donestate/mcp-worker@0.3.0 build\nnpm notice run npm run types && tsc --noEmit\nnpm notice run @donestate/mcp-worker@0.3.0 types\nnpm notice run wrangler types worker-configuration.d.ts\n\n \u26c5\ufe0f wrangler 4.127.1 (update available 4.151.3)\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nGenerating project types...\n\ninterface __BaseEnv_Env {\n\tOAUTH_KV: KVNamespace;\n\tSANDBOX_TRANSPORT: \"rpc\";\n\tUSER_DAILY_RUN_LIMIT: \"12\";\n\tPLATFORM_OWNER_LOGIN: \"AyobamiH\";\n\tCANONICAL_ORIGIN: \"https://donestate.proofandstate.com\";\n\tOPENAI_APPS_CHALLENGE: \"VGfoWKKZx7N8MuzA0jQ0kaKC4A1ofTziFyPLOk0Kn2A\";\n\tOPENAI_REVIEW_PASSWORD_SHA256: \"f29bfd7af82b519a8c6aac3b11acd4be201a43872d4fedf9092481a1dc3f3b01\";\n\tOPSTRUTH_MCP_URL: \"https://mcp.opstruth.io/mcp\";\n\tOPSTRUTH_VERIFIER_FINGERPRINT: \"09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86\";\n\tRUN_COORDINATOR: DurableObjectNamespace<import(\"./src/server\").RunCoordinator>;\n\tCREDENTIAL_VAULT: DurableObjectNamespace<import(\"./src/server\").CredentialVault>;\n\tMAINTENANCE_REGISTRY: DurableObjectNamespace<import(\"./src/server\").MaintenanceRegistry>;\n\tOAUTH_STATE: DurableObjectNamespace<import(\"./src/server\").OAuthStateStore>;\n\tSandbox: DurableObjectNamespace<import(\"./src/server\").Sandbox>;\n}\ndeclare namespace Cloudflare {\n\tinterface GlobalProps {\n\t\tmainModule: typeof import(\"./src/server\");\n\t\tdurableNamespaces: \"RunCoordinator\" | \"Sandbox\" | \"CredentialVault\" | \"MaintenanceRegistry\" | \"OAuthStateStore\";\n\t}\n\tinterface Env extends __BaseEnv_Env {}\n}\ninterface Env extends __BaseEnv_Env {}\ntype StringifyValues<EnvType extends Record<string, unknown>> = {\n\t[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;\n};\ndeclare namespace NodeJS {\n\tinterface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, \"SANDBOX_TRANSPORT\" | \"USER_DAILY_RUN_LIMIT\" | \"PLATFORM_OWNER_LOGIN\" | \"CANONICAL_ORIGIN\" | \"OPENAI_APPS_CHALLENGE\" | \"OPENAI_REVIEW_PASSWORD_SHA256\" | \"OPSTRUTH_MCP_URL\" | \"OPSTRUTH_VERIFIER_FINGERPRINT\">> {}\n}\n\nGenerating runtime types...\n\nRuntime types generated.\n\n\n\u2728 Types written to worker-configuration.d.ts\n\nAction required Install @types/node\nSince your Worker has Node.js compatibility enabled, you should install Node.js types by running \"npm i --save-dev @types/node\".\n\n\ud83d\udcd6 Read about runtime types\nhttps://developers.cloudflare.com/workers/languages/typescript/#generate-types\n\ud83d\udce3 Remember to rerun 'wrangler types' after you change your wrangler.jsonc file.\n\nnpm notice run @donestate/mcp-worker@0.3.0 test\nnpm notice run vitest run\n\n RUN  v4.1.11 /home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker\n\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/index.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/container.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/helpers.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/utils.js\" points to missing source files\nstdout | test/maintenance-registry.test.ts > MaintenanceRegistry > awaits durable queue setup before accepting an eligible issue webhook\n{\"message\":\"maintenance repair queued from issue webhook\",\"repository\":\"owner/webhook-repository\",\"findingId\":\"620e5cbc4f285cffaf3ab1872ad0d2899ae67308a1f0cf168e78ac25f7cf566d\",\"runId\":\"test-run-id\"}\n\n \u2713 test/credential-vault.test.ts (7 tests) 1874ms\n     \u2713 will not delete a credential while a run owns its lease  386ms\n     \u2713 rejects cross-identity access to a named vault  339ms\n \u2713 test/maintenance-registry.test.ts (13 tests) 2253ms\n     \u2713 includes Marketplace webhook health in the hourly sweep result  358ms\n     \u2713 blocks new owner-scoped mutations during deletion and fences stale admissions after rollback  380ms\n     \u2713 indexes account-owned runs and purges owner-scoped registry data without touching platform configuration  392ms\nuncaught exception; source = Uncaught (in promise); stack = Error: verification report targets another sealed handoff\n    at validateVerificationResponse (/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/src/verification-contract.ts:123:11)\n    at RunCoordinator.submitVerificationResponse (/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/src/coordinator.ts:378:11)\nuncaught exception; source = Uncaught (in promise); stack = Error: GitHub Marketplace duplicate has no current entitlement\n    at MaintenanceRegistry.ingestMarketplaceWebhook (/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/src/maintenance-registry.ts:786:27)\nstderr | test/github-marketplace.test.ts > GitHub Marketplace purchase webhook > returns 503 and records a durable failure when Marketplace ingestion is internally inconsistent\n{\"message\":\"GitHub Marketplace webhook processing failed\",\"deliveryId\":\"marketplace-orphan-delivery-1\",\"error\":\"GitHub Marketplace duplicate has no current entitlement\"}\n\nstderr | test/github-marketplace.test.ts > GitHub Marketplace purchase webhook > rejects an invalid signature without recording a purchase\n{\"message\":\"GitHub Marketplace webhook signature rejected\",\"event\":\"marketplace_purchase\"}\n\n \u2713 test/github-marketplace.test.ts (13 tests) 2548ms\n     \u2713 starts a one-time least-privilege OAuth flow for the purchased plan  309ms\n     \u2713 applies every plan transition and keeps entitlement state separate from repository authority  713ms\n \u2713 test/coordinator.test.ts (10 tests) 2800ms\n     \u2713 records operator cancellation  303ms\n     \u2713 deletes a cancelled run and its sealed credential  510ms\n     \u2713 keeps an uncertain attestation retryable and records it in the event chain  496ms\n     \u2713 summarizes v2 attestations without exposing verification secrets  329ms\n \u2713 test/credential-settings.test.ts (5 tests) 4524ms\n     \u2713 creates a short-lived one-time HTTPS setup flow without exposing a key  816ms\n     \u2713 verifies, encrypts and connects a user key without returning it  811ms\n     \u2713 shows consolidated account state and deletes owner-scoped standalone data with exact-login confirmation  788ms\n     \u2713 resumes safely from a durable interruption between vault and registry purge  2094ms\n \u2713 test/account-deletion.test.ts (3 tests) 5989ms\n     \u2713 refuses active runs, then deletes cancelled runs and fences old admissions  2249ms\n     \u2713 keeps the index and deletion lock on unreadable state, then retries safely  1956ms\n     \u2713 resumes after an objective purge without confusing absence with an ownership failure  1773ms\n \u2713 test/github-app.test.ts (4 tests) 697ms\n \u2713 test/opstruth.test.ts (8 tests) 183ms\n \u276f test/account-controls.test.ts (10 tests | 1 failed) 15216ms\n     \u2713 preserves the canonical 20-tool inventory and keeps account tools separate  343ms\n     \u2713 exposes exactly two account tools with truthful consequence annotations 10ms\n     \u2713 requires resource-bound effective scopes and never accepts execution tokens 2ms\n     \u2713 grants account scopes only to the separate exact resource 1ms\n     \u2713 inspects only its owner and returns no credential or OAuth token  763ms\n     \u2713 rejects wrong account confirmation, missing confirmation and read-only scopes before changing data  336ms\n     \u2713 refuses an active objective, then emits a digest-checked receipt after cancellation and empty readback  1262ms\n     \u2713 does not turn a failed coordinator read into missing data or permit purge  1997ms\n     \u00d7 refuses the capped inventory rather than erasing its index and claiming complete deletion 10031ms\n     \u2713 reports ambiguous completion when deletion settles but final readback fails  462ms\n \u2713 test/private-clone.test.ts (8 tests) 123ms\nstderr | test/auth.test.ts > OAuth authorisation security policy > describes account controls accurately and requests identity-only GitHub access\n{\"message\":\"DoneState funnel counter did not update\",\"event\":\"oauth_connection_completed\",\"error\":\"Cannot read properties of undefined (reading 'getByName')\"}\n\nstderr | test/auth.test.ts > OAuth authorisation security policy > preserves the sealed legacy resource when the GitHub callback moves to the canonical origin\n{\"message\":\"DoneState funnel counter did not update\",\"event\":\"oauth_connection_completed\",\"error\":\"Cannot read properties of undefined (reading 'getByName')\"}\n\nstderr | test/auth.test.ts > OAuth authorisation security policy > fails closed when the GitHub OAuth client ID is absent\n{\"message\":\"authorization request failed\",\"error\":\"missing Worker secret: GITHUB_CLIENT_ID\"}\n\n \u2713 test/auth.test.ts (23 tests) 146ms\nstderr | test/account-oauth.test.ts > account-controls OAuth HTTP boundary > uses real registration, PKCE, OAuth token admission and owner-bound MCP deletion without repository authority\nOAuth error response: 401 invalid_token - Token audience does not match resource server\n\n \u2713 test/account-oauth.test.ts (2 tests) 1654ms\n     \u2713 uses real registration, PKCE, OAuth token admission and owner-bound MCP deletion without repository authority  1634ms\n \u2713 test/verification-contract.test.ts (3 tests) 28ms\n \u2713 test/github-app-settings.test.ts (2 tests) 1175ms\n     \u2713 keeps redirect_url queryless and sends state on the GitHub form action  1047ms\n \u2713 test/oauth-state.test.ts (3 tests) 2118ms\n     \u2713 atomically validates, approves and consumes one authorization  567ms\n     \u2713 keeps simultaneous authorization transactions isolated  1184ms\n     \u2713 fails closed after the ten-minute transaction record expires  353ms\n \u2713 test/openai.test.ts (8 tests) 94ms\n \u2713 test/crypto.test.ts (4 tests) 81ms\n \u2713 test/publication.test.ts (8 tests) 69ms\n \u2713 test/ga-oauth-page.test.ts (2 tests) 5ms\n \u2713 test/mcp-limits.test.ts (8 tests) 149ms\n \u2713 test/deletion-acceptance.test.ts (3 tests) 11ms\n \u2713 test/implementation-failure.test.ts (7 tests) 26ms\n \u2713 test/mcp-origin.test.ts (7 tests) 91ms\n \u2713 test/account-presentation.test.ts (2 tests) 21ms\n \u2713 test/github.test.ts (12 tests) 62ms\n \u2713 test/marketplace-development.test.ts (15 tests) 47ms\n \u2713 test/mcp-auth.test.ts (4 tests) 36ms\n \u2713 test/validation.test.ts (7 tests) 52ms\n \u2713 test/executor.test.ts (13 tests) 13ms\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 1 \u23af\u23af\u23af\u23af\u23af\u23af\u23af\n\n FAIL  test/account-controls.test.ts > separate authenticated account controls > refuses the capped inventory rather than erasing its index and claiming complete deletion\nError: Test timed out in 10000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".\n \u276f test/account-controls.test.ts:137:3\n    135|   });\n    136|\n    137|   it(\"refuses the capped inventory rather than erasing its index and c\u2026\n       |   ^\n    138|     const login = \"account-cap-fixture\";\n    139|     const registry = env.MAINTENANCE_REGISTRY.getByName(\"global\");\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af[1/1]\u23af\n\n\n Test Files  1 failed | 28 passed (29)\n      Tests  1 failed | 213 passed (214)\n   Start at  13:15:30\n   Duration  74.77s (transform 42.24s, setup 0ms, import 302.18s, tests 42.09s, environment 23ms)\n\n"
+    },
+    {
+      "name": "hosted-security-v3-check-0.txt",
+      "sha256": "e920beb58ca9f04636bd28796741d1c86b9d38b6eec854fe993fe7b2807026e8",
+      "stdout": "npm notice run @donestate/mcp-worker@0.3.0 check\nnpm notice run npm run sandbox:version-check && npm run build && npm test\nnpm notice run @donestate/mcp-worker@0.3.0 sandbox:version-check\nnpm notice run node scripts/check-sandbox-version-sync.mjs\nCloudflare Sandbox versions aligned at 0.12.9; transport=rpc; instance=basic; memory=1024 MiB\nnpm notice run @donestate/mcp-worker@0.3.0 build\nnpm notice run npm run types && tsc --noEmit\nnpm notice run @donestate/mcp-worker@0.3.0 types\nnpm notice run wrangler types worker-configuration.d.ts\n\n \u26c5\ufe0f wrangler 4.127.1 (update available 4.151.3)\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nGenerating project types...\n\ninterface __BaseEnv_Env {\n\tOAUTH_KV: KVNamespace;\n\tSANDBOX_TRANSPORT: \"rpc\";\n\tUSER_DAILY_RUN_LIMIT: \"12\";\n\tPLATFORM_OWNER_LOGIN: \"AyobamiH\";\n\tCANONICAL_ORIGIN: \"https://donestate.proofandstate.com\";\n\tOPENAI_APPS_CHALLENGE: \"VGfoWKKZx7N8MuzA0jQ0kaKC4A1ofTziFyPLOk0Kn2A\";\n\tOPENAI_REVIEW_PASSWORD_SHA256: \"f29bfd7af82b519a8c6aac3b11acd4be201a43872d4fedf9092481a1dc3f3b01\";\n\tOPSTRUTH_MCP_URL: \"https://mcp.opstruth.io/mcp\";\n\tOPSTRUTH_VERIFIER_FINGERPRINT: \"09544c3ede70b832a114918bb439960004655faf9d36981e1402587af9429c86\";\n\tRUN_COORDINATOR: DurableObjectNamespace<import(\"./src/server\").RunCoordinator>;\n\tCREDENTIAL_VAULT: DurableObjectNamespace<import(\"./src/server\").CredentialVault>;\n\tMAINTENANCE_REGISTRY: DurableObjectNamespace<import(\"./src/server\").MaintenanceRegistry>;\n\tOAUTH_STATE: DurableObjectNamespace<import(\"./src/server\").OAuthStateStore>;\n\tSandbox: DurableObjectNamespace<import(\"./src/server\").Sandbox>;\n}\ndeclare namespace Cloudflare {\n\tinterface GlobalProps {\n\t\tmainModule: typeof import(\"./src/server\");\n\t\tdurableNamespaces: \"RunCoordinator\" | \"Sandbox\" | \"CredentialVault\" | \"MaintenanceRegistry\" | \"OAuthStateStore\";\n\t}\n\tinterface Env extends __BaseEnv_Env {}\n}\ninterface Env extends __BaseEnv_Env {}\ntype StringifyValues<EnvType extends Record<string, unknown>> = {\n\t[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;\n};\ndeclare namespace NodeJS {\n\tinterface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, \"SANDBOX_TRANSPORT\" | \"USER_DAILY_RUN_LIMIT\" | \"PLATFORM_OWNER_LOGIN\" | \"CANONICAL_ORIGIN\" | \"OPENAI_APPS_CHALLENGE\" | \"OPENAI_REVIEW_PASSWORD_SHA256\" | \"OPSTRUTH_MCP_URL\" | \"OPSTRUTH_VERIFIER_FINGERPRINT\">> {}\n}\n\nGenerating runtime types...\n\nRuntime types generated.\n\n\n\u2728 Types written to worker-configuration.d.ts\n\nAction required Install @types/node\nSince your Worker has Node.js compatibility enabled, you should install Node.js types by running \"npm i --save-dev @types/node\".\n\n\ud83d\udcd6 Read about runtime types\nhttps://developers.cloudflare.com/workers/languages/typescript/#generate-types\n\ud83d\udce3 Remember to rerun 'wrangler types' after you change your wrangler.jsonc file.\n\nnpm notice run @donestate/mcp-worker@0.3.0 test\nnpm notice run vitest run\n\n RUN  v4.1.11 /home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker\n\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/index.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/container.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/helpers.js\" points to missing source files\nSourcemap for \"/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/node_modules/@cloudflare/containers/dist/lib/utils.js\" points to missing source files\n \u2713 test/oauth-state.test.ts (3 tests) 1282ms\n     \u2713 atomically validates, approves and consumes one authorization  421ms\n     \u2713 keeps simultaneous authorization transactions isolated  509ms\n     \u2713 fails closed after the ten-minute transaction record expires  332ms\nstdout | test/maintenance-registry.test.ts > MaintenanceRegistry > awaits durable queue setup before accepting an eligible issue webhook\n{\"message\":\"maintenance repair queued from issue webhook\",\"repository\":\"owner/webhook-repository\",\"findingId\":\"620e5cbc4f285cffaf3ab1872ad0d2899ae67308a1f0cf168e78ac25f7cf566d\",\"runId\":\"test-run-id\"}\n\n \u2713 test/maintenance-registry.test.ts (13 tests) 2203ms\n     \u2713 indexes account-owned runs and purges owner-scoped registry data without touching platform configuration  630ms\nuncaught exception; source = Uncaught (in promise); stack = Error: GitHub Marketplace duplicate has no current entitlement\n    at MaintenanceRegistry.ingestMarketplaceWebhook (/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/src/maintenance-registry.ts:786:27)\nstderr | test/github-marketplace.test.ts > GitHub Marketplace purchase webhook > returns 503 and records a durable failure when Marketplace ingestion is internally inconsistent\n{\"message\":\"GitHub Marketplace webhook processing failed\",\"deliveryId\":\"marketplace-orphan-delivery-1\",\"error\":\"GitHub Marketplace duplicate has no current entitlement\"}\n\nstderr | test/github-marketplace.test.ts > GitHub Marketplace purchase webhook > rejects an invalid signature without recording a purchase\n{\"message\":\"GitHub Marketplace webhook signature rejected\",\"event\":\"marketplace_purchase\"}\n\n \u2713 test/github-marketplace.test.ts (13 tests) 2692ms\n     \u2713 applies every plan transition and keeps entitlement state separate from repository authority  735ms\n     \u2713 acknowledges but does not apply an out-of-order lifecycle event  608ms\n     \u2713 returns 503 and records a durable failure when Marketplace ingestion is internally inconsistent  366ms\nuncaught exception; source = Uncaught (in promise); stack = Error: verification report targets another sealed handoff\n    at validateVerificationResponse (/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/src/verification-contract.ts:123:11)\n    at RunCoordinator.submitVerificationResponse (/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/src/coordinator.ts:378:11)\n \u2713 test/coordinator.test.ts (10 tests) 8017ms\n     \u2713 keeps an uncertain attestation retryable and records it in the event chain  456ms\n     \u2713 summarizes v2 attestations without exposing verification secrets  626ms\n     \u2713 returns no verifier summary when the persisted attestation is malformed  402ms\n     \u2713 consumes one versioned verification nonce exactly once under concurrent submission  608ms\n     \u2713 persists the implementation action intent and execution checkpoint in one durable transaction  4901ms\n \u2713 test/credential-settings.test.ts (5 tests) 10853ms\n     \u2713 creates a short-lived one-time HTTPS setup flow without exposing a key  687ms\n     \u2713 verifies, encrypts and connects a user key without returning it  1282ms\n     \u2713 shows consolidated account state and deletes owner-scoped standalone data with exact-login confirmation  2774ms\n     \u2713 resumes safely from a durable interruption between vault and registry purge  6100ms\n \u2713 test/account-deletion.test.ts (3 tests) 11342ms\n     \u2713 refuses active runs, then deletes cancelled runs and fences old admissions  2173ms\n     \u2713 keeps the index and deletion lock on unreadable state, then retries safely  5721ms\n     \u2713 resumes after an objective purge without confusing absence with an ownership failure  3435ms\n \u2713 test/account-controls.test.ts (10 tests) 12007ms\n     \u2713 inspects only its owner and returns no credential or OAuth token  653ms\n     \u2713 rejects wrong account confirmation, missing confirmation and read-only scopes before changing data  405ms\n     \u2713 refuses an active objective, then emits a digest-checked receipt after cancellation and empty readback  2733ms\n     \u2713 does not turn a failed coordinator read into missing data or permit purge  6875ms\n     \u2713 refuses the capped inventory rather than erasing its index and claiming complete deletion  490ms\n     \u2713 reports ambiguous completion when deletion settles but final readback fails  628ms\n \u2713 test/github-app.test.ts (4 tests) 675ms\n     \u2713 rejects an installation token without the requested write permissions  377ms\n \u2713 test/opstruth.test.ts (8 tests) 162ms\nstderr | test/auth.test.ts > OAuth authorisation security policy > describes account controls accurately and requests identity-only GitHub access\n{\"message\":\"DoneState funnel counter did not update\",\"event\":\"oauth_connection_completed\",\"error\":\"Cannot read properties of undefined (reading 'getByName')\"}\n\nstderr | test/auth.test.ts > OAuth authorisation security policy > preserves the sealed legacy resource when the GitHub callback moves to the canonical origin\n{\"message\":\"DoneState funnel counter did not update\",\"event\":\"oauth_connection_completed\",\"error\":\"Cannot read properties of undefined (reading 'getByName')\"}\n\nstderr | test/auth.test.ts > OAuth authorisation security policy > fails closed when the GitHub OAuth client ID is absent\n{\"message\":\"authorization request failed\",\"error\":\"missing Worker secret: GITHUB_CLIENT_ID\"}\n\n \u2713 test/auth.test.ts (23 tests) 121ms\n \u2713 test/openai.test.ts (8 tests) 19ms\n \u2713 test/github-app-settings.test.ts (2 tests) 298ms\nstderr | test/account-oauth.test.ts > account-controls OAuth HTTP boundary > uses real registration, PKCE, OAuth token admission and owner-bound MCP deletion without repository authority\nOAuth error response: 401 invalid_token - Token audience does not match resource server\n\n \u2713 test/crypto.test.ts (4 tests) 16ms\n \u2713 test/account-oauth.test.ts (2 tests) 884ms\n     \u2713 uses real registration, PKCE, OAuth token admission and owner-bound MCP deletion without repository authority  871ms\n \u2713 test/credential-vault.test.ts (7 tests) 2229ms\n     \u2713 leases one credential to one run and accounts idempotently  538ms\n     \u2713 rejects cross-identity access to a named vault  546ms\n     \u2713 keeps status read-only, then binds the vault when a setup ticket is created  302ms\n \u2713 test/mcp-limits.test.ts (8 tests) 271ms\n \u2713 test/private-clone.test.ts (8 tests) 51ms\n \u2713 test/publication.test.ts (8 tests) 58ms\n \u2713 test/validation.test.ts (7 tests) 14ms\n \u2713 test/github.test.ts (12 tests) 36ms\n \u2713 test/marketplace-development.test.ts (15 tests) 16ms\n \u2713 test/mcp-auth.test.ts (4 tests) 14ms\n \u2713 test/verification-contract.test.ts (3 tests) 30ms\n \u2713 test/mcp-origin.test.ts (7 tests) 87ms\n \u2713 test/account-presentation.test.ts (2 tests) 12ms\n \u2713 test/deletion-acceptance.test.ts (3 tests) 22ms\n \u2713 test/executor.test.ts (13 tests) 43ms\n \u2713 test/ga-oauth-page.test.ts (2 tests) 11ms\n \u2713 test/implementation-failure.test.ts (7 tests) 38ms\n\n Test Files  29 passed (29)\n      Tests  214 passed (214)\n   Start at  13:18:25\n   Duration  65.41s (transform 61.09s, setup 0ms, import 220.69s, tests 53.50s, environment 23ms)\n\n"
+    },
+    {
+      "name": "hosted-security-v3-check-1.txt",
+      "sha256": "d49c52040e1ea556214e240d533163a8ff38278ff53e7ccc69921faaf724325c",
+      "stdout": "{\n  \"auditReportVersion\": 2,\n  \"vulnerabilities\": {},\n  \"metadata\": {\n    \"vulnerabilities\": {\n      \"info\": 0,\n      \"low\": 0,\n      \"moderate\": 0,\n      \"high\": 0,\n      \"critical\": 0,\n      \"total\": 0\n    },\n    \"dependencies\": {\n      \"prod\": 69,\n      \"dev\": 151,\n      \"optional\": 143,\n      \"peer\": 111,\n      \"peerOptional\": 0,\n      \"total\": 383\n    }\n  }\n}\n"
+    },
+    {
+      "name": "hosted-security-v3-check-2.txt",
+      "sha256": "e1cf557a2f53f2379bf956459900d1138979a13080e7c1052fba5081f881acd1",
+      "stdout": "npm notice run @donestate/mcp-worker@0.3.0 deploy:check\nnpm notice run wrangler deploy --dry-run\n\n \u26c5\ufe0f wrangler 4.127.1 (update available 4.151.3)\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\nCloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md\nTotal Upload: 2118.33 KiB / gzip: 412.82 KiB\nBuilding image donestate-mcp-sandbox:worker\n#0 building with \"default\" instance using docker driver\n\n#1 [internal] load build definition from Dockerfile\n#1 transferring dockerfile: 496B 0.0s done\n#1 DONE 0.1s\n\n#2 [internal] load metadata for docker.io/cloudflare/sandbox:0.12.9\n#2 DONE 1.4s\n\n#3 [internal] load .dockerignore\n#3 transferring context: 2B done\n#3 DONE 0.0s\n\n#4 [1/3] FROM docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe\n#4 DONE 0.0s\n\n#5 [2/3] RUN npm install --global n@10.2.0     && n \"22.14.0\"     && test \"$(/usr/local/bin/node --version)\" = \"v22.14.0\"     && /usr/local/bin/npm install --global @openai/codex@0.150.1\n#5 CACHED\n\n#6 [3/3] RUN node -e \"require('node:sqlite')\"     && codex --version     && codex --ask-for-approval never --config 'shell_environment_policy.inherit=\"core\"' exec --help >/dev/null\n#6 CACHED\n\n#7 exporting to image\n#7 exporting layers done\n#7 writing image sha256:64008f255195b6a4662ec6a9de0558eec4fd2339a593fbc195ec632c6c6d350f 0.0s done\n#7 naming to docker.io/library/donestate-mcp-sandbox:worker done\n#7 DONE 0.1s\nYour Worker has access to the following bindings:\nBinding                                                                             Resource                  \nenv.RUN_COORDINATOR (RunCoordinator)                                                Durable Object            \nenv.CREDENTIAL_VAULT (CredentialVault)                                              Durable Object            \nenv.MAINTENANCE_REGISTRY (MaintenanceRegistry)                                      Durable Object            \nenv.OAUTH_STATE (OAuthStateStore)                                                   Durable Object            \nenv.Sandbox (Sandbox)                                                               Durable Object            \nenv.OAUTH_KV                                                                        KV Namespace              \nenv.SANDBOX_TRANSPORT (\"rpc\")                                                       Environment Variable      \nenv.USER_DAILY_RUN_LIMIT (\"12\")                                                     Environment Variable      \nenv.PLATFORM_OWNER_LOGIN (\"AyobamiH\")                                               Environment Variable      \nenv.CANONICAL_ORIGIN (\"https://donestate.proofandstate.com\")                        Environment Variable      \nenv.OPENAI_APPS_CHALLENGE (\"VGfoWKKZx7N8MuzA0jQ0kaKC4A1ofTziFyPLO...\")              Environment Variable      \nenv.OPENAI_REVIEW_PASSWORD_SHA256 (\"f29bfd7af82b519a8c6aac3b11acd4be201a4...\")      Environment Variable      \nenv.OPSTRUTH_MCP_URL (\"https://mcp.opstruth.io/mcp\")                                Environment Variable      \nenv.OPSTRUTH_VERIFIER_FINGERPRINT (\"09544c3ede70b832a114918bb439960004655...\")      Environment Variable      \n\nThe following containers are available:\n- donestate-mcp-sandbox (/home/johnh/donestate-native-ci-final-20261021/apps/mcp-worker/Dockerfile)\n\n--dry-run: exiting now.\n"
+    }
+  ],
+  "interpretation": {
+    "capacity": "Actual Account Read entitlement GET succeeded. One concurrent build and 100 custom domains match the published Free tier; remaining monthly builds are not exposed. Each explicit build used fixed-plan-quota inference, maxNewBuilds=1, no upgrade, overage or Functions. This is not a measured remaining-quota balance.",
+    "agentproof": "Four Linux manifest jobs passed at 1f9053b7748a9edb6b5ff4e436f39c355dfe60f2; native App 85455 check and exact-head Codex source review observed. Real macOS remains required separately.",
+    "opstruth": "All three manifest jobs passed at 5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f; native App 85455 check and exact-head Codex source review observed.",
+    "donestate": "At 24d2df462f8b1f7180b6d6e9ff612dd0b0cb43a2, core Node 22/24 jobs passed; hosted-plugin npm audit stopped on existing dependency advisories. No successful native acceptance is claimed for the new dependency source.",
+    "transport": "Real-SDK tests caught that Agents 0.29 omits maxRequestBodySize from its legacy compatibility path. A bounded reader now enforces one MiB before either protocol path. Both independent MCP resources set maxToolInputElements=10000. Account authentication and Sandbox 0.12.9 remain unchanged.",
+    "localFailure": "The first full local run retained two account-control timeouts, two correct input-count rejections with mismatched test wording, and two actual body-limit failures. The second full run passed 213/214 tests, with only the 201-record inventory setup timing out. That fixture now seeds through the same real registry method inside one Durable Object call, preserving all records and assertions. Full checks were rerun; no timeout threshold was widened.",
+    "receiptRetention": "The administrator validated successful hosted receipt bodies and retained hashes and summaries. A secondary OpsTruth raw-receipt download returned HTTP 403; no bypass or claim of retained full raw receipt.",
+    "limits": "Source review, CI success, required-check policy, merge, deployment and live independent release acceptance are distinct. Audit zero is the registry result at observation time, not a claim that all vulnerabilities are impossible."
+  },
+  "advisories": [
+    "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-46jr-4wx8-v453",
+    "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-22jm-h49p-29qw",
+    "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-rvq5-wwqv-78pq",
+    "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-jm63-cq47-j5jp",
+    "https://github.com/advisories/GHSA-5r4p-p66f-jhc7",
+    "https://github.com/advisories/GHSA-698v-4r3x-3vcv",
+    "https://github.com/cloudflare/agents/releases/tag/agents@0.29.0"
+  ],
+  "actions": {
+    "cloudflareBuildRequests": 3,
+    "automaticBuildsEnabled": false,
+    "requiredChecksChanged": false,
+    "merges": 0,
+    "recoveryDeployments": 0,
+    "publicationRequests": 0,
+    "newSigningKeys": 0
+  },
+  "remainingGates": [
+    "Exact-final-head DoneState native CI and Codex source review",
+    "Reviewed equivalent required-check provider transition",
+    "Real required AgentProof macOS validation",
+    "Protected coordinated merges and fresh patch parity",
+    "Original-run readback-only recovery, actual signed receipt, independent verdict and durable settlement",
+    "Fresh disabled-service closure and canonical acceptance evidence"
+  ]
+}

@@ -24,7 +24,7 @@ function fixture(binding = {}) {
         verifiedAt: new Date(now - 12_000).toISOString(), issuedAt: new Date(now - 10_000).toISOString(),
         observedAt: new Date(now - 2000).toISOString() };
     const transactionId = binding.transactionId ?? randomUUID(), runId = binding.runId ?? randomUUID(), nonce = binding.nonce ?? "release-nonce-" + randomUUID(), idempotencyKey = binding.idempotencyKey ?? "release-idem-" + randomUUID();
-    const subject = { schema: "agentproof.release.subject.v1", provider: "github", owner: "AyobamiH",
+    const subject = binding.subject ?? { schema: "agentproof.release.subject.v1", provider: "github", owner: "AyobamiH",
         repository: "agentproof-release-canary", ownerId: 47716486, repositoryId: 1423718326, releaseId: 303,
         tagName: "v0.0.0-rc.2026101801", tagCommit: "a".repeat(40),
         packageAssetId: 404, packageAssetName: "artifact.tgz", packageDigest: "sha256:" + "b".repeat(64),

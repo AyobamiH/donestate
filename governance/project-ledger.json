@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "DoneState",
-  "updatedAt": "2026-10-18",
+  "updatedAt": "2026-10-20",
   "governanceRule": "Every consequential project event must update this ledger in the same change. Work is complete only when exact evidence is recorded; otherwise it remains active, blocked, planned, or deferred with an owner and re-entry condition.",
   "recoveryOrder": [
     {
@@ -287,10 +287,10 @@
       "stream": "marketplace",
       "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Continue exercising changed, pending_change, and pending_change_cancelled through the owner-only draft listing and capture non-personal receipts without touching production listing state.",
-      "waitCondition": "Marketplace development remains a parallel distribution-validation lane; it is not a prerequisite for owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October bounded review of E-011 and docs/GITHUB-MARKETPLACE-DEVELOPMENT.md found retained cancellation evidence, with changed, pending_change and pending_change_cancelled still unproven in the inspected records. No new authenticated provider readback was performed. This isolated development lane remains separate from owned-domain launch.",
       "reentryCondition": "Continue through authenticated development-listing controls while keeping the draft isolated from production.",
       "dependencies": [
         "GOV-002"
@@ -301,7 +301,8 @@
         "E-009",
         "E-010",
         "E-011",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -448,10 +449,10 @@
       "stream": "verification",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Build and validate the exact installable OpenAI/plugin archive before the next directory release, including manifests, skills, secret scan, digest and CI.",
-      "waitCondition": "This is required for the OpenAI distribution channel but is not a prerequisite for the owned-domain standalone launch. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October review found no accepted archive for the next submission. distribution/current-release-candidate.json is older channel evidence; PR #200 is an auth repair and does not verify a new installable archive. Preserve the planned archive gate before resubmission.",
       "reentryCondition": "Begin when the next OpenAI directory submission or resubmission requires a new archive.",
       "dependencies": [
         "MKT-001",
@@ -459,7 +460,8 @@
         "MKT-003"
       ],
       "evidenceIds": [
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -543,13 +545,13 @@
       "id": "AGENTPROOF-001",
       "title": "Complete AgentProof consequence-receipt integration",
       "stream": "verification",
-      "status": "active",
+      "status": "blocked",
       "owner": "DoneState and AgentProof maintainers",
-      "lastUpdated": "2026-10-18",
+      "lastUpdated": "2026-10-21",
       "staleDate": "2026-10-24",
-      "nextAction": "Review and merge the header/reservation and bounded recovery changes, update the protected canary source pins, reverify current-main patch acceptance, then perform one publication of the existing exact draft through the permanent fence.",
-      "waitCondition": "Release 416342082 remains a draft; original DoneState run 12741172-631f-47b4-88c2-a63eeb1f9574 is AUTHORISED only. All temporary release authority is being disabled during repair.",
-      "reentryCondition": "Use exact protected source and source-pinned canary identities. Preserve five distinct signing roles, permanent target fences, existing production runtimes and historical evidence. A receipt alone must remain awaiting independent verification. Never reset a claim or repeat an ambiguous publication.",
+      "nextAction": "Publish and independently validate the exact DoneState dependency-fix head through one fresh-capacity-checked explicit native build and Codex review. Review an equivalent trusted-provider policy transition while preserving real macOS coverage. After all exact-head required checks and reviews pass, perform normal protected coordinated merges, revalidate patch parity, and execute only the original readback-only recovery through signed receipt, independent verdict and durable settlement.",
+      "waitCondition": "OpsTruth and AgentProof exact-head Cloudflare native Linux builds and source reviews passed. DoneState core Node 22/24 jobs passed, but its hosted-plugin audit failed on existing dependency advisories. The compatible dependency updates and explicit MCP body/input limits pass local full checks, audit and dry run; their final native build and source review remain pending. Required-check provider policy is unchanged. Real AgentProof macOS execution remains blocked by the observed GitHub billing refusal. No merge, recovery deployment or new publication has occurred.",
+      "reentryCondition": "Exact-final-head DoneState native CI and source review, reviewed equivalent provider policy and genuine separate macOS coverage permit protected merges and the original readback-only release recovery.",
       "dependencies": [
         "VERIFY-004"
       ],
@@ -560,7 +562,16 @@
         "E-128",
         "E-129",
         "E-130",
-        "E-132"
+        "E-132",
+        "E-133",
+        "E-134",
+        "E-135",
+        "E-137",
+        "E-138",
+        "E-139",
+        "E-141",
+        "E-142",
+        "E-143"
       ]
     },
     {
@@ -633,10 +644,10 @@
       "stream": "marketplace",
       "status": "deferred",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Choose flat-rate Pro, per-seat organisation, trial, or continued free access from observed usage and cost.",
-      "waitCondition": "Keep the free public-repository plan while the listing remains pending and activation evidence is absent. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October review retained E-013 as historical 1 September unpublished/owner-preview evidence; current provider state was not re-observed. No new usage/cost, paid-plan decision or eligibility evidence was found in the inspected records. Paid-plan work remains deferred.",
       "reentryCondition": "Resume after publication, real usage, organisation ownership, publisher eligibility, and the applicable user threshold.",
       "dependencies": [
         "GTM-001"
@@ -644,7 +655,8 @@
       "evidenceIds": [
         "E-001",
         "E-013",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -653,10 +665,10 @@
       "stream": "marketplace",
       "status": "deferred",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Review Marketplace Insights, transactions, cancellations, support incidents, and entitlement reconciliation after publication without treating preview display counts as activation.",
-      "waitCondition": "The submission is Pending for publish and explicitly unpublished; the owner preview's displayed count of 1 is not public install or transaction evidence. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October review retained the distinction between E-013 owner-preview count and E-011 isolated development cancellation. Neither establishes a production transaction. No new provider transaction readback was performed; production listing/transaction review remains deferred.",
       "reentryCondition": "Resume when GitHub reports publication or the first real production transaction appears.",
       "dependencies": [
         "MKT-004"
@@ -664,7 +676,8 @@
       "evidenceIds": [
         "E-001",
         "E-013",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -731,15 +744,17 @@
       "stream": "execution-engine",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-20",
+      "lastUpdated": "2026-10-21",
+      "staleDate": "2026-10-28",
       "nextAction": "Define adapters that preserve deterministic authority and evidence ownership.",
       "waitCondition": "Core review and verification gaps take priority.",
       "reentryCondition": "Begin after VERIFY-004 and release gates are ready.",
       "dependencies": [
         "VERIFY-004"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-140"
+      ]
     },
     {
       "id": "ENGINE-003",
@@ -747,8 +762,8 @@
       "stream": "execution-engine",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-20",
+      "lastUpdated": "2026-10-21",
+      "staleDate": "2026-10-28",
       "nextAction": "Implement deduplication, repository leases, admission backpressure, priority lanes, then broader drift reconciliation.",
       "waitCondition": "Single-repository customer and verifier loops must be proven first.",
       "reentryCondition": "Begin after GTM-001 and VERIFY-004.",
@@ -756,7 +771,9 @@
         "GTM-001",
         "VERIFY-004"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-140"
+      ]
     },
     {
       "id": "VERIFY-005",
@@ -831,18 +848,19 @@
       "stream": "distribution",
       "status": "active",
       "owner": "Publisher owner",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
-      "nextAction": "Deploy the corrected cancellation annotation and accurate account-console link description, complete the owned-website privacy correction, rescan the canonical 0.3.2 draft and distinguish correctable findings from provider-required review before resubmission.",
-      "waitCondition": "The old publisher entry was deleted with explicit owner authority. The replacement 0.3.1 submission was withdrawn with owner approval to correct GitHub-facing links; 0.3.2 is currently a draft with reviewer information retained. Website privacy and MCP findings remain under correction; no approval or publication is claimed. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
-      "reentryCondition": "Advance on exact-head CI and production deployment, then record fresh publisher scan evidence and any explicit owner submission confirmation.",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
+      "nextAction": "Continue the separately owned reviewer sign-in repair in PR #200 through exact-head checks and authorised deployment. Before resubmission, record a fresh positive reviewer login using the privately configured review credentials, code exchange, read-only MCP access and token revocation; record the actual provider decision separately.",
+      "waitCondition": "20 October read-only inspection of PR #200 head 7eb6c06257faf83934527e6129b2da8b8d0fec44 records a reported 19 October v1.0.0 sign-in/OAuth rejection and an open reviewer-login repair. Discovery/consent and negative-login probe evidence is not positive reviewer-login proof. Provider email/portal was not independently inspected here. No merge, deployment, resubmission or approval is established by this review.",
+      "reentryCondition": "Resume from the actual current PR #200 head and its reviewer-access runbook. Preserve its authentication scope, private credentials and independent review; do not treat a reachable consent page or negative-password rejection as successful sign-in or permission to resubmit.",
       "dependencies": [],
       "evidenceIds": [
         "E-005",
         "E-040",
         "E-041",
         "E-061",
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -867,16 +885,17 @@
       "stream": "ecosystem",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-10-17",
-      "staleDate": "2026-10-18",
+      "lastUpdated": "2026-10-20",
+      "staleDate": "2026-10-23",
       "nextAction": "Select stable product-agnostic instructions, remove transient evidence, and open a tracked ai-prompts PR.",
-      "waitCondition": "No matching branch or PR exists in AyobamiH/ai-prompts. Administrative ledger triage on 17 October: no new provider/account/review outcome verified in this AgentProof-focused work. Preserve this status and recheck from the authoritative external source at the next review; this date update is not closure.",
+      "waitCondition": "20 October dependency review found VERIFY-003 still planned with no accepted new archive. The inspected ledger has no extraction PR receipt; no fresh ai-prompts inventory was inspected. Begin extraction after the archive gate and record the actual PR when one exists.",
       "reentryCondition": "Begin after VERIFY-003.",
       "dependencies": [
         "VERIFY-003"
       ],
       "evidenceIds": [
-        "E-126"
+        "E-126",
+        "E-136"
       ]
     },
     {
@@ -2882,6 +2901,229 @@
       "outcome": "Recovery candidate only; previous failure and authorisation remain preserved. No effect retry or terminal VERIFIED claim.",
       "content": "User-Agent compliance, signed durable reservation, strictly configured authorisation recovery, negative tests and retained failed workflow.",
       "measurement": "Published release effects 0; real OpsTruth decisions 0; real DoneState VERIFIED 0; qualified external installations 0."
+    },
+    {
+      "id": "E-133",
+      "date": "2026-10-18",
+      "identity": "Accepted recovery sources, current-source patch proof and Workers-runtime release refusal",
+      "situation": "AgentProof #21, DoneState #198 and protected canary #2 merged. The next genuine canary passed authorisation but failed during preparation; source and CI acceptance had not exercised the Workers fetch redirect-mode boundary.",
+      "verification": "Accepted sources: AgentProof d89f6d54709830ff49373ab7c2797c927ced8ac9, DoneState 08ac9539748ddf3fce31a3f1627119c406cc84b6, OpsTruth 61395a6363e6634f6f97dc47ec57bba9556f2403, canary cc1dfb79c1a63a62e69049473b6170674667d8d1. Patch run https://github.com/AyobamiH/agentproof/actions/runs/39121692291 passed 17/17; downloaded archive SHA-256 19fc32f653dbdd54ec18dfa2b9dc0856443a54c0dda712f5d8a424ffde619ad0 and report 8e33c6e3501ea23db8d818f5afce5279589579177fa43ad59c2e0c9da4bcd597. Both receipt signatures and the compensation predecessor chain were independently rechecked offline under the existing public pin. Release run https://github.com/AyobamiH/agentproof-release-canary/actions/runs/39122966755 failed with approval refused: release_policy_rejected; publication artifact SHA-256 de151fc8a32090fb6916803de230d37b56a2e99aa2657c3193ad15471f49fdca matched its downloaded bytes. It contains no reservation, recovery grant, receipt or verifier outcome. A local GET-only Workers-runtime reproduction identifies redirect: error as unsupported before any GitHub request. Candidate AgentProof PR #22 changes both affected readers to manual redirects while retaining exact-200 refusal. The corrected Workers probe observes the same draft and matching assets with three HTTP 200 GETs. Build, provider tests and deployment dry-runs pass; this is not production consequence acceptance. Public health confirms all four isolated release services disabled again at 11:32:55 UTC. RC6 npm next remains 0.1.0-rc.6 with unchanged integrity; latest remains RC5.",
+      "accountability": {
+        "owner": "DoneState / AgentProof maintainers",
+        "status": "active",
+        "nextAction": "Merge the reviewed Workers redirect-compatibility repair (AgentProof PR #22), pin its actual merge source in the protected canary, then deploy the four isolated services with unchanged keys and target and complete one fenced publication with independent OpsTruth verification.",
+        "waitCondition": "Run 39122966755 failed at preparation before recovery/publication; release 416342082 remains a draft. All four temporary release services are disabled again. No real release receipt, independent verdict or DoneState VERIFIED outcome is established.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Merged recovery implementation and bounded patch acceptance complete; a reproduced platform-compatibility blocker still prevents the real release acceptance.",
+      "content": "Retained failed canary and runtime before/after evidence in AgentProof PR #22; no target reset, duplicate publication or public OpsTruth MCP change.",
+      "measurement": "Current-source patch checks 17/17; real release publications 0; real OpsTruth release decisions 0; real DoneState release VERIFIED outcomes 0; qualifying independent installations 0 of 10."
+    },
+    {
+      "id": "E-134",
+      "date": "2026-10-18",
+      "identity": "One real release publication; separate receipt readback and freshness boundary",
+      "situation": "After E-133, the reviewed Workers redirect repair merged as AgentProof #22 and the protected source-pin update merged as canary #4. The accepted workflow reached one real GitHub publication, but downstream receipt issuance failed independently.",
+      "verification": "AgentProof 74c12b4e42c8109d34e4764fa0e4864513cab4a9; DoneState 08ac9539748ddf3fce31a3f1627119c406cc84b6; OpsTruth 61395a6363e6634f6f97dc47ec57bba9556f2403; producing workflow d74a0d6c6b712d3ecfb428997f24d264175c20c1. Patch run https://github.com/AyobamiH/agentproof/actions/runs/39124046639 passed 17/17; downloaded archive SHA-256 29828fee8f7f91046391b0468a01572aae7e947cf079ef1d5f061270dcce5370 and report ad6f58bdd7bd3eeb41400c6260851daac17801c570c17ce45e3e79cd14e2c440. Both receipt signatures and the compensation predecessor chain were reverified offline under the pinned key. Release run https://github.com/AyobamiH/agentproof-release-canary/actions/runs/39124373253 published release 416342082 once at 11:43:37 UTC. Anonymous downloads of both assets match GitHub-recorded SHA-256 digests. All three downloaded publication archives match their recorded digests, preserve identical signed completion bytes, and contain public_readback_unavailable with no receipt. Later attempts record zero publication requests. A separate credential-free Cloudflare probe got three HTTP 200 responses; the cause inside the receipt service remains unknown. Exact artifacts, source pins, npm integrity, prior clean-install results, deployment versions and disabled health readbacks are recorded in docs/evidence/agentproof-release-publication-checkpoint-20261018.json.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Add bounded credential-free HTTP status diagnostics to the separate receipt readback path and obtain independent review of a recovery protocol for the original settled execution after expiry. Preserve original timestamps, producing identity, all five signer roles, the original DoneState audit chain and the permanent target fence. No new target, new publication, clock extension or self-issued VERIFIED is authorised by this checkpoint.",
+        "waitCondition": "The disposable release was published once by run 39124373253 at 11:43:37 UTC. Receipt issuance failed public readback on attempts 1, 2 and 3; attempts 2 and 3 submitted zero publication requests and retained identical completion bytes. The original completion freshness expired at 11:53:38.649 UTC. All four temporary release services are now disabled with unchanged key bindings and target-fence namespaces. No release Receipt V2, independent OpsTruth decision or DoneState VERIFIED outcome is established.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "The real publication step completed; the consequence acceptance did not. The original evidence window expired without a signed release receipt. Temporary release activation is closed without deleting the target fence, changing keys, extending freshness, republishing or issuing VERIFIED.",
+      "content": "This is the successor to historical E-133, not a rewrite of its pre-publication observations. RC6 remains the immutable previously published developer prerelease; service changes are not retroactively inside that tarball. Manual byte checks and engineering canaries are not independent OpsTruth decisions or independent adoption.",
+      "measurement": "Current-source patch checks 17/17; real release publications 1; additional publication requests in recovery attempts 0; real release receipts 0; independent OpsTruth release decisions 0; real DoneState release VERIFIED outcomes 0; qualifying independent installations 0 of 10."
+    },
+    {
+      "id": "E-135",
+      "date": "2026-10-20",
+      "identity": "Accepted deterministic durable release recovery; PiHarness deferred",
+      "situation": "A published release has no complete consequence receipt chain because the separate receipt readback failed and the original completion freshness expired. The user approved completing recovery on the existing Cloudflare runtime and explicitly required decisions and intentions to stay aligned with project documentation.",
+      "verification": "Reviewed AGENTS.md, existing product boundaries, AgentProof decision/status/roadmap documents, DoneState PR #199 at f3ddc857a617370209e27d749588d32d83b7739d and its unchanged publication checkpoint SHA-256 a47132f46afdac54a3053b03a2956c97845cd1d4380be092d08a5f81084bc1a5. ADR 002 records the accepted strategy, alternatives, authority limits, acceptance obligations and reconsideration trigger. This record contains no completed implementation, CI, deployment or live recovery result. The original public completion, prepared request/reservation and authorised run were recovered from the 18 October run archive and copied byte-for-byte under docs/evidence/release-20261018; the authorised record supplies the original five trust pins, signed grant and preceding audit history. No future receipt supplies its own trust roots.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Implement and review the accepted deterministic Cloudflare Durable Object recovery with persisted alarms, bounded retries and private ReleaseRecovery bindings. Preserve the original release, workflow/run/transaction, five trust roles, completion bytes and audit chain. Recover only fresh readback/signing and independent OpsTruth verification, then record exact durable settlement and closure evidence; Pi Durable / PiHarness remains deferred.",
+        "waitCondition": "E-134 records one publication of release 416342082 and three receipt readback failures; original completion freshness expired at 2026-10-18T11:53:38.649Z. E-135 records the approved recovery decision and implementation pending, with no new activation, receipt, independent release decision or DoneState VERIFIED evidence.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Architectural decision accepted; implementation and real independent acceptance remain pending. The earlier publication and failed readbacks are preserved.",
+      "content": "Deterministic recovery through persisted Durable Object stage/retry/alarm state and named private service bindings; fresh authority-signed readback sidecar linked to original execution; unchanged Receipt V2 and five-role independent verification; canonical ledger and hash-bound checkpoint guard.",
+      "measurement": "One accepted recovery decision; zero additional publication requests; zero new release receipts, independent OpsTruth release verdicts or DoneState VERIFIED outcomes. PiHarness integration deferred.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-release-recovery-checkpoint-20261020.json",
+        "sha256": "e2020396edf2797ce8406521b5685e1007ebae9b1861728dd60bbf100d99187c"
+      }
+    },
+    {
+      "id": "E-136",
+      "date": "2026-10-20",
+      "identity": "Bounded overdue-record review with separate active reviewer-auth evidence",
+      "situation": "Six noncomplete records missed the 18 October review deadline. Recovery work must preserve the strict freshness gate while reviewing actual available records and keeping concurrent auth work separate.",
+      "verification": "Read the six work items, E-011/E-013/E-061/E-126, the development Marketplace runbook, the older distribution candidate and the knowledge-base governance rules. Inspected PR #200 at head 7eb6c06257faf83934527e6129b2da8b8d0fec44: it is OPEN, has no ledger update, reports a 19 October v1.0.0 OpenAI sign-in/OAuth rejection and includes redacted reachability/negative-login evidence with positive credentials explicitly unvalidated. The inspected main path history since 17 October contains the release-authorisation change, not new Marketplace/skills acceptance. Evidence details, source hashes, scope limits and per-item missing proof are retained in the attached review artifact. No provider portal, email, transaction inventory or ai-prompts inventory was independently inspected.",
+      "accountability": {
+        "owner": "DoneState publisher and maintainers",
+        "status": "active",
+        "nextAction": "Review the named missing evidence by 23 October; keep PR #200 under its separate auth owner and exact-head gates. Do not resubmit, publish or complete unrelated work from this release recovery.",
+        "waitCondition": "External/provider outcomes, archive acceptance and positive reviewer-login proof remain absent from the respective reviewed evidence; existing statuses remain active, planned or deferred.",
+        "staleDate": "2026-10-23"
+      },
+      "outcome": "All six statuses and owners are preserved. Wait conditions now state specific reviewed evidence and unknowns; OPENAI-001 tracks the actual open auth repair instead of the obsolete draft-only action. Historical evidence is unchanged.",
+      "content": "Bounded dependency and evidence review, one redacted PR reference and six explicit follow-ups; no auth code, credentials, provider settings or distribution changes.",
+      "measurement": "Six records reviewed; one active auth PR inspected; zero status completions, new live provider acceptance claims or external mutations.",
+      "artifact": {
+        "path": "docs/evidence/governance-bounded-review-20261020.json",
+        "sha256": "77a32d50b447bd1e884358135b98cc12a1be5b65bb91a074b4847b3049fc1310"
+      }
+    },
+    {
+      "id": "E-137",
+      "date": "2026-10-20",
+      "identity": "Deterministic release recovery locally validated with hash-bound source, durable runtime and independent fixture evidence",
+      "situation": "E-135 records the accepted Cloudflare Durable Object strategy for the already published release; fresh receipt readback and independently signed acceptance remain unresolved. Source validation must not be confused with actual settlement of the preserved 18 October run.",
+      "verification": "AgentProof root checks passed 76 core and 20 script cases; isolated release provider passed 21 cases plus two disabled Worker dry runs. DoneState isolated service passed 29 cases and actual workerd SQLite restart/native alarms/private entrypoint settlement with the original fixture completion preserved, public recovery route 404 and zero publication requests; 18 documentation/governance guard cases passed. OpsTruth passed 146 root and 20 isolated verifier cases, including actual Workers RPC and expiry-during-I/O refusal, with disabled dry-run output. The actual three-service source fixture returned VERIFIED after an injected public-readback outage, object reconstruction, 12 read-only provider GETs and four alarm attempts; the completion and audit prefix remain unchanged and terminal duplicate delivery is a no-op. All stdout and source inventories are retained in the hash-bound report. DoneState full root check also passed and its output is retained.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Resolve the observed GitHub account billing lock and rerun existing required checks on each final recovery PR head without bypassing protected-branch policy. Then record exact deployed source/version/health while preserving original namespaces, target, workflow and five signing roles; resume only readback/signing/independent verification for run 12741172-631f-47b4-88c2-a63eeb1f9574. Retain the actual signed receipt, fresh sidecar, OpsTruth decision, durable settlement and disabled-service closure before recording acceptance. Pi Durable / PiHarness remains deferred; independent adoption remains separate.",
+        "waitCondition": "E-137 retains local source hashes, passing command output, real local Workers SQLite restart/native alarms and synthetic three-service VERIFIED interoperability. GitHub refused to start required OpsTruth PR #44 verification at head 40ebd2c1201c1dfeaada58ba49a535c6ebacd1e8 because the account is locked due to a billing issue. Required checks are not satisfied; merge and deployment are blocked. No new recovery deployment, signed original-release receipt, independent live OpsTruth outcome or original-run terminal settlement is recorded. Original publication remains one; no mutation replay is authorised.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "The deterministic recovery implementation is locally validated. Required hosted CI is blocked before execution by the GitHub account billing lock; the checkpoint preserves the provider annotation, exact PR/head/job and read endpoint. Release acceptance remains PENDING and AGENTPROOF-001 remains blocked. No protection bypass, new publication, live recovery deployment, signed original-release receipt, independent live outcome, terminal DoneState acceptance or fresh disabled-service closure is claimed.",
+      "content": "Source/check artifact with exact file and output hashes, local Workers persistence proof, complete-source cross-service cryptographic fixture, machine-verifiable checkpoint/ledger coupling and accepted decision reference.",
+      "measurement": "AgentProof provider: 21 cases passed; DoneState provider: 29 cases passed plus native Workers restart/alarms; OpsTruth provider: 20 cases passed; documentation guards: 18 cases passed; cross-service fixture GETs: 12; fixture alarm attempts: 4; extra publication requests: 0; new live release acceptance evidence: 0.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-release-recovery-source-checkpoint-20261020.json",
+        "sha256": "c2326beb7717c1da101000e583ce9cf854e5046aaa08dc15b3ab539f2c5e1856"
+      }
+    },
+    {
+      "id": "E-138",
+      "date": "2026-10-20",
+      "identity": "Cloudflare CI estate recovered; continuation corrected from billing-only routing",
+      "situation": "The owner identified an existing Cloudflare CI estate after the prior checkpoint directed continuation only through resolving GitHub billing. The immediate provider refusal is retained, while infrastructure reuse and the CI trust contract need separate reconciliation.",
+      "verification": "Read-only inspection confirmed a successful historical ClawSweeper Cloudflare run 36323734781 at source 7fbaa16dfeed371584b4ae03601ca1f1017ae310. The later Workers SDK validation workload ran on Cloudflare in run 37385428501 but failed; it is not a green proof. Its workflow at 16ac12c9b3d86aaa7ad876e566802838650ee5ef provisions and cleans up through ubuntu-latest GitHub jobs. Current inspected ClawSweeper source a559377cbf0bf98fb018f512712fec3f150deefb exposes GitHub JIT runner start/stop, not a separately accepted native CI controller/reporter. The three recovery PRs remain open with unsatisfied Actions checks and no external reports on the observed heads. DoneState and OpsTruth source guards require App 15368; AgentProof requires real macOS validation. Public source/run links and exact observed heads are retained in the successor checkpoint.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Reuse the existing Cloudflare estate for CI and complete or verify an independent Cloudflare lifecycle and trusted exact-commit result reporter. First reconcile current shared capacity and spending bounds, then retain startup, execution, bounded retry, cancellation and cleanup evidence. Review the CI provider contract before changing any required-check source; preserve real macOS coverage and all required validations. Once final-head checks and review pass, deploy the recovery sources with original namespaces, target, workflow and five signing roles; collect the signed receipt, fresh sidecar, independent OpsTruth decision, original-run settlement and disabled-service closure. Pi Durable / PiHarness remains deferred.",
+        "waitCondition": "E-137 retains locally validated recovery source and the exact GitHub Actions billing refusal. E-138 confirms real historical validation on existing Cloudflare compute, but the inspected runner interface and provisioning/cleanup workflow still depend on GitHub Actions orchestration. No independent Cloudflare CI controller/reporter acceptance for these recovery PRs is recorded. DoneState and OpsTruth guards pin required checks to GitHub Actions App 15368; AgentProof also requires a real macOS job. Current capacity and any provider transition remain separate gates. Required checks, recovery deployment and independent release acceptance remain pending; original publication remains one.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Cloudflare-first reuse is the continuation path. Billing refusal is the observed proximate failure; independently orchestrated execution, trusted result reporting, coverage and current spending bounds remain unfinished acceptance work. Historical evidence and the accepted recovery architecture are unchanged. Release acceptance remains PENDING.",
+      "content": "Documentation-only successor with existing compute evidence, explicit CI provider-contract requirements, capacity recheck and exact-head acceptance obligations. No ruleset, source guard, workflow, runtime or private credential was changed.",
+      "measurement": "One routing correction; three open recovery PRs with required CI still unsatisfied; zero new compute runs, provider migrations, recovery deployments, publication requests or live release acceptance claims.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-release-recovery-ci-routing-20261020.json",
+        "sha256": "b2cdfbfc3f73a61b9c2965fb031d5196ea04a1cec460e4922e4d6f9ec93068e0"
+      }
+    },
+    {
+      "id": "E-139",
+      "date": "2026-10-21",
+      "identity": "Persistent native Pages CI candidate and recovered provisioning evidence",
+      "situation": "Prior integration stopped after provisioning three disabled Pages projects; no native run occurred and the runner was not committed on the recovery branches.",
+      "verification": "Fresh Cloudflare API inspection matched all three isolated projects with no configuration drift and no latest deployment. Runner and manifest fixtures are recorded separately from hosted acceptance. Exact source snapshots and admin receipts are retained on the authorised owner host.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Run the persistent native Pages CI candidates on the exact recovery PR heads, independently read back deployments and manifests, then accept a pinned native check provider without weakening coverage. Preserve AgentProof macOS as a separate unmet requirement. Only after required checks pass may coordinated readback-only recovery deploy and settle the original release.",
+        "waitCondition": "Three isolated Pages projects are provisioned, inspected and disabled; zero deployments were observed on 21 October. Portable source runner and explicit Linux manifests are now persisted. Native build execution, check reporting, provider-policy migration, real macOS coverage and live recovery remain pending. No production signing authority or publication changed.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Native CI source is prepared; hosted execution, trusted check-provider activation, macOS coverage and release acceptance remain pending.",
+      "content": "Native Pages lifecycle, explicit Linux coverage, pinned runtimes, isolated environments, finite commands and source-bound static receipts. Original release and signing roles remain untouched.",
+      "measurement": "Three existing projects inspected; zero new build triggers, provider migrations or release publications at the source checkpoint.",
+      "artifact": {
+        "path": "docs/evidence/native-cloudflare-ci-source-20261021.json",
+        "sha256": "c6a60975b0f6555bdd418c359e052257eacd061e8606ee36d3e3602e20939c14"
+      }
+    },
+    {
+      "id": "E-140",
+      "date": "2026-10-21",
+      "identity": "Review deferred engine work without inventing delivery",
+      "situation": "ENGINE-002 and ENGINE-003 reached their review dates while bounded release recovery remains unfinished.",
+      "verification": "Reviewed VERIFY-004 (complete), GTM-001 (active), and ADR 002. Preserve the separate successful verification milestone. General adapters/global controls remain planned and are not activated by this CI change.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "planned",
+        "nextAction": "Revisit adapters and global controls after their recorded prerequisites; finish the bounded native CI/recovery gate first.",
+        "waitCondition": "ADR 002 defers broader agent orchestration while the bounded release recovery is prioritised. VERIFY-004 is already complete; customer recruitment is not a development gate.",
+        "staleDate": "2026-10-28"
+      },
+      "outcome": "Both items remain planned with their original scope/dependencies; only review chronology and explicit deferral evidence change.",
+      "content": "Bounded status review, not an implementation or completion claim.",
+      "measurement": "Two stale items reviewed; zero capabilities activated.",
+      "artifact": {
+        "path": "docs/evidence/engine-deferral-review-20261021.json",
+        "sha256": "e9820d5f6447f57996424676704120cdc55f6c5d7e0dd78d1cb0db6f7f87c138"
+      }
+    },
+    {
+      "id": "E-141",
+      "date": "2026-10-21",
+      "identity": "Native CI source delivered with measured tests and an explicit activation refusal",
+      "situation": "The stalled continuation was recovered from owner-host provisioning receipts; three disabled native projects existed without a first build. Persistent source, fixture tests and exact-job manifests were missing from the recovery branches.",
+      "verification": "Signed owner commits were pushed to the three existing recovery PRs and GitHub verified the initial delivery signatures. Root checks passed: AgentProof 76 core plus 20 script cases; DoneState 104; OpsTruth 180 including shared runner cases. Shared runner fixtures pass 34 cases; Pages administration fixtures pass six. Initial full local rehearsal failed before jobs at toolchain extraction; same pinned archive extracted successfully in 43.996 seconds after allowing a bounded 120-second inner limit. The corrected local rehearsal and its exact source are preserved in the referenced delivery report; it is not a native Cloudflare run.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Resume at the fresh permitted Cloudflare capacity readback, then one exact-head native build with independent deployment/receipt/check readback. Migrate trusted check-provider policy only with equivalent real coverage; preserve separate macOS validation. Then deploy and settle the original readback-only recovery with independent evidence and disabled-service closure.",
+        "waitCondition": "Native Pages runner/manifests are signed and pushed; repository root checks and runner fixtures pass. A fresh Cloudflare capacity inspection invocation was refused by the tool safety check before any provider result. No native build was triggered, no CI provider policy migrated, and macOS/release recovery remain unaccepted. E-141 preserves the actual local rehearsal outcomes, including the initial extraction failure; local execution is not hosted CI.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Source delivered; native build, required-check migration, separate macOS coverage and original-release acceptance remain pending. The tool-layer readback refusal is distinct from provider permissions, missing infrastructure or GitHub billing.",
+      "content": "Durable source/evidence checkpoint, failed-run preservation, bounded extraction diagnostics and structured phase progress. No production authority or original publication was changed.",
+      "measurement": "Three recovery PR source updates; zero native build triggers, merges, check-provider changes, production deployments or publication requests by this continuation.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-ci-delivery-checkpoint-20261021.json",
+        "sha256": "9bef2294cdce77d6fa5c704874cf35ec5e2574ba90007bf30cc9a07ef0024b99"
+      }
+    },
+    {
+      "id": "E-142",
+      "date": "2026-10-21",
+      "identity": "Cloudflare OAuth refreshed, skipped native CI records reconciled and explicit retry guarded",
+      "situation": "Continuation reached Cloudflare with an expired OAuth token. After standard refresh, disabled branch triggers were found to leave skipped deployment records whose idle stages the administrator misclassified as active. Fresh subscription visibility is a separate prerequisite.",
+      "verification": "Preserved the initial project GET HTTP 401, public refresh metadata, three matching project readbacks, subscription GET HTTP 403, and GET-only before/after status reports for OpsTruth deployment 5614ea88-8656-4393-add2-c04c229f1d89 at exact head 5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f. Regression cases fail on the original implementation; all 20 administration cases pass after the correction, including refusal of missing capacity, moved source, active builds, successful-deployment retry and ambiguous retry replay. GitHub exact-head check metadata and current release/macOS refusal are retained.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Obtain permitted fresh Cloudflare Pages plan/entitlement evidence and retain the one-build, no-upgrade, no-overage bound. Then explicitly retry the reconciled skipped deployment for the exact current PR head using the corrected administrator, independently verify the hosted receipt and native check identity, and review any equivalent provider-policy migration. Preserve separate real macOS coverage. Only after exact-head required checks and review pass may the original readback-only recovery deploy and settle.",
+        "waitCondition": "The existing OAuth session refreshed successfully; all three isolated Pages projects matched their intended disabled configuration. Their latest records are provider-skipped entries, not executed builds. The account subscription GET returned HTTP 403, so current plan/entitlement evidence remains unavailable. The skipped-entry reconciliation fix passes 20 local administration tests and a GET-only live status read correctly reports BUILD_SKIPPED. No real build, required-check migration, recovery deployment or new publication was requested. GitHub still records the required macOS job as unstarted because of the account billing lock; native hosted CI, macOS and live independent acceptance remain pending.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Skipped provider records are reconciled and the source fix is ready for the existing recovery PR. Current plan/entitlement visibility, native CI, real macOS coverage and original-release acceptance remain unresolved.",
+      "content": "Provider readbacks, bounded diagnostics, regression output, exact changed-source hashes and successor checkpoint. Earlier tool-layer refusal and failed release evidence remain historical records.",
+      "measurement": "Three project inspections passed; 20 administration tests passed; one subscription HTTP 403; zero real build requests, CI provider migrations, recovery deployments or new release publications.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-ci-reconciliation-checkpoint-20261021.json",
+        "sha256": "284842846721ec4ea19cdd4dfc1eaddbab79f145d6b69afa7e0f28623e7f5759"
+      }
+    },
+    {
+      "id": "E-143",
+      "date": "2026-10-21",
+      "identity": "Real native CI accepts AgentProof and OpsTruth; DoneState audit failure drives compatible dependencies and enforced MCP limits",
+      "situation": "Fresh Account Read entitlement evidence permitted bounded explicit Pages builds. Two exact-head native deployments passed; DoneState reached both core jobs successfully but failed the hosted-plugin dependency audit.",
+      "verification": "Retained all three explicit retry intents/results, genuine native deployment/job/receipt summaries and App 85455 check identities for AgentProof and OpsTruth, exact-head Codex completed/no-findings source reviews, and the failed DoneState native log. Updated MCP/Agents/Hono/Vite dependencies install with compatible peers. Actual SDK tests proved the legacy body-limit forwarding gap and validate its bounded-stream correction on both resources. Full hosted-plugin check, zero-advisory audit and deployment dry run pass locally; final-head hosted acceptance is still pending.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Publish and independently validate the exact DoneState dependency-fix head through one fresh-capacity-checked explicit native build and Codex review. Review an equivalent trusted-provider policy transition while preserving real macOS coverage. After all exact-head required checks and reviews pass, perform normal protected coordinated merges, revalidate patch parity, and execute only the original readback-only recovery through signed receipt, independent verdict and durable settlement.",
+        "waitCondition": "OpsTruth and AgentProof exact-head Cloudflare native Linux builds and source reviews passed. DoneState core Node 22/24 jobs passed, but its hosted-plugin audit failed on existing dependency advisories. The compatible dependency updates and explicit MCP body/input limits pass local full checks, audit and dry run; their final native build and source review remain pending. Required-check provider policy is unchanged. Real AgentProof macOS execution remains blocked by the observed GitHub billing refusal. No merge, recovery deployment or new publication has occurred.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Two genuine native Linux CI successes and source reviews are accepted as source evidence. DoneState dependency/transport fixes are locally validated. Required policy, macOS, protected merge and original live release verification remain open.",
+      "content": "Provider observations, explicit fixed-plan capacity inference, failed and successful validation output, dependency/transport hashes and successor recovery checkpoint. Previous failed attempts and original signed completion remain immutable.",
+      "measurement": "Three explicit native builds: two pass, one fails on audit after both core jobs pass. Zero required-check migrations, merges, recovery deployments or new releases. Audit zero after dependency fix; real macOS and live release acceptance not claimed.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-native-ci-partial-checkpoint-20261021.json",
+        "sha256": "795ff042ad9ee15640b5458a3c3cf61250b8472c4c4e0b8b6a8531a430ce5472"
+      }
     }
   ]
 }

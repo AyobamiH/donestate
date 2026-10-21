@@ -5,3 +5,6 @@ test-dist/
 .donestate/
 coverage/
 *.log
+
+# Generated static CI evidence, never source.
+ci-report/
