@@ -549,9 +549,9 @@
       "owner": "DoneState and AgentProof maintainers",
       "lastUpdated": "2026-10-21",
       "staleDate": "2026-10-24",
-      "nextAction": "Resume at the fresh permitted Cloudflare capacity readback, then one exact-head native build with independent deployment/receipt/check readback. Migrate trusted check-provider policy only with equivalent real coverage; preserve separate macOS validation. Then deploy and settle the original readback-only recovery with independent evidence and disabled-service closure.",
-      "waitCondition": "Native Pages runner/manifests are signed and pushed; repository root checks and runner fixtures pass. A fresh Cloudflare capacity inspection invocation was refused by the tool safety check before any provider result. No native build was triggered, no CI provider policy migrated, and macOS/release recovery remain unaccepted. E-141 preserves the actual local rehearsal outcomes, including the initial extraction failure; local execution is not hosted CI.",
-      "reentryCondition": "Obtain genuine exact-head Cloudflare deployment/receipt/check evidence with complete job coverage and current capacity readback. Change source guards and provider rules together only after acceptance. Then retain independently signed original-run recovery and disabled-service closure evidence.",
+      "nextAction": "Obtain permitted fresh Cloudflare Pages plan/entitlement evidence and retain the one-build, no-upgrade, no-overage bound. Then explicitly retry the reconciled skipped deployment for the exact current PR head using the corrected administrator, independently verify the hosted receipt and native check identity, and review any equivalent provider-policy migration. Preserve separate real macOS coverage. Only after exact-head required checks and review pass may the original readback-only recovery deploy and settle.",
+      "waitCondition": "The existing OAuth session refreshed successfully; all three isolated Pages projects matched their intended disabled configuration. Their latest records are provider-skipped entries, not executed builds. The account subscription GET returned HTTP 403, so current plan/entitlement evidence remains unavailable. The skipped-entry reconciliation fix passes 20 local administration tests and a GET-only live status read correctly reports BUILD_SKIPPED. No real build, required-check migration, recovery deployment or new publication was requested. GitHub still records the required macOS job as unstarted because of the account billing lock; native hosted CI, macOS and live independent acceptance remain pending.",
+      "reentryCondition": "Permitted fresh Pages plan/entitlement evidence enables one explicit exact-head retry. Retain genuine hosted job/receipt/check evidence, separate macOS coverage and reviewed source/provider policy before coordinated merge or original-run recovery.",
       "dependencies": [
         "VERIFY-004"
       ],
@@ -569,7 +569,8 @@
         "E-137",
         "E-138",
         "E-139",
-        "E-141"
+        "E-141",
+        "E-142"
       ]
     },
     {
@@ -3079,6 +3080,27 @@
       "artifact": {
         "path": "docs/evidence/agentproof-ci-delivery-checkpoint-20261021.json",
         "sha256": "9bef2294cdce77d6fa5c704874cf35ec5e2574ba90007bf30cc9a07ef0024b99"
+      }
+    },
+    {
+      "id": "E-142",
+      "date": "2026-10-21",
+      "identity": "Cloudflare OAuth refreshed, skipped native CI records reconciled and explicit retry guarded",
+      "situation": "Continuation reached Cloudflare with an expired OAuth token. After standard refresh, disabled branch triggers were found to leave skipped deployment records whose idle stages the administrator misclassified as active. Fresh subscription visibility is a separate prerequisite.",
+      "verification": "Preserved the initial project GET HTTP 401, public refresh metadata, three matching project readbacks, subscription GET HTTP 403, and GET-only before/after status reports for OpsTruth deployment 5614ea88-8656-4393-add2-c04c229f1d89 at exact head 5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f. Regression cases fail on the original implementation; all 20 administration cases pass after the correction, including refusal of missing capacity, moved source, active builds, successful-deployment retry and ambiguous retry replay. GitHub exact-head check metadata and current release/macOS refusal are retained.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Obtain permitted fresh Cloudflare Pages plan/entitlement evidence and retain the one-build, no-upgrade, no-overage bound. Then explicitly retry the reconciled skipped deployment for the exact current PR head using the corrected administrator, independently verify the hosted receipt and native check identity, and review any equivalent provider-policy migration. Preserve separate real macOS coverage. Only after exact-head required checks and review pass may the original readback-only recovery deploy and settle.",
+        "waitCondition": "The existing OAuth session refreshed successfully; all three isolated Pages projects matched their intended disabled configuration. Their latest records are provider-skipped entries, not executed builds. The account subscription GET returned HTTP 403, so current plan/entitlement evidence remains unavailable. The skipped-entry reconciliation fix passes 20 local administration tests and a GET-only live status read correctly reports BUILD_SKIPPED. No real build, required-check migration, recovery deployment or new publication was requested. GitHub still records the required macOS job as unstarted because of the account billing lock; native hosted CI, macOS and live independent acceptance remain pending.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Skipped provider records are reconciled and the source fix is ready for the existing recovery PR. Current plan/entitlement visibility, native CI, real macOS coverage and original-release acceptance remain unresolved.",
+      "content": "Provider readbacks, bounded diagnostics, regression output, exact changed-source hashes and successor checkpoint. Earlier tool-layer refusal and failed release evidence remain historical records.",
+      "measurement": "Three project inspections passed; 20 administration tests passed; one subscription HTTP 403; zero real build requests, CI provider migrations, recovery deployments or new release publications.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-ci-reconciliation-checkpoint-20261021.json",
+        "sha256": "284842846721ec4ea19cdd4dfc1eaddbab79f145d6b69afa7e0f28623e7f5759"
       }
     }
   ]
