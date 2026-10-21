@@ -1,6 +1,6 @@
 # DoneState release.v1 consequence verification gate
 
-<!-- Current release recovery evidence: E-138 -->
+<!-- Current release recovery evidence: E-139 -->
 
 Release acceptance: **PENDING**.
 
@@ -8,7 +8,7 @@ Current status, 20 October 2026: **isolated publication observed; durable readba
 
 [The preserved 18 October checkpoint](evidence/agentproof-release-publication-checkpoint-20261018.json) establishes one publication of release `416342082` and failed separate receipt readback. It does not establish a signed release receipt, OpsTruth release decision or terminal DoneState VERIFIED. [ADR 002](adr/002-deterministic-release-recovery.md) records the accepted strategy; [E-137's hash-bound source checkpoint](evidence/agentproof-release-recovery-source-checkpoint-20261020.json) retains the passing source/runtime/interop evidence and the exact required-CI billing refusal from OpsTruth PR #44.
 
-[E-138's CI routing checkpoint](evidence/agentproof-release-recovery-ci-routing-20261020.json) corrects the continuation path to reuse the owner's existing Cloudflare estate. Historical Cloudflare execution is proven, while the inspected JIT runner and provisioning/cleanup workflow retain a GitHub Actions dependency. Independent Cloudflare orchestration and a trusted result reporter for these PRs remain unaccepted. Check current shared capacity and enforceable spending bounds before compute. Any change from the existing required-check producer must be reviewed in source guards and protected-branch policy, preserve every required validation, and retain genuine macOS coverage. Obtain successful results for each final PR head before merge or recovery deployment. No new compute, provider migration, protection bypass or live deployment is recorded here.
+[E-138's CI routing checkpoint](evidence/native-cloudflare-ci-source-20261021.json) corrects the continuation path to reuse the owner's existing Cloudflare estate. Historical Cloudflare execution is proven, while the inspected JIT runner and provisioning/cleanup workflow retain a GitHub Actions dependency. Independent Cloudflare orchestration and a trusted result reporter for these PRs remain unaccepted. Check current shared capacity and enforceable spending bounds before compute. Any change from the existing required-check producer must be reviewed in source guards and protected-branch policy, preserve every required validation, and retain genuine macOS coverage. Obtain successful results for each final PR head before merge or recovery deployment. No new compute, provider migration, protection bypass or live deployment is recorded here.
 
 The original source-gate sections below retain their dated rationale. Later provisioning/publication evidence supersedes their previous deployment blockers. No historical failed run becomes VERIFIED merely because a new implementation passes source checks.
 

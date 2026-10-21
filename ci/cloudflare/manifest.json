@@ -1,0 +1,148 @@
+{
+  "schema": "proofstate.cloudflare-ci-manifest.v1",
+  "repository": {
+    "name": "AyobamiH/donestate",
+    "id": "1348643925"
+  },
+  "project": "proof-state-ci-donestate",
+  "basePolicy": {
+    "pullRequest": "github-open-pull-request-main-ancestor",
+    "main": "git-first-parent-public-github-corroborated-single-commit-delta"
+  },
+  "preflightTests": [
+    "ci/cloudflare/run.test.mjs",
+    "ci/cloudflare-admin/pages.test.mjs"
+  ],
+  "jobs": [
+    {
+      "id": "core-node22",
+      "node": "22.23.3",
+      "platform": "linux",
+      "commands": [
+        {
+          "tool": "npm",
+          "cwd": ".",
+          "argv": [
+            "ci"
+          ]
+        },
+        {
+          "tool": "npm",
+          "cwd": ".",
+          "argv": [
+            "run",
+            "check"
+          ]
+        },
+        {
+          "tool": "npm",
+          "cwd": ".",
+          "argv": [
+            "run",
+            "governance:impact",
+            "--",
+            "{BASE_SHA}"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "core-node24",
+      "node": "24.22.0",
+      "platform": "linux",
+      "commands": [
+        {
+          "tool": "npm",
+          "cwd": ".",
+          "argv": [
+            "ci"
+          ]
+        },
+        {
+          "tool": "npm",
+          "cwd": ".",
+          "argv": [
+            "run",
+            "check"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hosted-plugin",
+      "node": "24.22.0",
+      "platform": "linux",
+      "commands": [
+        {
+          "tool": "npm",
+          "cwd": "apps/mcp-worker",
+          "argv": [
+            "ci"
+          ]
+        },
+        {
+          "tool": "npm",
+          "cwd": "apps/mcp-worker",
+          "argv": [
+            "audit",
+            "--audit-level=high"
+          ]
+        },
+        {
+          "tool": "npm",
+          "cwd": "apps/mcp-worker",
+          "argv": [
+            "run",
+            "check"
+          ]
+        },
+        {
+          "tool": "node",
+          "cwd": ".",
+          "argv": [
+            "scripts/validate-plugin.mjs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "release-controller",
+      "node": "24.22.0",
+      "platform": "linux",
+      "commands": [
+        {
+          "tool": "npm",
+          "cwd": ".",
+          "argv": [
+            "ci"
+          ]
+        },
+        {
+          "tool": "npm",
+          "cwd": "services/release-controller",
+          "argv": [
+            "ci",
+            "--ignore-scripts"
+          ]
+        },
+        {
+          "tool": "npm",
+          "cwd": "services/release-controller",
+          "argv": [
+            "run",
+            "check"
+          ]
+        },
+        {
+          "tool": "npm",
+          "cwd": "services/release-controller",
+          "argv": [
+            "audit",
+            "--audit-level=high"
+          ]
+        }
+      ]
+    }
+  ],
+  "excludedCoverage": []
+}

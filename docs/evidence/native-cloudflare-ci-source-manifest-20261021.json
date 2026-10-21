@@ -1,0 +1,30 @@
+{
+  "schema": "proofstate.native-ci-source-checkpoint.v1",
+  "date": "2026-10-21",
+  "status": "SOURCE_CANDIDATE",
+  "sourceState": "persistent runner and manifests; no hosted build claimed",
+  "projects": [
+    "proof-state-ci-agentproof",
+    "proof-state-ci-donestate",
+    "proof-state-ci-opstruth"
+  ],
+  "observedDeployments": 0,
+  "automaticBuilds": false,
+  "deploymentAcceptance": "PENDING",
+  "requiredCheckMigration": "PENDING",
+  "macOSCoverage": "PENDING_SEPARATE",
+  "liveReleaseAcceptance": "PENDING",
+  "publicationRequests": 0,
+  "ownerAuthority": "Cloudflare integration authorised 20 October; continuation 21 October 2026",
+  "sources": {
+    "agentproof/ci/cloudflare/run.mjs": "878b85eb3df593dd3a3fcdaab42dd2dd1e7df0da7364570d7fe0a515632319fe",
+    "agentproof/ci/cloudflare/run.test.mjs": "59d3c1a71d4cca0419e86fafa93a59d803496ed7564d1f32d7c76fb761c1d073",
+    "agentproof/ci/cloudflare/manifest.json": "76e7a88b63da4dc14e0e53891f053cdce0a781411ea4dd53eaa6ab2f5494ba98",
+    "donestate/ci/cloudflare/run.mjs": "878b85eb3df593dd3a3fcdaab42dd2dd1e7df0da7364570d7fe0a515632319fe",
+    "donestate/ci/cloudflare/run.test.mjs": "59d3c1a71d4cca0419e86fafa93a59d803496ed7564d1f32d7c76fb761c1d073",
+    "donestate/ci/cloudflare/manifest.json": "b5594d6f08c07d055034ee42da0eaf4d4cfa1348b395f581b2500aeea191e168",
+    "opstruth-chatgpt-plugin/ci/cloudflare/run.mjs": "878b85eb3df593dd3a3fcdaab42dd2dd1e7df0da7364570d7fe0a515632319fe",
+    "opstruth-chatgpt-plugin/ci/cloudflare/run.test.mjs": "59d3c1a71d4cca0419e86fafa93a59d803496ed7564d1f32d7c76fb761c1d073",
+    "opstruth-chatgpt-plugin/ci/cloudflare/manifest.json": "136b84f7234ade1bcd20f29700fac7c3b01f6ffe56b01c3e835e34a72f60ccd7"
+  }
+}

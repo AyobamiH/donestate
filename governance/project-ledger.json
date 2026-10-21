@@ -547,11 +547,11 @@
       "stream": "verification",
       "status": "blocked",
       "owner": "DoneState and AgentProof maintainers",
-      "lastUpdated": "2026-10-20",
+      "lastUpdated": "2026-10-21",
       "staleDate": "2026-10-24",
-      "nextAction": "Reuse the existing Cloudflare estate for CI and complete or verify an independent Cloudflare lifecycle and trusted exact-commit result reporter. First reconcile current shared capacity and spending bounds, then retain startup, execution, bounded retry, cancellation and cleanup evidence. Review the CI provider contract before changing any required-check source; preserve real macOS coverage and all required validations. Once final-head checks and review pass, deploy the recovery sources with original namespaces, target, workflow and five signing roles; collect the signed receipt, fresh sidecar, independent OpsTruth decision, original-run settlement and disabled-service closure. Pi Durable / PiHarness remains deferred.",
-      "waitCondition": "E-137 retains locally validated recovery source and the exact GitHub Actions billing refusal. E-138 confirms real historical validation on existing Cloudflare compute, but the inspected runner interface and provisioning/cleanup workflow still depend on GitHub Actions orchestration. No independent Cloudflare CI controller/reporter acceptance for these recovery PRs is recorded. DoneState and OpsTruth guards pin required checks to GitHub Actions App 15368; AgentProof also requires a real macOS job. Current capacity and any provider transition remain separate gates. Required checks, recovery deployment and independent release acceptance remain pending; original publication remains one.",
-      "reentryCondition": "Retain current capacity and bounded execution evidence, accept an explicit trusted CI provider contract with equivalent required coverage, and obtain genuine successful results for each final PR head. Any check-source migration must update reviewed source guards and protected-branch policy together; no copied green status, protection bypass or macOS claim from Linux compute. Then record deployment and private recovery evidence for unchanged original DoneState run 12741172-631f-47b4-88c2-a63eeb1f9574. Preserve original publication, five trust roles, audit history and historical refused attempts. Public activation, recovery activation, terminal verification and disabled closure remain separate.",
+      "nextAction": "Run the persistent native Pages CI candidates on the exact recovery PR heads, independently read back deployments and manifests, then accept a pinned native check provider without weakening coverage. Preserve AgentProof macOS as a separate unmet requirement. Only after required checks pass may coordinated readback-only recovery deploy and settle the original release.",
+      "waitCondition": "Three isolated Pages projects are provisioned, inspected and disabled; zero deployments were observed on 21 October. Portable source runner and explicit Linux manifests are now persisted. Native build execution, check reporting, provider-policy migration, real macOS coverage and live recovery remain pending. No production signing authority or publication changed.",
+      "reentryCondition": "Obtain genuine exact-head Cloudflare deployment/receipt/check evidence with complete job coverage and current capacity readback. Change source guards and provider rules together only after acceptance. Then retain independently signed original-run recovery and disabled-service closure evidence.",
       "dependencies": [
         "VERIFY-004"
       ],
@@ -567,7 +567,8 @@
         "E-134",
         "E-135",
         "E-137",
-        "E-138"
+        "E-138",
+        "E-139"
       ]
     },
     {
@@ -740,15 +741,17 @@
       "stream": "execution-engine",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-20",
+      "lastUpdated": "2026-10-21",
+      "staleDate": "2026-10-28",
       "nextAction": "Define adapters that preserve deterministic authority and evidence ownership.",
       "waitCondition": "Core review and verification gaps take priority.",
       "reentryCondition": "Begin after VERIFY-004 and release gates are ready.",
       "dependencies": [
         "VERIFY-004"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-140"
+      ]
     },
     {
       "id": "ENGINE-003",
@@ -756,8 +759,8 @@
       "stream": "execution-engine",
       "status": "planned",
       "owner": "DoneState maintainers",
-      "lastUpdated": "2026-08-30",
-      "staleDate": "2026-10-20",
+      "lastUpdated": "2026-10-21",
+      "staleDate": "2026-10-28",
       "nextAction": "Implement deduplication, repository leases, admission backpressure, priority lanes, then broader drift reconciliation.",
       "waitCondition": "Single-repository customer and verifier loops must be proven first.",
       "reentryCondition": "Begin after GTM-001 and VERIFY-004.",
@@ -765,7 +768,9 @@
         "GTM-001",
         "VERIFY-004"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "E-140"
+      ]
     },
     {
       "id": "VERIFY-005",
@@ -3010,6 +3015,48 @@
       "artifact": {
         "path": "docs/evidence/agentproof-release-recovery-ci-routing-20261020.json",
         "sha256": "b2cdfbfc3f73a61b9c2965fb031d5196ea04a1cec460e4922e4d6f9ec93068e0"
+      }
+    },
+    {
+      "id": "E-139",
+      "date": "2026-10-21",
+      "identity": "Persistent native Pages CI candidate and recovered provisioning evidence",
+      "situation": "Prior integration stopped after provisioning three disabled Pages projects; no native run occurred and the runner was not committed on the recovery branches.",
+      "verification": "Fresh Cloudflare API inspection matched all three isolated projects with no configuration drift and no latest deployment. Runner and manifest fixtures are recorded separately from hosted acceptance. Exact source snapshots and admin receipts are retained on the authorised owner host.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Run the persistent native Pages CI candidates on the exact recovery PR heads, independently read back deployments and manifests, then accept a pinned native check provider without weakening coverage. Preserve AgentProof macOS as a separate unmet requirement. Only after required checks pass may coordinated readback-only recovery deploy and settle the original release.",
+        "waitCondition": "Three isolated Pages projects are provisioned, inspected and disabled; zero deployments were observed on 21 October. Portable source runner and explicit Linux manifests are now persisted. Native build execution, check reporting, provider-policy migration, real macOS coverage and live recovery remain pending. No production signing authority or publication changed.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Native CI source is prepared; hosted execution, trusted check-provider activation, macOS coverage and release acceptance remain pending.",
+      "content": "Native Pages lifecycle, explicit Linux coverage, pinned runtimes, isolated environments, finite commands and source-bound static receipts. Original release and signing roles remain untouched.",
+      "measurement": "Three existing projects inspected; zero new build triggers, provider migrations or release publications at the source checkpoint.",
+      "artifact": {
+        "path": "docs/evidence/native-cloudflare-ci-source-20261021.json",
+        "sha256": "c6a60975b0f6555bdd418c359e052257eacd061e8606ee36d3e3602e20939c14"
+      }
+    },
+    {
+      "id": "E-140",
+      "date": "2026-10-21",
+      "identity": "Review deferred engine work without inventing delivery",
+      "situation": "ENGINE-002 and ENGINE-003 reached their review dates while bounded release recovery remains unfinished.",
+      "verification": "Reviewed VERIFY-004 (complete), GTM-001 (active), and ADR 002. Preserve the separate successful verification milestone. General adapters/global controls remain planned and are not activated by this CI change.",
+      "accountability": {
+        "owner": "DoneState maintainers",
+        "status": "planned",
+        "nextAction": "Revisit adapters and global controls after their recorded prerequisites; finish the bounded native CI/recovery gate first.",
+        "waitCondition": "ADR 002 defers broader agent orchestration while the bounded release recovery is prioritised. VERIFY-004 is already complete; customer recruitment is not a development gate.",
+        "staleDate": "2026-10-28"
+      },
+      "outcome": "Both items remain planned with their original scope/dependencies; only review chronology and explicit deferral evidence change.",
+      "content": "Bounded status review, not an implementation or completion claim.",
+      "measurement": "Two stale items reviewed; zero capabilities activated.",
+      "artifact": {
+        "path": "docs/evidence/engine-deferral-review-20261021.json",
+        "sha256": "e9820d5f6447f57996424676704120cdc55f6c5d7e0dd78d1cb0db6f7f87c138"
       }
     }
   ]
