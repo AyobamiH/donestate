@@ -143,11 +143,16 @@ async function baseIdentity(root, manifest, provider, env) {
 async function nodeBinary(version, temporary, env) {
   if (process.versions.node === version) return process.execPath;
   const name = `node-v${version}-linux-x64.tar.xz`;
+  console.log(JSON.stringify({ stage: 'toolchain-download', node: version }));
   const archive = await boundedGet(`https://nodejs.org/dist/v${version}/${name}`, 80 * 1024 * 1024, 60000);
   requireThat(digest(archive) === TOOLCHAINS[version], 'NODE_ARCHIVE_DIGEST_MISMATCH');
   const path = join(temporary, name); await writeFile(path, archive, { flag: 'wx', mode: 0o600 });
-  const unpacked = await runCommand('tar', ['-xJf', path, '-C', temporary], { cwd: temporary, env, timeoutMs: 30000 });
-  requireThat(unpacked.exitCode === 0, 'NODE_EXTRACTION_FAILED');
+  console.log(JSON.stringify({ stage: 'toolchain-extract', node: version, timeoutMs: 120000 }));
+  const unpacked = await runCommand('tar', ['-xJf', path, '-C', temporary], { cwd: temporary, env, timeoutMs: 120000 });
+  if (unpacked.exitCode !== 0) {
+    console.error(JSON.stringify({ stage: 'node-extraction', version, exitCode: unpacked.exitCode, timedOut: unpacked.timedOut, signal: unpacked.signal, detail: unpacked.tail.slice(-1500) }));
+  }
+  requireThat(unpacked.exitCode === 0, unpacked.timedOut ? 'NODE_EXTRACTION_TIMEOUT' : 'NODE_EXTRACTION_FAILED');
   const binary = join(temporary, `node-v${version}-linux-x64/bin/node`);
   requireThat(execFileSync(binary, ['--version'], { env, encoding: 'utf8' }).trim() === `v${version}`, 'NODE_VERSION_MISMATCH');
   return binary;
@@ -175,12 +180,14 @@ export async function execute(providerName, root = resolve(dirname(fileURLToPath
     const manifestBytes = await readFile(join(root, 'ci/cloudflare/manifest.json'));
     const manifest = validateManifest(JSON.parse(manifestBytes)); report.manifestSha256 = digest(manifestBytes);
     report.repository = manifest.repository; report.excludedCoverage = manifest.excludedCoverage ?? [];
+    console.log(JSON.stringify({ stage: 'source-validation', provider: providerName }));
     report.source = await sourceIdentity(root, env);
     report.provider = providerIdentity(providerName, process.env, report.source.commit, manifest.project);
     if (providerName === 'local') report.provider.branch = git(root, ['branch', '--show-current'], env);
     Object.assign(report.source, await baseIdentity(root, manifest, report.provider, env));
     const binaries = {};
     for (const version of new Set(['24.22.0', ...manifest.jobs.map(j => j.node)])) binaries[version] = await nodeBinary(version, temporary, env);
+    console.log(JSON.stringify({ stage: 'preflight', tests: manifest.preflightTests }));
     const preflight = await runCommand(binaries['24.22.0'], ['--test', ...manifest.preflightTests], {
       cwd: root, env: isolatedEnvironment(dirname(binaries['24.22.0']), temporary), timeoutMs: 60000 });
     report.preflight = { status: preflight.exitCode === 0 ? 'passed' : 'failed', exitCode: preflight.exitCode, node: '24.22.0', tests: manifest.preflightTests };
@@ -197,6 +204,7 @@ export async function execute(providerName, root = resolve(dirname(fileURLToPath
         const argv = command.argv.map(value => expand(value, replacements));
         const extra = Object.fromEntries(Object.entries(command.env ?? {}).map(([k,v]) => [k, expand(v, replacements)]));
         const commandEnv = isolatedEnvironment(dirname(binary), home, extra);
+        console.log(JSON.stringify({ stage: 'command-start', job: job.id, index: item.commands.length + 1, tool: command.tool }));
         const result = await runCommand(command.tool === 'node' ? binary : join(dirname(binary), 'npm'), argv, {
           cwd: safeDirectory(work, command.cwd), env: commandEnv, timeoutMs: Math.min(6 * 60 * 1000, deadline - Date.now()) });
         const { tail, ...metadata } = result; item.commands.push({ tool: command.tool, cwd: command.cwd, argv: command.argv, ...metadata });

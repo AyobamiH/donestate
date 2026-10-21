@@ -1,0 +1,360 @@
+{
+  "schema": "proofstate.native-ci-delivery-checkpoint.v1",
+  "observedAt": "2026-10-21T06:10:44.506545+00:00",
+  "engineeringOnly": true,
+  "nativeExecutionAccepted": false,
+  "requiredCheckMigration": "PENDING",
+  "macOSCoverage": "PENDING_SEPARATE",
+  "sourceHeadsBeforeThisDocumentationCommit": {
+    "agentproof": "1f9053b7748a9edb6b5ff4e436f39c355dfe60f2",
+    "donestate": "1b772a08548568794e67c6d057fed1c0897b414d",
+    "opstruth-chatgpt-plugin": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f"
+  },
+  "sourceFileSha256": {
+    "agentproof/ci/cloudflare/run.mjs": "0d343d155136c4827d47bdd6d7c2b8499c31cb3e9cf60f46726fd4cdb79a9e54",
+    "agentproof/ci/cloudflare/run.test.mjs": "59d3c1a71d4cca0419e86fafa93a59d803496ed7564d1f32d7c76fb761c1d073",
+    "agentproof/ci/cloudflare/manifest.json": "76e7a88b63da4dc14e0e53891f053cdce0a781411ea4dd53eaa6ab2f5494ba98",
+    "donestate/ci/cloudflare/run.mjs": "0d343d155136c4827d47bdd6d7c2b8499c31cb3e9cf60f46726fd4cdb79a9e54",
+    "donestate/ci/cloudflare/run.test.mjs": "59d3c1a71d4cca0419e86fafa93a59d803496ed7564d1f32d7c76fb761c1d073",
+    "donestate/ci/cloudflare/manifest.json": "b5594d6f08c07d055034ee42da0eaf4d4cfa1348b395f581b2500aeea191e168",
+    "opstruth-chatgpt-plugin/ci/cloudflare/run.mjs": "0d343d155136c4827d47bdd6d7c2b8499c31cb3e9cf60f46726fd4cdb79a9e54",
+    "opstruth-chatgpt-plugin/ci/cloudflare/run.test.mjs": "59d3c1a71d4cca0419e86fafa93a59d803496ed7564d1f32d7c76fb761c1d073",
+    "opstruth-chatgpt-plugin/ci/cloudflare/manifest.json": "136b84f7234ade1bcd20f29700fac7c3b01f6ffe56b01c3e835e34a72f60ccd7"
+  },
+  "localChecks": [
+    {
+      "repository": "agentproof",
+      "command": "isolated npm ci where lockfile exists; npm run check; CI fixture tests; git diff --check",
+      "exitCode": 0,
+      "runtime": "Node 24.18.0 on authorised owner Linux host",
+      "logFile": "agentproof-local-validation.log",
+      "logSha256": "72b1a11500b284e2fc9aad42232353f82b35e2f9d22b1080f6f23d02c9fbc467",
+      "scope": "repository root and runner fixtures, not the complete Cloudflare job matrix"
+    },
+    {
+      "repository": "donestate",
+      "command": "isolated npm ci where lockfile exists; npm run check; CI fixture tests; git diff --check",
+      "exitCode": 0,
+      "runtime": "Node 24.18.0 on authorised owner Linux host",
+      "logFile": "donestate-local-validation.log",
+      "logSha256": "803e5907f0e48f515fdc5db1f66e8d6b08cbb32b29b435c13aee47068dbda9cf",
+      "scope": "repository root and runner fixtures, not the complete Cloudflare job matrix"
+    },
+    {
+      "repository": "opstruth-chatgpt-plugin",
+      "command": "isolated npm ci where lockfile exists; npm run check; CI fixture tests; git diff --check",
+      "exitCode": 0,
+      "runtime": "Node 24.18.0 on authorised owner Linux host",
+      "logFile": "opstruth-chatgpt-plugin-local-validation.log",
+      "logSha256": "90de2afc03051717cb5e497299dd9e7b69c2d0cdc641b600326af52b41d1e424",
+      "scope": "repository root and runner fixtures, not the complete Cloudflare job matrix"
+    }
+  ],
+  "providerInspection": [
+    {
+      "repository": "agentproof",
+      "observedAt": "2026-10-21T05:34:20.934Z",
+      "outcome": "INSPECTED",
+      "project": "proof-state-ci-agentproof",
+      "latestDeployment": null,
+      "automaticBuilds": {
+        "production_deployments_enabled": false,
+        "preview_deployment_setting": "none",
+        "preview_branch_includes": [],
+        "preview_branch_excludes": []
+      }
+    },
+    {
+      "repository": "donestate",
+      "observedAt": "2026-10-21T05:34:22.459Z",
+      "outcome": "INSPECTED",
+      "project": "proof-state-ci-donestate",
+      "latestDeployment": null,
+      "automaticBuilds": {
+        "production_deployments_enabled": false,
+        "preview_deployment_setting": "none",
+        "preview_branch_includes": [],
+        "preview_branch_excludes": []
+      }
+    },
+    {
+      "repository": "opstruth-chatgpt-plugin",
+      "observedAt": "2026-10-21T05:34:24.149Z",
+      "outcome": "INSPECTED",
+      "project": "proof-state-ci-opstruth",
+      "latestDeployment": null,
+      "automaticBuilds": {
+        "production_deployments_enabled": false,
+        "preview_deployment_setting": "none",
+        "preview_branch_includes": [],
+        "preview_branch_excludes": []
+      }
+    }
+  ],
+  "finalSharedRunnerRegression": {
+    "cases": 34,
+    "result": "PASS",
+    "sourceSha256": "0d343d155136c4827d47bdd6d7c2b8499c31cb3e9cf60f46726fd4cdb79a9e54",
+    "allThreeCopiesIdentical": true,
+    "logSha256": "10ad0958cd8d009f53f459ce79ca4dfba59f5b2e325b57162b0230153f68189f"
+  },
+  "initialRunnerRehearsal": {
+    "schema": "proofstate.cloudflare-ci.v1",
+    "status": "failed",
+    "evidenceKind": "maintainer_engineering",
+    "productionAuthorityProven": false,
+    "independentAdoptionCredit": 0,
+    "startedAt": "2026-10-21T05:56:18.896Z",
+    "jobs": [],
+    "bounds": {
+      "deadlineMs": 1080000,
+      "retries": 0,
+      "processGroupCleanup": true
+    },
+    "manifestSha256": "136b84f7234ade1bcd20f29700fac7c3b01f6ffe56b01c3e835e34a72f60ccd7",
+    "repository": {
+      "name": "AyobamiH/opstruth-chatgpt-plugin",
+      "id": "1345997124"
+    },
+    "excludedCoverage": [],
+    "source": {
+      "commit": "e44c773cdf81d28f6a8d81de3eb784633df251aa",
+      "tree": "0f5cbb4d9da950d915db179456bde9ef103eb079",
+      "inventorySha256": "b1b57198c31f858ddca6bbf2f7e37763ae8d6fa0c91be64eda82fad6980a45f5",
+      "baseCommit": "61395a6363e6634f6f97dc47ec57bba9556f2403",
+      "baseSource": "github-open-pull-request",
+      "baseScope": "pull-request-delta",
+      "baseCorroboration": "github-main-ancestor",
+      "pullRequest": 44
+    },
+    "provider": {
+      "kind": "local",
+      "hostedReadbackVerified": false,
+      "commit": "e44c773cdf81d28f6a8d81de3eb784633df251aa",
+      "branch": "fix/durable-release-recovery-20261020"
+    },
+    "error": "NODE_EXTRACTION_FAILED",
+    "cleanup": "completed",
+    "finishedAt": "2026-10-21T05:57:41.687Z"
+  },
+  "correctedRunnerRehearsal": {
+    "schema": "proofstate.cloudflare-ci.v1",
+    "status": "passed",
+    "evidenceKind": "maintainer_engineering",
+    "productionAuthorityProven": false,
+    "independentAdoptionCredit": 0,
+    "startedAt": "2026-10-21T06:05:42.074Z",
+    "jobs": [
+      {
+        "id": "verify",
+        "node": "24.22.0",
+        "platform": "linux",
+        "status": "passed",
+        "commands": [
+          {
+            "tool": "npm",
+            "cwd": ".",
+            "argv": [
+              "run",
+              "check"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "startedAt": "2026-10-21T06:06:46.892Z",
+            "completedAt": "2026-10-21T06:07:03.662Z",
+            "outputBytes": 15993,
+            "outputSha256": "1e143a3c1e429cc2d472bad12b7b190b70541a4d3f91fb7357d499d09bbf2541",
+            "outputOverLimit": false
+          }
+        ]
+      },
+      {
+        "id": "review",
+        "node": "24.22.0",
+        "platform": "linux",
+        "status": "passed",
+        "commands": [
+          {
+            "tool": "npm",
+            "cwd": ".",
+            "argv": [
+              "run",
+              "check"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "startedAt": "2026-10-21T06:07:04.177Z",
+            "completedAt": "2026-10-21T06:07:10.700Z",
+            "outputBytes": 15955,
+            "outputSha256": "74eb496b99ca92dadec6a0965f93566c2b065bfed2ad763df697587bf42ae049",
+            "outputOverLimit": false
+          },
+          {
+            "tool": "npm",
+            "cwd": ".",
+            "argv": [
+              "run",
+              "maintainer:review"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "startedAt": "2026-10-21T06:07:10.701Z",
+            "completedAt": "2026-10-21T06:07:10.930Z",
+            "outputBytes": 794,
+            "outputSha256": "c74799fab492c8fc60e721dcfa4f8ce34038c2d969178e7c07032d10e1dab4b7",
+            "outputOverLimit": false
+          }
+        ]
+      },
+      {
+        "id": "release-verifier",
+        "node": "24.22.0",
+        "platform": "linux",
+        "status": "passed",
+        "commands": [
+          {
+            "tool": "npm",
+            "cwd": ".",
+            "argv": [
+              "run",
+              "check"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "startedAt": "2026-10-21T06:07:11.291Z",
+            "completedAt": "2026-10-21T06:07:17.296Z",
+            "outputBytes": 15969,
+            "outputSha256": "946e5aaf1e485482b1948053ca9d6c44d8c81d3c7400bb15eebaac44bea147a9",
+            "outputOverLimit": false
+          },
+          {
+            "tool": "npm",
+            "cwd": "services/release-verifier",
+            "argv": [
+              "ci",
+              "--ignore-scripts"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "startedAt": "2026-10-21T06:07:17.297Z",
+            "completedAt": "2026-10-21T06:07:40.433Z",
+            "outputBytes": 141,
+            "outputSha256": "ad7481214b43d0e43afd599be57d817e25a83b1eccfba7ae01e5cb7c6111136d",
+            "outputOverLimit": false
+          },
+          {
+            "tool": "npm",
+            "cwd": "services/release-verifier",
+            "argv": [
+              "run",
+              "check"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "startedAt": "2026-10-21T06:07:40.434Z",
+            "completedAt": "2026-10-21T06:07:56.857Z",
+            "outputBytes": 4004,
+            "outputSha256": "0f1e3b583ee9efe01a2ee2ec52c3d188bbfb4b82686cff050559e1dd793e4415",
+            "outputOverLimit": false
+          },
+          {
+            "tool": "npm",
+            "cwd": "services/release-verifier",
+            "argv": [
+              "audit",
+              "--audit-level=high"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "startedAt": "2026-10-21T06:07:56.858Z",
+            "completedAt": "2026-10-21T06:07:58.789Z",
+            "outputBytes": 24,
+            "outputSha256": "6d8c5c8f3d7684adb070417bd608d01ae90aa3dc26a65af03ffda4955f38d9a3",
+            "outputOverLimit": false
+          }
+        ]
+      }
+    ],
+    "bounds": {
+      "deadlineMs": 1080000,
+      "retries": 0,
+      "processGroupCleanup": true
+    },
+    "manifestSha256": "136b84f7234ade1bcd20f29700fac7c3b01f6ffe56b01c3e835e34a72f60ccd7",
+    "repository": {
+      "name": "AyobamiH/opstruth-chatgpt-plugin",
+      "id": "1345997124"
+    },
+    "excludedCoverage": [],
+    "source": {
+      "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+      "tree": "5816b7b30aa613881a2433826d0e645fc784a8e9",
+      "inventorySha256": "e3cf25eb991adc891c387888fcbeaef5a69cee27e7127514b2863d36cb0a2150",
+      "baseCommit": "61395a6363e6634f6f97dc47ec57bba9556f2403",
+      "baseSource": "github-open-pull-request",
+      "baseScope": "pull-request-delta",
+      "baseCorroboration": "github-main-ancestor",
+      "pullRequest": 44
+    },
+    "provider": {
+      "kind": "local",
+      "hostedReadbackVerified": false,
+      "commit": "5313fce23b7b20b78c8a5a2c0d9bcedac4ba549f",
+      "branch": "fix/durable-release-recovery-20261020"
+    },
+    "preflight": {
+      "status": "passed",
+      "exitCode": 0,
+      "node": "24.22.0",
+      "tests": [
+        "ci/cloudflare/run.test.mjs"
+      ]
+    },
+    "cleanup": "completed",
+    "finishedAt": "2026-10-21T06:08:14.476Z",
+    "exitCode": 0
+  },
+  "toolchainExtraction": {
+    "archiveSha256": "cc2f601cee82d9a5a233302fe307abc600727035fd7d2c3a3571755989e95008",
+    "runtime": "24.22.0",
+    "isolatedExtractionExitCode": 0,
+    "observedExtractionSeconds": 43.996,
+    "previousInnerLimitSeconds": 30,
+    "newInnerLimitSeconds": 120,
+    "outerRunnerDeadlineSeconds": 1080,
+    "cleanupObserved": true,
+    "logSha256": "8ddf205d882c3be76ee4d853a857b1e5f6987045d25254cf8f514f1c5f395bc2"
+  },
+  "executionBlocker": {
+    "layer": "tool invocation safety check",
+    "operation": "fresh read-only Cloudflare subscriptions/entitlements inspection and single-build capacity evidence preparation",
+    "message": "This tool call was blocked by OpenAI's safety checks. Please double check what you are sending.",
+    "providerResponseObserved": false,
+    "notACloudflare403": true,
+    "notAMissingSigningAgent": true,
+    "notAGitHubBillingPaymentRequirement": true,
+    "blockedOperationNotRerouted": true
+  },
+  "effects": {
+    "cloudflareBuildTriggersByThisContinuation": 0,
+    "requiredCheckProviderChanges": 0,
+    "merges": 0,
+    "productionDeployments": 0,
+    "releasePublicationRequests": 0,
+    "signedSourcePushes": true
+  },
+  "remaining": [
+    "Perform the fresh capacity readback through a permitted tool invocation; retain current account/plan evidence without inventing remaining monthly headroom.",
+    "Trigger one bounded native build for an exact candidate head and independently corroborate deployment, all manifest jobs, static receipt and native GitHub check identity.",
+    "Migrate reviewed source guards and required check-provider policy together only after equivalent genuine results; retain failures and all validation coverage.",
+    "Obtain separate genuine AgentProof macOS evidence.",
+    "Complete coordinated readback-only release recovery and independently signed original-run settlement, then disabled-service closure."
+  ]
+}

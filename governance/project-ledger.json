@@ -549,8 +549,8 @@
       "owner": "DoneState and AgentProof maintainers",
       "lastUpdated": "2026-10-21",
       "staleDate": "2026-10-24",
-      "nextAction": "Run the persistent native Pages CI candidates on the exact recovery PR heads, independently read back deployments and manifests, then accept a pinned native check provider without weakening coverage. Preserve AgentProof macOS as a separate unmet requirement. Only after required checks pass may coordinated readback-only recovery deploy and settle the original release.",
-      "waitCondition": "Three isolated Pages projects are provisioned, inspected and disabled; zero deployments were observed on 21 October. Portable source runner and explicit Linux manifests are now persisted. Native build execution, check reporting, provider-policy migration, real macOS coverage and live recovery remain pending. No production signing authority or publication changed.",
+      "nextAction": "Resume at the fresh permitted Cloudflare capacity readback, then one exact-head native build with independent deployment/receipt/check readback. Migrate trusted check-provider policy only with equivalent real coverage; preserve separate macOS validation. Then deploy and settle the original readback-only recovery with independent evidence and disabled-service closure.",
+      "waitCondition": "Native Pages runner/manifests are signed and pushed; repository root checks and runner fixtures pass. A fresh Cloudflare capacity inspection invocation was refused by the tool safety check before any provider result. No native build was triggered, no CI provider policy migrated, and macOS/release recovery remain unaccepted. E-141 preserves the actual local rehearsal outcomes, including the initial extraction failure; local execution is not hosted CI.",
       "reentryCondition": "Obtain genuine exact-head Cloudflare deployment/receipt/check evidence with complete job coverage and current capacity readback. Change source guards and provider rules together only after acceptance. Then retain independently signed original-run recovery and disabled-service closure evidence.",
       "dependencies": [
         "VERIFY-004"
@@ -568,7 +568,8 @@
         "E-135",
         "E-137",
         "E-138",
-        "E-139"
+        "E-139",
+        "E-141"
       ]
     },
     {
@@ -3057,6 +3058,27 @@
       "artifact": {
         "path": "docs/evidence/engine-deferral-review-20261021.json",
         "sha256": "e9820d5f6447f57996424676704120cdc55f6c5d7e0dd78d1cb0db6f7f87c138"
+      }
+    },
+    {
+      "id": "E-141",
+      "date": "2026-10-21",
+      "identity": "Native CI source delivered with measured tests and an explicit activation refusal",
+      "situation": "The stalled continuation was recovered from owner-host provisioning receipts; three disabled native projects existed without a first build. Persistent source, fixture tests and exact-job manifests were missing from the recovery branches.",
+      "verification": "Signed owner commits were pushed to the three existing recovery PRs and GitHub verified the initial delivery signatures. Root checks passed: AgentProof 76 core plus 20 script cases; DoneState 104; OpsTruth 180 including shared runner cases. Shared runner fixtures pass 34 cases; Pages administration fixtures pass six. Initial full local rehearsal failed before jobs at toolchain extraction; same pinned archive extracted successfully in 43.996 seconds after allowing a bounded 120-second inner limit. The corrected local rehearsal and its exact source are preserved in the referenced delivery report; it is not a native Cloudflare run.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Resume at the fresh permitted Cloudflare capacity readback, then one exact-head native build with independent deployment/receipt/check readback. Migrate trusted check-provider policy only with equivalent real coverage; preserve separate macOS validation. Then deploy and settle the original readback-only recovery with independent evidence and disabled-service closure.",
+        "waitCondition": "Native Pages runner/manifests are signed and pushed; repository root checks and runner fixtures pass. A fresh Cloudflare capacity inspection invocation was refused by the tool safety check before any provider result. No native build was triggered, no CI provider policy migrated, and macOS/release recovery remain unaccepted. E-141 preserves the actual local rehearsal outcomes, including the initial extraction failure; local execution is not hosted CI.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Source delivered; native build, required-check migration, separate macOS coverage and original-release acceptance remain pending. The tool-layer readback refusal is distinct from provider permissions, missing infrastructure or GitHub billing.",
+      "content": "Durable source/evidence checkpoint, failed-run preservation, bounded extraction diagnostics and structured phase progress. No production authority or original publication was changed.",
+      "measurement": "Three recovery PR source updates; zero native build triggers, merges, check-provider changes, production deployments or publication requests by this continuation.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-ci-delivery-checkpoint-20261021.json",
+        "sha256": "9bef2294cdce77d6fa5c704874cf35ec5e2574ba90007bf30cc9a07ef0024b99"
       }
     }
   ]
