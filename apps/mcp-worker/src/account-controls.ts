@@ -1,5 +1,6 @@
 import { McpServer, type ServerContext } from "@modelcontextprotocol/server";
 import { z } from "zod";
+import { MCP_MAX_TOOL_INPUT_ELEMENTS } from "./mcp-limits";
 import { deleteIndexedAccountData, readAccountData, type AccountDataEnv } from "./account-data";
 import { digest } from "./canonical";
 import { ACCOUNT_MCP_PATH, ACCOUNT_READ_SCOPE, ACCOUNT_DELETE_SCOPE } from "./account-authorization";
@@ -30,7 +31,7 @@ function result(value: unknown) {
 }
 
 export function createAccountControlsServer(accountEnv: () => AccountDataEnv): McpServer {
-  const server = new McpServer({ name: "DoneState Account Controls", version: "1.0.0" });
+  const server = new McpServer({ name: "DoneState Account Controls", version: "1.0.0" }, { maxToolInputElements: MCP_MAX_TOOL_INPUT_ELEMENTS });
   server.registerTool("inspect_account", {
     description: "Inspect only the authenticated DoneState account: credential status, selected repositories, indexed objectives and service-data counts. Returns no stored keys or OAuth tokens. An inventory at the 200-run limit is explicitly incomplete.",
     inputSchema: {},
