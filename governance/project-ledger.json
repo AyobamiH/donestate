@@ -549,9 +549,9 @@
       "owner": "DoneState and AgentProof maintainers",
       "lastUpdated": "2026-10-21",
       "staleDate": "2026-10-24",
-      "nextAction": "Obtain permitted fresh Cloudflare Pages plan/entitlement evidence and retain the one-build, no-upgrade, no-overage bound. Then explicitly retry the reconciled skipped deployment for the exact current PR head using the corrected administrator, independently verify the hosted receipt and native check identity, and review any equivalent provider-policy migration. Preserve separate real macOS coverage. Only after exact-head required checks and review pass may the original readback-only recovery deploy and settle.",
-      "waitCondition": "The existing OAuth session refreshed successfully; all three isolated Pages projects matched their intended disabled configuration. Their latest records are provider-skipped entries, not executed builds. The account subscription GET returned HTTP 403, so current plan/entitlement evidence remains unavailable. The skipped-entry reconciliation fix passes 20 local administration tests and a GET-only live status read correctly reports BUILD_SKIPPED. No real build, required-check migration, recovery deployment or new publication was requested. GitHub still records the required macOS job as unstarted because of the account billing lock; native hosted CI, macOS and live independent acceptance remain pending.",
-      "reentryCondition": "Permitted fresh Pages plan/entitlement evidence enables one explicit exact-head retry. Retain genuine hosted job/receipt/check evidence, separate macOS coverage and reviewed source/provider policy before coordinated merge or original-run recovery.",
+      "nextAction": "Publish and independently validate the exact DoneState dependency-fix head through one fresh-capacity-checked explicit native build and Codex review. Review an equivalent trusted-provider policy transition while preserving real macOS coverage. After all exact-head required checks and reviews pass, perform normal protected coordinated merges, revalidate patch parity, and execute only the original readback-only recovery through signed receipt, independent verdict and durable settlement.",
+      "waitCondition": "OpsTruth and AgentProof exact-head Cloudflare native Linux builds and source reviews passed. DoneState core Node 22/24 jobs passed, but its hosted-plugin audit failed on existing dependency advisories. The compatible dependency updates and explicit MCP body/input limits pass local full checks, audit and dry run; their final native build and source review remain pending. Required-check provider policy is unchanged. Real AgentProof macOS execution remains blocked by the observed GitHub billing refusal. No merge, recovery deployment or new publication has occurred.",
+      "reentryCondition": "Exact-final-head DoneState native CI and source review, reviewed equivalent provider policy and genuine separate macOS coverage permit protected merges and the original readback-only release recovery.",
       "dependencies": [
         "VERIFY-004"
       ],
@@ -570,7 +570,8 @@
         "E-138",
         "E-139",
         "E-141",
-        "E-142"
+        "E-142",
+        "E-143"
       ]
     },
     {
@@ -3101,6 +3102,27 @@
       "artifact": {
         "path": "docs/evidence/agentproof-ci-reconciliation-checkpoint-20261021.json",
         "sha256": "284842846721ec4ea19cdd4dfc1eaddbab79f145d6b69afa7e0f28623e7f5759"
+      }
+    },
+    {
+      "id": "E-143",
+      "date": "2026-10-21",
+      "identity": "Real native CI accepts AgentProof and OpsTruth; DoneState audit failure drives compatible dependencies and enforced MCP limits",
+      "situation": "Fresh Account Read entitlement evidence permitted bounded explicit Pages builds. Two exact-head native deployments passed; DoneState reached both core jobs successfully but failed the hosted-plugin dependency audit.",
+      "verification": "Retained all three explicit retry intents/results, genuine native deployment/job/receipt summaries and App 85455 check identities for AgentProof and OpsTruth, exact-head Codex completed/no-findings source reviews, and the failed DoneState native log. Updated MCP/Agents/Hono/Vite dependencies install with compatible peers. Actual SDK tests proved the legacy body-limit forwarding gap and validate its bounded-stream correction on both resources. Full hosted-plugin check, zero-advisory audit and deployment dry run pass locally; final-head hosted acceptance is still pending.",
+      "accountability": {
+        "owner": "DoneState and AgentProof maintainers",
+        "status": "blocked",
+        "nextAction": "Publish and independently validate the exact DoneState dependency-fix head through one fresh-capacity-checked explicit native build and Codex review. Review an equivalent trusted-provider policy transition while preserving real macOS coverage. After all exact-head required checks and reviews pass, perform normal protected coordinated merges, revalidate patch parity, and execute only the original readback-only recovery through signed receipt, independent verdict and durable settlement.",
+        "waitCondition": "OpsTruth and AgentProof exact-head Cloudflare native Linux builds and source reviews passed. DoneState core Node 22/24 jobs passed, but its hosted-plugin audit failed on existing dependency advisories. The compatible dependency updates and explicit MCP body/input limits pass local full checks, audit and dry run; their final native build and source review remain pending. Required-check provider policy is unchanged. Real AgentProof macOS execution remains blocked by the observed GitHub billing refusal. No merge, recovery deployment or new publication has occurred.",
+        "staleDate": "2026-10-24"
+      },
+      "outcome": "Two genuine native Linux CI successes and source reviews are accepted as source evidence. DoneState dependency/transport fixes are locally validated. Required policy, macOS, protected merge and original live release verification remain open.",
+      "content": "Provider observations, explicit fixed-plan capacity inference, failed and successful validation output, dependency/transport hashes and successor recovery checkpoint. Previous failed attempts and original signed completion remain immutable.",
+      "measurement": "Three explicit native builds: two pass, one fails on audit after both core jobs pass. Zero required-check migrations, merges, recovery deployments or new releases. Audit zero after dependency fix; real macOS and live release acceptance not claimed.",
+      "artifact": {
+        "path": "docs/evidence/agentproof-native-ci-partial-checkpoint-20261021.json",
+        "sha256": "795ff042ad9ee15640b5458a3c3cf61250b8472c4c4e0b8b6a8531a430ce5472"
       }
     }
   ]
