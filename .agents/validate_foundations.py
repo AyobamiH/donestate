@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only repository foundation check. No Git, HOME, dependencies or network."""
+"""Read-only repository foundation check (Python 3.9+). No Git, HOME, dependencies or network."""
 from pathlib import Path
 import re
 import sys

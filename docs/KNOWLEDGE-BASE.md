@@ -79,7 +79,7 @@ Read [the local secure delivery skill](../.agents/skills/secure-api-delivery/SKI
 
 Source entry points: [controller.ts](../src/controller.ts) coordinates run transitions; [policy.ts](../src/policy.ts) admits bounded objectives; [store.ts](../src/store.ts) persists SQLite state, effect records and leases. The [adapters](../src/adapters/) own external execution boundaries. Preserve explicit environment allowlists, intent-before-effect ordering and the independent verifier contract.
 
-[CONTRIBUTING.md](../CONTRIBUTING.md) defines `npm install` and `npm run check`; [package.json](../package.json) requires Node.js 22.5+ and defines `npm run docs:check`, `npm run kb:check`, and the governance checks. Foundation-only validation is `python3 .agents/validate_foundations.py` (Python 3 standard library). It does not replace application tests or release-package audits.
+[CONTRIBUTING.md](../CONTRIBUTING.md) defines `npm install` and `npm run check`; [package.json](../package.json) requires Node.js 22.5+ and defines `npm run docs:check`, `npm run kb:check`, and the governance checks. Foundation-only validation is `python3 .agents/validate_foundations.py` (Python 3.9+ standard library). It does not replace application tests or release-package audits.
 
 Update the relevant knowledge and its authoritative source in the same change when architecture, behaviour, commands or boundaries change. Preserve verified lessons and decision rationale, not raw chat transcripts, secrets or unverified live status. Link to authoritative records rather than maintaining competing copies.
 <!-- agent-foundations:end -->

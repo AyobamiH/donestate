@@ -50,7 +50,7 @@ Read [secure-api-delivery](.agents/skills/secure-api-delivery/SKILL.md) at the s
 
 Read [repository knowledge](docs/KNOWLEDGE-BASE.md) and its relevant linked sources. If the skill is absent from your catalog, open the relative file directly. The complete skill and references belong to this repository; no home-directory installation is required. Existing project instructions and specialised skills remain authoritative for their areas. This guidance does not authorise live scans, credentials, publishing or deployment and is not a CI enforcement claim.
 
-Run `python3 .agents/validate_foundations.py` for the lightweight repository-only discovery check. It validates the local skill files and new navigation links, not application security or live runtime health.
+Run `python3 .agents/validate_foundations.py` for the lightweight repository-only discovery check (Python 3.9+ standard library). It validates the local skill files and new navigation links, not application security, live runtime health, every pre-existing onboarding link or Markdown fragment.
 
 Update the relevant knowledge and its authoritative source in the same change when architecture, behaviour, commands or boundaries change. Preserve verified lessons and decision rationale, not raw chat transcripts, secrets or unverified live status. Link to authoritative records rather than maintaining competing copies.
 <!-- agent-foundations:end -->
